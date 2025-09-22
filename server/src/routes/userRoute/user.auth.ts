@@ -1,0 +1,28 @@
+import { Router } from "express";
+import { container } from "../../core/DI/container.js";
+import { AuthController } from "../../controllers/userController/user.Authcontroller.js";
+import { asyncHandler } from "../../middleware/asyncHandler.js";
+import rateLimit from 'express-rate-limit';
+
+const authRouter = Router()
+const authController = container.get<AuthController>(AuthController)
+
+const otpLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+});
+
+const resetLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 3,
+});
+
+authRouter.post("/sendOtp", otpLimiter, asyncHandler(authController.sendOtp.bind(authController)))
+  .post("/verify", asyncHandler(authController.verify.bind(authController)))
+  .post("/login", asyncHandler(authController.login.bind(authController)))
+  .post('/forgot-password', asyncHandler(authController.forgotPassword.bind(authController)))
+  .post('/reset-password', resetLimiter, asyncHandler(authController.resetPassword.bind(authController)))
+  .post('/logout', asyncHandler(authController.logout.bind(authController)))
+  .post("/",asyncHandler(authController.refreshToken.bind(authController)))
+
+export default authRouter;

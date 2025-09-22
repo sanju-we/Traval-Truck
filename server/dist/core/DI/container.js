@@ -1,0 +1,17 @@
+import { Container } from 'inversify';
+import { AuthService } from '../../services/user/auth.service.js';
+import { AuthRepository } from '../../repositories/auth.repository.js';
+import { JWT } from '../../utils/JWTtoken.js';
+import { RedisClient } from '../../config/redisClient.js';
+import { EmailService } from '../../services/email.sevices.js';
+import { AuthController } from '../../controllers/userController/user.Authcontroller.js';
+import { ProfileController } from '../../controllers/userController/user.profileController.js';
+const container = new Container();
+container.bind('IAuthService').to(AuthService).inSingletonScope();
+container.bind('IAuthRepository').to(AuthRepository).inSingletonScope();
+container.bind('IJWT').to(JWT).inSingletonScope();
+container.bind('IRedisClient').to(RedisClient).inSingletonScope();
+container.bind('IEmailService').to(EmailService).inSingletonScope();
+container.bind(AuthController).toSelf().inSingletonScope();
+container.bind(ProfileController).toSelf().inSingletonScope();
+export { container };

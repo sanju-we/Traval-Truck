@@ -1,0 +1,9 @@
+@import "tailwindcss/preflight";
+@import "tailwindcss/theme";
+@import "tailwindcss/utilities";
+
+/* custom styles */
+body {
+  font-family: sans-serif;
+  /* background-color: black; */
+}

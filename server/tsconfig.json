@@ -1,0 +1,40 @@
+// {
+//   "compilerOptions": {
+    // "baseUrl": "src",
+    // "paths": {
+    //   "@core/*": ["core/*"],
+    //   "@interfaces/*": ["interfaces/*"],
+    //   "@services/*": ["services/*"],
+    //   "@repositories/*": ["repositories/*"],
+    //   "@controllers/*": ["controllers/*"],
+    //   "@utils/*": ["utils/*"]
+    // }
+//   }
+// }
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",                
+    "moduleResolution": "Node",     
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": ["./node_modules/@types", "./src/@types"],
+    "baseUrl": "src",
+    "paths": {
+      "@core/*": ["core/*"],
+      "@interfaces/*": ["interfaces/*"],
+      "@services/*": ["services/*"],
+      "@repositories/*": ["repositories/*"],
+      "@controllers/*": ["controllers/*"],
+      "@utils/*": ["utils/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,29 @@
+services:
+  frontend:
+    build: ./client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./server
+    env_file:
+      - ./server/.env
+    ports:
+      - "5000:5000"
+    restart: always 
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:latest
+    ports: 
+      - "6379:6379"
+    restart: always
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
+
