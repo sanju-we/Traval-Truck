@@ -1,0 +1,149 @@
+'use client';
+
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react';
+import api from '@/services/api';
+import { toast } from 'react-hot-toast';
+import Image from 'next/image';
+import { SideNavbar } from '@/components/admin/SideNavbar';
+
+export default function UserDetailsPage() {
+  const user = useSelector((state: RootState) => state.details.selectedUser);
+  const [loading, setLoading] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(user?.isBlocked);
+
+  if (!user) {
+    return (
+      <p className="p-6 text-center text-gray-500">
+        No user data found. Please go back and try again.
+      </p>
+    );
+  }
+
+  const handleToggleBlock = async () => {
+    try {
+      setLoading(true);
+      const { data } = await api.patch(`/admin/vendor/block-toggle/${user.id}/${user.role}`);
+      console.log('data:', data);
+      if (data.success) {
+        setIsBlocked(!isBlocked);
+        toast.success(isBlocked ? 'User unblocked successfully' : 'User blocked successfully');
+        return;
+      }
+    } catch (error) {
+      console.error('Error toggling block:', error);
+      toast.error('Something went wrong. Try again!');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex">
+      {/* Sidebar */}
+      <SideNavbar active="Users" />
+
+      {/* Main Content */}
+      <div className="flex-1 max-w-4xl mx-auto mt-12">
+        <Card className="shadow-lg rounded-2xl border border-gray-200">
+          <CardHeader className="flex items-center justify-between">
+            <CardTitle className="text-2xl font-bold">
+              {user.role === 'vendor' ? 'Vendor Details' : 'User Details'}
+              <div className="flex flex-col items-center">
+                <Image
+                  src="/images/profile.jpg"
+                  alt="Profile Picture"
+                  width={120}
+                  height={120}
+                  className="rounded-full border shadow-md object-cover"
+                />
+                <p className="mt-2 text-sm font-medium">{user.userName || 'Unknown User'}</p>
+              </div>
+            </CardTitle>
+            <div className="flex gap-3">
+              <Button
+                variant={isBlocked ? 'default' : 'secondary'}
+                onClick={handleToggleBlock}
+                disabled={loading}
+              >
+                {loading ? 'Processing...' : isBlocked ? 'Unblock User' : 'Block User'}
+              </Button>
+            </div>
+          </CardHeader>
+
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
+            {/* ✅ Profile Picture */}
+
+            <div>
+              <p className="font-medium">ID</p>
+              <p className="text-sm text-gray-500">{user.id}</p>
+            </div>
+
+            {/* ✅ Username */}
+            <div>
+              <p className="font-medium">Username</p>
+              <p className="text-sm text-gray-500">{user.userName || 'Not provided'}</p>
+            </div>
+
+            {user.role === 'user' && (
+              <div>
+                <p className="font-medium">Name</p>
+                <p className="text-sm text-gray-500">{user.name}</p>
+              </div>
+            )}
+
+            {user.role === 'vendor' && (
+              <>
+                <div>
+                  <p className="font-medium">Owner Name</p>
+                  <p className="text-sm text-gray-500">{user.ownerName}</p>
+                </div>
+                <div>
+                  <p className="font-medium">Company Name</p>
+                  <p className="text-sm text-gray-500">{user.companyName}</p>
+                </div>
+                <div>
+                  <p className="font-medium">Approved</p>
+                  <p
+                    className={`text-sm font-semibold ${
+                      user.isApproved ? 'text-green-600' : 'text-red-600'
+                    }`}
+                  >
+                    {user.isApproved ? '✅ Yes' : '❌ No'}
+                  </p>
+                </div>
+              </>
+            )}
+
+            <div>
+              <p className="font-medium">Email</p>
+              <p className="text-sm text-gray-500">{user.email}</p>
+            </div>
+
+            <div>
+              <p className="font-medium">Phone</p>
+              <p className="text-sm text-gray-500">{user.phone || 'Not provided'}</p>
+            </div>
+
+            <div>
+              <p className="font-medium">Role</p>
+              <p className="text-sm capitalize">{user.role}</p>
+            </div>
+
+            <div>
+              <p className="font-medium">Status</p>
+              <p
+                className={`text-sm font-semibold ${isBlocked ? 'text-red-600' : 'text-green-600'}`}
+              >
+                {isBlocked ? 'Blocked' : 'Active'}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}

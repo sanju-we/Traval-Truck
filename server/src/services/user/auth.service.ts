@@ -5,48 +5,46 @@ import { IAuthRepository } from '../../core/interface/repositorie/IAuth.Reposito
 import { IRedisClient } from '../../core/interface/redis/IRedisClinet.js';
 import { IJWT } from '../../core/interface/JWT/JWTInterface.js';
 import { UserData, userProfileDTO } from '../../types/index.js';
-import {OtpExpiredError, EmailAlreadyRegisteredError, InvalidOtpError, UserNotFoundError, InvalidCredentialsError, InvalidResetTokenError} from '../../utils/resAndErrors.js'
+import { IEmailService } from '../../core/interface/emailInterface/emailInterface.js';
+import {
+  OtpExpiredError,
+  EmailAlreadyRegisteredError,
+  InvalidOtpError,
+  UserNotFoundError,
+  InvalidCredentialsError,
+  InvalidResetTokenError,
+  RESTRICTED_USER,
+} from '../../utils/resAndErrors.js';
 import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
 import { z } from 'zod';
 import { logger } from '../../utils/logger.js';
 
 @injectable()
 export class AuthService implements IAuthService {
-  private readonly OTP_TTL_SECONDS = 300; 
+  private readonly OTP_TTL_SECONDS = 300;
 
   constructor(
     @inject('IAuthRepository') private _authRepository: IAuthRepository,
     @inject('IRedisClient') private _redisClient: IRedisClient,
     @inject('IJWT') private _jwtUtil: IJWT,
+    @inject('IEmailService') private readonly _emailService: IEmailService,
   ) {}
 
-  async generateOtp(): Promise<string> {
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    logger.info(`Generated OTP: ${otp}`);
-    return otp;
-  }
-
-  async storeOtp(email: string, otp: string): Promise<void> {
-    const schema = z.object({
-      email: z.string().email(),
-      otp: z.string().length(6),
-    });
-    schema.parse({ email, otp });
-    await this._redisClient.setEx(`pending:${email}`, this.OTP_TTL_SECONDS, JSON.stringify({ otp, email }));
-    logger.debug(`From UserAuth->storeOtp:- Stored OTP for ${email}`);
-  }
-
-  async verify(enteredEmail: string, enteredOtp: string, userData: UserData): Promise<{
+  async verify(
+    enteredEmail: string,
+    enteredOtp: string,
+    userData: UserData,
+  ): Promise<{
     user: userProfileDTO;
     accessToken: string;
     refreshToken: string;
   }> {
     const schema = z.object({
-      email: z.string().email(),
+      email: z.email(),
       otp: z.string().length(6),
       userData: z.object({
         name: z.string().min(1),
-        email: z.string().email(),
+        email: z.email(),
         password: z.string().min(8),
         phone: z.number(),
       }),
@@ -68,7 +66,7 @@ export class AuthService implements IAuthService {
       name: userData.name,
       email: userData.email,
       phone: userData.phone,
-      isBlocked: true,
+      isBlocked: false,
       password: hashedPassword,
       role: 'user',
     });
@@ -80,17 +78,22 @@ export class AuthService implements IAuthService {
 
     await this._redisClient.del(`pending:${enteredEmail}`);
 
-    logger.info(`From UserAuth->verify:- User ${userData.email} verified and registered successfully`);
+    logger.info(
+      `From UserAuth->verify:- User ${userData.email} verified and registered successfully`,
+    );
     return { user: toUserProfileDTO(userDoc), accessToken, refreshToken };
   }
 
-  async verifyLogin(email: string, password: string): Promise<{
+  async verifyLogin(
+    email: string,
+    password: string,
+  ): Promise<{
     user: userProfileDTO;
     accessToken: string;
     refreshToken: string;
   }> {
     const schema = z.object({
-      email: z.string(),
+      email: z.email(),
       password: z.string().min(8),
     });
     schema.parse({ email, password });
@@ -101,8 +104,10 @@ export class AuthService implements IAuthService {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new InvalidCredentialsError();
 
+    if (user.isBlocked) throw new RESTRICTED_USER();
+
     const { accessToken, refreshToken } = await this._jwtUtil.generateToken({
-      id : user.id,
+      id: user.id,
       role: user.role,
     });
 
@@ -112,28 +117,33 @@ export class AuthService implements IAuthService {
 
   async sendLink(email: string): Promise<void> {
     const schema = z.object({
-      email: z.string().email(),
+      email: z.email(),
     });
     schema.parse({ email });
 
-    const user = await this._authRepository.findByEmail(email);
-    if (!user) throw new UserNotFoundError();
+    const userData = await this._authRepository.findByEmail(email);
+    if (!userData) throw new UserNotFoundError();
+    const user = { id: userData.id, email: userData.email };
 
     const { resetLink } = await this._jwtUtil.generateResetToken(user);
-    await this._authRepository.sendEmail(email, resetLink);
+    await this._emailService.sendEmail(
+      email,
+      'Password Reset',
+      `Reset your password: ${resetLink}`,
+    );
 
     logger.info(`From UserAuth->sendLink:- Password reset link sent to ${email}`);
   }
 
-  async resetPassword( token: string, newPassword: string): Promise<void> {
+  async resetPassword(token: string, newPassword: string): Promise<void> {
     const schema = z.object({
       token: z.string().min(1),
       newPassword: z.string().min(8),
     });
-    schema.parse({  token, newPassword });
+    schema.parse({ token, newPassword });
 
     const payload = await this._jwtUtil.verifyResetToken(token);
-    const user = await this._authRepository.findById(payload.id)
+    const user = await this._authRepository.findById(payload.id);
     if (!user) throw new UserNotFoundError();
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);

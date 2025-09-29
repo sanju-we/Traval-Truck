@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { model, Schema } from 'mongoose';
 const reviewSchema = new Schema({
     vendor: {
         type: Schema.Types.ObjectId,
@@ -6,15 +6,15 @@ const reviewSchema = new Schema({
     },
     user: {
         type: Schema.Types.ObjectId,
-        required: true
+        required: true,
     },
     rating: {
         type: Number,
-        required: true
+        required: true,
     },
     comment: {
         type: String,
-        required: true
-    }
+        required: true,
+    },
 });
-export const Reviews = model("Reviews", reviewSchema);
+export const Reviews = model('Reviews', reviewSchema);

@@ -1,7 +1,7 @@
-export function Footer(){
+export function Footer() {
   return (
     <>
-    <footer className="mt-12 py-6 text-center text-sm text-gray-500 border-t">
+      <footer className="mt-12 py-6 text-center text-sm text-gray-500 border-t">
         <div className="flex justify-center gap-4 mb-2">
           <a href="#">About Us</a>
           <a href="#">Contact</a>
@@ -11,5 +11,5 @@ export function Footer(){
         <p>© 2025 Travel Truck. All rights reserved.</p>
       </footer>
     </>
-  )
+  );
 }

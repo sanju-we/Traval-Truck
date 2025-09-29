@@ -1,17 +1,56 @@
+// --------------------------------------------------general----------------------------------------------------------------
 import { Container } from 'inversify';
-import { AuthService } from '../../services/user/auth.service.js';
-import { AuthRepository } from '../../repositories/auth.repository.js';
 import { JWT } from '../../utils/JWTtoken.js';
 import { RedisClient } from '../../config/redisClient.js';
-import { EmailService } from '../../services/email.sevices.js';
-import { AuthController } from '../../controllers/userController/user.Authcontroller.js';
-import { ProfileController } from '../../controllers/userController/user.profileController.js';
+import { EmailService } from '../../services/email.service.js';
+import { GeneralService } from '../../services/general.service.js';
+import { AuthService } from '../../services/user/auth.service.js';
+import { AuthRepository } from '../../repositories/user/auth.repository.js';
+import { AuthController } from '../../controllers/userController/user.auth.controller.js';
+import { ProfileController } from '../../controllers/userController/user.profile.controller.js';
+import { UserProfileService } from '../../services/user/user.profile.service.js';
+import { AdminAuthService } from '../../services/admin/admin.auth.service.js';
+import { AdminAuthController } from '../../controllers/adminController/admin.auth.controller.js';
+import { AdminVendorController } from '../../controllers/adminController/admin.vendor.controller.js';
+import { AdminVendorRepository } from '../../repositories/admin/admin.vendor.repository.js';
+import { AdminVendorService } from '../../services/admin/admin.vendor.service.js';
+import { AgencyAuthController } from '../../controllers/agencyController/agency.auth.controller.js';
+import { agencyRepository } from '../../repositories/agency/agency.auth.repository.js';
+import { agencyAuthService } from '../../services/agency/agency.auth.service.js';
+import { HotelAuthController } from '../../controllers/hotelController/hotel.auth.controller.js';
+import { HotelAuthRepository } from '../../repositories/hotel/hotel.auth.repository.js';
+import { HotelAuthService } from '../../services/hotel/hotel.auth.service.js';
+import { RestaurantAuthController } from '../../controllers/restaurantController/restaurant.auth.controller.js';
+import { RestaurantAuthService } from '../../services/restaurant/restaurant.auth.service.js';
+import { RestaurantAuthRepository } from '../../repositories/restaunrat/restaurant.auth.repository.js';
 const container = new Container();
-container.bind('IAuthService').to(AuthService).inSingletonScope();
-container.bind('IAuthRepository').to(AuthRepository).inSingletonScope();
+// ------------------------------------------------general container-----------------------------------------------------------------
 container.bind('IJWT').to(JWT).inSingletonScope();
 container.bind('IRedisClient').to(RedisClient).inSingletonScope();
 container.bind('IEmailService').to(EmailService).inSingletonScope();
-container.bind(AuthController).toSelf().inSingletonScope();
-container.bind(ProfileController).toSelf().inSingletonScope();
+container.bind('IGeneralService').to(GeneralService).inSingletonScope();
+// ---------------------------------------------------user container-------------------------------------------------------------------------
+container.bind('IAuthRepository').to(AuthRepository);
+container.bind('IAuthService').to(AuthService);
+container.bind('IController').to(AuthController);
+container.bind('IUserProfileController').to(ProfileController);
+container.bind('IUserProfileService').to(UserProfileService);
+// -----------------------------------------------------admin containers----------------------------------------------------------------------
+container.bind('IAdminAuthController').to(AdminAuthController);
+container.bind('IAdminAuthService').to(AdminAuthService);
+container.bind('IAdminVendorController').to(AdminVendorController);
+container.bind('IAdminVendorRepository').to(AdminVendorRepository);
+container.bind('IAdminVendorService').to(AdminVendorService);
+// ------------------------------------------------------agency containers--------------------------------------------------------
+container.bind('IAgencyAuthController').to(AgencyAuthController);
+container.bind('IAgencyRespository').to(agencyRepository);
+container.bind('IAgencyAuthService').to(agencyAuthService);
+// --------------------------------------------------------Hotel containers---------------------------------------------------------------
+container.bind('IHotelAuthController').to(HotelAuthController);
+container.bind('IHotelAuthRepository').to(HotelAuthRepository);
+container.bind('IHotelAuthService').to(HotelAuthService);
+// -------------------------------------------------------Restaurant container----------------------------------------------------------
+container.bind('IRestaurantAuthController').to(RestaurantAuthController);
+container.bind('IRestaurantAuthRepository').to(RestaurantAuthRepository);
+container.bind('IRestaurantAuthService').to(RestaurantAuthService);
 export { container };

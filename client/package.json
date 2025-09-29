@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
+    "format": "prettier --write 'src/**/*.{ts,tsx,json,md}'",
     "lint": "eslint"
   },
   "dependencies": {
@@ -19,10 +20,13 @@
     "lucide-react": "^0.544.0",
     "next": "^15.5.3",
     "npm": "^11.6.0",
+    "pretier": "^0.0.1",
+    "prettier": "^3.6.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hot-toast": "^2.6.0",
     "react-redux": "^9.2.0",
+    "recharts": "^3.2.1",
     "redux-persist": "^6.0.0"
   },
   "devDependencies": {

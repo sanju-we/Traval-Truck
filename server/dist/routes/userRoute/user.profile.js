@@ -1,8 +1,8 @@
-import { Router } from "express";
-import { container } from "../../core/DI/container.js";
-import { asyncHandler } from "../../middleware/asyncHandler.js";
-import { ProfileController } from "../../controllers/userController/user.profileController.js";
+import { Router } from 'express';
+import { container } from '../../core/DI/container.js';
+import { asyncHandler } from '../../middleware/asyncHandler.js';
 const profileRouter = Router();
-const profileController = container.get(ProfileController);
-profileRouter.get("/profile", asyncHandler(profileController.profile.bind(profileController)));
+const profileController = container.get('IUserProfileController');
+profileRouter.get('/profile', asyncHandler(profileController.profile.bind(profileController)))
+    .post('/intrest', asyncHandler(profileController.intrest.bind(profileController)));
 export default profileRouter;

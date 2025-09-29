@@ -1,5 +1,7 @@
-import { Request,Response } from "express";
+import { Request, Response } from 'express';
 
-export interface IUserProfileController{
-  profile(req:Request,res:Response):Promise<void>
+export interface IUserProfileController {
+  profile(req: Request, res: Response): Promise<void>;
+  intrest(req: Request, res: Response): Promise<void>;
+  updateUser(req: Request, res: Response): Promise<void>;
 }

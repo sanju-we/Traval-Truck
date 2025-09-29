@@ -1,23 +1,23 @@
-import { Response } from "express";
-import { STATUS_CODE } from "./HTTPStatusCode.js";
+import { Response } from 'express';
+import { STATUS_CODE } from './HTTPStatusCode.js';
 
 export function sendResponse<T = unknown>(
-  res:Response,
-  status:number,
-  success:boolean,
-  message:string,
-  data?:T
-){
-  res.status(status).json({success,message,data})
+  res: Response,
+  status: number,
+  success: boolean,
+  message: string,
+  data?: T,
+) {
+  res.status(status).json({ success, message, data });
 }
 
-export function throwErrorWithRes(res: Response, message: string, statusCode = 400): never {
-  console.error('Throwing error:', message);
-  res.status(statusCode).json({ message });
-  const error = new Error(message) as Error & { statusCode: number };
-  error.statusCode = statusCode;
-  throw error;
-}
+// export function throwErrorWithRes(res: Response, message: string, statusCode = 400): never {
+//   console.error('Throwing error:', message);
+//   res.status(statusCode).json({ message });
+//   const error = new Error(message) as Error & { statusCode: number };
+//   error.statusCode = statusCode;
+//   throw error;
+// }
 
 export function throwError(message: string, statusCode = 400): never {
   console.error('Throwing error:', message);
@@ -27,8 +27,12 @@ export function throwError(message: string, statusCode = 400): never {
 }
 
 export class HttpError extends Error {
-  constructor(public statusCode: number, message: string) {
+  constructor(
+    public statusCode: number,
+    message: string,
+  ) {
     super(message);
+    this.name = this.constructor.name;
   }
 }
 
@@ -52,24 +56,42 @@ export class InvalidOtpError extends HttpError {
 
 export class UserNotFoundError extends HttpError {
   constructor() {
-    super(401, 'Invalid credentials');
+    super(400, 'Invalid credentials');
+  }
+}
+
+export class NoAccessToken extends HttpError {
+  constructor() {
+    super(403, 'Invalid Token');
   }
 }
 
 export class InvalidCredentialsError extends HttpError {
   constructor() {
-    super(401, 'Invalid credentials');
+    super(400, 'Invalid credentials');
   }
 }
 
 export class InvalidResetTokenError extends HttpError {
   constructor() {
-    super(401, 'Invalid or expired reset token');
+    super(400, 'Invalid or expired reset token');
   }
 }
 
 export class UNAUTHORIZEDUserFounf extends HttpError {
-  constructor(){
-    super(STATUS_CODE.UNAUTHORIZED,"User don't have access to this route")
+  constructor() {
+    super(401, "User don't have access to this route");
+  }
+}
+
+export class InvalidAction extends HttpError {
+  constructor() {
+    super(400, 'Invalid Action');
+  }
+}
+
+export class RESTRICTED_USER extends HttpError {
+  constructor() {
+    super(401, 'This user is Restricted by the admin');
   }
 }

@@ -1,144 +1,156 @@
-"use client"
+'use client';
 
-import type React from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "@/redux/store"
-import { setTokens } from "@/redux/authSlice"
-import { useState, useRef,useLayoutEffect } from "react"
-import api from "@/services/api"
-import { useRouter } from "next/navigation"
+import type React from 'react';
+import { useState, useRef, useLayoutEffect } from 'react';
+import api from '@/services/api';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export default function SignUpPage() {
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [formData, setFormData] = useState({ name: "", email: "", password: "", confirmPassword: "", phone: "" })
-  const [message, setMessage] = useState("")
-  const [errors, setErrors] = useState<{ [key: string]: string }>({})
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    phone: '',
+  });
+  const [message, setMessage] = useState('');
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const [showOtpInput, setShowOtpInput] = useState(false)
-  const [otp, setOtp] = useState(["", "", "", "", "", ""])
-  const [isOtpLoading, setIsOtpLoading] = useState(false)
-  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false)
-  const otpRefs = useRef<(HTMLInputElement | null)[]>([])
+  const [showOtpInput, setShowOtpInput] = useState(false);
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [isOtpLoading, setIsOtpLoading] = useState(false);
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const route = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => {
-      const updated = { ...prev, [e.target.name]: e.target.value }
-      return updated
-    })
-  }
+      const updated = { ...prev, [e.target.name]: e.target.value };
+      return updated;
+    });
+  };
 
   const handleOtpChange = (index: number, value: string) => {
-    if (value.length > 1) return 
+    if (value.length > 1) return;
 
-    const newOtp = [...otp]
-    newOtp[index] = value
-    setOtp(newOtp)
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
 
     if (value && index < 5) {
-      otpRefs.current[index + 1]?.focus()
+      otpRefs.current[index + 1]?.focus();
     }
-  }
+  };
 
   const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      otpRefs.current[index - 1]?.focus()
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
     }
-  }
+  };
 
   const validate = () => {
-    const newError: { [key: string]: string } = {}
+    const newError: { [key: string]: string } = {};
 
-    if (!formData.name.trim()) newError.name = "Name is required"
+    if (!formData.name.trim()) newError.name = 'Name is required';
 
     if (!formData.email) {
-      newError.email = "Email is required"
+      newError.email = 'Email is required';
     } else if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(formData.email)) {
-      newError.email = "Invalid email address"
+      newError.email = 'Invalid email address';
     }
 
     if (!formData.phone) {
-      newError.phone = "Phone is required"
+      newError.phone = 'Phone is required';
     } else if (!/^\d{10}$/.test(formData.phone)) {
-      newError.phone = "Phone must be 10 digits"
+      newError.phone = 'Phone must be 10 digits';
     }
 
     if (!formData.password) {
-      newError.password = "Password is required"
+      newError.password = 'Password is required';
     } else if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d_]{8,}$/.test(formData.password)) {
       newError.password =
-        "Password must be at least 8 characters, include letters, numbers, and only '_' is allowed as special character"
+        "Password must be at least 8 characters, include letters, numbers, and only '_' is allowed as special character";
     }
 
     if (formData.confirmPassword !== formData.password) {
-      newError.confirmPassword = "Passwords do not match"
+      newError.confirmPassword = 'Passwords do not match';
     }
 
-    setErrors(newError)
-    return Object.keys(newError).length === 0
-  }
+    setErrors(newError);
+    return Object.keys(newError).length === 0;
+  };
 
   const handleSendOtp = async () => {
-    if (!validate()) return
+    if (!validate()) return;
 
-    setIsOtpLoading(true)
+    setIsOtpLoading(true);
     try {
-      const res = await api.post("/user/auth/sendOtp", {
+      const res = await api.post('/user/auth/sendOtp', {
         email: formData.email,
-      })
-      const data = res.data
+      });
+      const data = res.data;
 
       if (data.success) {
-        setShowOtpInput(true)
-        setMessage("✅ OTP sent to your email")
-        setErrors({})
+        setShowOtpInput(true);
+        setMessage('✅ OTP sent to your email');
+        setErrors({});
       } else {
-        setMessage(`❌ ${data.error}`)
+        setMessage(`❌ ${data.error}`);
       }
     } catch (err) {
-      setMessage("❌ Failed to send OTP")
-      console.log("Error sending OTP: ", err)
+      setMessage('❌ Failed to send OTP');
+      console.log('Error sending OTP: ', err);
     } finally {
-      setIsOtpLoading(false)
+      setIsOtpLoading(false);
     }
-  }
+  };
 
   const handleVerifyOtp = async () => {
-    const otpCode = otp.join("")
+    const otpCode = otp.join('');
     if (otpCode.length !== 6) {
-      setMessage("❌ Please enter complete OTP")
-      return
+      setMessage('❌ Please enter complete OTP');
+      return;
     }
 
-    setIsVerifyingOtp(true)
+    setIsVerifyingOtp(true);
     try {
-      const res = await api.post("/user/auth/verify", {
+      const res = await api.post('/user/auth/verify', {
         email: formData.email,
         otp: otpCode,
-        userData: {name:formData.name,email:formData.email,password:formData.password,phone:Number(formData.phone)},
-      })
-      const data = res.data
+        userData: {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          phone: Number(formData.phone),
+        },
+      });
+      const data = res.data;
 
       if (data.success) {
-        setMessage("✅ Email verified successfully!")
-        // routeModule.push
+        toast.success('Email verified successfully!');
+        document.cookie = 'allowDrive=true; path=/';
+        route.push('/drive');
       } else {
-        setMessage(`❌ ${data.error}`)
-        setOtp(["", "", "", "", "", ""]) 
+        toast.error(`${data.error}`);
+        setOtp(['', '', '', '', '', '']);
       }
     } catch (err) {
-      setMessage("❌ OTP verification failed")
-      console.log("Error verifying OTP: ", err)
+      console.log('Error verifying OTP: ', err);
     } finally {
-      setIsVerifyingOtp(false)
+      setIsVerifyingOtp(false);
     }
-  }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center bg-white">
       <header className="w-full flex justify-between items-center px-6 py-4 shadow-sm">
         <h1 className="text-lg font-bold">Travel Truck</h1>
-        <button className="px-4 py-2 text-sm font-medium border rounded-lg hover:bg-gray-100">Sign in</button>
+        <button className="px-4 py-2 text-sm font-medium border rounded-lg hover:bg-gray-100">
+          Sign in
+        </button>
       </header>
 
       <main className="min-h-screen flex flex-col items-center w-full max-w-md mt-10 px-6">
@@ -190,7 +202,7 @@ export default function SignUpPage() {
             <label className="block text-sm font-medium">Password</label>
             <div className="relative">
               <input
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 name="password"
                 placeholder="Enter your password"
                 className="mt-1 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -213,7 +225,7 @@ export default function SignUpPage() {
             <label className="block text-sm font-medium">Confirm Password</label>
             <div className="relative">
               <input
-                type={showConfirmPassword ? "text" : "password"}
+                type={showConfirmPassword ? 'text' : 'password'}
                 name="confirmPassword"
                 placeholder="Confirm your password"
                 className="mt-1 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -229,23 +241,27 @@ export default function SignUpPage() {
                 👁
               </button>
             </div>
-            {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
+            {errors.confirmPassword && (
+              <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
+            )}
           </div>
 
           <div
             className={`transition-all duration-500 ease-in-out overflow-hidden ${
-              showOtpInput ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+              showOtpInput ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
             }`}
           >
             <div className="space-y-4 pt-4">
               <label className="block text-sm font-medium">Enter OTP</label>
-              <p className="text-xs text-gray-500">We've sent a 6-digit code to {formData.email}</p>
+              <p className="text-xs text-gray-500">
+                `We&apos;ve sent a 6-digit code to {formData.email}`
+              </p>
               <div className="flex gap-2 justify-center">
                 {otp.map((digit, index) => (
                   <input
                     key={index}
                     ref={(el) => {
-                      (otpRefs.current[index] = el)
+                      otpRefs.current[index] = el;
                     }}
                     type="text"
                     inputMode="numeric"
@@ -255,8 +271,8 @@ export default function SignUpPage() {
                     onKeyDown={(e) => handleOtpKeyDown(index, e)}
                     className="w-12 h-12 text-center text-lg font-semibold border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
                     style={{
-                      transform: digit ? "scale(1.05)" : "scale(1)",
-                      borderColor: digit ? "#8b5cf6" : "#d1d5db",
+                      transform: digit ? 'scale(1.05)' : 'scale(1)',
+                      borderColor: digit ? '#8b5cf6' : '#d1d5db',
                     }}
                   />
                 ))}
@@ -278,13 +294,16 @@ export default function SignUpPage() {
                     Sending OTP...
                   </div>
                 ) : (
-                  "Send OTP"
+                  'Send OTP'
                 )}
               </button>
 
               <button
                 type="button"
                 className="w-full bg-gray-100 font-medium py-2 rounded-lg hover:bg-gray-200 transition"
+                onClick={() =>
+                  (window.location.href = 'http://localhost:5000/api/user/auth/google')
+                }
               >
                 Continue with GOOGLE
               </button>
@@ -294,7 +313,7 @@ export default function SignUpPage() {
               <button
                 type="button"
                 onClick={handleVerifyOtp}
-                disabled={isVerifyingOtp || otp.join("").length !== 6}
+                disabled={isVerifyingOtp || otp.join('').length !== 6}
                 className="w-full bg-green-600 text-white font-semibold py-2 rounded-lg hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isVerifyingOtp ? (
@@ -303,7 +322,7 @@ export default function SignUpPage() {
                     Verifying...
                   </div>
                 ) : (
-                  "Verify OTP"
+                  'Verify OTP'
                 )}
               </button>
 
@@ -317,9 +336,9 @@ export default function SignUpPage() {
               <button
                 type="button"
                 onClick={() => {
-                  setShowOtpInput(false)
-                  setOtp(["", "", "", "", "", ""])
-                  setMessage("")
+                  setShowOtpInput(false);
+                  setOtp(['', '', '', '', '', '']);
+                  setMessage('');
                 }}
                 className="w-full text-purple-600 font-medium py-2 rounded-lg hover:bg-purple-50 transition"
               >
@@ -330,12 +349,12 @@ export default function SignUpPage() {
         </form>
 
         <p className="mt-6 text-sm text-gray-500">
-          Already have an account?{" "}
+          Already have an account?{' '}
           <a href="/login" className="text-purple-600 hover:underline">
             Login here
           </a>
         </p>
       </main>
     </div>
-  )
+  );
 }

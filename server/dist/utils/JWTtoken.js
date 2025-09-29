@@ -9,21 +9,32 @@ import jwt from 'jsonwebtoken';
 import { InvalidResetTokenError } from '../utils/resAndErrors.js';
 import { logger } from '../utils/logger.js';
 let JWT = class JWT {
-    constructor() {
-        this.JWT_SECRET = process.env.JWT_SECRET || 'your-secret';
-        this.ACCESS_TOKEN_EXPIRY = '15m';
-        this.REFRESH_TOKEN_EXPIRY = '7d';
-        this.RESET_TOKEN_EXPIRY = '1h';
-        this.jwt = jwt;
-    }
+    JWT_SECRET = process.env.JWT_SECRET || 'your-secret';
+    ACCESS_TOKEN_EXPIRY = '15m';
+    REFRESH_TOKEN_EXPIRY = '7d';
+    RESET_TOKEN_EXPIRY = '1h';
+    jwt = jwt;
     async setTokenInCookies(res, accessToken, refreshToken) {
-        res.cookie('accessToken', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'lax' });
-        res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'lax' });
+        res.cookie('accessToken', accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+        });
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+        });
     }
     async generateToken(payload) {
         try {
-            const accessToken = jwt.sign(payload, this.JWT_SECRET, { expiresIn: this.ACCESS_TOKEN_EXPIRY });
-            const refreshToken = jwt.sign(payload, this.JWT_SECRET, { expiresIn: this.REFRESH_TOKEN_EXPIRY });
+            const accessToken = jwt.sign(payload, this.JWT_SECRET, {
+                expiresIn: this.ACCESS_TOKEN_EXPIRY,
+            });
+            const refreshToken = jwt.sign(payload, this.JWT_SECRET, {
+                expiresIn: this.REFRESH_TOKEN_EXPIRY,
+            });
+            logger.info(`accessToken from JWT->generateToken : ${accessToken}`);
             return { accessToken, refreshToken };
         }
         catch (err) {
@@ -67,18 +78,15 @@ let JWT = class JWT {
         });
         return { res };
     }
-    ;
     async verifyRefreshToken(refreshToken) {
-        try {
-            logger.info(`userId:${refreshToken}`);
-            const decoded = JSON.stringify(jwt.verify(refreshToken, this.JWT_SECRET));
-            logger.info(`decoded :${decoded}`);
-            console.log(decoded);
-            return "decoded";
-        }
-        catch (error) {
-            return "sanju";
-        }
+        logger.info(`userId:${refreshToken}`);
+        const decoded = JSON.parse(JSON.stringify(jwt.verify(refreshToken, this.JWT_SECRET)));
+        logger.info(`decoded :${decoded}`);
+        return decoded;
+    }
+    async verify(accessToken) {
+        const payload = jwt.verify(accessToken, this.JWT_SECRET);
+        return payload;
     }
 };
 JWT = __decorate([

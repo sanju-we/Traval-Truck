@@ -1,14 +1,19 @@
-import { UserData, userProfileDTO } from '../../../../types/index';
+import { UserData, userProfileDTO } from '../../../../types/index.js';
 
 export interface IAuthService {
-  generateOtp(): Promise<string>;
-  storeOtp(email: string, otp: string): Promise<void>;
-  verify(enteredEmail: string, enteredOtp: string, userData: UserData): Promise<{
+  verify(
+    enteredEmail: string,
+    enteredOtp: string,
+    userData: UserData,
+  ): Promise<{
     user: userProfileDTO;
     accessToken: string;
     refreshToken: string;
   }>;
-  verifyLogin(email: string, password: string): Promise<{
+  verifyLogin(
+    email: string,
+    password: string,
+  ): Promise<{
     user: userProfileDTO;
     accessToken: string;
     refreshToken: string;

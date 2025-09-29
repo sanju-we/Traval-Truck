@@ -1,44 +1,21 @@
+'use client';
+
 import React from 'react';
+import SideNavbar from '@/components/agency/SideNavbar';
+import { useEffect } from 'react';
+import api from '@/services/api';
 
 const Dashboard = () => {
+  useEffect(() => {
+    async function fetchData() {
+      const res = await api.get('/agency/profile/dashboard');
+    }
+    fetchData();
+  }, []);
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
-      <div className="w-64 bg-white shadow-lg p-6">
-        <div className="flex flex-col space-y-4">
-          <h1 className="text-2xl font-semibold text-gray-800">Travel Agency</h1>
-          <div className="space-y-2">
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
-              <span className="material-icons">home</span>
-              <span>Dashboard</span>
-            </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
-              <span className="material-icons">flight_takeoff</span>
-              <span>Bookings / Trips</span>
-            </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
-              <span className="material-icons">hotel</span>
-              <span>Partners</span>
-            </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
-              <span className="material-icons">person</span>
-              <span>Guests</span>
-            </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
-              <span className="material-icons">payment</span>
-              <span>Payments</span>
-            </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
-              <span className="material-icons">chat</span>
-              <span>Chat</span>
-            </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
-              <span className="material-icons">bar_chart</span>
-              <span>Reports</span>
-            </button>
-          </div>
-        </div>
-      </div>
+      <SideNavbar />
 
       {/* Main Content */}
       <div className="flex-1 bg-gray-50 p-6">
@@ -123,7 +100,7 @@ const Dashboard = () => {
               <div className="flex-shrink-0">
                 <img
                   className="h-10 w-10 rounded-full"
-                  src="https://i.pravatar.cc/100?img=1"
+                  src="/images/profile.jpg"
                   alt="Liam Harper"
                 />
               </div>

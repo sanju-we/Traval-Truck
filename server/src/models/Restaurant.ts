@@ -1,52 +1,69 @@
-import { Document,Schema,model } from "mongoose";
-import { IRestaurant } from "../core/interface/modelInterface/IRestaurant.js";
+import { Document, Schema, model } from 'mongoose';
+import { IRestaurant } from '../core/interface/modelInterface/IRestaurant.js';
+import { boolean } from 'zod';
 
-const restaurantSchema = new Schema<IRestaurant>(
-  {
-    hotel:{
-      type:String,
-      required:true,
-      unique:true
+const restaurantSchema = new Schema<IRestaurant>({
+  companyName: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  email: {
+    type: String,
+    unique: true,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  rating: {
+    type: Number,
+    default: 0,
+  },
+  totalReviews: {
+    type: Number,
+    default: 0,
+  },
+  cuisines: [
+    {
+      type: String,
     },
-    email:{
-      type:String,
-      unique:true,
-      required:true
+  ],
+  foodItems: {
+    type: Schema.Types.ObjectId,
+    unique: false,
+  },
+  reviews: [
+    {
+      type: Schema.Types.ObjectId,
     },
-    password:{
-      type:String,
-      required:true
+  ],
+  images: [
+    {
+      type: String,
     },
-    rating:{
-      type:Number,
-      default:0
-    },
-    totalReviews:{
-      type:Number,
-      default:0
-    },
-    cuisines:[{
-      type:String
-    }],
-    foodItems:{
-      type:Schema.Types.ObjectId,
-      unique:false
-    },
-    reviews:[{
-      type:Schema.Types.ObjectId
-    }],
-    images:[{
-      type:String
-    }],
-    Phone:{
-      type:Number,
-      required:true
-    },
-    ownerName:{
-      type:String,
-      required:true
-    }
-  }
-)
+  ],
+  phone: {
+    type: Number,
+    required: true,
+  },
+  ownerName: {
+    type: String,
+    required: true,
+  },
+  isApproved: {
+    type: Boolean,
+    default: false,
+  },
+  isRestricted: {
+    type: Boolean,
+    default: false,
+  },
+  role: {
+    type: String,
+    required: true,
+  },
+});
 
-export const Restaurant = model<IRestaurant>("Restaurant",restaurantSchema)
+export const Restaurant = model<IRestaurant>('Restaurant', restaurantSchema);

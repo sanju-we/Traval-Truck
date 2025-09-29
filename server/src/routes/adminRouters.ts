@@ -1,9 +1,10 @@
-import { Router } from "express";
+import { Router } from 'express';
 
-import adminAuthRoute from "./adminRoute/admin.auth.js";
+import adminAuthRoute from './adminRoute/admin.auth.js';
+import adminVendorRoute from './adminRoute/admin.vendor.router.js';
 
-const adminRouter = Router()
+const adminRouter = Router();
 
-adminRouter.use('/auth',adminAuthRoute)
+adminRouter.use('/auth', adminAuthRoute).use('/vendor', adminVendorRoute);
 
-export default adminRouter
+export default adminRouter;

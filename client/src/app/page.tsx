@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { Footer } from "@/components/user/footer/page";
-import { Header } from "@/components/user/header/page";
+import { Footer } from '@/components/user/footer/page';
+import { Header } from '@/components/user/header/page';
 export default function HomePage() {
   return (
     <div className="bg-white text-gray-800">
       {/* Navbar */}
-      <Header/>
+      <Header />
 
       {/* Hero Section */}
       <section className="relative w-full max-w-6xl mx-auto mt-6">
@@ -27,7 +27,12 @@ export default function HomePage() {
       <section className="max-w-6xl mx-auto mt-12 px-6">
         <h3 className="text-xl font-bold mb-4">Popular Destinations</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {["/images/Alappuzha.jpg", "/images/Thrissur.jpg", "/images/trivadrum.jpg", "/images/vayalada.jpg"].map((src, i) => (
+          {[
+            '/images/Alappuzha.jpg',
+            '/images/Thrissur.jpg',
+            '/images/trivadrum.jpg',
+            '/images/vayalada.jpg',
+          ].map((src, i) => (
             <div key={i} className="rounded-lg overflow-hidden shadow hover:shadow-lg transition">
               <img src={src} alt={`Destination ${i + 1}`} className="w-full h-32 object-cover" />
               <div className="p-2 text-sm">
@@ -44,12 +49,20 @@ export default function HomePage() {
         <h3 className="text-xl font-bold mb-4">Recent Trip</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <img src="/images/goa.jpg" alt="Recent trip" className="w-full h-48 object-cover rounded-lg" />
+            <img
+              src="/images/goa.jpg"
+              alt="Recent trip"
+              className="w-full h-48 object-cover rounded-lg"
+            />
             <h4 className="mt-2 font-medium">Paris Adventure</h4>
             <p className="text-gray-500 text-sm">4 nights / 5 days</p>
           </div>
           <div>
-            <img src="/images/Wayanad.jpg" alt="Recent trip" className="w-full h-48 object-cover rounded-lg" />
+            <img
+              src="/images/Wayanad.jpg"
+              alt="Recent trip"
+              className="w-full h-48 object-cover rounded-lg"
+            />
             <h4 className="mt-2 font-medium">Temple Visit</h4>
             <p className="text-gray-500 text-sm">2 nights / 3 days</p>
           </div>
@@ -60,16 +73,22 @@ export default function HomePage() {
       <section className="max-w-6xl mx-auto mt-12 px-6">
         <h3 className="text-xl font-bold mb-4">Exclusive Packages</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {["/images/Package-1.jpg", "/images/Package-2.jpg", "/images/Package-3.jpg"].map((src, i) => (
-            <div key={i} className="border rounded-lg p-4 shadow hover:shadow-md transition">
-              <img src={src} alt={`Package ${i + 1}`} className="w-full h-32 object-cover rounded-md" />
-              <h4 className="mt-2 font-medium">Package {i + 1}</h4>
-              <p className="text-gray-500 text-sm">Short description about package.</p>
-              <button className="mt-3 px-4 py-2 bg-emerald-500 text-white text-sm rounded-lg hover:bg-emerald-600">
-                Join Adventure
-              </button>
-            </div>
-          ))}
+          {['/images/Package-1.jpg', '/images/Package-2.jpg', '/images/Package-3.jpg'].map(
+            (src, i) => (
+              <div key={i} className="border rounded-lg p-4 shadow hover:shadow-md transition">
+                <img
+                  src={src}
+                  alt={`Package ${i + 1}`}
+                  className="w-full h-32 object-cover rounded-md"
+                />
+                <h4 className="mt-2 font-medium">Package {i + 1}</h4>
+                <p className="text-gray-500 text-sm">Short description about package.</p>
+                <button className="mt-3 px-4 py-2 bg-emerald-500 text-white text-sm rounded-lg hover:bg-emerald-600">
+                  Join Adventure
+                </button>
+              </div>
+            ),
+          )}
         </div>
       </section>
 
@@ -77,10 +96,11 @@ export default function HomePage() {
       <section className="max-w-6xl mx-auto mt-12 px-6">
         <h3 className="text-xl font-bold mb-4">Customer Testimonials</h3>
         <div className="grid gap-6">
-          {["John", "Emma", "Chris"].map((name, i) => (
+          {['John', 'Emma', 'Chris'].map((name, i) => (
             <div key={i} className="p-4 border rounded-lg shadow-sm">
               <p className="text-gray-600 text-sm mb-2">
-                “This was an amazing experience, everything was well arranged and I really enjoyed my trip!”
+                “This was an amazing experience, everything was well arranged and I really enjoyed
+                my trip!”
               </p>
               <h4 className="font-medium">{name}</h4>
               <p className="text-yellow-500">★★★★★</p>
@@ -108,7 +128,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <Footer/>
+      <Footer />
     </div>
   );
 }

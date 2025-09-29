@@ -1,47 +1,47 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import api from "@/services/api";
+import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import api from '@/services/api';
 
 export default function ResetPasswordPage() {
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
   const searchParams = useSearchParams();
-  const token = searchParams.get("token"); // token from email link
+  const token = searchParams.get('token'); // token from email link
 
   const handleResetPassword = async () => {
     if (!password || !confirmPassword) {
-      setMessage("❌ Please fill in all fields");
+      setMessage('❌ Please fill in all fields');
       return;
     }
 
     if (password !== confirmPassword) {
-      setMessage("❌ Passwords do not match");
+      setMessage('❌ Passwords do not match');
       return;
     }
 
     setIsLoading(true);
     try {
-      const res = await api.post("/user/auth/reset-password", {
+      const res = await api.post('/user/auth/reset-password', {
         token,
-        newPassword:password,
-      })
+        newPassword: password,
+      });
       const data = res.data;
 
       if (data.success) {
-        setMessage("✅ Password reset successful! Redirecting...");
-        setTimeout(() => router.push("/login"), 2000);
+        setMessage('✅ Password reset successful! Redirecting...');
+        setTimeout(() => router.push('/login'), 2000);
       } else {
         setMessage(`❌ ${data.error}`);
       }
     } catch (err) {
-      console.error("Reset password error:", err);
-      setMessage("❌ Failed to reset password");
+      console.error('Reset password error:', err);
+      setMessage('❌ Failed to reset password');
     } finally {
       setIsLoading(false);
     }
@@ -53,7 +53,7 @@ export default function ResetPasswordPage() {
       <header className="w-full flex justify-between items-center px-6 py-4 shadow-sm">
         <h1 className="text-lg font-bold">Travel Truck</h1>
         <button
-          onClick={() => router.push("/login")}
+          onClick={() => router.push('/login')}
           className="px-4 py-2 text-sm font-medium border rounded-lg hover:bg-gray-100"
         >
           Log in
@@ -110,7 +110,7 @@ export default function ResetPasswordPage() {
                 Resetting...
               </div>
             ) : (
-              "Reset Password"
+              'Reset Password'
             )}
           </button>
         </form>

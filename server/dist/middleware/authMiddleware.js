@@ -1,24 +1,186 @@
-import { HttpError, sendResponse } from "../utils/resAndErrors.js";
-import { STATUS_CODE } from "../utils/HTTPStatusCode.js";
-import jwt from "jsonwebtoken";
-import { logger } from "../utils/logger.js";
-const secret = process.env.JWT_SECRET || "my secret";
-export function verifyToken(req, res, next) {
+import { HttpError, sendResponse, RESTRICTED_USER, } from '../utils/resAndErrors.js';
+import { STATUS_CODE } from '../utils/HTTPStatusCode.js';
+import { User } from '../models/SUser.js';
+import { Restaurant } from '../models/Restaurant.js';
+import { Agency } from '../models/Agency.js';
+import jwt from 'jsonwebtoken';
+import { logger } from '../utils/logger.js';
+import { Hotel } from '../models/Hotel.js';
+import { JWT } from '../utils/JWTtoken.js';
+import { userSignupDTO } from '../core/DTO/user/Request/user.sign.js';
+import { toVendorAuth } from '../core/DTO/agency/request/requestDTO.js';
+const ijwt = new JWT();
+const secret = process.env.JWT_SECRET || 'Travel_Truck_@321';
+export async function verifyToken(req, res, next) {
     try {
-        const authHeader = req.headers["authorization"];
-        const token = authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : req.cookies?.accessToken;
-        const refreshToken = req.cookies?.refreshToken;
-        logger.info(`refreshToken:${refreshToken}`);
-        if (!token)
-            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, "Access restricted, Login first");
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.startsWith('Bearer ')
+            ? authHeader.split(' ')[1]
+            : req.cookies?.accessToken;
+        logger.info(`Token received from middleware->verifyToken : ${token}`);
+        if (!token) {
+            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
+        }
+        logger.info(`payload gotit`);
         const payload = jwt.verify(token, secret);
-        logger.info(`payload ${payload}`);
-        payload ? next() : sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, "Invalid token");
+        if (!payload)
+            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
+        logger.info(`payload: ${JSON.stringify(payload)}`);
+        const user = await User.findById(payload.id);
+        if (!user) {
+            ijwt.blacklistRefreshToken(res);
+            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'User not found');
+        }
+        if (payload.role !== 'user') {
+            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
+        }
+        if (user.isBlocked)
+            throw new RESTRICTED_USER();
+        req.user = userSignupDTO(user);
+        next();
     }
     catch (error) {
-        const status = error instanceof HttpError ? error.statusCode : STATUS_CODE.BAD_REQUEST;
-        const message = error instanceof Error ? error.message : "Unknown error";
-        logger.info(`Failed to check whether user is logged in nor message: ${message}`);
+        const status = error instanceof HttpError ? error.statusCode : STATUS_CODE.FORBIDDEN;
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        logger.error(`Failed to verify token: ${message}`);
+        sendResponse(res, status, false, message);
+    }
+}
+export async function verifyHotelToken(req, res, next) {
+    try {
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.startsWith('Bearer ')
+            ? authHeader.split(' ')[1]
+            : req.cookies?.accessToken;
+        logger.info(`Token received from middleware->verifyToken : ${token}`);
+        if (!token) {
+            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
+        }
+        logger.info(`payload gotit`);
+        const payload = jwt.verify(token, secret);
+        if (!payload) {
+            ijwt.blacklistRefreshToken(res);
+            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
+        }
+        logger.info(`payload: ${JSON.stringify(payload)}`);
+        const hotel = await Hotel.findById(payload.id);
+        if (!hotel) {
+            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Hotel not found');
+        }
+        if (payload.role !== 'hotel') {
+            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
+        }
+        if (hotel.isRestricted) {
+            ijwt.blacklistRefreshToken(res);
+            throw new RESTRICTED_USER();
+        }
+        req.user = toVendorAuth(hotel);
+        next();
+    }
+    catch (error) {
+        const status = error instanceof HttpError ? error.statusCode : STATUS_CODE.FORBIDDEN;
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        logger.error(`Failed to verify token: ${message}`);
+        sendResponse(res, status, false, message);
+    }
+}
+export async function verifyAgencyToken(req, res, next) {
+    try {
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.startsWith('Bearer ')
+            ? authHeader.split(' ')[1]
+            : req.cookies?.accessToken;
+        logger.info(`Token received from middleware->verifyToken : ${token}`);
+        if (!token) {
+            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
+        }
+        logger.info(`payload gotit`);
+        const payload = jwt.verify(token, secret);
+        if (!payload)
+            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
+        logger.info(`payload: ${JSON.stringify(payload)}`);
+        const agency = await Agency.findById(payload.id);
+        if (!agency) {
+            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Hotel not found');
+        }
+        if (payload.role !== 'agency') {
+            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
+        }
+        if (agency.isRestricted)
+            throw new RESTRICTED_USER();
+        req.user = toVendorAuth(agency);
+        next();
+    }
+    catch (error) {
+        const status = error instanceof HttpError ? error.statusCode : STATUS_CODE.FORBIDDEN;
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        logger.error(`Failed to verify token: ${message}`);
+        sendResponse(res, status, false, message);
+    }
+}
+export async function verifyRestaurantToken(req, res, next) {
+    try {
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.startsWith('Bearer ')
+            ? authHeader.split(' ')[1]
+            : req.cookies?.accessToken;
+        logger.info(`Token received from middleware->verifyToken : ${token}`);
+        if (!token) {
+            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
+        }
+        logger.info(`payload gotit`);
+        const payload = jwt.verify(token, secret);
+        if (!payload)
+            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
+        logger.info(`payload: ${JSON.stringify(payload)}`);
+        const restaurant = await Restaurant.findById(payload.id);
+        if (!restaurant) {
+            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Hotel not found');
+        }
+        if (payload.role !== 'restaurant') {
+            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
+        }
+        if (restaurant.isRestricted)
+            throw new RESTRICTED_USER();
+        req.user = toVendorAuth(restaurant);
+        next();
+    }
+    catch (error) {
+        const status = error instanceof HttpError ? error.statusCode : STATUS_CODE.FORBIDDEN;
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        logger.error(`Failed to verify token: ${message}`);
+        sendResponse(res, status, false, message);
+    }
+}
+export async function verifyAdminToken(req, res, next) {
+    try {
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.startsWith('Bearer ')
+            ? authHeader.split(' ')[1]
+            : req.cookies?.accessToken;
+        logger.info(`Token received from middleware->verifyToken : ${token}`);
+        if (!token) {
+            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
+        }
+        logger.info(`payload gotit`);
+        const payload = jwt.verify(token, secret);
+        if (!payload)
+            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
+        logger.info(`payload: ${JSON.stringify(payload)}`);
+        const admin = await User.findById(payload.id);
+        if (!admin) {
+            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Admin not found');
+        }
+        if (payload.role !== 'admin') {
+            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
+        }
+        req.user = userSignupDTO(admin);
+        next();
+    }
+    catch (error) {
+        const status = error instanceof HttpError ? error.statusCode : STATUS_CODE.FORBIDDEN;
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        logger.error(`Failed to verify token: ${message}`);
         sendResponse(res, status, false, message);
     }
 }

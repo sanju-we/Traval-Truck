@@ -1,53 +1,65 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
 export function middleware(req: NextRequest) {
-  const token = req.cookies.get("accessToken")?.value 
+  const token = req.cookies.get('accessToken')?.value;
+  const allowDrive = req.cookies.get('allowDrive')?.value;
 
   const { pathname } = req.nextUrl;
 
   const publicRoutes = [
-    "/login",
-    "/signup",
-    "/forgetPassword",
-    "/resetPassword",
-    "/verify-otp",
+    '/login',
+    '/signup',
+    '/forgetPassword',
+    '/resetPassword',
 
-    "/admin/login",
-    "/admin/signup",
-    "/admin/forgetPassword",
-    "/admin/resetPassword",
-    "/admin/verify-otp",
+    '/admin/login',
 
-    "/hotel/login",
-    "/hotel/forgetPassword",
-    "/hotel/resetPassword",
+    '/hotel/login',
+    '/hotel/signup',
+    '/hotel/forgetPassword',
+    '/hotel/resetPassword',
 
-    "/agency/login",
-    "/agency/signup",
-    "/agency/forgetpassword",
-    "/agency/resetpassword",
-    "/agency/verify-otp",
+    '/agency/login',
+    '/agency/signup',
+    '/agency/forgetPassword',
+    '/agency/resetpassword',
 
-    "/restaurant/login",
-    "/restaurant/signup",
-    "/restaurant/forgetpassword",
-    "/restaurant/resetpassword",
-    "/restaurant/verify-otp",
+    '/restaurant/login',
+    '/restaurant/signup',
+    '/restaurant/forgetpassword',
+    '/restaurant/resetpassword',
   ];
 
   const roleRedirectMap: Record<string, string> = {
-    "/admin": "/admin",
-    "/hotel": "/hotel",
-    "/agency": "/agency",
-    "/restaurant": "/restaurant",
+    '/admin': '/admin',
+    '/hotel': '/hotel',
+    '/agency': '/agency',
+    '/restaurant': '/restaurant',
   };
 
-  if (pathname === "/") {
-    if (!token) {
-      return NextResponse.redirect(new URL("/login", req.url));
+  if (allowDrive === 'true' && pathname !== '/drive') {
+    const res = NextResponse.redirect(new URL('/drive', req.url));
+    res.cookies.delete('allowDrive');
+    return res;
+  }
+
+  if (pathname === '/drive') {
+    if (allowDrive === 'true') {
+      const res = NextResponse.next();
+      res.cookies.delete('allowDrive');
+      return res;
+    } else {
+      const referer = req.headers.get('referer');
+      return NextResponse.redirect(new URL(referer || '/', req.url));
     }
-    return NextResponse.next(); 
+  }
+
+  if (pathname === '/') {
+    if (!token) {
+      return NextResponse.redirect(new URL('/login', req.url));
+    }
+    return NextResponse.next();
   }
 
   const matchedRole = Object.keys(roleRedirectMap)
@@ -55,9 +67,17 @@ export function middleware(req: NextRequest) {
     .find((prefix) => pathname.startsWith(prefix));
 
   if (publicRoutes.includes(pathname) && token && matchedRole) {
-    return NextResponse.redirect(
-      new URL(roleRedirectMap[matchedRole], req.url)
-    );
+    return NextResponse.redirect(new URL(roleRedirectMap[matchedRole], req.url));
+  }
+
+  if (
+    token &&
+    (pathname == '/login' ||
+      pathname == '/signup' ||
+      pathname == '/forgetPassword' ||
+      pathname == '/resetPassword')
+  ) {
+    return NextResponse.redirect(new URL('/', req.url));
   }
 
   if (!publicRoutes.includes(pathname) && !token && matchedRole) {
@@ -68,7 +88,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next|api|favicon.ico|.*\\..*).*)",
-  ],
+  matcher: ['/((?!_next|api|favicon.ico|.*\\..*).*)'],
 };

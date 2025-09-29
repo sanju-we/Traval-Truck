@@ -10,5 +10,5 @@ export const toUserProfileDTO = (user) => ({
     role: user.role,
     isBlocked: user.isBlocked,
     googleId: user.googleId,
-    interest: user.interest
+    interest: user.interest,
 });

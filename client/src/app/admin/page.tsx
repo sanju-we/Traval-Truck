@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { Home, Users, Utensils, DollarSign,   BarChart3,  Building2Icon } from "lucide-react";
-import { SideNavbar } from "@/components/admin/SideNavbar";
+import { Home, Users, Utensils, DollarSign, BarChart3, Building2Icon } from 'lucide-react';
+import { SideNavbar } from '@/components/admin/SideNavbar';
 
 export default function AdminDashboard() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <SideNavbar />
+      <SideNavbar active="Dashboard" />
 
       {/* Main Content */}
       <main className="flex-1 p-6">
@@ -15,11 +15,7 @@ export default function AdminDashboard() {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
           <div className="flex items-center gap-4">
-            <input
-              type="text"
-              placeholder="Search"
-              className="border rounded-lg px-3 py-1"
-            />
+            <input type="text" placeholder="Search" className="border rounded-lg px-3 py-1" />
             <img
               src="/images/profile.png"
               alt="Profile"
@@ -28,9 +24,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <p className="text-gray-600 mb-6">
-          Overview of all activities, sales, and system metrics.
-        </p>
+        <p className="text-gray-600 mb-6">Overview of all activities, sales, and system metrics.</p>
 
         {/* Stats Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">

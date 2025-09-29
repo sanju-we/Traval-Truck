@@ -1,7 +1,6 @@
-// app/not-found.tsx
-"use client"
+'use client';
 
-import Link from "next/link"
+import Link from 'next/link';
 
 export default function NotFoundPage() {
   return (
@@ -19,5 +18,5 @@ export default function NotFoundPage() {
         Go Back Home
       </Link>
     </div>
-  )
+  );
 }

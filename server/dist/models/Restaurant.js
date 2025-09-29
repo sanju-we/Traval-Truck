@@ -1,47 +1,57 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 const restaurantSchema = new Schema({
-    hotel: {
+    companyName: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
     },
     email: {
         type: String,
         unique: true,
-        required: true
+        required: true,
     },
     password: {
         type: String,
-        required: true
+        required: true,
     },
     rating: {
         type: Number,
-        default: 0
+        default: 0,
     },
     totalReviews: {
         type: Number,
-        default: 0
+        default: 0,
     },
-    cuisines: [{
-            type: String
-        }],
+    cuisines: [
+        {
+            type: String,
+        },
+    ],
     foodItems: {
         type: Schema.Types.ObjectId,
-        unique: false
+        unique: false,
     },
-    reviews: [{
-            type: Schema.Types.ObjectId
-        }],
-    images: [{
-            type: String
-        }],
-    Phone: {
+    reviews: [
+        {
+            type: Schema.Types.ObjectId,
+        },
+    ],
+    images: [
+        {
+            type: String,
+        },
+    ],
+    phone: {
         type: Number,
-        required: true
+        required: true,
     },
     ownerName: {
         type: String,
-        required: true
-    }
+        required: true,
+    },
+    isRestricted: {
+        type: Boolean,
+        default: false,
+    },
 });
-export const Restaurant = model("Restaurant", restaurantSchema);
+export const Restaurant = model('Restaurant', restaurantSchema);

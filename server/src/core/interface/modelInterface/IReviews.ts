@@ -1,9 +1,9 @@
-import { Document,Schema,Types } from "mongoose";
+import { Document, Schema, Types } from 'mongoose';
 
-export interface IReviews extends Document{
-  _id: Types.ObjectId,
-  vendor:Schema.Types.ObjectId,
-  user:Schema.Types.ObjectId,
-  rating:Number,
-  comment:String
+export interface IReviews extends Document {
+  _id: Types.ObjectId;
+  vendor: Schema.Types.ObjectId;
+  user: Schema.Types.ObjectId;
+  rating: Number;
+  comment: String;
 }

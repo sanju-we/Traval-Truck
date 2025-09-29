@@ -12,11 +12,18 @@ import { createClient } from 'redis';
 import { injectable } from 'inversify';
 import { logger } from '../utils/logger.js';
 let RedisClient = class RedisClient {
+    client = createClient({
+        url: process.env.REDIS_URL || 'redis://localhost:6379',
+        socket: {
+            reconnectStrategy: (retries) => {
+                if (retries > 10)
+                    return new Error('Redis reconnect failed');
+                return Math.min(retries * 100, 3000);
+            },
+        },
+    });
     constructor() {
-        this.client = createClient({
-            url: process.env.REDIS_URL || 'redis://localhost:6379',
-        });
-        this.client.connect().catch(err => {
+        this.client.connect().catch((err) => {
             logger.error(`Redis connection failed: ${err.message}`);
         });
     }

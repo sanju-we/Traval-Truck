@@ -12,38 +12,29 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { injectable, inject } from 'inversify';
 import bcrypt from 'bcryptjs';
-import { OtpExpiredError, EmailAlreadyRegisteredError, InvalidOtpError, UserNotFoundError, InvalidCredentialsError } from '../../utils/resAndErrors.js';
+import { OtpExpiredError, EmailAlreadyRegisteredError, InvalidOtpError, UserNotFoundError, InvalidCredentialsError, } from '../../utils/resAndErrors.js';
 import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
 import { z } from 'zod';
 import { logger } from '../../utils/logger.js';
 let AuthService = class AuthService {
-    constructor(_authRepository, _redisClient, _jwtUtil) {
+    _authRepository;
+    _redisClient;
+    _jwtUtil;
+    _emailService;
+    OTP_TTL_SECONDS = 300;
+    constructor(_authRepository, _redisClient, _jwtUtil, _emailService) {
         this._authRepository = _authRepository;
         this._redisClient = _redisClient;
         this._jwtUtil = _jwtUtil;
-        this.OTP_TTL_SECONDS = 300;
-    }
-    async generateOtp() {
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        logger.debug(`Generated OTP: ${otp}`);
-        return otp;
-    }
-    async storeOtp(email, otp) {
-        const schema = z.object({
-            email: z.string().email(),
-            otp: z.string().length(6),
-        });
-        schema.parse({ email, otp });
-        await this._redisClient.setEx(`pending:${email}`, this.OTP_TTL_SECONDS, JSON.stringify({ otp, email }));
-        logger.debug(`From UserAuth->storeOtp:- Stored OTP for ${email}`);
+        this._emailService = _emailService;
     }
     async verify(enteredEmail, enteredOtp, userData) {
         const schema = z.object({
-            email: z.string().email(),
+            email: z.email(),
             otp: z.string().length(6),
             userData: z.object({
                 name: z.string().min(1),
-                email: z.string().email(),
+                email: z.email(),
                 password: z.string().min(8),
                 phone: z.number(),
             }),
@@ -63,7 +54,7 @@ let AuthService = class AuthService {
             name: userData.name,
             email: userData.email,
             phone: userData.phone,
-            isBlocked: true,
+            isBlocked: false,
             password: hashedPassword,
             role: 'user',
         });
@@ -77,7 +68,7 @@ let AuthService = class AuthService {
     }
     async verifyLogin(email, password) {
         const schema = z.object({
-            email: z.string(),
+            email: z.email(),
             password: z.string().min(8),
         });
         schema.parse({ email, password });
@@ -96,14 +87,15 @@ let AuthService = class AuthService {
     }
     async sendLink(email) {
         const schema = z.object({
-            email: z.string().email(),
+            email: z.email(),
         });
         schema.parse({ email });
-        const user = await this._authRepository.findByEmail(email);
-        if (!user)
+        const userData = await this._authRepository.findByEmail(email);
+        if (!userData)
             throw new UserNotFoundError();
+        let user = { id: userData.id, email: userData.email };
         const { resetLink } = await this._jwtUtil.generateResetToken(user);
-        await this._authRepository.sendEmail(email, resetLink);
+        await this._emailService.sendEmail(email, 'Password Reset', `Reset your password: ${resetLink}`);
         logger.info(`From UserAuth->sendLink:- Password reset link sent to ${email}`);
     }
     async resetPassword(token, newPassword) {
@@ -126,6 +118,7 @@ AuthService = __decorate([
     __param(0, inject('IAuthRepository')),
     __param(1, inject('IRedisClient')),
     __param(2, inject('IJWT')),
-    __metadata("design:paramtypes", [Object, Object, Object])
+    __param(3, inject('IEmailService')),
+    __metadata("design:paramtypes", [Object, Object, Object, Object])
 ], AuthService);
 export { AuthService };

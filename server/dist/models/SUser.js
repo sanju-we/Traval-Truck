@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 // inferASchemaType and hyderatedDocument
 const userSchema = new Schema({
     name: {
@@ -15,41 +15,43 @@ const userSchema = new Schema({
     email: {
         type: String,
         unique: true,
-        required: true
+        required: true,
     },
-    interest: [{
+    interest: [
+        {
             type: String,
-        }],
+        },
+    ],
     password: {
         type: String,
         unique: false,
     },
     googleId: {
         type: String,
-        unique: false
+        unique: false,
     },
     gender: {
         type: String,
-        required: false
+        required: false,
     },
     bio: {
         type: String,
-        required: false
+        required: false,
     },
     profilePicture: {
-        type: String
+        type: String,
     },
     createdOn: {
         type: Date,
-        default: new Date()
+        default: new Date(),
     },
     role: {
         type: String,
-        required: true
+        required: true,
     },
     isBlocked: {
         type: Boolean,
-        required: true
-    }
+        required: true,
+    },
 });
-export const User = model("User", userSchema);
+export const User = model('User', userSchema);

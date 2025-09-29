@@ -1,30 +1,33 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit"
-import storage from "redux-persist/lib/storage" // defaults to localStorage for web
-import { persistReducer, persistStore } from "redux-persist"
-import authReducer from "./authSlice"
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import storage from 'redux-persist/lib/storage';
+import { persistReducer, persistStore } from 'redux-persist';
+import authReducer from './authSlice';
+import userDriveSlice from './userDriveSlice';
+import detailsSlice from './userDetailsSlice';
 
-// ✅ configure persist
 const persistConfig = {
-  key: "root",
+  key: 'root',
   storage,
-  whitelist: ["auth"], // only auth slice will be persisted
-}
+  whitelist: ['auth'],
+};
 
 const rootReducer = combineReducers({
   auth: authReducer,
-})
+  userDrive: userDriveSlice,
+  details: detailsSlice,
+});
 
-const persistedReducer = persistReducer(persistConfig, rootReducer)
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false, // redux-persist stores non-serializable stuff
+      serializableCheck: false,
     }),
-})
+});
 
-export const persistor = persistStore(store)
+export const persistor = persistStore(store);
 
-export type RootState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
