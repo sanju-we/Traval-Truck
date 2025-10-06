@@ -8,7 +8,6 @@ const userSchema: Schema = new Schema<IUser>({
   },
   phoneNumber: {
     type: Number,
-    required:true,
   },
   userName: {
     type: String,

@@ -5813,3 +5813,322 @@
 {"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:07:16.476Z"}
 {"level":"info","message":"payload: {\"id\":\"68da1ece8fc72c22a2eb50b6\",\"role\":\"user\",\"iat\":1759136826,\"exp\":1759137726}","timestamp":"2025-09-29T09:07:16.479Z"}
 {"level":"info","message":"User profile retrieved for ID 68da1ece8fc72c22a2eb50b6","timestamp":"2025-09-29T09:07:17.918Z"}
+{"level":"info","message":"Database connected","timestamp":"2025-09-29T09:16:58.967Z"}
+{"level":"info","message":"Server running on http://localhost:5000","timestamp":"2025-09-29T09:16:58.980Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTEyNzM2NSwiZXhwIjoxNzU5MTI4MjY1fQ.taK-UvLCQQvMDPep3jq01CMpQXV6pUhAlDV5bynzy4E","timestamp":"2025-09-29T09:18:15.802Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:18:15.806Z"}
+{"level":"error","message":"Failed to verify token: jwt expired","timestamp":"2025-09-29T09:18:15.822Z"}
+{"level":"info","message":"from refresh token req.body : {\"accessToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTEyNzM2NSwiZXhwIjoxNzU5MTI4MjY1fQ.taK-UvLCQQvMDPep3jq01CMpQXV6pUhAlDV5bynzy4E\",\"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTEyNzM2NSwiZXhwIjoxNzU5NzMyMTY1fQ.6kRuxPujYQuRvCwOTn2PPIW9S1txMIdI6pg6n8zjayE\",\"__next_hmr_refresh_hash__\":\"2400\"}","timestamp":"2025-09-29T09:18:15.938Z"}
+{"level":"info","message":"userId:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTEyNzM2NSwiZXhwIjoxNzU5NzMyMTY1fQ.6kRuxPujYQuRvCwOTn2PPIW9S1txMIdI6pg6n8zjayE","timestamp":"2025-09-29T09:18:15.962Z"}
+{"level":"info","message":"decoded :[object Object]","timestamp":"2025-09-29T09:18:15.967Z"}
+{"level":"info","message":"accessToken from JWT->generateToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTEzNzQ5NSwiZXhwIjoxNzU5MTM4Mzk1fQ.EXdfBBHDxP1yE2yLaWUOHcWYJoyLTvvIvR4ImOmB42A","timestamp":"2025-09-29T09:18:15.985Z"}
+{"level":"info","message":"User accessToken successfully recreated","timestamp":"2025-09-29T09:18:15.988Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTEzNzQ5NSwiZXhwIjoxNzU5MTM4Mzk1fQ.EXdfBBHDxP1yE2yLaWUOHcWYJoyLTvvIvR4ImOmB42A","timestamp":"2025-09-29T09:18:16.008Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:18:16.009Z"}
+{"level":"info","message":"payload: {\"id\":\"68cfe22af8d9bc479ed64250\",\"role\":\"admin\",\"iat\":1759137495,\"exp\":1759138395}","timestamp":"2025-09-29T09:18:16.012Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTEzNzQ5NSwiZXhwIjoxNzU5MTM4Mzk1fQ.EXdfBBHDxP1yE2yLaWUOHcWYJoyLTvvIvR4ImOmB42A","timestamp":"2025-09-29T09:28:14.073Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:28:14.082Z"}
+{"level":"info","message":"payload: {\"id\":\"68cfe22af8d9bc479ed64250\",\"role\":\"admin\",\"iat\":1759137495,\"exp\":1759138395}","timestamp":"2025-09-29T09:28:14.112Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTEzNzQ5NSwiZXhwIjoxNzU5MTM4Mzk1fQ.EXdfBBHDxP1yE2yLaWUOHcWYJoyLTvvIvR4ImOmB42A","timestamp":"2025-09-29T09:28:15.440Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:28:15.441Z"}
+{"level":"info","message":"payload: {\"id\":\"68cfe22af8d9bc479ed64250\",\"role\":\"admin\",\"iat\":1759137495,\"exp\":1759138395}","timestamp":"2025-09-29T09:28:15.442Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTEzNzQ5NSwiZXhwIjoxNzU5MTM4Mzk1fQ.EXdfBBHDxP1yE2yLaWUOHcWYJoyLTvvIvR4ImOmB42A","timestamp":"2025-09-29T09:28:19.715Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:28:19.716Z"}
+{"level":"info","message":"payload: {\"id\":\"68cfe22af8d9bc479ed64250\",\"role\":\"admin\",\"iat\":1759137495,\"exp\":1759138395}","timestamp":"2025-09-29T09:28:19.717Z"}
+{"level":"info","message":"hotelData : [object Object]","timestamp":"2025-09-29T09:28:21.709Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTEzNzQ5NSwiZXhwIjoxNzU5MTM4Mzk1fQ.EXdfBBHDxP1yE2yLaWUOHcWYJoyLTvvIvR4ImOmB42A","timestamp":"2025-09-29T09:28:21.715Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:28:21.715Z"}
+{"level":"info","message":"payload: {\"id\":\"68cfe22af8d9bc479ed64250\",\"role\":\"admin\",\"iat\":1759137495,\"exp\":1759138395}","timestamp":"2025-09-29T09:28:21.718Z"}
+{"level":"info","message":"hotelData : [object Object]","timestamp":"2025-09-29T09:28:26.731Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM2ODI2LCJleHAiOjE3NTkxMzc3MjZ9.sCP9apUG4d9ZSvzdtwZ3ppcLeeIakHhkKwZ1MdyOQSY","timestamp":"2025-09-29T09:29:03.420Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:29:03.421Z"}
+{"level":"error","message":"Failed to verify token: jwt expired","timestamp":"2025-09-29T09:29:03.424Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM2ODI2LCJleHAiOjE3NTkxMzc3MjZ9.sCP9apUG4d9ZSvzdtwZ3ppcLeeIakHhkKwZ1MdyOQSY","timestamp":"2025-09-29T09:29:03.431Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:29:03.431Z"}
+{"level":"error","message":"Failed to verify token: jwt expired","timestamp":"2025-09-29T09:29:03.433Z"}
+{"level":"info","message":"from refresh token req.body : {\"__next_hmr_refresh_hash__\":\"2400\",\"accessToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM2ODI2LCJleHAiOjE3NTkxMzc3MjZ9.sCP9apUG4d9ZSvzdtwZ3ppcLeeIakHhkKwZ1MdyOQSY\",\"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM2ODI2LCJleHAiOjE3NTk3NDE2MjZ9.DaTtHJn7Z9y105ky28GCX3E4CnQSfoK_2tnCldRDO0Y\"}","timestamp":"2025-09-29T09:29:03.450Z"}
+{"level":"info","message":"userId:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM2ODI2LCJleHAiOjE3NTk3NDE2MjZ9.DaTtHJn7Z9y105ky28GCX3E4CnQSfoK_2tnCldRDO0Y","timestamp":"2025-09-29T09:29:03.454Z"}
+{"level":"info","message":"decoded :[object Object]","timestamp":"2025-09-29T09:29:03.458Z"}
+{"level":"info","message":"accessToken from JWT->generateToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM4MTQzLCJleHAiOjE3NTkxMzkwNDN9.LElsloj22KngzWvIZBlUIwA4ISrwKRhrJLOQ0TwmCOU","timestamp":"2025-09-29T09:29:03.465Z"}
+{"level":"info","message":"User accessToken successfully recreated","timestamp":"2025-09-29T09:29:03.466Z"}
+{"level":"info","message":"from refresh token req.body : {\"__next_hmr_refresh_hash__\":\"2400\",\"accessToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM2ODI2LCJleHAiOjE3NTkxMzc3MjZ9.sCP9apUG4d9ZSvzdtwZ3ppcLeeIakHhkKwZ1MdyOQSY\",\"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM2ODI2LCJleHAiOjE3NTk3NDE2MjZ9.DaTtHJn7Z9y105ky28GCX3E4CnQSfoK_2tnCldRDO0Y\"}","timestamp":"2025-09-29T09:29:03.469Z"}
+{"level":"info","message":"userId:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM2ODI2LCJleHAiOjE3NTk3NDE2MjZ9.DaTtHJn7Z9y105ky28GCX3E4CnQSfoK_2tnCldRDO0Y","timestamp":"2025-09-29T09:29:03.471Z"}
+{"level":"info","message":"decoded :[object Object]","timestamp":"2025-09-29T09:29:03.474Z"}
+{"level":"info","message":"accessToken from JWT->generateToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM4MTQzLCJleHAiOjE3NTkxMzkwNDN9.LElsloj22KngzWvIZBlUIwA4ISrwKRhrJLOQ0TwmCOU","timestamp":"2025-09-29T09:29:03.480Z"}
+{"level":"info","message":"User accessToken successfully recreated","timestamp":"2025-09-29T09:29:03.481Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM4MTQzLCJleHAiOjE3NTkxMzkwNDN9.LElsloj22KngzWvIZBlUIwA4ISrwKRhrJLOQ0TwmCOU","timestamp":"2025-09-29T09:29:03.485Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:29:03.485Z"}
+{"level":"info","message":"payload: {\"id\":\"68da1ece8fc72c22a2eb50b6\",\"role\":\"user\",\"iat\":1759138143,\"exp\":1759139043}","timestamp":"2025-09-29T09:29:03.487Z"}
+{"level":"info","message":"User profile retrieved for ID 68da1ece8fc72c22a2eb50b6","timestamp":"2025-09-29T09:29:05.486Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM4MTQzLCJleHAiOjE3NTkxMzkwNDN9.LElsloj22KngzWvIZBlUIwA4ISrwKRhrJLOQ0TwmCOU","timestamp":"2025-09-29T09:29:05.492Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:29:05.492Z"}
+{"level":"info","message":"payload: {\"id\":\"68da1ece8fc72c22a2eb50b6\",\"role\":\"user\",\"iat\":1759138143,\"exp\":1759139043}","timestamp":"2025-09-29T09:29:05.494Z"}
+{"level":"info","message":"User profile retrieved for ID 68da1ece8fc72c22a2eb50b6","timestamp":"2025-09-29T09:29:07.867Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM4MTQzLCJleHAiOjE3NTkxMzkwNDN9.LElsloj22KngzWvIZBlUIwA4ISrwKRhrJLOQ0TwmCOU","timestamp":"2025-09-29T09:29:07.871Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:29:07.872Z"}
+{"level":"info","message":"payload: {\"id\":\"68da1ece8fc72c22a2eb50b6\",\"role\":\"user\",\"iat\":1759138143,\"exp\":1759139043}","timestamp":"2025-09-29T09:29:07.875Z"}
+{"level":"info","message":"User profile retrieved for ID 68da1ece8fc72c22a2eb50b6","timestamp":"2025-09-29T09:29:09.726Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM4MTQzLCJleHAiOjE3NTkxMzkwNDN9.LElsloj22KngzWvIZBlUIwA4ISrwKRhrJLOQ0TwmCOU","timestamp":"2025-09-29T09:29:09.733Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:29:09.734Z"}
+{"level":"info","message":"payload: {\"id\":\"68da1ece8fc72c22a2eb50b6\",\"role\":\"user\",\"iat\":1759138143,\"exp\":1759139043}","timestamp":"2025-09-29T09:29:09.737Z"}
+{"level":"info","message":"User profile retrieved for ID 68da1ece8fc72c22a2eb50b6","timestamp":"2025-09-29T09:29:13.159Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM4MTQzLCJleHAiOjE3NTkxMzkwNDN9.LElsloj22KngzWvIZBlUIwA4ISrwKRhrJLOQ0TwmCOU","timestamp":"2025-09-29T09:29:15.066Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:29:15.067Z"}
+{"level":"info","message":"payload: {\"id\":\"68da1ece8fc72c22a2eb50b6\",\"role\":\"user\",\"iat\":1759138143,\"exp\":1759139043}","timestamp":"2025-09-29T09:29:15.068Z"}
+{"level":"info","message":"Validated user data: {\"id\":\"68da1ece8fc72c22a2eb50b6\",\"name\":\"Sanju TITA\\\\\",\"userName\":\"TITAN\",\"email\":\"titansanju8@gmail.com\",\"phoneNumber\":8547549658,\"profilePicture\":\"https://lh3.googleusercontent.com/a/ACg8ocJlqqtZBYhWX9UWXx7INLvSQ7t55Dpb-PkhNsXcmFdxGNDQtg=s96-c\",\"role\":\"user\",\"isBlocked\":false,\"interest\":[\"Off-road\",\"1 month+\",\"Partner\",\"Luxury\",\"Wildlife\"]}","timestamp":"2025-09-29T09:29:15.322Z"}
+{"level":"info","message":"userData : {\n  _id: new ObjectId('68da1ece8fc72c22a2eb50b6'),\n  name: 'Sanju TITAN',\n  phoneNumber: 8547549658,\n  email: 'titansanju8@gmail.com',\n  interest: [ 'Off-road', '1 month+', 'Partner', 'Luxury', 'Wildlife' ],\n  googleId: '118124702133108652762',\n  profilePicture: 'https://lh3.googleusercontent.com/a/ACg8ocJlqqtZBYhWX9UWXx7INLvSQ7t55Dpb-PkhNsXcmFdxGNDQtg=s96-c',\n  createdOn: 2025-09-29T05:51:09.237Z,\n  role: 'user',\n  isBlocked: false,\n  __v: 0,\n  userName: 'TITAN'\n}","timestamp":"2025-09-29T09:29:16.296Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM4MTQzLCJleHAiOjE3NTkxMzkwNDN9.LElsloj22KngzWvIZBlUIwA4ISrwKRhrJLOQ0TwmCOU","timestamp":"2025-09-29T09:29:23.564Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:29:23.564Z"}
+{"level":"info","message":"payload: {\"id\":\"68da1ece8fc72c22a2eb50b6\",\"role\":\"user\",\"iat\":1759138143,\"exp\":1759139043}","timestamp":"2025-09-29T09:29:23.565Z"}
+{"level":"info","message":"Validated user data: {\"id\":\"68da1ece8fc72c22a2eb50b6\",\"name\":\"Sanju TITA\",\"userName\":\"TITAN\",\"email\":\"titansanju8@gmail.com\",\"phoneNumber\":8547549658,\"profilePicture\":\"https://lh3.googleusercontent.com/a/ACg8ocJlqqtZBYhWX9UWXx7INLvSQ7t55Dpb-PkhNsXcmFdxGNDQtg=s96-c\",\"role\":\"user\",\"isBlocked\":false,\"interest\":[\"Off-road\",\"1 month+\",\"Partner\",\"Luxury\",\"Wildlife\"]}","timestamp":"2025-09-29T09:29:24.268Z"}
+{"level":"info","message":"userData : {\n  _id: new ObjectId('68da1ece8fc72c22a2eb50b6'),\n  name: 'Sanju TITA\\\\',\n  phoneNumber: 8547549658,\n  email: 'titansanju8@gmail.com',\n  interest: [ 'Off-road', '1 month+', 'Partner', 'Luxury', 'Wildlife' ],\n  googleId: '118124702133108652762',\n  profilePicture: 'https://lh3.googleusercontent.com/a/ACg8ocJlqqtZBYhWX9UWXx7INLvSQ7t55Dpb-PkhNsXcmFdxGNDQtg=s96-c',\n  createdOn: 2025-09-29T05:51:09.237Z,\n  role: 'user',\n  isBlocked: false,\n  __v: 0,\n  userName: 'TITAN'\n}","timestamp":"2025-09-29T09:29:26.832Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM4MTQzLCJleHAiOjE3NTkxMzkwNDN9.LElsloj22KngzWvIZBlUIwA4ISrwKRhrJLOQ0TwmCOU","timestamp":"2025-09-29T09:29:38.781Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:29:38.782Z"}
+{"level":"info","message":"payload: {\"id\":\"68da1ece8fc72c22a2eb50b6\",\"role\":\"user\",\"iat\":1759138143,\"exp\":1759139043}","timestamp":"2025-09-29T09:29:38.784Z"}
+{"level":"info","message":"User profile retrieved for ID 68da1ece8fc72c22a2eb50b6","timestamp":"2025-09-29T09:29:41.705Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM4MTQzLCJleHAiOjE3NTkxMzkwNDN9.LElsloj22KngzWvIZBlUIwA4ISrwKRhrJLOQ0TwmCOU","timestamp":"2025-09-29T09:29:41.712Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:29:41.713Z"}
+{"level":"info","message":"payload: {\"id\":\"68da1ece8fc72c22a2eb50b6\",\"role\":\"user\",\"iat\":1759138143,\"exp\":1759139043}","timestamp":"2025-09-29T09:29:41.716Z"}
+{"level":"info","message":"User profile retrieved for ID 68da1ece8fc72c22a2eb50b6","timestamp":"2025-09-29T09:29:45.569Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM4MTQzLCJleHAiOjE3NTkxMzkwNDN9.LElsloj22KngzWvIZBlUIwA4ISrwKRhrJLOQ0TwmCOU","timestamp":"2025-09-29T09:29:45.585Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:29:45.586Z"}
+{"level":"info","message":"payload: {\"id\":\"68da1ece8fc72c22a2eb50b6\",\"role\":\"user\",\"iat\":1759138143,\"exp\":1759139043}","timestamp":"2025-09-29T09:29:45.587Z"}
+{"level":"info","message":"User profile retrieved for ID 68da1ece8fc72c22a2eb50b6","timestamp":"2025-09-29T09:29:50.138Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM4MTQzLCJleHAiOjE3NTkxMzkwNDN9.LElsloj22KngzWvIZBlUIwA4ISrwKRhrJLOQ0TwmCOU","timestamp":"2025-09-29T09:29:50.146Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:29:50.146Z"}
+{"level":"info","message":"payload: {\"id\":\"68da1ece8fc72c22a2eb50b6\",\"role\":\"user\",\"iat\":1759138143,\"exp\":1759139043}","timestamp":"2025-09-29T09:29:50.149Z"}
+{"level":"info","message":"User profile retrieved for ID 68da1ece8fc72c22a2eb50b6","timestamp":"2025-09-29T09:29:53.522Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM4MTQzLCJleHAiOjE3NTkxMzkwNDN9.LElsloj22KngzWvIZBlUIwA4ISrwKRhrJLOQ0TwmCOU","timestamp":"2025-09-29T09:29:53.530Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:29:53.531Z"}
+{"level":"info","message":"payload: {\"id\":\"68da1ece8fc72c22a2eb50b6\",\"role\":\"user\",\"iat\":1759138143,\"exp\":1759139043}","timestamp":"2025-09-29T09:29:53.534Z"}
+{"level":"info","message":"User profile retrieved for ID 68da1ece8fc72c22a2eb50b6","timestamp":"2025-09-29T09:29:55.093Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM4MTQzLCJleHAiOjE3NTkxMzkwNDN9.LElsloj22KngzWvIZBlUIwA4ISrwKRhrJLOQ0TwmCOU","timestamp":"2025-09-29T09:29:55.098Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T09:29:55.099Z"}
+{"level":"info","message":"payload: {\"id\":\"68da1ece8fc72c22a2eb50b6\",\"role\":\"user\",\"iat\":1759138143,\"exp\":1759139043}","timestamp":"2025-09-29T09:29:55.101Z"}
+{"level":"info","message":"User profile retrieved for ID 68da1ece8fc72c22a2eb50b6","timestamp":"2025-09-29T09:29:56.610Z"}
+{"__next_hmr_refresh_hash__":"2400","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM4MTQzLCJleHAiOjE3NTkxMzkwNDN9.LElsloj22KngzWvIZBlUIwA4ISrwKRhrJLOQ0TwmCOU","level":"info","message":"req.cookies","refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGExZWNlOGZjNzJjMjJhMmViNTBiNiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTM4MTQzLCJleHAiOjE3NTk3NDI5NDN9.H0Hoh7p7HnTI6MtBDCldcR3flBmaVqlNSuIUQTRXJPg","timestamp":"2025-09-29T09:30:02.954Z"}
+{"level":"info","message":"Database connected","timestamp":"2025-09-29T10:05:23.815Z"}
+{"level":"info","message":"Server running on http://localhost:5000","timestamp":"2025-09-29T10:05:23.825Z"}
+{"level":"info","message":"accessToken from JWT->generateToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDZmNTAwNjM0YTg5YzUzMzkwYWRkZCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQwNzM3LCJleHAiOjE3NTkxNDE2Mzd9.Y9O_Y5ZAa4JNYWsK05IKx2Wq93wNK8uQIZKRXSB0acU","timestamp":"2025-09-29T10:12:17.750Z"}
+{"level":"info","message":"From UserAuth->verifyLogin:- User sanju@gmail.com logged in successfully","timestamp":"2025-09-29T10:12:17.754Z"}
+{"level":"info","message":"User sanju@gmail.com logged in successfully","timestamp":"2025-09-29T10:12:17.756Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDZmNTAwNjM0YTg5YzUzMzkwYWRkZCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQwNzM3LCJleHAiOjE3NTkxNDE2Mzd9.Y9O_Y5ZAa4JNYWsK05IKx2Wq93wNK8uQIZKRXSB0acU","timestamp":"2025-09-29T10:13:16.069Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:13:16.092Z"}
+{"level":"info","message":"payload: {\"id\":\"68d6f500634a89c53390addd\",\"role\":\"user\",\"iat\":1759140737,\"exp\":1759141637}","timestamp":"2025-09-29T10:13:16.103Z"}
+{"level":"info","message":"User profile retrieved for ID 68d6f500634a89c53390addd","timestamp":"2025-09-29T10:13:18.027Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDZmNTAwNjM0YTg5YzUzMzkwYWRkZCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQwNzM3LCJleHAiOjE3NTkxNDE2Mzd9.Y9O_Y5ZAa4JNYWsK05IKx2Wq93wNK8uQIZKRXSB0acU","timestamp":"2025-09-29T10:13:18.094Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:13:18.107Z"}
+{"level":"info","message":"payload: {\"id\":\"68d6f500634a89c53390addd\",\"role\":\"user\",\"iat\":1759140737,\"exp\":1759141637}","timestamp":"2025-09-29T10:13:18.121Z"}
+{"level":"info","message":"User profile retrieved for ID 68d6f500634a89c53390addd","timestamp":"2025-09-29T10:13:18.487Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDZmNTAwNjM0YTg5YzUzMzkwYWRkZCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQwNzM3LCJleHAiOjE3NTkxNDE2Mzd9.Y9O_Y5ZAa4JNYWsK05IKx2Wq93wNK8uQIZKRXSB0acU","timestamp":"2025-09-29T10:13:41.528Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:13:41.531Z"}
+{"level":"info","message":"payload: {\"id\":\"68d6f500634a89c53390addd\",\"role\":\"user\",\"iat\":1759140737,\"exp\":1759141637}","timestamp":"2025-09-29T10:13:41.545Z"}
+{"level":"info","message":"User profile retrieved for ID 68d6f500634a89c53390addd","timestamp":"2025-09-29T10:13:41.815Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDZmNTAwNjM0YTg5YzUzMzkwYWRkZCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQwNzM3LCJleHAiOjE3NTkxNDE2Mzd9.Y9O_Y5ZAa4JNYWsK05IKx2Wq93wNK8uQIZKRXSB0acU","timestamp":"2025-09-29T10:13:41.828Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:13:41.865Z"}
+{"level":"info","message":"payload: {\"id\":\"68d6f500634a89c53390addd\",\"role\":\"user\",\"iat\":1759140737,\"exp\":1759141637}","timestamp":"2025-09-29T10:13:41.897Z"}
+{"level":"info","message":"User profile retrieved for ID 68d6f500634a89c53390addd","timestamp":"2025-09-29T10:13:42.084Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDZmNTAwNjM0YTg5YzUzMzkwYWRkZCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQwNzM3LCJleHAiOjE3NTkxNDE2Mzd9.Y9O_Y5ZAa4JNYWsK05IKx2Wq93wNK8uQIZKRXSB0acU","timestamp":"2025-09-29T10:13:42.092Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:13:42.094Z"}
+{"level":"info","message":"payload: {\"id\":\"68d6f500634a89c53390addd\",\"role\":\"user\",\"iat\":1759140737,\"exp\":1759141637}","timestamp":"2025-09-29T10:13:42.114Z"}
+{"level":"info","message":"User profile retrieved for ID 68d6f500634a89c53390addd","timestamp":"2025-09-29T10:13:42.271Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDZmNTAwNjM0YTg5YzUzMzkwYWRkZCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQwNzM3LCJleHAiOjE3NTkxNDE2Mzd9.Y9O_Y5ZAa4JNYWsK05IKx2Wq93wNK8uQIZKRXSB0acU","timestamp":"2025-09-29T10:13:42.292Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:13:42.292Z"}
+{"level":"info","message":"payload: {\"id\":\"68d6f500634a89c53390addd\",\"role\":\"user\",\"iat\":1759140737,\"exp\":1759141637}","timestamp":"2025-09-29T10:13:42.298Z"}
+{"level":"info","message":"User profile retrieved for ID 68d6f500634a89c53390addd","timestamp":"2025-09-29T10:13:42.428Z"}
+{"__next_hmr_refresh_hash__":"2400","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDZmNTAwNjM0YTg5YzUzMzkwYWRkZCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQwNzM3LCJleHAiOjE3NTkxNDE2Mzd9.Y9O_Y5ZAa4JNYWsK05IKx2Wq93wNK8uQIZKRXSB0acU","level":"info","message":"req.cookies","refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDZmNTAwNjM0YTg5YzUzMzkwYWRkZCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQwNzM3LCJleHAiOjE3NTk3NDU1Mzd9.7goGUXKGGOOt2GTHBwg8mrgCE8T2z7UF1trKKONAnb4","timestamp":"2025-09-29T10:14:10.255Z"}
+{"level":"info","message":"Generated OTP: 964682","timestamp":"2025-09-29T10:14:39.018Z"}
+{"level":"info","message":"Your OTP is 964682","timestamp":"2025-09-29T10:14:39.046Z"}
+{"level":"info","message":"Email sent to user@gmail.com","timestamp":"2025-09-29T10:14:42.350Z"}
+{"level":"info","message":"OTP email sent to user@gmail.com","timestamp":"2025-09-29T10:14:42.351Z"}
+{"level":"info","message":"OTP sent to user@gmail.com","timestamp":"2025-09-29T10:14:42.352Z"}
+{"level":"info","message":"Database connected","timestamp":"2025-09-29T10:18:09.232Z"}
+{"level":"info","message":"Server running on http://localhost:5000","timestamp":"2025-09-29T10:18:09.255Z"}
+{"level":"info","message":"Generated OTP: 278659","timestamp":"2025-09-29T10:18:11.995Z"}
+{"level":"info","message":"Your OTP is 278659","timestamp":"2025-09-29T10:18:12.001Z"}
+{"level":"info","message":"Email sent to user@gmail.com","timestamp":"2025-09-29T10:18:16.855Z"}
+{"level":"info","message":"OTP email sent to user@gmail.com","timestamp":"2025-09-29T10:18:16.870Z"}
+{"level":"info","message":"OTP sent to user@gmail.com","timestamp":"2025-09-29T10:18:16.876Z"}
+{"level":"info","message":"accessToken from JWT->generateToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1Y2YzOTM2MjQwYjM0ZjFjYjQ0YyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQxMTA3LCJleHAiOjE3NTkxNDIwMDd9.8bN9Ekmmj78J1YUcoVb8WduR48kkZz9jnV258CD3hrY","timestamp":"2025-09-29T10:18:27.840Z"}
+{"level":"info","message":"From UserAuth->verify:- User user@gmail.com verified and registered successfully","timestamp":"2025-09-29T10:18:27.843Z"}
+{"level":"info","message":"User user@gmail.com verified successfully","timestamp":"2025-09-29T10:18:27.847Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1Y2YzOTM2MjQwYjM0ZjFjYjQ0YyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQxMTA3LCJleHAiOjE3NTkxNDIwMDd9.8bN9Ekmmj78J1YUcoVb8WduR48kkZz9jnV258CD3hrY","timestamp":"2025-09-29T10:18:55.032Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:18:55.033Z"}
+{"level":"info","message":"payload: {\"id\":\"68da5cf3936240b34f1cb44c\",\"role\":\"user\",\"iat\":1759141107,\"exp\":1759142007}","timestamp":"2025-09-29T10:18:55.039Z"}
+{"level":"info","message":"Interests updated for user ID 68da5cf3936240b34f1cb44c","timestamp":"2025-09-29T10:18:55.182Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1Y2YzOTM2MjQwYjM0ZjFjYjQ0YyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQxMTA3LCJleHAiOjE3NTkxNDIwMDd9.8bN9Ekmmj78J1YUcoVb8WduR48kkZz9jnV258CD3hrY","timestamp":"2025-09-29T10:18:55.955Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:18:55.967Z"}
+{"level":"info","message":"payload: {\"id\":\"68da5cf3936240b34f1cb44c\",\"role\":\"user\",\"iat\":1759141107,\"exp\":1759142007}","timestamp":"2025-09-29T10:18:55.969Z"}
+{"level":"info","message":"User profile retrieved for ID 68da5cf3936240b34f1cb44c","timestamp":"2025-09-29T10:18:56.110Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1Y2YzOTM2MjQwYjM0ZjFjYjQ0YyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQxMTA3LCJleHAiOjE3NTkxNDIwMDd9.8bN9Ekmmj78J1YUcoVb8WduR48kkZz9jnV258CD3hrY","timestamp":"2025-09-29T10:18:56.115Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:18:56.115Z"}
+{"level":"info","message":"payload: {\"id\":\"68da5cf3936240b34f1cb44c\",\"role\":\"user\",\"iat\":1759141107,\"exp\":1759142007}","timestamp":"2025-09-29T10:18:56.117Z"}
+{"level":"info","message":"User profile retrieved for ID 68da5cf3936240b34f1cb44c","timestamp":"2025-09-29T10:18:56.290Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1Y2YzOTM2MjQwYjM0ZjFjYjQ0YyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQxMTA3LCJleHAiOjE3NTkxNDIwMDd9.8bN9Ekmmj78J1YUcoVb8WduR48kkZz9jnV258CD3hrY","timestamp":"2025-09-29T10:19:03.003Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:19:03.012Z"}
+{"level":"info","message":"payload: {\"id\":\"68da5cf3936240b34f1cb44c\",\"role\":\"user\",\"iat\":1759141107,\"exp\":1759142007}","timestamp":"2025-09-29T10:19:03.015Z"}
+{"level":"info","message":"User profile retrieved for ID 68da5cf3936240b34f1cb44c","timestamp":"2025-09-29T10:19:03.154Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1Y2YzOTM2MjQwYjM0ZjFjYjQ0YyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQxMTA3LCJleHAiOjE3NTkxNDIwMDd9.8bN9Ekmmj78J1YUcoVb8WduR48kkZz9jnV258CD3hrY","timestamp":"2025-09-29T10:19:03.171Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:19:03.181Z"}
+{"level":"info","message":"payload: {\"id\":\"68da5cf3936240b34f1cb44c\",\"role\":\"user\",\"iat\":1759141107,\"exp\":1759142007}","timestamp":"2025-09-29T10:19:03.197Z"}
+{"level":"info","message":"User profile retrieved for ID 68da5cf3936240b34f1cb44c","timestamp":"2025-09-29T10:19:03.440Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1Y2YzOTM2MjQwYjM0ZjFjYjQ0YyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQxMTA3LCJleHAiOjE3NTkxNDIwMDd9.8bN9Ekmmj78J1YUcoVb8WduR48kkZz9jnV258CD3hrY","timestamp":"2025-09-29T10:19:03.447Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:19:03.449Z"}
+{"level":"info","message":"payload: {\"id\":\"68da5cf3936240b34f1cb44c\",\"role\":\"user\",\"iat\":1759141107,\"exp\":1759142007}","timestamp":"2025-09-29T10:19:03.464Z"}
+{"level":"info","message":"User profile retrieved for ID 68da5cf3936240b34f1cb44c","timestamp":"2025-09-29T10:19:03.605Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1Y2YzOTM2MjQwYjM0ZjFjYjQ0YyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQxMTA3LCJleHAiOjE3NTkxNDIwMDd9.8bN9Ekmmj78J1YUcoVb8WduR48kkZz9jnV258CD3hrY","timestamp":"2025-09-29T10:19:03.628Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:19:03.633Z"}
+{"level":"info","message":"payload: {\"id\":\"68da5cf3936240b34f1cb44c\",\"role\":\"user\",\"iat\":1759141107,\"exp\":1759142007}","timestamp":"2025-09-29T10:19:03.637Z"}
+{"level":"info","message":"User profile retrieved for ID 68da5cf3936240b34f1cb44c","timestamp":"2025-09-29T10:19:03.828Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1Y2YzOTM2MjQwYjM0ZjFjYjQ0YyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQxMTA3LCJleHAiOjE3NTkxNDIwMDd9.8bN9Ekmmj78J1YUcoVb8WduR48kkZz9jnV258CD3hrY","timestamp":"2025-09-29T10:19:12.880Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:19:12.882Z"}
+{"level":"info","message":"payload: {\"id\":\"68da5cf3936240b34f1cb44c\",\"role\":\"user\",\"iat\":1759141107,\"exp\":1759142007}","timestamp":"2025-09-29T10:19:12.886Z"}
+{"level":"info","message":"User profile retrieved for ID 68da5cf3936240b34f1cb44c","timestamp":"2025-09-29T10:19:13.029Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1Y2YzOTM2MjQwYjM0ZjFjYjQ0YyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQxMTA3LCJleHAiOjE3NTkxNDIwMDd9.8bN9Ekmmj78J1YUcoVb8WduR48kkZz9jnV258CD3hrY","timestamp":"2025-09-29T10:19:13.038Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:19:13.045Z"}
+{"level":"info","message":"payload: {\"id\":\"68da5cf3936240b34f1cb44c\",\"role\":\"user\",\"iat\":1759141107,\"exp\":1759142007}","timestamp":"2025-09-29T10:19:13.050Z"}
+{"level":"info","message":"User profile retrieved for ID 68da5cf3936240b34f1cb44c","timestamp":"2025-09-29T10:19:13.227Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1Y2YzOTM2MjQwYjM0ZjFjYjQ0YyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQxMTA3LCJleHAiOjE3NTkxNDIwMDd9.8bN9Ekmmj78J1YUcoVb8WduR48kkZz9jnV258CD3hrY","timestamp":"2025-09-29T10:19:27.498Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:19:27.526Z"}
+{"level":"info","message":"payload: {\"id\":\"68da5cf3936240b34f1cb44c\",\"role\":\"user\",\"iat\":1759141107,\"exp\":1759142007}","timestamp":"2025-09-29T10:19:27.533Z"}
+{"level":"info","message":"User profile retrieved for ID 68da5cf3936240b34f1cb44c","timestamp":"2025-09-29T10:19:27.691Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1Y2YzOTM2MjQwYjM0ZjFjYjQ0YyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQxMTA3LCJleHAiOjE3NTkxNDIwMDd9.8bN9Ekmmj78J1YUcoVb8WduR48kkZz9jnV258CD3hrY","timestamp":"2025-09-29T10:19:27.706Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:19:27.717Z"}
+{"level":"info","message":"payload: {\"id\":\"68da5cf3936240b34f1cb44c\",\"role\":\"user\",\"iat\":1759141107,\"exp\":1759142007}","timestamp":"2025-09-29T10:19:27.723Z"}
+{"level":"info","message":"User profile retrieved for ID 68da5cf3936240b34f1cb44c","timestamp":"2025-09-29T10:19:27.887Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1Y2YzOTM2MjQwYjM0ZjFjYjQ0YyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQxMTA3LCJleHAiOjE3NTkxNDIwMDd9.8bN9Ekmmj78J1YUcoVb8WduR48kkZz9jnV258CD3hrY","timestamp":"2025-09-29T10:19:27.894Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:19:27.896Z"}
+{"level":"info","message":"payload: {\"id\":\"68da5cf3936240b34f1cb44c\",\"role\":\"user\",\"iat\":1759141107,\"exp\":1759142007}","timestamp":"2025-09-29T10:19:27.898Z"}
+{"level":"info","message":"User profile retrieved for ID 68da5cf3936240b34f1cb44c","timestamp":"2025-09-29T10:19:28.016Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1Y2YzOTM2MjQwYjM0ZjFjYjQ0YyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQxMTA3LCJleHAiOjE3NTkxNDIwMDd9.8bN9Ekmmj78J1YUcoVb8WduR48kkZz9jnV258CD3hrY","timestamp":"2025-09-29T10:19:28.023Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:19:28.024Z"}
+{"level":"info","message":"payload: {\"id\":\"68da5cf3936240b34f1cb44c\",\"role\":\"user\",\"iat\":1759141107,\"exp\":1759142007}","timestamp":"2025-09-29T10:19:28.027Z"}
+{"level":"info","message":"User profile retrieved for ID 68da5cf3936240b34f1cb44c","timestamp":"2025-09-29T10:19:28.168Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1Y2YzOTM2MjQwYjM0ZjFjYjQ0YyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQxMTA3LCJleHAiOjE3NTkxNDIwMDd9.8bN9Ekmmj78J1YUcoVb8WduR48kkZz9jnV258CD3hrY","timestamp":"2025-09-29T10:19:52.729Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:19:52.730Z"}
+{"level":"info","message":"payload: {\"id\":\"68da5cf3936240b34f1cb44c\",\"role\":\"user\",\"iat\":1759141107,\"exp\":1759142007}","timestamp":"2025-09-29T10:19:52.732Z"}
+{"level":"info","message":"Validated user data: {\"id\":\"68da5cf3936240b34f1cb44c\",\"name\":\"user\",\"userName\":\"USER\",\"email\":\"user@gmail.com\",\"role\":\"user\",\"isBlocked\":false,\"interest\":[\"Chill & Relax\",\"1-2 weeks\",\"Partner\",\"Luxury\",\"Food trips\"],\"phoneNumber\":8547549658}","timestamp":"2025-09-29T10:19:52.797Z"}
+{"level":"info","message":"userData : {\n  _id: new ObjectId('68da5cf3936240b34f1cb44c'),\n  name: 'user',\n  email: 'user@gmail.com',\n  interest: [ 'Chill & Relax', '1-2 weeks', 'Partner', 'Luxury', 'Food trips' ],\n  password: '$2b$10$iMizOxq81VTBhuGe/pDawOLQZWXOhFM0nmxFkmHCmk944zMWk/Sh6',\n  createdOn: 2025-09-29T10:18:05.999Z,\n  role: 'user',\n  isBlocked: false,\n  __v: 0\n}","timestamp":"2025-09-29T10:19:52.936Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1Y2YzOTM2MjQwYjM0ZjFjYjQ0YyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQxMTA3LCJleHAiOjE3NTkxNDIwMDd9.8bN9Ekmmj78J1YUcoVb8WduR48kkZz9jnV258CD3hrY","timestamp":"2025-09-29T10:20:01.570Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:20:01.571Z"}
+{"level":"info","message":"payload: {\"id\":\"68da5cf3936240b34f1cb44c\",\"role\":\"user\",\"iat\":1759141107,\"exp\":1759142007}","timestamp":"2025-09-29T10:20:01.575Z"}
+{"level":"info","message":"User profile retrieved for ID 68da5cf3936240b34f1cb44c","timestamp":"2025-09-29T10:20:01.755Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1Y2YzOTM2MjQwYjM0ZjFjYjQ0YyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5MTQxMTA3LCJleHAiOjE3NTkxNDIwMDd9.8bN9Ekmmj78J1YUcoVb8WduR48kkZz9jnV258CD3hrY","timestamp":"2025-09-29T10:20:01.768Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:20:01.781Z"}
+{"level":"info","message":"payload: {\"id\":\"68da5cf3936240b34f1cb44c\",\"role\":\"user\",\"iat\":1759141107,\"exp\":1759142007}","timestamp":"2025-09-29T10:20:01.785Z"}
+{"level":"info","message":"User profile retrieved for ID 68da5cf3936240b34f1cb44c","timestamp":"2025-09-29T10:20:01.927Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTEzNzQ5NSwiZXhwIjoxNzU5MTM4Mzk1fQ.EXdfBBHDxP1yE2yLaWUOHcWYJoyLTvvIvR4ImOmB42A","timestamp":"2025-09-29T10:20:11.964Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:20:11.964Z"}
+{"level":"error","message":"Failed to verify token: jwt expired","timestamp":"2025-09-29T10:20:11.967Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTEzNzQ5NSwiZXhwIjoxNzU5MTM4Mzk1fQ.EXdfBBHDxP1yE2yLaWUOHcWYJoyLTvvIvR4ImOmB42A","timestamp":"2025-09-29T10:20:11.970Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:20:11.972Z"}
+{"level":"error","message":"Failed to verify token: jwt expired","timestamp":"2025-09-29T10:20:11.975Z"}
+{"level":"info","message":"from refresh token req.body : {\"__next_hmr_refresh_hash__\":\"2400\",\"accessToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTEzNzQ5NSwiZXhwIjoxNzU5MTM4Mzk1fQ.EXdfBBHDxP1yE2yLaWUOHcWYJoyLTvvIvR4ImOmB42A\",\"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTEzNzQ5NSwiZXhwIjoxNzU5NzQyMjk1fQ.0iGnaRVE7q0Z8RtVFSOohE6YIfqeiBpCOk_q4HuDlFQ\"}","timestamp":"2025-09-29T10:20:12.020Z"}
+{"level":"info","message":"userId:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTEzNzQ5NSwiZXhwIjoxNzU5NzQyMjk1fQ.0iGnaRVE7q0Z8RtVFSOohE6YIfqeiBpCOk_q4HuDlFQ","timestamp":"2025-09-29T10:20:12.026Z"}
+{"level":"info","message":"decoded :[object Object]","timestamp":"2025-09-29T10:20:12.029Z"}
+{"level":"info","message":"accessToken from JWT->generateToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTE0MTIxMiwiZXhwIjoxNzU5MTQyMTEyfQ.2j0kfLIPYH5sxHpfbhtAHFt0u4a9-F5Q7HEfJUA_9Ig","timestamp":"2025-09-29T10:20:12.036Z"}
+{"level":"info","message":"User accessToken successfully recreated","timestamp":"2025-09-29T10:20:12.037Z"}
+{"level":"info","message":"from refresh token req.body : {\"__next_hmr_refresh_hash__\":\"2400\",\"accessToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTEzNzQ5NSwiZXhwIjoxNzU5MTM4Mzk1fQ.EXdfBBHDxP1yE2yLaWUOHcWYJoyLTvvIvR4ImOmB42A\",\"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTEzNzQ5NSwiZXhwIjoxNzU5NzQyMjk1fQ.0iGnaRVE7q0Z8RtVFSOohE6YIfqeiBpCOk_q4HuDlFQ\"}","timestamp":"2025-09-29T10:20:12.048Z"}
+{"level":"info","message":"userId:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTEzNzQ5NSwiZXhwIjoxNzU5NzQyMjk1fQ.0iGnaRVE7q0Z8RtVFSOohE6YIfqeiBpCOk_q4HuDlFQ","timestamp":"2025-09-29T10:20:12.050Z"}
+{"level":"info","message":"decoded :[object Object]","timestamp":"2025-09-29T10:20:12.051Z"}
+{"level":"info","message":"accessToken from JWT->generateToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTE0MTIxMiwiZXhwIjoxNzU5MTQyMTEyfQ.2j0kfLIPYH5sxHpfbhtAHFt0u4a9-F5Q7HEfJUA_9Ig","timestamp":"2025-09-29T10:20:12.053Z"}
+{"level":"info","message":"User accessToken successfully recreated","timestamp":"2025-09-29T10:20:12.054Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTE0MTIxMiwiZXhwIjoxNzU5MTQyMTEyfQ.2j0kfLIPYH5sxHpfbhtAHFt0u4a9-F5Q7HEfJUA_9Ig","timestamp":"2025-09-29T10:20:12.091Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:20:12.095Z"}
+{"level":"info","message":"payload: {\"id\":\"68cfe22af8d9bc479ed64250\",\"role\":\"admin\",\"iat\":1759141212,\"exp\":1759142112}","timestamp":"2025-09-29T10:20:12.098Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTE0MTIxMiwiZXhwIjoxNzU5MTQyMTEyfQ.2j0kfLIPYH5sxHpfbhtAHFt0u4a9-F5Q7HEfJUA_9Ig","timestamp":"2025-09-29T10:20:12.514Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:20:12.517Z"}
+{"level":"info","message":"payload: {\"id\":\"68cfe22af8d9bc479ed64250\",\"role\":\"admin\",\"iat\":1759141212,\"exp\":1759142112}","timestamp":"2025-09-29T10:20:12.533Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTE0MTIxMiwiZXhwIjoxNzU5MTQyMTEyfQ.2j0kfLIPYH5sxHpfbhtAHFt0u4a9-F5Q7HEfJUA_9Ig","timestamp":"2025-09-29T10:20:24.912Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:20:24.915Z"}
+{"level":"info","message":"payload: {\"id\":\"68cfe22af8d9bc479ed64250\",\"role\":\"admin\",\"iat\":1759141212,\"exp\":1759142112}","timestamp":"2025-09-29T10:20:24.918Z"}
+{"level":"info","message":"hotelData : [object Object]","timestamp":"2025-09-29T10:20:25.218Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTE0MTIxMiwiZXhwIjoxNzU5MTQyMTEyfQ.2j0kfLIPYH5sxHpfbhtAHFt0u4a9-F5Q7HEfJUA_9Ig","timestamp":"2025-09-29T10:20:25.222Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:20:25.224Z"}
+{"level":"info","message":"payload: {\"id\":\"68cfe22af8d9bc479ed64250\",\"role\":\"admin\",\"iat\":1759141212,\"exp\":1759142112}","timestamp":"2025-09-29T10:20:25.229Z"}
+{"level":"info","message":"hotelData : [object Object]","timestamp":"2025-09-29T10:20:25.483Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTE0MTIxMiwiZXhwIjoxNzU5MTQyMTEyfQ.2j0kfLIPYH5sxHpfbhtAHFt0u4a9-F5Q7HEfJUA_9Ig","timestamp":"2025-09-29T10:20:59.136Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:20:59.137Z"}
+{"level":"info","message":"payload: {\"id\":\"68cfe22af8d9bc479ed64250\",\"role\":\"admin\",\"iat\":1759141212,\"exp\":1759142112}","timestamp":"2025-09-29T10:20:59.140Z"}
+{"level":"info","message":"ivda eththi tto","timestamp":"2025-09-29T10:20:59.196Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTE0MTIxMiwiZXhwIjoxNzU5MTQyMTEyfQ.2j0kfLIPYH5sxHpfbhtAHFt0u4a9-F5Q7HEfJUA_9Ig","timestamp":"2025-09-29T10:20:59.386Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:20:59.386Z"}
+{"level":"info","message":"payload: {\"id\":\"68cfe22af8d9bc479ed64250\",\"role\":\"admin\",\"iat\":1759141212,\"exp\":1759142112}","timestamp":"2025-09-29T10:20:59.389Z"}
+{"level":"info","message":"hotelData : ","timestamp":"2025-09-29T10:20:59.634Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTE0MTIxMiwiZXhwIjoxNzU5MTQyMTEyfQ.2j0kfLIPYH5sxHpfbhtAHFt0u4a9-F5Q7HEfJUA_9Ig","timestamp":"2025-09-29T10:21:02.949Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:21:02.960Z"}
+{"level":"info","message":"payload: {\"id\":\"68cfe22af8d9bc479ed64250\",\"role\":\"admin\",\"iat\":1759141212,\"exp\":1759142112}","timestamp":"2025-09-29T10:21:02.967Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTE0MTIxMiwiZXhwIjoxNzU5MTQyMTEyfQ.2j0kfLIPYH5sxHpfbhtAHFt0u4a9-F5Q7HEfJUA_9Ig","timestamp":"2025-09-29T10:21:03.314Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:21:03.314Z"}
+{"level":"info","message":"payload: {\"id\":\"68cfe22af8d9bc479ed64250\",\"role\":\"admin\",\"iat\":1759141212,\"exp\":1759142112}","timestamp":"2025-09-29T10:21:03.316Z"}
+{"level":"info","message":"request got in here role:","timestamp":"2025-09-29T10:21:20.043Z"}
+{"level":"info","message":"request got in here role:","timestamp":"2025-09-29T10:21:22.969Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTE0MTIxMiwiZXhwIjoxNzU5MTQyMTEyfQ.2j0kfLIPYH5sxHpfbhtAHFt0u4a9-F5Q7HEfJUA_9Ig","timestamp":"2025-09-29T10:21:29.211Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:21:29.216Z"}
+{"level":"info","message":"payload: {\"id\":\"68cfe22af8d9bc479ed64250\",\"role\":\"admin\",\"iat\":1759141212,\"exp\":1759142112}","timestamp":"2025-09-29T10:21:29.219Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTE0MTIxMiwiZXhwIjoxNzU5MTQyMTEyfQ.2j0kfLIPYH5sxHpfbhtAHFt0u4a9-F5Q7HEfJUA_9Ig","timestamp":"2025-09-29T10:21:29.535Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:21:29.536Z"}
+{"level":"info","message":"payload: {\"id\":\"68cfe22af8d9bc479ed64250\",\"role\":\"admin\",\"iat\":1759141212,\"exp\":1759142112}","timestamp":"2025-09-29T10:21:29.538Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDkyZmEwMTMxMjU5MGYzMGYzMGQzNSIsInJvbGUiOiJhZ2VuY3kiLCJpYXQiOjE3NTkwNzI4MzYsImV4cCI6MTc1OTA3MzczNn0.n0t-t4tPN_XlAMM1fskG21vFnSf6FkeHOSrCeITlm_o","timestamp":"2025-09-29T10:22:04.066Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:22:04.068Z"}
+{"level":"error","message":"Failed to verify token: jwt expired","timestamp":"2025-09-29T10:22:04.070Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDkyZmEwMTMxMjU5MGYzMGYzMGQzNSIsInJvbGUiOiJhZ2VuY3kiLCJpYXQiOjE3NTkwNzI4MzYsImV4cCI6MTc1OTA3MzczNn0.n0t-t4tPN_XlAMM1fskG21vFnSf6FkeHOSrCeITlm_o","timestamp":"2025-09-29T10:22:04.080Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:22:04.103Z"}
+{"level":"error","message":"Failed to verify token: jwt expired","timestamp":"2025-09-29T10:22:04.138Z"}
+{"level":"info","message":"from refresh token req.body : {\"accessToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDkyZmEwMTMxMjU5MGYzMGYzMGQzNSIsInJvbGUiOiJhZ2VuY3kiLCJpYXQiOjE3NTkwNzI4MzYsImV4cCI6MTc1OTA3MzczNn0.n0t-t4tPN_XlAMM1fskG21vFnSf6FkeHOSrCeITlm_o\",\"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDkyZmEwMTMxMjU5MGYzMGYzMGQzNSIsInJvbGUiOiJhZ2VuY3kiLCJpYXQiOjE3NTkwNzI4MzYsImV4cCI6MTc1OTY3NzYzNn0.It0D-GIAR9saF44nIgPBPbVNc-JbaE7KXpNOk0x6EGE\",\"__next_hmr_refresh_hash__\":\"9452\"}","timestamp":"2025-09-29T10:22:04.214Z"}
+{"level":"info","message":"userId:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDkyZmEwMTMxMjU5MGYzMGYzMGQzNSIsInJvbGUiOiJhZ2VuY3kiLCJpYXQiOjE3NTkwNzI4MzYsImV4cCI6MTc1OTY3NzYzNn0.It0D-GIAR9saF44nIgPBPbVNc-JbaE7KXpNOk0x6EGE","timestamp":"2025-09-29T10:22:04.254Z"}
+{"level":"info","message":"decoded :[object Object]","timestamp":"2025-09-29T10:22:04.269Z"}
+{"level":"info","message":"accessToken from JWT->generateToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDkyZmEwMTMxMjU5MGYzMGYzMGQzNSIsInJvbGUiOiJhZ2VuY3kiLCJpYXQiOjE3NTkxNDEzMjQsImV4cCI6MTc1OTE0MjIyNH0.914susrmb2BnqhGJdTYRRBuEKGdBlWfpAw2WduEid9k","timestamp":"2025-09-29T10:22:04.280Z"}
+{"level":"info","message":"User accessToken successfully recreated","timestamp":"2025-09-29T10:22:04.297Z"}
+{"level":"info","message":"from refresh token req.body : {\"accessToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDkyZmEwMTMxMjU5MGYzMGYzMGQzNSIsInJvbGUiOiJhZ2VuY3kiLCJpYXQiOjE3NTkwNzI4MzYsImV4cCI6MTc1OTA3MzczNn0.n0t-t4tPN_XlAMM1fskG21vFnSf6FkeHOSrCeITlm_o\",\"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDkyZmEwMTMxMjU5MGYzMGYzMGQzNSIsInJvbGUiOiJhZ2VuY3kiLCJpYXQiOjE3NTkwNzI4MzYsImV4cCI6MTc1OTY3NzYzNn0.It0D-GIAR9saF44nIgPBPbVNc-JbaE7KXpNOk0x6EGE\",\"__next_hmr_refresh_hash__\":\"9452\"}","timestamp":"2025-09-29T10:22:04.310Z"}
+{"level":"info","message":"userId:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDkyZmEwMTMxMjU5MGYzMGYzMGQzNSIsInJvbGUiOiJhZ2VuY3kiLCJpYXQiOjE3NTkwNzI4MzYsImV4cCI6MTc1OTY3NzYzNn0.It0D-GIAR9saF44nIgPBPbVNc-JbaE7KXpNOk0x6EGE","timestamp":"2025-09-29T10:22:04.318Z"}
+{"level":"info","message":"decoded :[object Object]","timestamp":"2025-09-29T10:22:04.334Z"}
+{"level":"info","message":"accessToken from JWT->generateToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDkyZmEwMTMxMjU5MGYzMGYzMGQzNSIsInJvbGUiOiJhZ2VuY3kiLCJpYXQiOjE3NTkxNDEzMjQsImV4cCI6MTc1OTE0MjIyNH0.914susrmb2BnqhGJdTYRRBuEKGdBlWfpAw2WduEid9k","timestamp":"2025-09-29T10:22:04.345Z"}
+{"level":"info","message":"User accessToken successfully recreated","timestamp":"2025-09-29T10:22:04.348Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDkyZmEwMTMxMjU5MGYzMGYzMGQzNSIsInJvbGUiOiJhZ2VuY3kiLCJpYXQiOjE3NTkxNDEzMjQsImV4cCI6MTc1OTE0MjIyNH0.914susrmb2BnqhGJdTYRRBuEKGdBlWfpAw2WduEid9k","timestamp":"2025-09-29T10:22:04.369Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:22:04.370Z"}
+{"level":"info","message":"payload: {\"id\":\"68d92fa01312590f30f30d35\",\"role\":\"agency\",\"iat\":1759141324,\"exp\":1759142224}","timestamp":"2025-09-29T10:22:04.386Z"}
+{"level":"info","message":"Requestes url /dashboard","timestamp":"2025-09-29T10:22:05.515Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDkyZmEwMTMxMjU5MGYzMGYzMGQzNSIsInJvbGUiOiJhZ2VuY3kiLCJpYXQiOjE3NTkxNDEzMjQsImV4cCI6MTc1OTE0MjIyNH0.914susrmb2BnqhGJdTYRRBuEKGdBlWfpAw2WduEid9k","timestamp":"2025-09-29T10:22:05.635Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:22:05.701Z"}
+{"level":"info","message":"payload: {\"id\":\"68d92fa01312590f30f30d35\",\"role\":\"agency\",\"iat\":1759141324,\"exp\":1759142224}","timestamp":"2025-09-29T10:22:05.722Z"}
+{"level":"info","message":"Requestes url /dashboard","timestamp":"2025-09-29T10:22:05.870Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDkyZmEwMTMxMjU5MGYzMGYzMGQzNSIsInJvbGUiOiJhZ2VuY3kiLCJpYXQiOjE3NTkxNDEzMjQsImV4cCI6MTc1OTE0MjIyNH0.914susrmb2BnqhGJdTYRRBuEKGdBlWfpAw2WduEid9k","timestamp":"2025-09-29T10:22:12.559Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:22:12.563Z"}
+{"level":"info","message":"payload: {\"id\":\"68d92fa01312590f30f30d35\",\"role\":\"agency\",\"iat\":1759141324,\"exp\":1759142224}","timestamp":"2025-09-29T10:22:12.565Z"}
+{"level":"info","message":"Requestes url /logout","timestamp":"2025-09-29T10:22:12.636Z"}
+{"level":"info","message":"Generated OTP: 471610","timestamp":"2025-09-29T10:23:12.619Z"}
+{"level":"info","message":"Your OTP is 471610","timestamp":"2025-09-29T10:23:12.642Z"}
+{"level":"info","message":"Email sent to luck@gmail.com","timestamp":"2025-09-29T10:23:15.800Z"}
+{"level":"info","message":"OTP email sent to luck@gmail.com","timestamp":"2025-09-29T10:23:15.801Z"}
+{"level":"info","message":"471610 send to the email luck@gmail.com","timestamp":"2025-09-29T10:23:15.801Z"}
+{"level":"info","message":"Generated OTP: 157018","timestamp":"2025-09-29T10:24:58.826Z"}
+{"level":"info","message":"Your OTP is 157018","timestamp":"2025-09-29T10:24:58.832Z"}
+{"level":"info","message":"Email sent to luck@gmail.com","timestamp":"2025-09-29T10:25:01.936Z"}
+{"level":"info","message":"OTP email sent to luck@gmail.com","timestamp":"2025-09-29T10:25:01.937Z"}
+{"level":"info","message":"157018 send to the email luck@gmail.com","timestamp":"2025-09-29T10:25:01.937Z"}
+{"level":"info","message":"accessToken from JWT->generateToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1ZTk3OTM2MjQwYjM0ZjFjYjRhNyIsInJvbGUiOiJhZ2VuY3kiLCJpYXQiOjE3NTkxNDE1MjcsImV4cCI6MTc1OTE0MjQyN30.o5j2lbeuIVlc2FarX0yEWNdze1_BkpY0B2yIbWYkQ2k","timestamp":"2025-09-29T10:25:27.160Z"}
+{"level":"info","message":"lucky ragistered successfully","timestamp":"2025-09-29T10:25:27.165Z"}
+{"level":"info","message":"lucky is successfully ragistered","timestamp":"2025-09-29T10:25:27.167Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1ZTk3OTM2MjQwYjM0ZjFjYjRhNyIsInJvbGUiOiJhZ2VuY3kiLCJpYXQiOjE3NTkxNDE1MjcsImV4cCI6MTc1OTE0MjQyN30.o5j2lbeuIVlc2FarX0yEWNdze1_BkpY0B2yIbWYkQ2k","timestamp":"2025-09-29T10:25:30.279Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:25:30.329Z"}
+{"level":"info","message":"payload: {\"id\":\"68da5e97936240b34f1cb4a7\",\"role\":\"agency\",\"iat\":1759141527,\"exp\":1759142427}","timestamp":"2025-09-29T10:25:30.335Z"}
+{"level":"info","message":"Requestes url /profile","timestamp":"2025-09-29T10:25:30.747Z"}
+{"level":"info","message":"Token received from middleware->verifyToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGE1ZTk3OTM2MjQwYjM0ZjFjYjRhNyIsInJvbGUiOiJhZ2VuY3kiLCJpYXQiOjE3NTkxNDE1MjcsImV4cCI6MTc1OTE0MjQyN30.o5j2lbeuIVlc2FarX0yEWNdze1_BkpY0B2yIbWYkQ2k","timestamp":"2025-09-29T10:25:30.889Z"}
+{"level":"info","message":"payload gotit","timestamp":"2025-09-29T10:25:30.889Z"}
+{"level":"info","message":"payload: {\"id\":\"68da5e97936240b34f1cb4a7\",\"role\":\"agency\",\"iat\":1759141527,\"exp\":1759142427}","timestamp":"2025-09-29T10:25:30.891Z"}
+{"level":"info","message":"Requestes url /profile","timestamp":"2025-09-29T10:25:31.138Z"}
+{"level":"error","message":"Redis client error: connect ECONNREFUSED ::1:6379","timestamp":"2025-10-06T10:25:36.103Z"}
+{"level":"error","message":"Redis client error: connect ECONNREFUSED ::1:6379","timestamp":"2025-10-06T10:25:36.108Z"}
+{"level":"error","message":"Redis client error: connect ECONNREFUSED ::1:6379","timestamp":"2025-10-06T10:25:36.214Z"}
+{"level":"error","message":"Redis client error: connect ECONNREFUSED ::1:6379","timestamp":"2025-10-06T10:25:37.706Z"}
+{"level":"error","message":"Redis client error: connect ECONNREFUSED ::1:6379","timestamp":"2025-10-06T10:25:38.022Z"}
+{"level":"error","message":"Redis client error: connect ECONNREFUSED ::1:6379","timestamp":"2025-10-06T10:25:38.440Z"}
+{"level":"error","message":"Redis client error: connect ECONNREFUSED ::1:6379","timestamp":"2025-10-06T10:25:38.951Z"}
+{"level":"info","message":"Database connected","timestamp":"2025-10-06T10:25:38.977Z"}
+{"level":"info","message":"Server running on http://localhost:5000","timestamp":"2025-10-06T10:25:38.985Z"}
+{"level":"error","message":"Redis client error: connect ECONNREFUSED ::1:6379","timestamp":"2025-10-06T10:25:39.570Z"}
+{"level":"error","message":"Redis client error: connect ECONNREFUSED ::1:6379","timestamp":"2025-10-06T10:25:40.279Z"}
+{"level":"error","message":"Redis client error: connect ECONNREFUSED ::1:6379","timestamp":"2025-10-06T10:25:41.084Z"}
+{"level":"error","message":"Redis client error: connect ECONNREFUSED ::1:6379","timestamp":"2025-10-06T10:25:41.989Z"}
+{"level":"error","message":"Redis client error: connect ECONNREFUSED ::1:6379","timestamp":"2025-10-06T10:25:42.998Z"}

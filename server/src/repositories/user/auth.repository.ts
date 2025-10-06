@@ -20,7 +20,7 @@ export class AuthRepository implements IAuthRepository {
   }
 
   async createUser(
-    data: UserData & { isBlocked: boolean; password: string; role: string },
+    data: UserData & { isBlocked: boolean; password: string; role: string; },
   ): Promise<IUser> {
     return await User.create(data);
   }
