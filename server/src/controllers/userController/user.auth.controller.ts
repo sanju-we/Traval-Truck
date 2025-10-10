@@ -71,9 +71,10 @@ export class AuthController implements IController {
 
   async login(req: Request, res: Response): Promise<void> {
     const schema = z.object({
-      email: z.string().email(),
+      email: z.email(),
       password: z.string().min(8),
     });
+    logger.info(`fuck in `);
     const { email, password } = schema.parse(req.body);
 
     const result = await this._authService.verifyLogin(email, password);

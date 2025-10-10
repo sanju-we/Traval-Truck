@@ -39,6 +39,7 @@ export default function LoginPage() {
         );
         router.push('/');
       } else {
+        console.log(data)
         toast.error(`${data.message}`);
       }
     } catch (err) {

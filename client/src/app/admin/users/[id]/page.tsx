@@ -24,14 +24,22 @@ export default function UserDetailsPage() {
   }
 
   const handleToggleBlock = async () => {
+    const actionText = isBlocked ? 'unblock' : 'block';
+    const confirmAction = window.confirm(
+      `Are you sure you want to ${actionText} this ${user.role}?`
+    );
+
+    if (!confirmAction) return; // Stop if user cancels
+
     try {
       setLoading(true);
       const { data } = await api.patch(`/admin/vendor/block-toggle/${user.id}/${user.role}`);
-      console.log('data:', data);
+
       if (data.success) {
         setIsBlocked(!isBlocked);
-        toast.success(isBlocked ? 'User unblocked successfully' : 'User blocked successfully');
-        return;
+        toast.success(
+          !isBlocked ? 'User blocked successfully' : 'User unblocked successfully'
+        );
       }
     } catch (error) {
       console.error('Error toggling block:', error);
@@ -52,18 +60,9 @@ export default function UserDetailsPage() {
           <CardHeader className="flex items-center justify-between">
             <CardTitle className="text-2xl font-bold">
               {user.role === 'vendor' ? 'Vendor Details' : 'User Details'}
-              <div className="flex flex-col items-center">
-                <Image
-                  src="/images/profile.jpg"
-                  alt="Profile Picture"
-                  width={120}
-                  height={120}
-                  className="rounded-full border shadow-md object-cover"
-                />
-                <p className="mt-2 text-sm font-medium">{user.userName || 'Unknown User'}</p>
-              </div>
             </CardTitle>
-            <div className="flex gap-3">
+
+            <div className="flex items-center gap-3">
               <Button
                 variant={isBlocked ? 'default' : 'secondary'}
                 onClick={handleToggleBlock}
@@ -75,14 +74,23 @@ export default function UserDetailsPage() {
           </CardHeader>
 
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
-            {/* ✅ Profile Picture */}
+            {/* Profile */}
+            <div className="flex flex-col items-center md:col-span-2 mb-4">
+              {/* <Image
+                src={user.profilePicture || '/images/profile.jpg'}
+                alt="Profile Picture"
+                width={120}
+                height={120}
+                className="rounded-full border shadow-md object-cover"
+              /> */}
+              <p className="mt-2 text-sm font-medium">{user.userName || 'Unknown User'}</p>
+            </div>
 
             <div>
               <p className="font-medium">ID</p>
               <p className="text-sm text-gray-500">{user.id}</p>
             </div>
 
-            {/* ✅ Username */}
             <div>
               <p className="font-medium">Username</p>
               <p className="text-sm text-gray-500">{user.userName || 'Not provided'}</p>
@@ -136,7 +144,9 @@ export default function UserDetailsPage() {
             <div>
               <p className="font-medium">Status</p>
               <p
-                className={`text-sm font-semibold ${isBlocked ? 'text-red-600' : 'text-green-600'}`}
+                className={`text-sm font-semibold ${
+                  isBlocked ? 'text-red-600' : 'text-green-600'
+                }`}
               >
                 {isBlocked ? 'Blocked' : 'Active'}
               </p>

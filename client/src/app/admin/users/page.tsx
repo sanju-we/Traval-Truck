@@ -60,7 +60,6 @@ export default function UsersPage() {
 
   async function handleRoleSort(e: React.ChangeEvent<HTMLSelectElement>) {
     const selected = e.target.value;
-    // Optional: implement sorting with pagination if needed
     await api.get(`/admin/vendor/sort?sort=${selected}&status=${status}`);
   }
 
@@ -161,7 +160,6 @@ export default function UsersPage() {
             </div>
           )}
 
-          {/* Pagination Controls */}
           <div className="flex justify-center mt-6 gap-2 text-sm">
             <button
               className="px-3 py-1 rounded-md border text-gray-600 hover:bg-gray-100"
