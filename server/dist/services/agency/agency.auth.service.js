@@ -93,7 +93,7 @@ let agencyAuthService = class agencyAuthService {
         const agencyData = await this._agencyRepository.findByEmail(email);
         if (!agencyData)
             throw new UserNotFoundError();
-        let agency = { id: agencyData.id, email: agencyData.email };
+        const agency = { id: agencyData.id, email: agencyData.email };
         const { resetLink } = await this._ijwt.generateResetToken(agency);
         await this._emailService.sendEmail(email, 'Password Reset', `Reset your password: ${resetLink}`);
         logger.info(`From agencyAuth->sendLink:- Password reset link sent to ${email}`);

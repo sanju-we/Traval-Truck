@@ -6,6 +6,7 @@ import profileRouter from './userRoute/user.profile.js';
 
 const userRouter = Router();
 
+// userRouter.use(()=>console.log('asdkljhf'))
 userRouter.use('/auth', authRouter);
 userRouter.use('/refresh', authRouter);
 userRouter.use('/profile', verifyToken, profileRouter);

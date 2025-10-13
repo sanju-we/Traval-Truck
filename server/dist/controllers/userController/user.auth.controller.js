@@ -33,24 +33,25 @@ let AuthController = class AuthController {
             email: z.string().email(),
         });
         const { email } = schema.parse(req.body);
+        logger.info(`OTP sent to ${email}`);
         const otp = await this._generalService.generateOtp();
         await this._generalService.storeOtp(email, otp);
         await this._emailService.otpSend(email, otp);
-        logger.info(`OTP sent to ${email}`);
         sendResponse(res, STATUS_CODE.OK, true, 'OTP sent successfully');
     }
     async verify(req, res) {
         const schema = z.object({
-            email: z.string().email(),
+            email: z.email(),
             otp: z.string().length(6),
             userData: z.object({
                 name: z.string().min(1),
-                email: z.string().email(),
+                email: z.email(),
                 password: z.string().min(8),
-                phone: z.number(),
+                phoneNumber: z.number(),
             }),
         });
         const { email, otp, userData } = schema.parse(req.body);
+        logger.info(req.body);
         const { user, accessToken, refreshToken } = await this._authService.verify(email, otp, userData);
         await this._jwtUtil.setTokenInCookies(res, accessToken, refreshToken);
         logger.info(`User ${email} verified successfully`);
@@ -62,7 +63,7 @@ let AuthController = class AuthController {
     }
     async login(req, res) {
         const schema = z.object({
-            email: z.string().email(),
+            email: z.email(),
             password: z.string().min(8),
         });
         const { email, password } = schema.parse(req.body);

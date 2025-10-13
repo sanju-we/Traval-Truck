@@ -38,7 +38,7 @@ export default function UserProfilePage() {
     async function fetchUser() {
       try {
         const { data } = await api.get('/user/profile/profile');
-
+        console.log(data.data)
         if (!data.success) {
           toast.error(data.message);
           if (data.message === 'This user is Restricted by the admin') {

@@ -32,7 +32,7 @@ export class ProfileController implements IUserProfileController {
     }
 
     const user = toUserProfileDTO(userData);
-    logger.info(`User profile retrieved for ID ${id}`);
+    logger.info(`User profile retrieved for ID ${JSON.stringify(userData)}`);
     sendResponse(res, STATUS_CODE.OK, true, 'User profile found', user)
   }
 

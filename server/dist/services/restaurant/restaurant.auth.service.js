@@ -15,6 +15,7 @@ import { toRestaunrantProfile, } from '../../core/DTO/restaurant/response.dto.js
 import bcrypt from 'bcryptjs';
 import z from 'zod';
 import { EmailAlreadyRegisteredError, InvalidCredentialsError, InvalidResetTokenError, OtpExpiredError, UserNotFoundError, } from '../../utils/resAndErrors.js';
+import { logger } from '../../utils/logger.js';
 let RestaurantAuthService = class RestaurantAuthService {
     _ijwt;
     _redisClient;
@@ -45,6 +46,7 @@ let RestaurantAuthService = class RestaurantAuthService {
         const { email, otp } = JSON.parse(pendings);
         if (email !== enteredEmail || otp !== enteredOTP)
             throw new InvalidCredentialsError();
+        logger.info(`got in here`);
         const existingRestaurant = await this._restaurantRespo.findByEmail(email);
         if (existingRestaurant)
             throw new EmailAlreadyRegisteredError();

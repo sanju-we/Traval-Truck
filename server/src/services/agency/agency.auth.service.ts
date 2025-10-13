@@ -58,7 +58,7 @@ export class agencyAuthService implements IAgencyAuthService {
 
     const hashedPassword = await bcrypt.hash(agencyData.password, 10);
 
-    const agencyDoc = await this._agencyRepository.createAgency({
+    const agencyDoc = await this._agencyRepository.create({
       ownerName: agencyData.ownerName,
       companyName: agencyData.companyName,
       email: agencyData.email,
@@ -124,7 +124,7 @@ export class agencyAuthService implements IAgencyAuthService {
 
   async resetPassword(token: string, newPassword: string): Promise<void> {
     const payload = await this._ijwt.verifyResetToken(token);
-    const agency = await this._agencyRepository.fingById(payload.id);
+    const agency = await this._agencyRepository.findById(payload.id);
     if (!agency) throw new UserNotFoundError();
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);

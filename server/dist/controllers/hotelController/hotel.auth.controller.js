@@ -71,6 +71,7 @@ let HotelAuthController = class HotelAuthController {
         });
         const { email, password } = schema.parse(req.body);
         const result = await this._hotelService.verifyHotelLogin(email, password);
+        logger.info(`got it in here`);
         await this._ijwt.setTokenInCookies(res, result.accessToken, result.refreshToken);
         logger.info(`${result.hotel.companyName} loggeIn successfully`);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.LOGIN_SUCCESS);
@@ -102,7 +103,7 @@ let HotelAuthController = class HotelAuthController {
         await this._hotelService.resetHotelPassword(newPassword, token);
     }
     async getDashboard(req, res) {
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ACCOUNT_BLOCKED);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS);
     }
 };
 HotelAuthController = __decorate([

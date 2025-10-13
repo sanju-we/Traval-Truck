@@ -3,6 +3,7 @@ import { verifyToken } from '../middleware/authMiddleware.js';
 import authRouter from './userRoute/user.auth.js';
 import profileRouter from './userRoute/user.profile.js';
 const userRouter = Router();
+// userRouter.use(()=>console.log('asdkljhf'))
 userRouter.use('/auth', authRouter);
 userRouter.use('/refresh', authRouter);
 userRouter.use('/profile', verifyToken, profileRouter);

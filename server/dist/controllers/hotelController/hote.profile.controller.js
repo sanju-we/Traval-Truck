@@ -10,35 +10,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+import { sendResponse, UserNotFoundError } from '../../utils/resAndErrors.js';
 import { inject, injectable } from 'inversify';
-import z from 'zod';
-import { UserNotFoundError } from '../../utils/resAndErrors.js';
-let UserProfileService = class UserProfileService {
-    _authRespository;
-    constructor(_authRespository) {
-        this._authRespository = _authRespository;
+import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
+import { MESSAGES } from '../../utils/responseMessaages.js';
+let HotelProfileCotroller = class HotelProfileCotroller {
+    _hotelAuthRepository;
+    constructor(_hotelAuthRepository) {
+        this._hotelAuthRepository = _hotelAuthRepository;
     }
-    async setInterest(interests, id) {
-        const schema = z.object({
-            interests: z.array(z.string()),
-            id: z.string(),
-        });
-        schema.parse({ interests, id });
-        await this._authRespository.findByIdAndUpdateAction(id, interests, 'interest');
-    }
-    async updateProfile(formData, user) {
-        const userData = await this._authRespository.findById(user.id);
-        if (!userData)
+    async getHotelProfile(req, res) {
+        const user = req.user;
+        const hotel = await this._hotelAuthRepository.findById(user.id);
+        if (!hotel)
             throw new UserNotFoundError();
-        const updateUser = await this._authRespository.findByIdAndUpdateProfile(userData.id, formData);
-        if (!updateUser)
-            throw new UserNotFoundError();
-        return updateUser;
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS, hotel);
     }
 };
-UserProfileService = __decorate([
+HotelProfileCotroller = __decorate([
     injectable(),
-    __param(0, inject('IAuthRepository')),
+    __param(0, inject('IHotelAuthRepository')),
     __metadata("design:paramtypes", [Object])
-], UserProfileService);
-export { UserProfileService };
+], HotelProfileCotroller);
+export { HotelProfileCotroller };

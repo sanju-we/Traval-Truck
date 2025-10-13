@@ -31,13 +31,23 @@ let AdminVendorRepository = class AdminVendorRepository {
         const allData = [...hotelDatas, ...agencyDatas, ...restaurantDatas];
         return allData;
     }
-    async findAllUsers() {
+    async findAllUsers(page = 1, limit = 10) {
         const userData = await this._userRepository.findAll();
         const agencyData = await this._agencyRepository.findAll();
         const hotelData = await this._hotelRepository.findAll();
         const restaurantData = await this._restaurantRepository.findAll();
-        const allUser = [...userData, ...agencyData, ...hotelData, ...restaurantData];
-        return allUser;
+        const allUsers = [...userData, ...agencyData, ...hotelData, ...restaurantData];
+        const total = allUsers.length;
+        const totalPages = Math.ceil(total / limit);
+        const start = (page - 1) * limit;
+        const end = start + limit;
+        const paginated = allUsers.slice(start, end);
+        return {
+            data: paginated,
+            total,
+            page,
+            totalPages,
+        };
     }
 };
 AdminVendorRepository = __decorate([

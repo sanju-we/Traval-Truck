@@ -1,6 +1,10 @@
 import { Agency } from '../../models/Agency.js';
+import { BaseRepository } from '../../repositories/baseRepository.js';
 import { toVendorRequestDTO, } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
-export class agencyRepository {
+export class agencyRepository extends BaseRepository {
+    constructor() {
+        super(Agency);
+    }
     async findByEmail(email) {
         return await Agency.findOne({ email });
     }

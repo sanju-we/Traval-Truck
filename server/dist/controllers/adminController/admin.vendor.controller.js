@@ -11,6 +11,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import z from 'zod';
+import { logger } from '../../utils/logger.js';
 import { sendResponse } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { inject, injectable } from 'inversify';
@@ -29,8 +30,15 @@ let AdminVendorController = class AdminVendorController {
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, allReq);
     }
     async showAllUsers(req, res) {
-        const allUsers = await this._adminVenderRepo.findAllUsers();
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, allUsers);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const { data, total, totalPages } = await this._adminVenderRepo.findAllUsers(page, limit);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, {
+            data,
+            total,
+            page,
+            totalPages
+        });
     }
     async updateStatus(req, res) {
         const schema = z.object({
@@ -41,6 +49,24 @@ let AdminVendorController = class AdminVendorController {
         const { id, action, role } = req.params;
         await this._adminVenderService.updateStatus(id, action, role);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.APPROVED);
+    }
+    async blockTongle(req, res) {
+        logger.info(`request got in here role:`);
+        const schema = z.object({
+            id: z.string(),
+            role: z.string(),
+        });
+        const { id, role } = schema.parse(req.params);
+        await this._adminVenderService.updateBlock(id, role);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED);
+    }
+    async sortUsers(req, res) {
+        const schema = z.object({
+            sort: z.string(),
+            status: z.string()
+        });
+        const { sort, status } = schema.parse(req.query);
+        const data = await this._adminVenderService;
     }
 };
 AdminVendorController = __decorate([

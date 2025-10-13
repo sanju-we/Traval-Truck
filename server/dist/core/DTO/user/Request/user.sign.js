@@ -5,5 +5,5 @@ export const userSignupDTO = (user) => ({
     phone: user.phoneNumber,
     interesets: user.interest,
     role: user.role,
-    isBlocked: user.isBlocked
+    isBlocked: user.isBlocked,
 });

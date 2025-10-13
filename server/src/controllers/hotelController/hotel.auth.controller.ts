@@ -22,11 +22,7 @@ export class HotelAuthController implements IHotelAuthController {
 
   async sendOtp(req: Request, res: Response): Promise<void> {
     const schema = z.object({
-      email: z
-        .string()
-        .regex(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        ),
+      email: z.email(),
     });
     const { email } = schema.parse(req.body);
     const otp = await this._generalService.generateOtp();
@@ -38,20 +34,12 @@ export class HotelAuthController implements IHotelAuthController {
 
   async verify(req: Request, res: Response): Promise<void> {
     const schema = z.object({
-      email: z
-        .string()
-        .regex(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        ),
+      email: z.email(),
       otp: z.string().length(6),
       hotelData: z.object({
         companyName: z.string(),
         ownerName: z.string(),
-        email: z
-          .string()
-          .regex(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-          ),
+        email: z.email(),
         password: z.string().min(8),
         phone: z.number(),
       }),
@@ -69,11 +57,7 @@ export class HotelAuthController implements IHotelAuthController {
 
   async verifyHotelLogin(req: Request, res: Response): Promise<void> {
     const schema = z.object({
-      email: z
-        .string()
-        .regex(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        ),
+      email: z.email(),
       password: z.string().min(8),
     });
     const { email, password } = schema.parse(req.body);

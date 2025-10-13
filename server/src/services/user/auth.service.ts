@@ -46,7 +46,7 @@ export class AuthService implements IAuthService {
         name: z.string().min(1),
         email: z.email(),
         password: z.string().min(8),
-        phone: z.number(),
+        phoneNumber: z.number(),
       }),
     });
     schema.parse({ email: enteredEmail, otp: enteredOtp, userData });
@@ -62,10 +62,10 @@ export class AuthService implements IAuthService {
 
     const hashedPassword = await bcrypt.hash(userData.password, 10);
 
-    const userDoc = await this._authRepository.createUser({
+    const userDoc = await this._authRepository.create({
       name: userData.name,
       email: userData.email,
-      phone: userData.phone,
+      phoneNumber: userData.phoneNumber,
       isBlocked: false,
       password: hashedPassword,
       role: 'user',

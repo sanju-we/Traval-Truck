@@ -11,6 +11,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { injectable, inject } from 'inversify';
+import z from 'zod';
 import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors.js';
 import { logger } from '../../utils/logger.js';
 let AdminVendorService = class AdminVendorService {
@@ -25,12 +26,12 @@ let AdminVendorService = class AdminVendorService {
         this._restaurantRepository = _restaurantRepository;
     }
     async updateStatus(id, action, role) {
-        // const schema = z.object({
-        //   id: z.string(),
-        //   action: z.enum(['approve', 'reject']),
-        //   role: z.enum(['agency', 'hotel', 'restaurant']),
-        // });
-        // schema.parse({ id, action, role });
+        const schema = z.object({
+            id: z.string(),
+            action: z.enum(['approve', 'reject']),
+            role: z.enum(['agency', 'hotel', 'restaurant']),
+        });
+        schema.parse({ id, action, role });
         let vendor;
         if (role === 'agency') {
             vendor = await this._agecyRepository.fingById(id);
@@ -57,6 +58,38 @@ let AdminVendorService = class AdminVendorService {
                 ? this._hotelRepository
                 : this._restaurantRepository;
         await repo.findByIdAndUpdateAction(id, true, field);
+    }
+    async updateBlock(id, role) {
+        const schema = z.object({
+            id: z.string(),
+            role: z.string(),
+        });
+        schema.parse({ id, role });
+        let user;
+        if (role === 'user') {
+            user = await this._userRepository.findById(id);
+            if (!user)
+                throw new UserNotFoundError();
+            await this._userRepository.findByIdAndUpdateAction(id, !user.isBlocked, 'isBlocked');
+        }
+        else if (role === 'agency') {
+            user = await this._agecyRepository.fingById(id);
+            if (!user)
+                throw new UserNotFoundError();
+            await this._agecyRepository.findByIdAndUpdateAction(id, !user.isApproved, 'isApproved');
+        }
+        else if (role === 'hotel') {
+            user = await this._hotelRepository.findById(id);
+            if (!user)
+                throw new UserNotFoundError();
+            await this._hotelRepository.findByIdAndUpdateAction(id, !user.isApproved, 'isApproved');
+        }
+        else {
+            user = await this._restaurantRepository.findById(id);
+            if (!user)
+                throw new UserNotFoundError();
+            await this._restaurantRepository.findByIdAndUpdateAction(id, !user.isApproved, 'isApproved');
+        }
     }
 };
 AdminVendorService = __decorate([

@@ -13,7 +13,7 @@ import { isBlock } from 'typescript';
 export class AdminVendorService implements IAdminVendorService {
   constructor(
     @inject('IAuthRepository') private readonly _userRepository: IAuthRepository,
-    @inject('IAgencyRespository') private readonly _agecyRepository: IAgencyRespository,
+    @inject('IAgencyRespository') private readonly _agencyrepository: IAgencyRespository,
     @inject('IHotelAuthRepository') private readonly _hotelRepository: IHotelAuthRepository,
     @inject('IRestaurantAuthRepository')
     private readonly _restaurantRepository: IRestaurantAuthRepository,
@@ -28,7 +28,7 @@ export class AdminVendorService implements IAdminVendorService {
     schema.parse({ id, action, role });
     let vendor;
     if (role === 'agency') {
-      vendor = await this._agecyRepository.fingById(id);
+      vendor = await this._agencyrepository.findById(id);
     } else if (role === 'hotel') {
       logger.info(`ivda eththi tto`);
       vendor = await this._hotelRepository.findById(id);
@@ -48,7 +48,7 @@ export class AdminVendorService implements IAdminVendorService {
 
     const repo =
       role === 'agency'
-        ? this._agecyRepository
+        ? this._agencyrepository
         : role === 'hotel'
           ? this._hotelRepository
           : this._restaurantRepository;
@@ -68,9 +68,9 @@ export class AdminVendorService implements IAdminVendorService {
       if (!user) throw new UserNotFoundError();
       await this._userRepository.findByIdAndUpdateAction(id, !user.isBlocked, 'isBlocked');
     } else if (role === 'agency') {
-      user = await this._agecyRepository.fingById(id);
+      user = await this._agencyrepository.findById(id);
       if (!user) throw new UserNotFoundError();
-      await this._agecyRepository.findByIdAndUpdateAction(id, !user.isApproved, 'isApproved');
+      await this._agencyrepository.findByIdAndUpdateAction(id, !user.isApproved, 'isApproved');
     } else if (role === 'hotel') {
       user = await this._hotelRepository.findById(id);
       if (!user) throw new UserNotFoundError();

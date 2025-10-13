@@ -19,6 +19,9 @@ const resetLimiter = rateLimit({
 });
 
 authRouter
+  .get("/login", (req, res) => {
+    return res.status(200).json({ success: true })
+  })
   .post('/sendOtp', otpLimiter, asyncHandler(authController.sendOtp.bind(authController)))
   .post('/verify', asyncHandler(authController.verify.bind(authController)))
   .post('/login', asyncHandler(authController.login.bind(authController)))

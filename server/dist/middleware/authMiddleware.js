@@ -1,4 +1,4 @@
-import { HttpError, sendResponse, RESTRICTED_USER, } from '../utils/resAndErrors.js';
+import { HttpError, sendResponse, UNAUTHORIZEDUserFounf, RESTRICTED_USER, } from '../utils/resAndErrors.js';
 import { STATUS_CODE } from '../utils/HTTPStatusCode.js';
 import { User } from '../models/SUser.js';
 import { Restaurant } from '../models/Restaurant.js';
@@ -34,8 +34,10 @@ export async function verifyToken(req, res, next) {
         if (payload.role !== 'user') {
             return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
         }
-        if (user.isBlocked)
+        if (user.isBlocked) {
+            res.clearCookie('accessToken', { httpOnly: true, secure: false, sameSite: 'lax' });
             throw new RESTRICTED_USER();
+        }
         req.user = userSignupDTO(user);
         next();
     }
@@ -67,12 +69,14 @@ export async function verifyHotelToken(req, res, next) {
         if (!hotel) {
             return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Hotel not found');
         }
-        if (payload.role !== 'hotel') {
+        if (hotel.role !== 'hotel') {
             return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
         }
         if (hotel.isRestricted) {
-            ijwt.blacklistRefreshToken(res);
-            throw new RESTRICTED_USER();
+            if (req.url !== '/profile') {
+                if (!hotel.isApproved)
+                    throw new UNAUTHORIZEDUserFounf();
+            }
         }
         req.user = toVendorAuth(hotel);
         next();
@@ -103,11 +107,16 @@ export async function verifyAgencyToken(req, res, next) {
         if (!agency) {
             return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Hotel not found');
         }
-        if (payload.role !== 'agency') {
+        if (agency.role !== 'agency') {
             return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
         }
-        if (agency.isRestricted)
-            throw new RESTRICTED_USER();
+        if (agency.isRestricted) {
+            if (req.url !== '/profile') {
+                if (!agency.isApproved)
+                    throw new UNAUTHORIZEDUserFounf();
+            }
+        }
+        logger.info(`Requestes url ${req.url}`);
         req.user = toVendorAuth(agency);
         next();
     }
@@ -137,11 +146,16 @@ export async function verifyRestaurantToken(req, res, next) {
         if (!restaurant) {
             return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Hotel not found');
         }
-        if (payload.role !== 'restaurant') {
+        if (restaurant.role !== 'restaurant') {
             return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
         }
-        if (restaurant.isRestricted)
-            throw new RESTRICTED_USER();
+        if (restaurant.isRestricted) {
+            if (req.url !== '/profile') {
+                logger.info(`req.url:${req.url}`);
+                if (!restaurant.isApproved)
+                    throw new RESTRICTED_USER();
+            }
+        }
         req.user = toVendorAuth(restaurant);
         next();
     }
@@ -171,7 +185,7 @@ export async function verifyAdminToken(req, res, next) {
         if (!admin) {
             return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Admin not found');
         }
-        if (payload.role !== 'admin') {
+        if (admin.role !== 'admin') {
             return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
         }
         req.user = userSignupDTO(admin);

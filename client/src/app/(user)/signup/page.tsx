@@ -14,7 +14,7 @@ export default function SignUpPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    phone: '',
+    phoneNumber: '',
   });
   const [message, setMessage] = useState('');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -62,9 +62,9 @@ export default function SignUpPage() {
       newError.email = 'Invalid email address';
     }
 
-    if (!formData.phone) {
+    if (!formData.phoneNumber) {
       newError.phone = 'Phone is required';
-    } else if (!/^\d{10}$/.test(formData.phone)) {
+    } else if (!/^\d{10}$/.test(formData.phoneNumber)) {
       newError.phone = 'Phone must be 10 digits';
     }
 
@@ -124,7 +124,7 @@ export default function SignUpPage() {
           name: formData.name,
           email: formData.email,
           password: formData.password,
-          phone: Number(formData.phone),
+          phoneNumber: Number(formData.phoneNumber),
         },
       });
       const data = res.data;
@@ -189,7 +189,7 @@ export default function SignUpPage() {
             <label className="block text-sm font-medium">Phone</label>
             <input
               type="text"
-              name="phone"
+              name="phoneNumber"
               placeholder="Enter your Phone Number"
               className="mt-1 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               onChange={(e) => handleChange(e)}

@@ -45,7 +45,7 @@ let AgencyAuthController = class AgencyAuthController {
                 .string()
                 .regex(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/),
             otp: z.string().length(6),
-            userData: z.object({
+            restaurantData: z.object({
                 ownerName: z.string(),
                 companyName: z.string(),
                 email: z
@@ -55,8 +55,8 @@ let AgencyAuthController = class AgencyAuthController {
                 phone: z.number(),
             }),
         });
-        const { email, otp, userData } = schema.parse(req.body);
-        const { agencyData, accessToken, refreshToken } = await this._agencyAuthService.verifyAgencySignup(email, otp, userData);
+        const { email, otp, restaurantData } = schema.parse(req.body);
+        const { agencyData, accessToken, refreshToken } = await this._agencyAuthService.verifyAgencySignup(email, otp, restaurantData);
         await this._IJWT.setTokenInCookies(res, accessToken, refreshToken);
         logger.info(`${agencyData.companyName} is successfully ragistered`);
         sendResponse(res, STATUS_CODE.CREATED, true, MESSAGES.CREATED);
