@@ -29,9 +29,7 @@ let RestaurantAuthController = class RestaurantAuthController {
     }
     async sendOtp(req, res) {
         const schema = z.object({
-            email: z
-                .string()
-                .regex(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/),
+            email: z.email(),
         });
         const { email } = schema.parse(req.body);
         const otp = await this._generalService.generateOtp();

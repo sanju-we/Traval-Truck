@@ -9,6 +9,18 @@ export interface IRestaurant extends Document {
   rating: Number;
   totalReviews: Number;
   cuisines: string[];
+  bankDetails: {
+    accountHolder: string,
+    accountNumber: string,
+    ifscCode: string,
+    bankName: string,
+  };
+  documents: {
+    registrationCertificate: String,
+    panCard: String,
+    bankProof: String,
+    ownerIdProof: String,
+  };
   foodItems: Schema.Types.ObjectId;
   reviews: Schema.Types.ObjectId[];
   images: string[];

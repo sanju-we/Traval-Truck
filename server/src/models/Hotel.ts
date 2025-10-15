@@ -1,6 +1,5 @@
 import { Document, Schema, model } from 'mongoose';
 import { IHotel } from '../core/interface/modelInterface/IHotel.js';
-import { string } from 'zod';
 
 const hotelSchema = new Schema<IHotel>({
   companyName: {
@@ -17,6 +16,14 @@ const hotelSchema = new Schema<IHotel>({
     type: String,
     required: true,
   },
+  gstNumber:{
+    type:String,
+    required : false
+  },
+  taxId:{
+    type:String,
+    required : false
+  },
   rating: {
     type: Number,
     default: 0,
@@ -28,12 +35,14 @@ const hotelSchema = new Schema<IHotel>({
   packages: [
     {
       type: Schema.Types.ObjectId,
+      ref:'Package',
       required: false,
     },
   ],
   reviews: [
     {
       type: Schema.Types.ObjectId,
+      ref:'Reviews'
     },
   ],
   images: [
@@ -41,6 +50,34 @@ const hotelSchema = new Schema<IHotel>({
       type: String,
     },
   ],
+  bankDetails:{
+    accountHolder : {
+      type:String,
+    },
+    accountNumber:{
+      type:String,
+    },
+    ifscCode:{
+      type:String
+    },
+    bankName:{
+      type:String,
+    }
+  },
+  documents:{
+    registrationCertificate : {
+      type:String,
+    },
+    panCard:{
+      type:String,
+    },
+    bankProof:{
+      type:String
+    },
+    ownerIdProof:{
+      type:String,
+    }
+  },
   phone: {
     type: Number,
     required: true,
@@ -51,10 +88,11 @@ const hotelSchema = new Schema<IHotel>({
   },
   isApproved: {
     type: Boolean,
+    default : false
   },
   role: {
     type: String,
-    unique: true,
+    required: true,
   },
   isRestricted: {
     type: Boolean,

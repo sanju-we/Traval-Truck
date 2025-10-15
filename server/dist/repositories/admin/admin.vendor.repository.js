@@ -12,6 +12,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { inject, injectable } from 'inversify';
 import { logger } from '../../utils/logger.js';
+import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
+import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
 let AdminVendorRepository = class AdminVendorRepository {
     _restaurantRepository;
     _hotelRepository;
@@ -24,19 +26,21 @@ let AdminVendorRepository = class AdminVendorRepository {
         this._userRepository = _userRepository;
     }
     async findAllRequests() {
-        const hotelDatas = await this._hotelRepository.findAllRequest();
-        const agencyDatas = await this._agencyRepository.findAllRequest();
-        const restaurantDatas = await this._restaurantRepository.findAllRequest();
+        const hotelDatas = await this._hotelRepository.findAllUser({ isApproved: false }, {});
+        const agencyDatas = await this._agencyRepository.findAllUser({ isApproved: false }, {});
+        const restaurantDatas = await this._restaurantRepository.findAllUser({ isApproved: false }, {});
         logger.info(`hotelData : ${hotelDatas}`);
         const allData = [...hotelDatas, ...agencyDatas, ...restaurantDatas];
-        return allData;
+        return allData.map(toVendorRequestDTO);
     }
     async findAllUsers(page = 1, limit = 10) {
-        const userData = await this._userRepository.findAll();
-        const agencyData = await this._agencyRepository.findAll();
-        const hotelData = await this._hotelRepository.findAll();
-        const restaurantData = await this._restaurantRepository.findAll();
-        const allUsers = [...userData, ...agencyData, ...hotelData, ...restaurantData];
+        const userData = await this._userRepository.findAllUser({}, {});
+        const agencyData = await this._agencyRepository.findAllUser({ isApproved: true }, {});
+        const hotelData = await this._hotelRepository.findAllUser({ isApproved: true }, {});
+        const restaurantData = await this._restaurantRepository.findAllUser({ isApproved: true }, {});
+        const vendorDTO = [...agencyData.map(toVendorRequestDTO), ...hotelData.map(toVendorRequestDTO), ...restaurantData.map(toVendorRequestDTO)];
+        const allUserDTO = [...userData.map(toUserProfileDTO)];
+        const allUsers = [...allUserDTO, ...vendorDTO];
         const total = allUsers.length;
         const totalPages = Math.ceil(total / limit);
         const start = (page - 1) * limit;

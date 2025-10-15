@@ -16,12 +16,12 @@ import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors.js';
 import { logger } from '../../utils/logger.js';
 let AdminVendorService = class AdminVendorService {
     _userRepository;
-    _agecyRepository;
+    _agencyrepository;
     _hotelRepository;
     _restaurantRepository;
-    constructor(_userRepository, _agecyRepository, _hotelRepository, _restaurantRepository) {
+    constructor(_userRepository, _agencyrepository, _hotelRepository, _restaurantRepository) {
         this._userRepository = _userRepository;
-        this._agecyRepository = _agecyRepository;
+        this._agencyrepository = _agencyrepository;
         this._hotelRepository = _hotelRepository;
         this._restaurantRepository = _restaurantRepository;
     }
@@ -34,7 +34,7 @@ let AdminVendorService = class AdminVendorService {
         schema.parse({ id, action, role });
         let vendor;
         if (role === 'agency') {
-            vendor = await this._agecyRepository.fingById(id);
+            vendor = await this._agencyrepository.findById(id);
         }
         else if (role === 'hotel') {
             logger.info(`ivda eththi tto`);
@@ -53,7 +53,7 @@ let AdminVendorService = class AdminVendorService {
         }
         const field = action === 'approve' ? 'isApproved' : 'isRestricted';
         const repo = role === 'agency'
-            ? this._agecyRepository
+            ? this._agencyrepository
             : role === 'hotel'
                 ? this._hotelRepository
                 : this._restaurantRepository;
@@ -73,10 +73,10 @@ let AdminVendorService = class AdminVendorService {
             await this._userRepository.findByIdAndUpdateAction(id, !user.isBlocked, 'isBlocked');
         }
         else if (role === 'agency') {
-            user = await this._agecyRepository.fingById(id);
+            user = await this._agencyrepository.findById(id);
             if (!user)
                 throw new UserNotFoundError();
-            await this._agecyRepository.findByIdAndUpdateAction(id, !user.isApproved, 'isApproved');
+            await this._agencyrepository.findByIdAndUpdateAction(id, !user.isApproved, 'isApproved');
         }
         else if (role === 'hotel') {
             user = await this._hotelRepository.findById(id);

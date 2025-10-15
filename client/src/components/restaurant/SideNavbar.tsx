@@ -20,10 +20,10 @@ function SideNavbar() {
   const router = useRouter();
 
   const handleLogout = async () => {
-    const res = await api.post('/agency/auth/logout');
+    const res = await api.post('/restaurant/auth/logout');
     if (res.data.success) {
       toast.success('Log-out successfully');
-      router.push('/agency/login');
+      router.push('/restaurant/login');
     }
   };
 

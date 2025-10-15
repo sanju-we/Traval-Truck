@@ -41,6 +41,34 @@ const agencySchema = new Schema<IAgency>({
       type: String,
     },
   ],
+  bankDetails:{
+    accountHolder : {
+      type:String,
+    },
+    accountNumber:{
+      type:String,
+    },
+    ifscCode:{
+      type:String
+    },
+    bankName:{
+      type:String,
+    }
+  },
+  documents:{
+    registrationCertificate : {
+      type:String,
+    },
+    panCard:{
+      type:String,
+    },
+    bankProof:{
+      type:String
+    },
+    ownerIdProof:{
+      type:String,
+    }
+  },
   phone: {
     type: Number,
     required: true,
@@ -51,6 +79,7 @@ const agencySchema = new Schema<IAgency>({
   },
   isApproved: {
     type: Boolean,
+    default : false
   },
   role: {
     type: String,

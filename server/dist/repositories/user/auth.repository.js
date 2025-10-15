@@ -16,30 +16,7 @@ import z from 'zod';
 let AuthRepository = class AuthRepository extends BaseRepository {
     constructor() {
         super(User);
-        logger.debug('AuthRepository initialized');
     }
-    // async findByEmail(email: string): Promise<IUser | null> {
-    //   try {
-    //     const user = await this.findOne({ email });
-    //     logger.debug(`Queried user by email ${email}: ${user ? 'found' : 'not found'}`);
-    //     return user;
-    //   } catch (err: any) {
-    //     logger.error(`Failed to find user by email ${email}: ${err.message}`);
-    //     throw new RepositoryError(`Failed to find user by email: ${err.message}`);
-    //   }
-    // }
-    // async createUser(
-    //   data: UserData & { isBlocked: boolean; password: String; role: string }
-    // ): Promise<IUser> {
-    //   try {   
-    //     const user = await this.create(data);
-    //     logger.info(`Created user with email ${JSON.stringify(data)}`);
-    //     return user;
-    //   } catch (err: any) {
-    //     logger.error(`Failed to create user with email ${data.email}: ${err.message}`);
-    //     throw new RepositoryError(`Failed to create user: ${err.message}`);
-    //   }
-    // }
     async updatePasswordById(id, password) {
         try {
             const user = await this.update(id, { password });
@@ -54,16 +31,6 @@ let AuthRepository = class AuthRepository extends BaseRepository {
             throw new RepositoryError(`Failed to update password: ${err.message}`);
         }
     }
-    // async findAll(): Promise<userProfileDTO[]> {
-    //   try {
-    //     const users = await this.findAllUser({ role: 'user' });
-    //     logger.debug(`Found ${users.length} users with role 'user'`);
-    //     return users.map(toUserProfileDTO);
-    //   } catch (err: any) {
-    //     logger.error(`Failed to find all users: ${err.message}`);
-    //     throw new RepositoryError(`Failed to find all users: ${err.message}`);
-    //   }
-    // }
     async findByIdAndUpdateAction(id, action, field) {
         const schema = z.union([z.boolean(), z.array(z.string())]);
         try {

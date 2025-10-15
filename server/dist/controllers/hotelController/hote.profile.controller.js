@@ -14,10 +14,14 @@ import { sendResponse, UserNotFoundError } from '../../utils/resAndErrors.js';
 import { inject, injectable } from 'inversify';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
+import z from 'zod';
+import { logger } from '../../utils/logger.js';
 let HotelProfileCotroller = class HotelProfileCotroller {
     _hotelAuthRepository;
-    constructor(_hotelAuthRepository) {
+    _hoteService;
+    constructor(_hotelAuthRepository, _hoteService) {
         this._hotelAuthRepository = _hotelAuthRepository;
+        this._hoteService = _hoteService;
     }
     async getHotelProfile(req, res) {
         const user = req.user;
@@ -26,10 +30,29 @@ let HotelProfileCotroller = class HotelProfileCotroller {
             throw new UserNotFoundError();
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS, hotel);
     }
+    async updateProfile(req, res) {
+        logger.info(`req.body ${JSON.stringify(req.body)}`);
+        const schema = z.object({
+            ownerName: z.string(),
+            companyName: z.string(),
+            phone: z.string(),
+            bankDetails: z.object({
+                accountHolder: z.string(),
+                accountNumber: z.string(),
+                bankName: z.string(),
+                ifscCode: z.string()
+            })
+        });
+        const { ownerName, phone, companyName, bankDetails } = schema.parse(req.body);
+        const user = req.user;
+        const updatedHotel = await this._hoteService.updateProfile(user.id, { ownerName, companyName, phone: Number(phone), bankDetails });
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updatedHotel);
+    }
 };
 HotelProfileCotroller = __decorate([
     injectable(),
     __param(0, inject('IHotelAuthRepository')),
-    __metadata("design:paramtypes", [Object])
+    __param(1, inject('IHotelProfileService')),
+    __metadata("design:paramtypes", [Object, Object])
 ], HotelProfileCotroller);
 export { HotelProfileCotroller };

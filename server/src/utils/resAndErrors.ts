@@ -84,6 +84,12 @@ export class UNAUTHORIZEDUserFounf extends HttpError {
   }
 }
 
+export class BADREQUEST extends HttpError {
+  constructor() {
+    super(401, "Required fileds are missing");
+  }
+}
+
 export class InvalidAction extends HttpError {
   constructor() {
     super(400, 'Invalid Action');

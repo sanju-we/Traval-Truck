@@ -163,7 +163,7 @@ export default function SignUpPage() {
       const res = await api.post('/hotel/auth/verify', {
         email: formData.email,
         otp: otpCode,
-        restaurantData: {
+        hotelData: {
           companyName: formData.companyName,
           ownerName: formData.ownerName,
           email: formData.email,

@@ -56,7 +56,7 @@ let HotelAuthService = class HotelAuthService {
             throw new EmailAlreadyRegisteredError();
         logger.info(`otp : ${otp} otp type: ${typeof otp}, entered otp : ${enteredOtp}, type of ${typeof enteredOtp} , email : ${enteredEmail}`);
         const hashedPassword = await bcrypt.hash(hotelData.password, 10);
-        const hotelDoc = await this._hotelRepo.createHotel({
+        const hotelDoc = await this._hotelRepo.create({
             ownerName: hotelData.ownerName,
             companyName: hotelData.companyName,
             email: hotelData.email,

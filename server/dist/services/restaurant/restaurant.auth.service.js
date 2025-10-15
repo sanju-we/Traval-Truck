@@ -51,7 +51,7 @@ let RestaurantAuthService = class RestaurantAuthService {
         if (existingRestaurant)
             throw new EmailAlreadyRegisteredError();
         const hashedPassword = await bcrypt.hash(restaurantData.password, 10);
-        const restaurantDoc = await this._restaurantRespo.createRestauratn({
+        const restaurantDoc = await this._restaurantRespo.create({
             companyName: restaurantData.companyName,
             email: restaurantData.email,
             isApproved: false,

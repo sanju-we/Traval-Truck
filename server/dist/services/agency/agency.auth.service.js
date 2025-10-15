@@ -50,7 +50,7 @@ let agencyAuthService = class agencyAuthService {
         if (existingAgency)
             throw new EmailAlreadyRegisteredError();
         const hashedPassword = await bcrypt.hash(agencyData.password, 10);
-        const agencyDoc = await this._agencyRepository.createAgency({
+        const agencyDoc = await this._agencyRepository.create({
             ownerName: agencyData.ownerName,
             companyName: agencyData.companyName,
             email: agencyData.email,
@@ -100,7 +100,7 @@ let agencyAuthService = class agencyAuthService {
     }
     async resetPassword(token, newPassword) {
         const payload = await this._ijwt.verifyResetToken(token);
-        const agency = await this._agencyRepository.fingById(payload.id);
+        const agency = await this._agencyRepository.findById(payload.id);
         if (!agency)
             throw new UserNotFoundError();
         const hashedPassword = await bcrypt.hash(newPassword, 10);

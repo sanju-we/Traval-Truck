@@ -23,39 +23,6 @@ let RestaurantAuthRepository = class RestaurantAuthRepository extends BaseReposi
     constructor() {
         super(Restaurant);
     }
-    async findByEmail(email) {
-        try {
-            const restaurant = await this.findOne({ email });
-            return restaurant;
-        }
-        catch (err) {
-            logger.error(`Failed to find restaurant by email ${email}: ${err.message}`);
-            throw new RepositoryError(`Failed to find restaurant by email: ${err.message}`);
-        }
-    }
-    async findById(id) {
-        try {
-            const restaurant = await super.findById(id);
-            logger.debug(`Queried restaurant by ID ${id}: ${restaurant ? 'found' : 'not found'}`);
-            return restaurant;
-        }
-        catch (err) {
-            logger.error(`Failed to find restaurant by ID ${id}: ${err.message}`);
-            throw new RepositoryError(`Failed to find restaurant by ID: ${err.message}`);
-        }
-    }
-    async createRestauratn(data) {
-        try {
-            vendorDataSchema.parse(data); // Validate input
-            const restaurant = await this.create(data);
-            logger.info(`Created restaurant with email ${data.email}`);
-            return restaurant;
-        }
-        catch (err) {
-            logger.error(`Failed to create restaurant with email ${data.email}: ${err.message}`);
-            throw new RepositoryError(`Failed to create restaurant: ${err.message}`);
-        }
-    }
     async findByIdAndUpdatePassword(id, hashedPassword) {
         try {
             const restaurant = await this.update(id, { password: hashedPassword });
@@ -69,17 +36,6 @@ let RestaurantAuthRepository = class RestaurantAuthRepository extends BaseReposi
         catch (err) {
             logger.error(`Failed to update password for restaurant ID ${id}: ${err.message}`);
             throw new RepositoryError(`Failed to update password: ${err.message}`);
-        }
-    }
-    async findAllRequest() {
-        try {
-            const requests = await this.findAllUser({ isApproved: false });
-            logger.debug(`Found ${requests.length} unapproved restaurant requests`);
-            return requests.map(toVendorRequestDTO);
-        }
-        catch (err) {
-            logger.error(`Failed to find unapproved restaurant requests: ${err.message}`);
-            throw new RepositoryError(`Failed to find unapproved restaurant requests: ${err.message}`);
         }
     }
     async findByIdAndUpdateAction(id, action, field) {
@@ -97,17 +53,6 @@ let RestaurantAuthRepository = class RestaurantAuthRepository extends BaseReposi
         catch (err) {
             logger.error(`Failed to update ${field} for restaurant ID ${id}: ${err.message}`);
             throw new RepositoryError(`Failed to update ${field}: ${err.message}`);
-        }
-    }
-    async findAll() {
-        try {
-            const restaurants = await this.findAllUser({ isApproved: true });
-            logger.debug(`Found ${restaurants.length} approved restaurants`);
-            return restaurants.map(toVendorRequestDTO);
-        }
-        catch (err) {
-            logger.error(`Failed to find approved restaurants: ${err.message}`);
-            throw new RepositoryError(`Failed to find approved restaurants: ${err.message}`);
         }
     }
     async findByStatus(status) {

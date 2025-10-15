@@ -22,6 +22,7 @@ import { HotelAuthController } from '../../controllers/hotelController/hotel.aut
 import { HotelAuthRepository } from '../../repositories/hotel/hotel.auth.repository.js';
 import { HotelAuthService } from '../../services/hotel/hotel.auth.service.js';
 import { HotelProfileCotroller } from '../../controllers/hotelController/hote.profile.controller.js';
+import { HotelProfileService } from '../../services/hotel/hotel.profile.service.js';
 import { RestaurantAuthController } from '../../controllers/restaurantController/restaurant.auth.controller.js';
 import { RestaurantAuthService } from '../../services/restaurant/restaurant.auth.service.js';
 import { RestaurantAuthRepository } from '../../repositories/restaunrat/restaurant.auth.repository.js';
@@ -54,6 +55,7 @@ container.bind('IHotelAuthController').to(HotelAuthController);
 container.bind('IHotelAuthRepository').to(HotelAuthRepository);
 container.bind('IHotelAuthService').to(HotelAuthService);
 container.bind('IHotelProfileController').to(HotelProfileCotroller);
+container.bind('IHotelProfileService').to(HotelProfileService);
 // -------------------------------------------------------Restaurant container----------------------------------------------------------
 container.bind('IRestaurantAuthController').to(RestaurantAuthController);
 container.bind('IRestaurantAuthRepository').to(RestaurantAuthRepository);

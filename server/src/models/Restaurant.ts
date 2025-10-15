@@ -44,6 +44,34 @@ const restaurantSchema = new Schema<IRestaurant>({
       type: String,
     },
   ],
+  bankDetails:{
+    accountHolder : {
+      type:String,
+    },
+    accountNumber:{
+      type:String,
+    },
+    ifscCode:{
+      type:String
+    },
+    bankName:{
+      type:String,
+    }
+  },
+  documents:{
+    registrationCertificate : {
+      type:String,
+    },
+    panCard:{
+      type:String,
+    },
+    bankProof:{
+      type:String
+    },
+    ownerIdProof:{
+      type:String,
+    }
+  },
   phone: {
     type: Number,
     required: true,

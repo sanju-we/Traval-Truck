@@ -21,7 +21,7 @@ let AgencyProfileController = class AgencyProfileController {
     }
     async getAgency(req, res) {
         const user = req.user;
-        const agency = await this._agencyRepository.fingById(user.id);
+        const agency = await this._agencyRepository.findById(user.id);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS, agency);
     }
     async getDashboard(req, res) {
