@@ -1,12 +1,12 @@
 import { IHotelProfileService } from '../../core/interface/serivice/hotel/Ihotel.profile.service.js';
 import { inject, injectable } from 'inversify';
 import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Ihotel.auth.repository.js';
-import { UserNotFoundError } from '../../utils/resAndErrors.js';
+import { ImageDeleteInCloudinary, UserNotFoundError } from '../../utils/resAndErrors.js';
 import {
   toVendorRequestDTO,
   vendorRequestDTO,
 } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
-import { singleUpload } from '../../utils/upload.cloudinary.js';
+import { deleteImage, extractPublicId, singleUpload } from '../../utils/upload.cloudinary.js';
 
 @injectable()
 export class HotelProfileService implements IHotelProfileService {
@@ -39,7 +39,7 @@ export class HotelProfileService implements IHotelProfileService {
   async updateDocuments(
     hotelId: string,
     files: { [fieldname: string]: Express.Multer.File[] },
-  ): Promise<vendorRequestDTO> {
+  ): Promise<vendorRequestDTO | null> {
     let update;
     for (const fileName in files) {
       const file = files[fileName][0];
@@ -48,8 +48,16 @@ export class HotelProfileService implements IHotelProfileService {
       update = await this._hotelAuthRepo.update(hotelId, { [`documents.${fileName}`]: result });
     }
 
-    if (!update) throw new UserNotFoundError();
+    if (update)  return toVendorRequestDTO(update);
+    return null
+  }
 
-    return toVendorRequestDTO(update);
+  async deleteImage(id: string, documentUrl: string, key: string): Promise<vendorRequestDTO> {
+    const publicUrl = extractPublicId(documentUrl)
+      const result = await deleteImage(publicUrl)
+      if(!result) throw new ImageDeleteInCloudinary()
+        const updated = await this._hotelAuthRepo.update(id,{[`documents.${key}`]:null})
+      if(!updated) throw new UserNotFoundError()
+        return toVendorRequestDTO(updated)
   }
 }

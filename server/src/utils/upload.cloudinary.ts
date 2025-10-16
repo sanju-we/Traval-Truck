@@ -24,3 +24,24 @@ export const multipleUploads = async (
 
   return urls;
 };
+
+export const deleteImage = async (publicId: string): Promise<string> => {
+  try {
+    const result = await cloudinary.uploader.destroy(publicId);
+    console.log(`result = ${JSON.stringify(result)}`)
+
+    if (result.result !== 'ok') {
+      throw new Error('Failed to delete image from Cloudinary');
+    }
+    return result
+  } catch (error) {
+    console.error('Error deleting image from Cloudinary:', error);
+    throw new Error('Error deleting image from Cloudinary');
+  }
+};
+
+export const extractPublicId = (url: string): string => {
+  const regex = /\/v\d+\/(.+?)(?:\.\w{3,4})$/;
+  const match = url.match(regex);
+  return match ? match[1] : '';
+}

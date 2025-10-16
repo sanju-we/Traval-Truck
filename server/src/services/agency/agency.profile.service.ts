@@ -1,16 +1,16 @@
 import { IAgencyProfileService } from '../../core/interface/serivice/agency/Iagenc.profile.service.js';
 import { inject, injectable } from 'inversify';
 import { IAgencyRespository } from '../../core/interface/repositorie/agency/Iagency.auth.repository.js';
-import { UserNotFoundError } from '../../utils/resAndErrors.js';
+import { ImageDeleteInCloudinary, UserNotFoundError } from '../../utils/resAndErrors.js';
 import {
   toVendorRequestDTO,
   vendorRequestDTO,
 } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
-import { singleUpload } from '../../utils/upload.cloudinary.js';
+import { deleteImage, extractPublicId, singleUpload } from '../../utils/upload.cloudinary.js';
 
 @injectable()
 export class AgencyProfileService implements IAgencyProfileService {
-  constructor(@inject('IAgencyRespository') private readonly _agencyAuthRepo: IAgencyRespository) {}
+  constructor(@inject('IAgencyRespository') private readonly _agencyAuthRepo: IAgencyRespository) { }
   async updateProfile(
     id: string,
     data: {
@@ -48,5 +48,14 @@ export class AgencyProfileService implements IAgencyProfileService {
     if (!update) throw new UserNotFoundError();
 
     return toVendorRequestDTO(update);
+  }
+
+  async deleteImage(id: string, documentUrl: string, key: string): Promise<vendorRequestDTO> {
+    const publicId = extractPublicId(documentUrl)
+    const result = await deleteImage(publicId)
+    if (!result) throw new ImageDeleteInCloudinary()
+    const updated = await this._agencyAuthRepo.update(id, { [`documents.${key}`]: null })
+    if (!updated) throw new UserNotFoundError()
+    return toVendorRequestDTO(updated)
   }
 }

@@ -19,4 +19,5 @@ export interface IAgencyProfileService {
     id: string,
     files: { [fieldname: string]: Express.Multer.File[] },
   ): Promise<vendorRequestDTO>;
+  deleteImage(id:string,documentUrl:string,key:string) : Promise<vendorRequestDTO>;
 }

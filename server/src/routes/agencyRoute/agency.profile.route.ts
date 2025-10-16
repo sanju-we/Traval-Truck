@@ -34,6 +34,7 @@ agencyProfileRouter
       { name: 'ownerIdProof', maxCount: 1 },
     ]),
     asyncHandler(agencyProfileController.updateDocument.bind(agencyProfileController)),
-  );
+  )
+  .delete('/delete-image',asyncHandler(agencyProfileController.deleteImage.bind(agencyProfileController)))
 
 export default agencyProfileRouter;

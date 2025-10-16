@@ -29,6 +29,7 @@ hotelProfileRouter
       { name: 'ownerIdProof', maxCount: 1 },
     ]),
     asyncHandler(hotelProfileController.updateDocument.bind(hotelProfileController)),
-  );
+  )
+  .delete('/delete-image',asyncHandler(hotelProfileController.deleteImage.bind(hotelProfileController)))
 
 export default hotelProfileRouter;

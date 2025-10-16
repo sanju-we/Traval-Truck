@@ -63,6 +63,12 @@ export class InvalidCredentialsError extends HttpError {
   }
 }
 
+export class ImageDeleteInCloudinary extends HttpError {
+  constructor() {
+    super(400, 'Failed to delete image from Cloudinary');
+  }
+}
+
 export class InvalidResetTokenError extends HttpError {
   constructor() {
     super(400, 'Invalid or expired reset token');

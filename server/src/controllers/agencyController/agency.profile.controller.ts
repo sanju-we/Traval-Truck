@@ -7,13 +7,14 @@ import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
 import { IAgencyProfileService } from '../../core/interface/serivice/agency/Iagenc.profile.service.js';
 import z from 'zod';
+import { logger } from '../../utils/logger.js';
 
 @injectable()
 export class AgencyProfileController implements IAgencyProfileController {
   constructor(
     @inject('IAgencyRespository') private readonly _agencyRepository: IAgencyRespository,
     @inject('IAgencyProfileService') private readonly _agencyProfileService: IAgencyProfileService,
-  ) {}
+  ) { }
   async getAgency(req: Request, res: Response): Promise<void> {
     const user = req.user;
     const agency = await this._agencyRepository.findById(user.id);
@@ -58,5 +59,14 @@ export class AgencyProfileController implements IAgencyProfileController {
     update.then((data) => {
       sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, data);
     });
+  }
+
+  async deleteImage(req: Request, res: Response): Promise<void> {
+    const agencyId = req.user.id
+    const { documentUrl,key } = req.body
+    if (!documentUrl) throw new BADREQUEST()
+    logger.info(`requested get on the server side`)
+    const agency = await this._agencyProfileService.deleteImage(agencyId, documentUrl, key)
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DELETED,agency)
   }
 }

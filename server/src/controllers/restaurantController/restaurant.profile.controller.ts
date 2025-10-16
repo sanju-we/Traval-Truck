@@ -64,4 +64,11 @@ export class RestaurantProfileController implements IRestaurantProfileController
       sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, data);
     });
   }
+
+  async deleteImage(req: Request, res: Response): Promise<void> {
+      const {documentUrl,key} = req.body
+      const restaurantId = req.user.id
+      const restaurant = await this._restaurantProfileService.deleteImage(restaurantId,documentUrl,key)
+      sendResponse(res,STATUS_CODE.OK,true,MESSAGES.DELETED,restaurant)
+  }
 }

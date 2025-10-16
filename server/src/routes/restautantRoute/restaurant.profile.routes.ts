@@ -36,6 +36,7 @@ restaurantProfileRouter
       { name: 'ownerIdProof', maxCount: 1 },
     ]),
     restaurantProfileController.updateDocuments.bind(restaurantProfileController),
-  );
+  )
+  .delete('/delete-image',asyncHandler(restaurantProfileController.deleteImage.bind(restaurantProfileController)))
 
 export default restaurantProfileRouter;

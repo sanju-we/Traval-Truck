@@ -9,6 +9,7 @@ import { Request, Response } from 'express';
 import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Ihotel.auth.repository.js';
 import { logger } from '../../utils/logger.js';
 import { singleUpload } from '../../utils/upload.cloudinary.js';
+import { id } from 'zod/v4/locales';
 
 @injectable()
 export class HotelProfileCotroller implements IHotelProfileController {
@@ -57,5 +58,12 @@ export class HotelProfileCotroller implements IHotelProfileController {
     update.then((data) => {
       sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, data);
     });
+  }
+
+  async deleteImage(req: Request, res: Response): Promise<void> {
+      const {documentUrl,key} = req.body
+      const hotelId = req.user.id
+      const hotel = await this._hoteService.deleteImage(hotelId,documentUrl,key)
+      sendResponse(res,STATUS_CODE.OK,true,MESSAGES.DELETED,hotel)
   }
 }

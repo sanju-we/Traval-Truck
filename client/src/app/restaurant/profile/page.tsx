@@ -43,6 +43,7 @@ export default function VendorProfilePage() {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [deleteLoad, setDeleteLoad] = useState<string | null>(null)
   const [isUpload, setIsUpload] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState<Partial<VendorProfile>>({});
@@ -105,6 +106,36 @@ export default function VendorProfilePage() {
     }
 
     return errors;
+  }
+
+  async function handleRemoveDocument(key: string, documentUrl: string | undefined) {
+    if (!documentUrl) {
+      toast.error('No document to remove.');
+      return;
+    }
+    setDeleteLoad(key)
+    try {
+      const response = await api.delete('/restaurant/profile/delete-image', {
+        data: { documentUrl, key },
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = response.data;
+      if (data.success) {
+        setFormData(data.data);
+        setVendor(data.data)
+        toast.success(`${key} removed successfully!`);
+      } else {
+        toast.error('Failed to remove document.');
+      }
+      setDeleteLoad(null)
+    } catch (error) {
+      console.error(error);
+      setDeleteLoad(null)
+      toast.error('Error removing document.');
+    }
   }
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
@@ -199,8 +230,10 @@ export default function VendorProfilePage() {
       }
       console.log(`data = ${JSON.stringify(data)}`);
       toast.success('Documents uploaded successfully');
-      setVendor(data.data);
-      setFormData(data.data);
+      if(data.data !== null){
+        setVendor(data.data);
+        setFormData(data.data);
+      }
       setIsUpload(false);
     } catch (err) {
       console.error(err);
@@ -213,6 +246,7 @@ export default function VendorProfilePage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-lg font-semibold text-gray-600">
+        <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
         Loading profile...
       </div>
     );
@@ -267,7 +301,6 @@ export default function VendorProfilePage() {
           </div>
         </div>
 
-        {/* Tabs */}
         <Tabs defaultValue="profile" className="mt-8">
           <TabsList className="grid grid-cols-3 w-full max-w-2xl mx-auto">
             <TabsTrigger value="profile">Profile Info</TabsTrigger>
@@ -317,24 +350,33 @@ export default function VendorProfilePage() {
           <TabsContent value="documents">
             <div className="mt-6 bg-white p-6 rounded-lg shadow-md max-w-xl mx-auto">
               <h3 className="text-lg font-semibold text-gray-800">Documents</h3>
-              {vendor.documents ? (
-                <ul className="mt-4 space-y-2">
-                  {Object.entries(vendor.documents).map(([key, value]) => (
-                    <li key={key} className="flex justify-between border-b py-1">
-                      <span className="capitalize">{key.replace(/([A-Z])/g, ' $1')}</span>
-                      {typeof value === 'string' ? (
-                        <a href={value} target="_blank" className="text-blue-600 underline">
-                          View
-                        </a>
-                      ) : (
-                        <span>Not Uploaded</span>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-gray-500 mt-2">No documents uploaded</p>
-              )}
+              {vendor.documents && Object.entries(vendor.documents).map(([key, value]) => (
+                <div key={key} className="flex justify-between items-center py-2 px-4 border-b border-gray-200">
+                  <span className="font-medium capitalize text-gray-800">{key.replace(/([A-Z])/g, ' $1')}</span>
+
+                  {typeof value === 'string' ? (
+                    <div className="flex items-center space-x-3">
+                      <a href={value} target="_blank" className="text-blue-600 hover:underline">
+                        View
+                      </a>
+
+                      <button
+                        onClick={() => handleRemoveDocument(key, value)}
+                        className={`text-red-600 hover:text-red-800 ${deleteLoad === key ? 'cursor-not-allowed' : ''}`}
+                        disabled={deleteLoad === key}
+                      >
+                        {deleteLoad === key ? (
+                          <div className="w-4 h-4 border-2 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+                        ) : (
+                          'Remove'
+                        )}
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="text-gray-500">Not Uploaded</span>
+                  )}
+                </div>
+              ))}
             </div>
           </TabsContent>
         </Tabs>
