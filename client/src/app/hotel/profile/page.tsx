@@ -45,6 +45,7 @@ export default function VendorProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [isUpload, setIsUpload] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState<Partial<VendorProfile>>({});
   const router = useRouter();
 
@@ -72,9 +73,43 @@ export default function VendorProfilePage() {
     fetchVendor();
   }, [router]);
 
-  function handleInputChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {
+  function validateProfileForm(form: Partial<VendorProfile>): Record<string, string> {
+    const errors: Record<string, string> = {};
+
+    if (!form.ownerName || form.ownerName.trim().length < 3) {
+      errors.ownerName = 'Owner name must be at least 3 characters';
+    }
+
+    if (!form.phone || !/^\d{10}$/.test(form.phone.toString())) {
+      errors.phone = 'Phone number must be a valid 10-digit number';
+    }
+
+    if (!form.companyName || form.companyName.trim().length < 2) {
+      errors.companyName = 'Company name must be at least 2 characters';
+    }
+
+    const bank = form.bankDetails || {};
+
+    if (!bank.accountHolder || bank.accountHolder.trim().length < 3) {
+      errors.accountHolder = 'Account holder name must be at least 3 characters';
+    }
+
+    if (!bank.accountNumber || !/^\d{9,18}$/.test(bank.accountNumber)) {
+      errors.accountNumber = 'Account number must be 9 to 18 digits';
+    }
+
+    if (!bank.bankName || bank.bankName.trim().length < 3) {
+      errors.bankName = 'Bank name must be at least 3 characters';
+    }
+
+    if (!bank.ifscCode || !/^[A-Z]{4}0[A-Z0-9]{6}$/.test(bank.ifscCode)) {
+      errors.ifscCode = 'Invalid IFSC code (e.g. SBIN0001234)';
+    }
+
+    return errors;
+  }
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value } = e.target;
     if (name.includes('.')) {
       const [parent, child] = name.split('.');
@@ -96,6 +131,14 @@ export default function VendorProfilePage() {
   async function handleFormSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsSaving(true);
+    const bankErrors = validateProfileForm(formData);
+    if (Object.keys(bankErrors).length > 0) {
+      setErrors(bankErrors);
+      setIsSaving(false);
+      toast.error('Please fix validation errors');
+      return;
+    }
+    setErrors({});
 
     try {
       const formPayload = new FormData();
@@ -148,7 +191,7 @@ export default function VendorProfilePage() {
         console.log('FormData:', key, value);
       }
 
-      const {data} = await api.put('/hotel/profile/update-documents', formPayload, {
+      const { data } = await api.put('/hotel/profile/update-documents', formPayload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
@@ -156,7 +199,7 @@ export default function VendorProfilePage() {
         toast.error(data.message || 'Upload failed');
         return;
       }
-      console.log(`data = ${JSON.stringify(data)}`)
+      console.log(`data = ${JSON.stringify(data)}`);
       toast.success('Documents uploaded successfully');
       setVendor(data.data);
       setFormData(data.data);
@@ -257,10 +300,18 @@ export default function VendorProfilePage() {
             <div className="mt-6 bg-white p-6 rounded-lg shadow-md max-w-xl mx-auto">
               <h3 className="text-lg font-semibold text-gray-800">Bank Details</h3>
               <div className="mt-4 space-y-3">
-                <p><b>Account Holder:</b> {vendor.bankDetails?.accountHolder || 'N/A'}</p>
-                <p><b>Account Number:</b> {vendor.bankDetails?.accountNumber || 'N/A'}</p>
-                <p><b>Bank Name:</b> {vendor.bankDetails?.bankName || 'N/A'}</p>
-                <p><b>IFSC Code:</b> {vendor.bankDetails?.ifscCode || 'N/A'}</p>
+                <p>
+                  <b>Account Holder:</b> {vendor.bankDetails?.accountHolder || 'N/A'}
+                </p>
+                <p>
+                  <b>Account Number:</b> {vendor.bankDetails?.accountNumber || 'N/A'}
+                </p>
+                <p>
+                  <b>Bank Name:</b> {vendor.bankDetails?.bankName || 'N/A'}
+                </p>
+                <p>
+                  <b>IFSC Code:</b> {vendor.bankDetails?.ifscCode || 'N/A'}
+                </p>
               </div>
             </div>
           </TabsContent>
@@ -274,7 +325,9 @@ export default function VendorProfilePage() {
                     <li key={key} className="flex justify-between border-b py-1">
                       <span className="capitalize">{key.replace(/([A-Z])/g, ' $1')}</span>
                       {typeof value === 'string' ? (
-                        <a href={value} target="_blank" className="text-blue-600 underline">View</a>
+                        <a href={value} target="_blank" className="text-blue-600 underline">
+                          View
+                        </a>
                       ) : (
                         <span>Not Uploaded</span>
                       )}
@@ -305,23 +358,89 @@ export default function VendorProfilePage() {
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
             >
-              <button onClick={() => setIsEditing(false)} className="absolute top-3 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold">
+              <button
+                onClick={() => setIsEditing(false)}
+                className="absolute top-3 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold"
+              >
                 ×
               </button>
               <h2 className="text-lg font-semibold text-center mb-4">Edit Vendor Profile</h2>
 
               <form onSubmit={handleFormSubmit} className="grid grid-cols-1 gap-4">
-                <input name="ownerName" value={formData.ownerName || ''} onChange={handleInputChange} placeholder="Owner Name" className="border rounded-md px-3 py-2" required />
-                <input name="phone" value={formData.phone || ''} onChange={handleInputChange} placeholder="Phone" className="border rounded-md px-3 py-2" />
-                <input name="companyName" value={formData.companyName || ''} onChange={handleInputChange} placeholder="Company Name" className="border rounded-md px-3 py-2" />
-                <input name="bankDetails.accountHolder" value={formData.bankDetails?.accountHolder || ''} onChange={handleInputChange} placeholder="Account Holder" className="border rounded-md px-3 py-2" />
-                <input name="bankDetails.accountNumber" value={formData.bankDetails?.accountNumber || ''} onChange={handleInputChange} placeholder="Account Number" className="border rounded-md px-3 py-2" />
-                <input name="bankDetails.bankName" value={formData.bankDetails?.bankName || ''} onChange={handleInputChange} placeholder="Bank Name" className="border rounded-md px-3 py-2" />
-                <input name="bankDetails.ifscCode" value={formData.bankDetails?.ifscCode || ''} onChange={handleInputChange} placeholder="IFSC Code" className="border rounded-md px-3 py-2" />
+                <input
+                  name="ownerName"
+                  value={formData.ownerName || ''}
+                  onChange={handleInputChange}
+                  placeholder="Owner Name"
+                  className="border rounded-md px-3 py-2"
+                  required
+                />
+                {errors.ownerName && <p className="text-red-500 text-sm">{errors.ownerName}</p>}
+                <input
+                  name="phone"
+                  value={formData.phone || ''}
+                  onChange={handleInputChange}
+                  placeholder="Phone"
+                  className="border rounded-md px-3 py-2"
+                />
+                {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
+                <input
+                  name="companyName"
+                  value={formData.companyName || ''}
+                  onChange={handleInputChange}
+                  placeholder="Company Name"
+                  className="border rounded-md px-3 py-2"
+                />
+                {errors.companyName && <p className="text-red-500 text-sm">{errors.companyName}</p>}
+                <input
+                  name="bankDetails.accountHolder"
+                  value={formData.bankDetails?.accountHolder || ''}
+                  onChange={handleInputChange}
+                  placeholder="Account Holder"
+                  className="border rounded-md px-3 py-2"
+                />
+                {errors.accountHolder && (
+                  <p className="text-red-500 text-sm">{errors.accountHolder}</p>
+                )}
+                <input
+                  name="bankDetails.accountNumber"
+                  value={formData.bankDetails?.accountNumber || ''}
+                  onChange={handleInputChange}
+                  placeholder="Account Number"
+                  className="border rounded-md px-3 py-2"
+                />
+                {errors.accountNumber && (
+                  <p className="text-red-500 text-sm">{errors.accountNumber}</p>
+                )}
+                <input
+                  name="bankDetails.bankName"
+                  value={formData.bankDetails?.bankName || ''}
+                  onChange={handleInputChange}
+                  placeholder="Bank Name"
+                  className="border rounded-md px-3 py-2"
+                />
+                {errors.bankName && <p className="text-red-500 text-sm">{errors.bankName}</p>}
+                <input
+                  name="bankDetails.ifscCode"
+                  value={formData.bankDetails?.ifscCode || ''}
+                  onChange={handleInputChange}
+                  placeholder="IFSC Code"
+                  className="border rounded-md px-3 py-2"
+                />
+                {errors.ifscCode && <p className="text-red-500 text-sm">{errors.ifscCode}</p>}
 
                 <div className="flex justify-end gap-2 pt-3">
-                  <button type="button" onClick={() => setIsEditing(false)} className="border px-4 py-2 rounded-md">Cancel</button>
-                  <button type="submit" className="bg-emerald-500 text-white px-4 py-2 rounded-md hover:bg-emerald-600">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(false)}
+                    className="border px-4 py-2 rounded-md"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-emerald-500 text-white px-4 py-2 rounded-md hover:bg-emerald-600"
+                  >
                     {isSaving ? 'Saving...' : 'Save'}
                   </button>
                 </div>
@@ -345,7 +464,10 @@ export default function VendorProfilePage() {
               animate={{ y: 0 }}
               exit={{ y: 50 }}
             >
-              <button onClick={() => setIsUpload(false)} className="absolute top-3 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold">
+              <button
+                onClick={() => setIsUpload(false)}
+                className="absolute top-3 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold"
+              >
                 ×
               </button>
 

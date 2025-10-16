@@ -3,7 +3,7 @@
 export async function getCroppedImg(
   imageSrc: string,
   crop: { x: number; y: number; width: number; height: number },
-  rotation = 0
+  rotation = 0,
 ): Promise<Blob | null> {
   const image = await createImage(imageSrc);
   const canvas = document.createElement('canvas');
@@ -13,17 +13,7 @@ export async function getCroppedImg(
   canvas.width = crop.width;
   canvas.height = crop.height;
 
-  ctx.drawImage(
-    image,
-    crop.x,
-    crop.y,
-    crop.width,
-    crop.height,
-    0,
-    0,
-    crop.width,
-    crop.height
-  );
+  ctx.drawImage(image, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height);
 
   return new Promise((resolve) => {
     canvas.toBlob((blob) => {

@@ -13,9 +13,9 @@ class RedisError extends Error {
 
 @injectable()
 export class RedisClient implements IRedisClient {
-  #client: RedisClientType; 
-  #isConnected: boolean = false; 
-  #redisUrl: string; 
+  #client: RedisClientType;
+  #isConnected: boolean = false;
+  #redisUrl: string;
 
   constructor() {
     this.#redisUrl = process.env.REDIS_URL ?? '';

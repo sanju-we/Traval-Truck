@@ -18,7 +18,7 @@ export class ProfileController implements IUserProfileController {
     @inject('IJWT') private readonly _jwt: IJWT,
     @inject('IAuthRepository') private _authRepository: IAuthRepository,
     @inject('IUserProfileService') private readonly _profileService: IUserProfileService,
-  ) { }
+  ) {}
 
   async profile(req: Request, res: Response): Promise<void> {
     if (!req.cookies?.accessToken) {
@@ -33,7 +33,7 @@ export class ProfileController implements IUserProfileController {
 
     const user = toUserProfileDTO(userData);
     logger.info(`User profile retrieved for ID ${JSON.stringify(userData)}`);
-    sendResponse(res, STATUS_CODE.OK, true, 'User profile found', user)
+    sendResponse(res, STATUS_CODE.OK, true, 'User profile found', user);
   }
 
   async intrest(req: Request, res: Response): Promise<void> {
@@ -48,24 +48,20 @@ export class ProfileController implements IUserProfileController {
 
     await this._profileService.setInterest(interests, req.user.id);
     logger.info(`Interests updated for user ID ${req.user.id}`);
-    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED)
-
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED);
   }
   async updateUser(req: Request, res: Response): Promise<void> {
     const schema = z.object({
-        name: z.string(),
-        userName: z.string(),
-        phoneNumber: z.preprocess(
-          (val) => Number(val),
-          z.number()
-        )
-    })
-    const formData = req.body
+      name: z.string(),
+      userName: z.string(),
+      phoneNumber: z.preprocess((val) => Number(val), z.number()),
+    });
+    const formData = req.body;
     logger.info(`Validated user data: ${JSON.stringify(formData)}`);
     const user = req.user;
 
-    const userData = await this._profileService.updateProfile(formData, user)
-    logger.info(`userData : ${userData}`)
-    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, userData)
+    const userData = await this._profileService.updateProfile(formData, user);
+    logger.info(`userData : ${userData}`);
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, userData);
   }
 }

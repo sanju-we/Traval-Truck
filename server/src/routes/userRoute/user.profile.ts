@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { container } from '../../core/DI/container.js';
-import { Response, Request } from 'express';
 import { asyncHandler } from '../../middleware/asyncHandler.js';
 import { IUserProfileController } from '../../core/interface/controllerInterface/user/userProfile.js';
 

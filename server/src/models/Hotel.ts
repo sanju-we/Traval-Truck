@@ -1,4 +1,4 @@
-import { Document, Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { IHotel } from '../core/interface/modelInterface/IHotel.js';
 
 const hotelSchema = new Schema<IHotel>({
@@ -16,13 +16,13 @@ const hotelSchema = new Schema<IHotel>({
     type: String,
     required: true,
   },
-  gstNumber:{
-    type:String,
-    required : false
+  gstNumber: {
+    type: String,
+    required: false,
   },
-  taxId:{
-    type:String,
-    required : false
+  taxId: {
+    type: String,
+    required: false,
   },
   rating: {
     type: Number,
@@ -35,14 +35,14 @@ const hotelSchema = new Schema<IHotel>({
   packages: [
     {
       type: Schema.Types.ObjectId,
-      ref:'Package',
+      ref: 'Package',
       required: false,
     },
   ],
   reviews: [
     {
       type: Schema.Types.ObjectId,
-      ref:'Reviews'
+      ref: 'Reviews',
     },
   ],
   images: [
@@ -50,33 +50,33 @@ const hotelSchema = new Schema<IHotel>({
       type: String,
     },
   ],
-  bankDetails:{
-    accountHolder : {
-      type:String,
+  bankDetails: {
+    accountHolder: {
+      type: String,
     },
-    accountNumber:{
-      type:String,
+    accountNumber: {
+      type: String,
     },
-    ifscCode:{
-      type:String
+    ifscCode: {
+      type: String,
     },
-    bankName:{
-      type:String,
-    }
+    bankName: {
+      type: String,
+    },
   },
-  documents:{
-    registrationCertificate : {
-      type:String,
+  documents: {
+    registrationCertificate: {
+      type: String,
     },
-    panCard:{
-      type:String,
+    panCard: {
+      type: String,
     },
-    bankProof:{
-      type:String
+    bankProof: {
+      type: String,
     },
-    ownerIdProof:{
-      type:String,
-    }
+    ownerIdProof: {
+      type: String,
+    },
   },
   phone: {
     type: Number,
@@ -88,7 +88,7 @@ const hotelSchema = new Schema<IHotel>({
   },
   isApproved: {
     type: Boolean,
-    default : false
+    default: false,
   },
   role: {
     type: String,

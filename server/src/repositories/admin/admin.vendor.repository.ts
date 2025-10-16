@@ -5,7 +5,10 @@ import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Iho
 import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository.js';
 import { inject, injectable } from 'inversify';
 import { logger } from '../../utils/logger.js';
-import { vendorRequestDTO, toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
+import {
+  vendorRequestDTO,
+  toVendorRequestDTO,
+} from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
 import { userProfileDTO } from 'types';
 import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
 
@@ -17,7 +20,7 @@ export class AdminVendorRepository implements IAdminVendorRepository {
     @inject('IHotelAuthRepository') private readonly _hotelRepository: IHotelAuthRepository,
     @inject('IAgencyRespository') private readonly _agencyRepository: IAgencyRespository,
     @inject('IAuthRepository') private readonly _userRepository: IAuthRepository,
-  ) { }
+  ) {}
   async findAllRequests(): Promise<vendorRequestDTO[]> {
     const hotelDatas = await this._hotelRepository.findAllUser({ isApproved: false }, {});
     const agencyDatas = await this._agencyRepository.findAllUser({ isApproved: false }, {});
@@ -28,7 +31,10 @@ export class AdminVendorRepository implements IAdminVendorRepository {
     return allData.map(toVendorRequestDTO);
   }
 
-  async findAllUsers(page: number = 1, limit: number = 10): Promise<{
+  async findAllUsers(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{
     data: (vendorRequestDTO | userProfileDTO)[];
     total: number;
     page: number;
@@ -39,9 +45,13 @@ export class AdminVendorRepository implements IAdminVendorRepository {
     const hotelData = await this._hotelRepository.findAllUser({ isApproved: true }, {});
     const restaurantData = await this._restaurantRepository.findAllUser({ isApproved: true }, {});
 
-    const vendorDTO: vendorRequestDTO[] = [...agencyData.map(toVendorRequestDTO), ...hotelData.map(toVendorRequestDTO), ...restaurantData.map(toVendorRequestDTO)]
+    const vendorDTO: vendorRequestDTO[] = [
+      ...agencyData.map(toVendorRequestDTO),
+      ...hotelData.map(toVendorRequestDTO),
+      ...restaurantData.map(toVendorRequestDTO),
+    ];
     const allUserDTO = [...userData.map(toUserProfileDTO)];
-    const allUsers = [...allUserDTO, ...vendorDTO]
+    const allUsers = [...allUserDTO, ...vendorDTO];
 
     const total = allUsers.length;
     const totalPages = Math.ceil(total / limit);

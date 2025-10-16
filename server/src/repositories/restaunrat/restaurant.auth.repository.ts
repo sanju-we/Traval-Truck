@@ -4,19 +4,18 @@ import { BaseRepository, RepositoryError } from '../../repositories/baseReposito
 import { IRestaurant } from '../../core/interface/modelInterface/IRestaurant.js';
 import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository.js';
 import { Restaurant } from '../../models/Restaurant.js';
-import { vendorData, allRequest } from '../../types/index.js';
-import { toVendorRequestDTO, vendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
+import {
+  toVendorRequestDTO,
+  vendorRequestDTO,
+} from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
 import { logger } from '../../utils/logger.js';
 import z from 'zod';
 
-const vendorDataSchema = z.object({
-  name: z.string().min(1),
-  email: z.string().email(),
-  password: z.string().min(6),
-});
-
 @injectable()
-export class RestaurantAuthRepository extends BaseRepository<IRestaurant> implements IRestaurantAuthRepository {
+export class RestaurantAuthRepository
+  extends BaseRepository<IRestaurant>
+  implements IRestaurantAuthRepository
+{
   constructor() {
     super(Restaurant);
   }
@@ -38,8 +37,8 @@ export class RestaurantAuthRepository extends BaseRepository<IRestaurant> implem
 
   async findByIdAndUpdateAction(id: string, action: boolean, field: string): Promise<void> {
     try {
-      z.string().min(1).parse(field); 
-      z.boolean().parse(action); 
+      z.string().min(1).parse(field);
+      z.boolean().parse(action);
       const restaurant = await this.update(id, { [field]: action });
       if (!restaurant) {
         logger.warn(`Restaurant not found for ID ${id} when updating ${field}`);

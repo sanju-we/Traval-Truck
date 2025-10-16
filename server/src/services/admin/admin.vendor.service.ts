@@ -7,7 +7,6 @@ import { IRestaurantAuthRepository } from '../../core/interface/repositorie/rest
 import z from 'zod';
 import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors.js';
 import { logger } from '../../utils/logger.js';
-import { isBlock } from 'typescript';
 
 @injectable()
 export class AdminVendorService implements IAdminVendorService {

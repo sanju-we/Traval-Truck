@@ -96,20 +96,22 @@ container.bind<IAgencyAuthController>('IAgencyAuthController').to(AgencyAuthCont
 container.bind<IAgencyRespository>('IAgencyRespository').to(agencyRepository);
 container.bind<IAgencyAuthService>('IAgencyAuthService').to(agencyAuthService);
 container.bind<IAgencyProfileController>('IAgencyProfileController').to(AgencyProfileController);
-container.bind<IAgencyProfileService>('IAgencyProfileService').to(AgencyProfileService)
+container.bind<IAgencyProfileService>('IAgencyProfileService').to(AgencyProfileService);
 
 // --------------------------------------------------------Hotel containers---------------------------------------------------------------
 container.bind<IHotelAuthController>('IHotelAuthController').to(HotelAuthController);
 container.bind<IHotelAuthRepository>('IHotelAuthRepository').to(HotelAuthRepository);
 container.bind<IHotelAuthService>('IHotelAuthService').to(HotelAuthService);
 container.bind<IHotelProfileController>('IHotelProfileController').to(HotelProfileCotroller);
-container.bind<IHotelProfileService>('IHotelProfileService').to(HotelProfileService)
+container.bind<IHotelProfileService>('IHotelProfileService').to(HotelProfileService);
 
 // -------------------------------------------------------Restaurant container----------------------------------------------------------
 container.bind<IRestaurantAuthController>('IRestaurantAuthController').to(RestaurantAuthController);
 container.bind<IRestaurantAuthRepository>('IRestaurantAuthRepository').to(RestaurantAuthRepository);
 container.bind<IRestaurantAuthService>('IRestaurantAuthService').to(RestaurantAuthService);
-container.bind<IRestaurantProfileController>('IRestaurantProfileController').to(RestaurantProfileController);
+container
+  .bind<IRestaurantProfileController>('IRestaurantProfileController')
+  .to(RestaurantProfileController);
 container.bind<IRestaurantProfileService>('IRestaurantProfileService').to(RestaurantProfileService);
 
 export { container };

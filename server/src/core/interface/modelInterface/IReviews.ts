@@ -4,6 +4,6 @@ export interface IReviews extends Document {
   _id: Types.ObjectId;
   vendor: Schema.Types.ObjectId;
   user: Schema.Types.ObjectId;
-  rating: Number;
-  comment: String;
+  rating: number;
+  comment: string;
 }

@@ -84,14 +84,20 @@ export default function UsersPage() {
             />
 
             <div className="flex gap-4">
-              <select className="px-4 py-2 border rounded-lg text-sm text-gray-700" onChange={handleRoleSort}>
+              <select
+                className="px-4 py-2 border rounded-lg text-sm text-gray-700"
+                onChange={handleRoleSort}
+              >
                 <option>Role</option>
                 <option>User</option>
                 <option>Restaurant</option>
                 <option>Hotel</option>
                 <option>Agency</option>
               </select>
-              <select className="px-4 py-2 border rounded-lg text-sm text-gray-700" onChange={(e) => setStatus(e.target.value)}>
+              <select
+                className="px-4 py-2 border rounded-lg text-sm text-gray-700"
+                onChange={(e) => setStatus(e.target.value)}
+              >
                 <option>Status</option>
                 <option>Active</option>
                 <option>Blocked</option>
@@ -133,8 +139,8 @@ export default function UsersPage() {
                             user.role === 'admin'
                               ? 'bg-purple-100 text-purple-600'
                               : user.role === 'Restaurant Owner'
-                              ? 'bg-yellow-100 text-yellow-700'
-                              : 'bg-green-100 text-green-700'
+                                ? 'bg-yellow-100 text-yellow-700'
+                                : 'bg-green-100 text-green-700'
                           }`}
                         >
                           {user.role}
@@ -172,7 +178,9 @@ export default function UsersPage() {
               <button
                 key={i + 1}
                 className={`px-3 py-1 rounded-md ${
-                  page === i + 1 ? 'bg-purple-600 text-white' : 'border text-gray-600 hover:bg-gray-100'
+                  page === i + 1
+                    ? 'bg-purple-600 text-white'
+                    : 'border text-gray-600 hover:bg-gray-100'
                 }`}
                 onClick={() => handlePageChange(i + 1)}
               >

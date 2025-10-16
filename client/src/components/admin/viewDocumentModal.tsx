@@ -28,7 +28,7 @@ export default function ViewVendorDocumentsModal({
 }: ViewVendorDocumentsModalProps) {
   const [checkedDocs, setCheckedDocs] = useState<string[]>([]);
   const [vendorId, setVendorId] = useState<string>('');
-  const [role, setRole] = useState<string>('vendor'); 
+  const [role, setRole] = useState<string>('vendor');
   const docEntries = Object.entries(documents || {});
 
   useEffect(() => {
@@ -39,9 +39,7 @@ export default function ViewVendorDocumentsModal({
 
   function toggleCheck(name: string) {
     setCheckedDocs((prev) =>
-      prev.includes(name)
-        ? prev.filter((item) => item !== name)
-        : [...prev, name]
+      prev.includes(name) ? prev.filter((item) => item !== name) : [...prev, name],
     );
   }
 
@@ -76,15 +74,10 @@ export default function ViewVendorDocumentsModal({
             {docEntries.length > 0 ? (
               <div className="space-y-4">
                 {docEntries.map(([key, value]) => (
-                  <div
-                    key={key}
-                    className="flex items-center justify-between border-b pb-2"
-                  >
+                  <div key={key} className="flex items-center justify-between border-b pb-2">
                     <div className="flex items-center gap-2">
                       <FileText className="text-emerald-500" size={20} />
-                      <span className="capitalize">
-                        {key.replace(/([A-Z])/g, ' $1')}
-                      </span>
+                      <span className="capitalize">{key.replace(/([A-Z])/g, ' $1')}</span>
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -118,7 +111,7 @@ export default function ViewVendorDocumentsModal({
             {/* Action Buttons */}
             <div className="flex justify-end gap-3 mt-6">
               <button
-                onClick={()=>onReject(vendorId, role)}
+                onClick={() => onReject(vendorId, role)}
                 disabled={!allChecked}
                 className={`px-4 py-2 rounded-lg flex items-center gap-2 border 
                   ${
@@ -131,7 +124,7 @@ export default function ViewVendorDocumentsModal({
               </button>
 
               <button
-                onClick={()=>onApprove(vendorId,role)}
+                onClick={() => onApprove(vendorId, role)}
                 disabled={!allChecked}
                 className={`px-4 py-2 rounded-lg flex items-center gap-2 
                   ${

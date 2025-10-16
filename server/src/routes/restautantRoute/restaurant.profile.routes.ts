@@ -12,19 +12,30 @@ const restaurantProfileController = container.get<IRestaurantProfileController>(
 
 restaurantProfileRouter
   .get(
-    '/profile',verifyRestaurantToken,
+    '/profile',
+    verifyRestaurantToken,
     asyncHandler(restaurantProfileController.getRestaurant.bind(restaurantProfileController)),
   )
   .get(
-    '/dashboard',verifyRestaurantToken,
+    '/dashboard',
+    verifyRestaurantToken,
     asyncHandler(restaurantProfileController.getdashboard.bind(restaurantProfileController)),
   )
-  .patch('/update',verifyRestaurantToken,restaurantProfileController.updateProfile.bind(restaurantProfileController))
-  .put('/update-documents',verifyRestaurantToken ,upload.fields([
-    {name:'registrationCertificate',maxCount:1},    
-    {name:'panCard',maxCount:1},
-    {name:'bankProof',maxCount:1},
-    {name:'ownerIdProof',maxCount:1}
-  ]),restaurantProfileController.updateDocuments.bind(restaurantProfileController))
+  .patch(
+    '/update',
+    verifyRestaurantToken,
+    restaurantProfileController.updateProfile.bind(restaurantProfileController),
+  )
+  .put(
+    '/update-documents',
+    verifyRestaurantToken,
+    upload.fields([
+      { name: 'registrationCertificate', maxCount: 1 },
+      { name: 'panCard', maxCount: 1 },
+      { name: 'bankProof', maxCount: 1 },
+      { name: 'ownerIdProof', maxCount: 1 },
+    ]),
+    restaurantProfileController.updateDocuments.bind(restaurantProfileController),
+  );
 
 export default restaurantProfileRouter;

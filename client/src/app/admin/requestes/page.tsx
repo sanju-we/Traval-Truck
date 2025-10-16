@@ -69,7 +69,7 @@ export default function VendorRequestsPage() {
         const updated = await api.get('/admin/vendor/allRequests');
         setRequests(updated.data.data);
         setShowDocsModal(false);
-        setIsModalOpen(false)
+        setIsModalOpen(false);
       } else {
         toast.error(res.data.message);
       }
@@ -104,11 +104,19 @@ export default function VendorRequestsPage() {
               <table className="w-full border-collapse min-w-[600px]">
                 <thead className="bg-gray-100">
                   <tr>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Vendor Name</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+                      Vendor Name
+                    </th>
                     <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Email</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Company</th>
-                    <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">Role</th>
-                    <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">Actions</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+                      Company
+                    </th>
+                    <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">
+                      Role
+                    </th>
+                    <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -121,12 +129,18 @@ export default function VendorRequestsPage() {
                       <td className="px-4 py-3 flex justify-center gap-2">
                         {req.isApproved === false ? (
                           <button
-                            onClick={() => handleViewDocuments({
-                              panCard: `${req.documents.panCard}`,
-                              ownerIdProof: `${req.documents.ownerIdProof}`,
-                              bankProof: `${req.documents.bankProof}`,
-                              registrationCertificate: `${req.documents.registrationCertificate}`,
-                            }, req.id, req.role)}
+                            onClick={() =>
+                              handleViewDocuments(
+                                {
+                                  panCard: `${req.documents.panCard}`,
+                                  ownerIdProof: `${req.documents.ownerIdProof}`,
+                                  bankProof: `${req.documents.bankProof}`,
+                                  registrationCertificate: `${req.documents.registrationCertificate}`,
+                                },
+                                req.id,
+                                req.role,
+                              )
+                            }
                             className="flex items-center gap-1 px-3 py-1 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700"
                           >
                             <Eye size={14} /> View Documents

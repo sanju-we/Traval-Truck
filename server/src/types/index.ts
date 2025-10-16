@@ -23,9 +23,9 @@ export interface userProfileDTO {
 }
 
 export interface userEdit {
-  name:string,
-  userName:string,
-  phoneNumber:number
+  name: string;
+  userName: string;
+  phoneNumber: number;
 }
 
 export interface Userauth {

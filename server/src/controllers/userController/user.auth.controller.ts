@@ -53,7 +53,7 @@ export class AuthController implements IController {
       }),
     });
     const { email, otp, userData } = schema.parse(req.body);
-    logger.info(req.body)
+    logger.info(req.body);
     const { user, accessToken, refreshToken } = await this._authService.verify(
       email,
       otp,

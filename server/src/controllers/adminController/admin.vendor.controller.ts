@@ -17,7 +17,7 @@ export class AdminVendorController implements IAdminVendorController {
     @inject('IJWT') private readonly _ijwt: IJWT,
     @inject('IAdminVendorRepository') private readonly _adminVenderRepo: IAdminVendorRepository,
     @inject('IAdminVendorService') private readonly _adminVenderService: IAdminVendorService,
-  ) { }
+  ) {}
 
   async showAllRequsestes(req: Request, res: Response): Promise<void> {
     const allReq = await this._adminVenderRepo.findAllRequests();
@@ -34,7 +34,7 @@ export class AdminVendorController implements IAdminVendorController {
       data,
       total,
       page,
-      totalPages
+      totalPages,
     });
   }
 
@@ -63,9 +63,9 @@ export class AdminVendorController implements IAdminVendorController {
   async sortUsers(req: Request, res: Response): Promise<void> {
     const schema = z.object({
       sort: z.string(),
-      status: z.string()
-    })
-    const { sort, status } = schema.parse(req.query)
-    const data = await this._adminVenderService
+      status: z.string(),
+    });
+    const { sort, status } = schema.parse(req.query);
+    const data = await this._adminVenderService;
   }
 }

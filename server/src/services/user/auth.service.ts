@@ -12,7 +12,6 @@ import {
   InvalidOtpError,
   UserNotFoundError,
   InvalidCredentialsError,
-  InvalidResetTokenError,
   RESTRICTED_USER,
 } from '../../utils/resAndErrors.js';
 import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile.js';

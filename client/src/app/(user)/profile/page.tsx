@@ -30,7 +30,7 @@ export default function UserProfilePage() {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<Partial<UserProfile>>({});
-  const [isSaving, setIsSaving] = useState(false)
+  const [isSaving, setIsSaving] = useState(false);
 
   const router = useRouter();
 
@@ -38,7 +38,7 @@ export default function UserProfilePage() {
     async function fetchUser() {
       try {
         const { data } = await api.get('/user/profile/profile');
-        console.log(data.data)
+        console.log(data.data);
         if (!data.success) {
           toast.error(data.message);
           if (data.message === 'This user is Restricted by the admin') {
@@ -124,7 +124,11 @@ export default function UserProfilePage() {
 
             <div className="flex-1 text-center md:text-left">
               <h2 className="text-2xl font-bold text-gray-800">{user.name}</h2>
-              <p className="text-gray-500">{user.interest ? user.interest.map((val)=>` ${val} | ` ):'Traveler | Adventure Seeker'}</p>
+              <p className="text-gray-500">
+                {user.interest
+                  ? user.interest.map((val) => ` ${val} | `)
+                  : 'Traveler | Adventure Seeker'}
+              </p>
               <div className="flex justify-center md:justify-start gap-4 mt-4">
                 <button
                   onClick={() => setIsEditing(true)}
@@ -151,7 +155,9 @@ export default function UserProfilePage() {
               <Phone className="text-emerald-500" size={20} />
               <div>
                 <p className="text-sm text-gray-500">Phone</p>
-                <p className="font-medium text-gray-800">{formData.phoneNumber === 0 ? '' : formData.phoneNumber}</p>
+                <p className="font-medium text-gray-800">
+                  {formData.phoneNumber === 0 ? '' : formData.phoneNumber}
+                </p>
               </div>
             </div>
           </div>
@@ -241,10 +247,11 @@ export default function UserProfilePage() {
                   <button
                     type="submit"
                     disabled={isSaving}
-                    className={`px-4 py-2 rounded-md transition ${isSaving
+                    className={`px-4 py-2 rounded-md transition ${
+                      isSaving
                         ? 'bg-gray-400 cursor-not-allowed text-white'
                         : 'bg-emerald-500 text-white hover:bg-emerald-600'
-                      }`}
+                    }`}
                   >
                     {isSaving ? (
                       <svg

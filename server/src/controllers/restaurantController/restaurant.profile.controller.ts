@@ -12,9 +12,11 @@ import z from 'zod';
 @injectable()
 export class RestaurantProfileController implements IRestaurantProfileController {
   constructor(
-    @inject('IRestaurantAuthRepository') private readonly _restaurantAuthRepository: IRestaurantAuthRepository,
-    @inject('IRestaurantProfileService') private readonly _restaurantProfileService: IRestaurantProfileService,
-  ) { }
+    @inject('IRestaurantAuthRepository')
+    private readonly _restaurantAuthRepository: IRestaurantAuthRepository,
+    @inject('IRestaurantProfileService')
+    private readonly _restaurantProfileService: IRestaurantProfileService,
+  ) {}
   async getRestaurant(req: Request, res: Response): Promise<void> {
     const user = req.user;
     const restaurant = await this._restaurantAuthRepository.findById(user.id);
@@ -35,26 +37,31 @@ export class RestaurantProfileController implements IRestaurantProfileController
         accountHolder: z.string(),
         accountNumber: z.string(),
         bankName: z.string(),
-        ifscCode: z.string()
-      })
-    })
+        ifscCode: z.string(),
+      }),
+    });
 
-    const { ownerName, phone, companyName, bankDetails } = schema.parse(req.body)
-    const restaunratId = req.user.id
+    const { ownerName, phone, companyName, bankDetails } = schema.parse(req.body);
+    const restaunratId = req.user.id;
 
-    const updateRestaurant = await this._restaurantProfileService.updateProfile(restaunratId, { ownerName, companyName, phone: Number(phone), bankDetails })
-    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updateRestaurant)
+    const updateRestaurant = await this._restaurantProfileService.updateProfile(restaunratId, {
+      ownerName,
+      companyName,
+      phone: Number(phone),
+      bankDetails,
+    });
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updateRestaurant);
   }
 
   async updateDocuments(req: Request, res: Response): Promise<void> {
-    const restaurantId = req.user.id
+    const restaurantId = req.user.id;
     const files = req.files as {
       [fieldname: string]: Express.Multer.File[];
     };
 
-    const update = this._restaurantProfileService.updateDocuments(restaurantId, files)
+    const update = this._restaurantProfileService.updateDocuments(restaurantId, files);
     update.then((data) => {
-      sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, data)
-    })
+      sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, data);
+    });
   }
 }

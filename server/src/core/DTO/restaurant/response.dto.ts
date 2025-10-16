@@ -6,11 +6,11 @@ export interface RestaurantProfileDTO {
   ownerName: string;
   email: string;
   password: string;
-  approved: Boolean;
-  rating?: Number;
-  totalReviews?: Number;
+  approved: boolean;
+  rating?: number;
+  totalReviews?: number;
   role: string;
-  phone?: Number;
+  phone?: number;
 }
 
 export const toRestaunrantProfile = (restaunrat: IRestaurant): RestaurantProfileDTO => ({

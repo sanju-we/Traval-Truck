@@ -38,12 +38,9 @@ export default function DocumentUploadWithPreview({
     }
   };
 
-  const onCropComplete = useCallback(
-    (_: any, croppedPixels: any) => {
-      setCroppedAreaPixels(croppedPixels);
-    },
-    []
-  );
+  const onCropComplete = useCallback((_: any, croppedPixels: any) => {
+    setCroppedAreaPixels(croppedPixels);
+  }, []);
 
   const showCroppedImage = useCallback(async () => {
     if (!imageSrc || !croppedAreaPixels) return;
@@ -57,9 +54,7 @@ export default function DocumentUploadWithPreview({
 
   return (
     <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        {label}
-      </label>
+      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
       <div className="border border-gray-300 rounded-md overflow-hidden relative">
         {imageSrc ? (
           <div className="relative w-full h-64 bg-black">

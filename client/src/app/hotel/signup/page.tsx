@@ -89,7 +89,7 @@ export default function SignUpPage() {
   };
 
   const handleTimer = () => {
-    let interval = setInterval(() => {
+    const interval = setInterval(() => {
       setTimer((prev) => {
         if (prev <= 1) {
           clearInterval(interval);

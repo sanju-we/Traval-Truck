@@ -9,17 +9,31 @@ const agencyProfileRouter = Router();
 const agencyProfileController = container.get<IAgencyProfileController>('IAgencyProfileController');
 
 agencyProfileRouter
-  .get('/profile',verifyAgencyToken, asyncHandler(agencyProfileController.getAgency.bind(agencyProfileController)))
   .get(
-    '/dashboard',verifyAgencyToken,
+    '/profile',
+    verifyAgencyToken,
+    asyncHandler(agencyProfileController.getAgency.bind(agencyProfileController)),
+  )
+  .get(
+    '/dashboard',
+    verifyAgencyToken,
     asyncHandler(agencyProfileController.getDashboard.bind(agencyProfileController)),
   )
-  .patch('/update',verifyAgencyToken,asyncHandler(agencyProfileController.update.bind(agencyProfileController)))
-  .put('/update-documents',verifyAgencyToken, upload.fields([
-    {name:'registrationCertificate',maxCount:1},    
-    {name:'panCard',maxCount:1},
-    {name:'bankProof',maxCount:1},
-    {name:'ownerIdProof',maxCount:1}
-  ]), asyncHandler(agencyProfileController.updateDocument.bind(agencyProfileController)))
+  .patch(
+    '/update',
+    verifyAgencyToken,
+    asyncHandler(agencyProfileController.update.bind(agencyProfileController)),
+  )
+  .put(
+    '/update-documents',
+    verifyAgencyToken,
+    upload.fields([
+      { name: 'registrationCertificate', maxCount: 1 },
+      { name: 'panCard', maxCount: 1 },
+      { name: 'bankProof', maxCount: 1 },
+      { name: 'ownerIdProof', maxCount: 1 },
+    ]),
+    asyncHandler(agencyProfileController.updateDocument.bind(agencyProfileController)),
+  );
 
 export default agencyProfileRouter;

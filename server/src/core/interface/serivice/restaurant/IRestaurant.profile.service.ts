@@ -1,6 +1,22 @@
-import { vendorRequestDTO } from "../../../DTO/admin/vendor.response.dto/vendor.response.dto.js";
+import { vendorRequestDTO } from '../../../DTO/admin/vendor.response.dto/vendor.response.dto.js';
 
-export interface IRestaurantProfileService { 
-  updateProfile(id:string,data:{ownerName:string,companyName:string,phone:number,bankDetails:{ifscCode:string,bankName:string,accountNumber:string,accountHolder:string}}) : Promise<vendorRequestDTO>;
-  updateDocuments(id:string,files:{ [fieldname: string]: Express.Multer.File[]}) : Promise<vendorRequestDTO>;
+export interface IRestaurantProfileService {
+  updateProfile(
+    id: string,
+    data: {
+      ownerName: string;
+      companyName: string;
+      phone: number;
+      bankDetails: {
+        ifscCode: string;
+        bankName: string;
+        accountNumber: string;
+        accountHolder: string;
+      };
+    },
+  ): Promise<vendorRequestDTO>;
+  updateDocuments(
+    id: string,
+    files: { [fieldname: string]: Express.Multer.File[] },
+  ): Promise<vendorRequestDTO>;
 }

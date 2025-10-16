@@ -14,8 +14,8 @@ import { singleUpload } from '../../utils/upload.cloudinary.js';
 export class HotelProfileCotroller implements IHotelProfileController {
   constructor(
     @inject('IHotelAuthRepository') private readonly _hotelAuthRepository: IHotelAuthRepository,
-    @inject('IHotelProfileService') private readonly _hoteService: IHotelProfileService
-  ) { }
+    @inject('IHotelProfileService') private readonly _hoteService: IHotelProfileService,
+  ) {}
 
   async getHotelProfile(req: Request, res: Response): Promise<void> {
     const user = req.user;
@@ -33,24 +33,29 @@ export class HotelProfileCotroller implements IHotelProfileController {
         accountHolder: z.string(),
         accountNumber: z.string(),
         bankName: z.string(),
-        ifscCode: z.string()
-      })
-    })
-    const { ownerName, phone, companyName, bankDetails } = schema.parse(req.body)
-    const user = req.user
-    const updatedHotel = await this._hoteService.updateProfile(user.id, { ownerName, companyName, phone: Number(phone), bankDetails })
-    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updatedHotel)
+        ifscCode: z.string(),
+      }),
+    });
+    const { ownerName, phone, companyName, bankDetails } = schema.parse(req.body);
+    const user = req.user;
+    const updatedHotel = await this._hoteService.updateProfile(user.id, {
+      ownerName,
+      companyName,
+      phone: Number(phone),
+      bankDetails,
+    });
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updatedHotel);
   }
 
   async updateDocument(req: Request, res: Response): Promise<void> {
-    const hotelId = req.user.id
+    const hotelId = req.user.id;
     const files = req.files as {
       [fieldname: string]: Express.Multer.File[];
     };
 
-    const update = this._hoteService.updateDocuments(hotelId,files)
-    update.then((data)=>{
-      sendResponse(res,STATUS_CODE.OK,true,MESSAGES.UPDATED,data)
-    })
+    const update = this._hoteService.updateDocuments(hotelId, files);
+    update.then((data) => {
+      sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, data);
+    });
   }
 }

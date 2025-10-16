@@ -1,6 +1,5 @@
-import { Document, Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { IAgency } from '../core/interface/modelInterface/IAgency.js';
-import { string } from 'zod';
 
 const agencySchema = new Schema<IAgency>({
   companyName: {
@@ -41,33 +40,33 @@ const agencySchema = new Schema<IAgency>({
       type: String,
     },
   ],
-  bankDetails:{
-    accountHolder : {
-      type:String,
+  bankDetails: {
+    accountHolder: {
+      type: String,
     },
-    accountNumber:{
-      type:String,
+    accountNumber: {
+      type: String,
     },
-    ifscCode:{
-      type:String
+    ifscCode: {
+      type: String,
     },
-    bankName:{
-      type:String,
-    }
+    bankName: {
+      type: String,
+    },
   },
-  documents:{
-    registrationCertificate : {
-      type:String,
+  documents: {
+    registrationCertificate: {
+      type: String,
     },
-    panCard:{
-      type:String,
+    panCard: {
+      type: String,
     },
-    bankProof:{
-      type:String
+    bankProof: {
+      type: String,
     },
-    ownerIdProof:{
-      type:String,
-    }
+    ownerIdProof: {
+      type: String,
+    },
   },
   phone: {
     type: Number,
@@ -79,7 +78,7 @@ const agencySchema = new Schema<IAgency>({
   },
   isApproved: {
     type: Boolean,
-    default : false
+    default: false,
   },
   role: {
     type: String,

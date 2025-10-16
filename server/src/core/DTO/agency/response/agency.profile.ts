@@ -2,15 +2,15 @@ import { IAgency } from '../../../../core/interface/modelInterface/IAgency.js';
 
 export interface agencyProfileDTO {
   id: string;
-  companyName: String;
-  ownerName: String;
-  email: String;
+  companyName: string;
+  ownerName: string;
+  email: string;
   password: string;
-  approved: Boolean;
-  rating?: Number;
-  totalReviews?: Number;
-  role: String;
-  phone?: Number;
+  approved: boolean;
+  rating?: number;
+  totalReviews?: number;
+  role: string;
+  phone?: number;
 }
 
 export const toAgencyProfileDTO = (agency: IAgency): agencyProfileDTO => ({

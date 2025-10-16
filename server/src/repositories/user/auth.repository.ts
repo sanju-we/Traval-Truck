@@ -1,11 +1,10 @@
 // src/repositories/user/auth.repository.ts
-import { injectable, inject } from 'inversify';
+import { injectable } from 'inversify';
 import { BaseRepository, RepositoryError } from '../../repositories/baseRepository.js';
-import { User } from '../../models/SUser.js'; 
+import { User } from '../../models/SUser.js';
 import { IUser } from '../../core/interface/modelInterface/IUser.js';
 import { IAuthRepository } from '../../core/interface/repositorie/IAuth.Repository.js';
-import { toUserProfileDTO, userProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
-import { UserData, userEdit } from '../../types/index.js';
+import { userEdit } from '../../types/index.js';
 import { logger } from '../../utils/logger.js';
 import z from 'zod';
 
@@ -29,7 +28,11 @@ export class AuthRepository extends BaseRepository<IUser> implements IAuthReposi
     }
   }
 
-  async findByIdAndUpdateAction(id: string, action: boolean | string[], field: string): Promise<void> {
+  async findByIdAndUpdateAction(
+    id: string,
+    action: boolean | string[],
+    field: string,
+  ): Promise<void> {
     const schema = z.union([z.boolean(), z.array(z.string())]);
     try {
       schema.parse(action); // Validate action
