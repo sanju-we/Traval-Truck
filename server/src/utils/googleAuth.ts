@@ -28,7 +28,6 @@ export const googleCallback = async (req: Request, res: Response) => {
     if (!payload) throw new Error('No user info from Google');
     logger.info(`got it here ${payload.picture}`);
 
-    // Check or create user in DB
     let user = await User.findOne({ email: payload.email });
     if (!user) {
       user = new User({
