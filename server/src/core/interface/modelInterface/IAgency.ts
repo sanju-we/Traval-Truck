@@ -29,4 +29,5 @@ export interface IAgency extends Document {
   isApproved: boolean;
   role: string;
   isRestricted: boolean;
+  reason: string
 }

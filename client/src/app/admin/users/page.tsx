@@ -7,28 +7,14 @@ import { SideNavbar } from '@/components/admin/SideNavbar';
 import { useDispatch } from 'react-redux';
 import { setSelectedUser } from '@/redux/userDetailsSlice';
 import { useRouter } from 'next/navigation';
-
-interface User {
-  id: string;
-  name?: string;
-  userName?: string;
-  profilePicture?: string;
-  ownerName?: string;
-  companyName?: string;
-  isApproved?: boolean;
-  isBlocked?: boolean;
-  phone?: number;
-  email: string;
-  role: string;
-  createdAt: string;
-}
+import User from '@/types/user/profile';
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState('status');
   const [page, setPage] = useState(1);
-  const [limit] = useState(10);
+  const [limit] = useState(5);
   const [totalPages, setTotalPages] = useState(1);
 
   const dispatch = useDispatch();

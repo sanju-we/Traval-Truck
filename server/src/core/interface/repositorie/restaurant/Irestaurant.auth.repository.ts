@@ -6,6 +6,6 @@ import { IBaserepository } from '../IBaseRepositories.js';
 
 export interface IRestaurantAuthRepository extends IBaserepository<IRestaurant> {
   findByIdAndUpdatePassword(id: string, hashedPassword: string): Promise<IRestaurant | null>;
-  findByIdAndUpdateAction(id: string, action: boolean, field: string): Promise<void>;
+  findByIdAndUpdateAction(id: string, action: boolean, field: string, reason ?: string): Promise<void>;
   findByStatus(status: boolean): Promise<vendorRequestDTO[]>;
 }

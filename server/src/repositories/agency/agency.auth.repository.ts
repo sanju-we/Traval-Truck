@@ -12,7 +12,10 @@ export class agencyRepository extends BaseRepository<IAgency> implements IAgency
     return;
   }
 
-  async findByIdAndUpdateAction(id: string, action: boolean, field: string): Promise<void> {
+  async findByIdAndUpdateAction(id: string, action: boolean, field: string, reason ?: string): Promise<void> {
+    if(reason != '') {
+      await Agency.findByIdAndUpdate(id, { reason: reason });
+    }
     await Agency.findByIdAndUpdate(id, { [field]: action });
   }
 }

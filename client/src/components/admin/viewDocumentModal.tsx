@@ -81,7 +81,7 @@ export default function ViewVendorDocumentsModal({
                     </div>
 
                     <div className="flex items-center gap-3">
-                      {value ? (
+                      {value!='undefined' ? (
                         <a
                           href={value}
                           target="_blank"
@@ -94,12 +94,12 @@ export default function ViewVendorDocumentsModal({
                         <span className="text-gray-400 text-sm">Not Uploaded</span>
                       )}
 
-                      <input
+                      {value!='undefined' ? <input
                         type="checkbox"
                         checked={checkedDocs.includes(key)}
                         onChange={() => toggleCheck(key)}
                         className="w-4 h-4 accent-emerald-500"
-                      />
+                      /> : ''}
                     </div>
                   </div>
                 ))}

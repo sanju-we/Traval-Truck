@@ -35,22 +35,12 @@ export class RestaurantAuthRepository
     }
   }
 
-  async findByIdAndUpdateAction(id: string, action: boolean, field: string): Promise<void> {
-    try {
-      z.string().min(1).parse(field);
-      z.boolean().parse(action);
-      const restaurant = await this.update(id, { [field]: action });
-      if (!restaurant) {
-        logger.warn(`Restaurant not found for ID ${id} when updating ${field}`);
-        throw new RepositoryError('Restaurant not found');
+  async findByIdAndUpdateAction(id: string, action: boolean, field: string, reason ?: string): Promise<void> {
+      if(reason != '') {
+        await Restaurant.findByIdAndUpdate(id, { reason: reason });
       }
-      logger.info(`Updated ${field} for restaurant ID ${id}`);
-      // return restaurant;
-    } catch (err: any) {
-      logger.error(`Failed to update ${field} for restaurant ID ${id}: ${err.message}`);
-      throw new RepositoryError(`Failed to update ${field}: ${err.message}`);
+      await Restaurant.findByIdAndUpdate(id, { [field]: action });
     }
-  }
 
   async findByStatus(status: boolean): Promise<vendorRequestDTO[]> {
     try {

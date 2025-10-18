@@ -102,6 +102,10 @@ const hotelSchema = new Schema<IHotel>({
     type: Boolean,
     default: false,
   },
+  reason:{
+    type:String,
+    required: false
+  }
 });
 
 export const Hotel = model<IHotel>('Hotel', hotelSchema);

@@ -93,6 +93,10 @@ const agencySchema = new Schema<IAgency>({
     type: Boolean,
     default: false,
   },
+  reason:{
+    type:String,
+    required: false
+  }
 });
 
 export const Agency = model<IAgency>('Agency', agencySchema);

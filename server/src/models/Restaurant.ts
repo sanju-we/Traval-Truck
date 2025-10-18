@@ -95,6 +95,10 @@ const restaurantSchema = new Schema<IRestaurant>({
     type: String,
     required: true,
   },
+  reason:{
+    type:String,
+    required: false
+  }
 });
 
 export const Restaurant = model<IRestaurant>('Restaurant', restaurantSchema);

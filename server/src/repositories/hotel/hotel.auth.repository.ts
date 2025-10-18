@@ -13,12 +13,10 @@ export class HotelAuthRepository extends BaseRepository<IHotel> implements IHote
     await this.update(id, { password: hashedPassword });
   }
 
-  async findByIdAndUpdateAction(id: string, action: boolean, field: string): Promise<void> {
-    z.string().min(1).parse(field);
-    z.boolean().parse(action);
-    const hotel = await this.update(id, { [field]: action });
-    if (!hotel) {
-      throw new RepositoryError('Restaurant not found');
+  async findByIdAndUpdateAction(id: string, action: boolean, field: string, reason ?: string): Promise<void> {
+      if(reason != '') {
+        await Hotel.findByIdAndUpdate(id, { reason: reason });
+      }
+      await Hotel.findByIdAndUpdate(id, { [field]: action });
     }
-  }
 }

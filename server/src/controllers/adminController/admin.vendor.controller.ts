@@ -26,7 +26,7 @@ export class AdminVendorController implements IAdminVendorController {
 
   async showAllUsers(req: Request, res: Response): Promise<void> {
     const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
+    const limit = parseInt(req.query.limit as string) || 5;
 
     const { data, total, totalPages } = await this._adminVenderRepo.findAllUsers(page, limit);
 
@@ -44,8 +44,12 @@ export class AdminVendorController implements IAdminVendorController {
       action: z.enum(['approve', 'reject']),
       role: z.enum(['agency', 'hotel', 'restaurant']),
     });
-    const { id, action, role } = req.params;
-    await this._adminVenderService.updateStatus(id, action, role);
+    const bosySchema = z.object({
+      reason: z.string().nullable()
+    })
+    const {reason} =bosySchema.parse(req.body)
+    const { id, action, role } = schema.parse(req.params);
+    await this._adminVenderService.updateStatus(id, action, role,reason);
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.APPROVED);
   }
 

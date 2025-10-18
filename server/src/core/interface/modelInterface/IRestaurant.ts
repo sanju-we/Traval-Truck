@@ -30,4 +30,5 @@ export interface IRestaurant extends Document {
   role: string;
   isApproved: boolean;
   isRestricted: boolean;
+  reason: string
 }

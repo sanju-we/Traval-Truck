@@ -11,22 +11,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from '@/components/utils/UserCropImage';
 import { Darumadrop_One } from 'next/font/google';
-
-interface UserProfile {
-  id: string;
-  name: string;
-  userName: string;
-  email: string;
-  password: string;
-  isBlocked: boolean;
-  role: string;
-  googleId: string;
-  profilePicture?: string;
-  bio?: string;
-  phoneNumber?: number;
-  gender?: string;
-  interest?: string[];
-}
+import {UserProfile} from '@/types/user/profile';
 
 export default function UserProfilePage() {
   const [user, setUser] = useState<UserProfile | null>(null);

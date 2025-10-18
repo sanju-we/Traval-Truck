@@ -31,4 +31,5 @@ export interface IHotel extends Document {
   isApproved: boolean;
   role: string;
   isRestricted: boolean;
+  reason: string
 }

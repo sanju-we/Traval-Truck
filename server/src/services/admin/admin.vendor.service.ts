@@ -16,20 +16,20 @@ export class AdminVendorService implements IAdminVendorService {
     @inject('IHotelAuthRepository') private readonly _hotelRepository: IHotelAuthRepository,
     @inject('IRestaurantAuthRepository')
     private readonly _restaurantRepository: IRestaurantAuthRepository,
-  ) {}
+  ) { }
 
-  async updateStatus(id: string, action: string, role: string): Promise<void> {
+  async updateStatus(id: string, action: string, role: string, reason: string | null): Promise<void> {
     const schema = z.object({
       id: z.string(),
       action: z.enum(['approve', 'reject']),
       role: z.enum(['agency', 'hotel', 'restaurant']),
+      reason: z.string().nullable()
     });
-    schema.parse({ id, action, role });
+    schema.parse({ id, action, role, reason });
     let vendor;
     if (role === 'agency') {
       vendor = await this._agencyrepository.findById(id);
     } else if (role === 'hotel') {
-      logger.info(`ivda eththi tto`);
       vendor = await this._hotelRepository.findById(id);
     } else {
       vendor = await this._restaurantRepository.findById(id);
@@ -52,7 +52,7 @@ export class AdminVendorService implements IAdminVendorService {
           ? this._hotelRepository
           : this._restaurantRepository;
 
-    await repo.findByIdAndUpdateAction(id, true, field);
+    await repo.findByIdAndUpdateAction(id, true, field, reason ? reason : '');
   }
 
   async updateBlock(id: string, role: string): Promise<void> {
