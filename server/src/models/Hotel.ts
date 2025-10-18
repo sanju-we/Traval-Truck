@@ -50,6 +50,10 @@ const hotelSchema = new Schema<IHotel>({
       type: String,
     },
   ],
+  logo:{
+    type:String,
+    default:null
+  },
   bankDetails: {
     accountHolder: {
       type: String,

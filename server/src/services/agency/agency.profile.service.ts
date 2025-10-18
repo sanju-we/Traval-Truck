@@ -34,10 +34,7 @@ export class AgencyProfileService implements IAgencyProfileService {
     return toVendorRequestDTO(update);
   }
 
-  async updateDocument(
-    id: string,
-    files: { [fieldname: string]: Express.Multer.File[] },
-  ): Promise<vendorRequestDTO> {
+  async updateDocument(id: string,files: { [fieldname: string]: Express.Multer.File[] },): Promise<vendorRequestDTO> {
     let update;
     for (const fieldname in files) {
       const file = files[fieldname][0];
@@ -57,5 +54,12 @@ export class AgencyProfileService implements IAgencyProfileService {
     const updated = await this._agencyAuthRepo.update(id, { [`documents.${key}`]: null })
     if (!updated) throw new UserNotFoundError()
     return toVendorRequestDTO(updated)
+  }
+
+  async uploadProfile(id: string, image: Express.Multer.File): Promise<vendorRequestDTO | null> {
+      const result = await singleUpload(image,'Travel-Travel-Document')
+      const update = await this._agencyAuthRepo.update(id,{logo:result})
+      if(update) return toVendorRequestDTO(update)
+      return null
   }
 }

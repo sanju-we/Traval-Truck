@@ -33,13 +33,13 @@ export default function LoginPage() {
         router.push('/hotel/profile');
       } else {
         toast.error(`${data.message}`);
+        setIsLoading(false);
       }
     } catch (err) {
       toast.error('Login failed');
       console.error('Login error:', err);
-    } finally {
       setIsLoading(false);
-    }
+    } 
   };
 
   return (

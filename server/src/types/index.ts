@@ -18,6 +18,7 @@ export interface userProfileDTO {
   id: string;
   name: string;
   email: string;
+  profilePicture?: string;
   phoneNumber?: number;
   role: string;
 }

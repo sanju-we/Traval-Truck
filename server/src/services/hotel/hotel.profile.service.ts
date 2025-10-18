@@ -12,7 +12,7 @@ import { deleteImage, extractPublicId, singleUpload } from '../../utils/upload.c
 export class HotelProfileService implements IHotelProfileService {
   constructor(
     @inject('IHotelAuthRepository') private readonly _hotelAuthRepo: IHotelAuthRepository,
-  ) {}
+  ) { }
   async updateProfile(
     id: string,
     data: {
@@ -48,16 +48,23 @@ export class HotelProfileService implements IHotelProfileService {
       update = await this._hotelAuthRepo.update(hotelId, { [`documents.${fileName}`]: result });
     }
 
-    if (update)  return toVendorRequestDTO(update);
+    if (update) return toVendorRequestDTO(update);
     return null
   }
 
   async deleteImage(id: string, documentUrl: string, key: string): Promise<vendorRequestDTO> {
     const publicUrl = extractPublicId(documentUrl)
-      const result = await deleteImage(publicUrl)
-      if(!result) throw new ImageDeleteInCloudinary()
-        const updated = await this._hotelAuthRepo.update(id,{[`documents.${key}`]:null})
-      if(!updated) throw new UserNotFoundError()
-        return toVendorRequestDTO(updated)
+    const result = await deleteImage(publicUrl)
+    if (!result) throw new ImageDeleteInCloudinary()
+    const updated = await this._hotelAuthRepo.update(id, { [`documents.${key}`]: null })
+    if (!updated) throw new UserNotFoundError()
+    return toVendorRequestDTO(updated)
+  }
+
+  async uploadImage(id: string, image: Express.Multer.File): Promise<vendorRequestDTO | null> {
+    const result = await singleUpload(image, 'Travel-Truck-Document')
+    const updated = await this._hotelAuthRepo.update(id, { logo: result })
+    if (updated) return toVendorRequestDTO(updated)
+    return null
   }
 }

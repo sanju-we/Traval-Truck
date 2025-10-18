@@ -24,6 +24,7 @@ export interface IRestaurant extends Document {
   foodItems: Schema.Types.ObjectId;
   reviews: Schema.Types.ObjectId[];
   images: string[];
+  logo:string;
   phone: number;
   ownerName: string;
   role: string;

@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 export function Header() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifyOpen, setNotifyOpen] = useState(false);
-  const [showLogoutModal, setShowLogoutModal] = useState(false); // new state for logout modal
+  const [showLogoutModal, setShowLogoutModal] = useState(false); 
   const [user, setUser] = useState<{ profilePicture?: string } | null>(null);
 
   const profileRef = useRef<HTMLDivElement>(null);

@@ -69,4 +69,12 @@ export class AgencyProfileController implements IAgencyProfileController {
     const agency = await this._agencyProfileService.deleteImage(agencyId, documentUrl, key)
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DELETED,agency)
   }
+
+  async uploadProfile(req: Request, res: Response): Promise<void> {
+    const agencyId = req.user.id
+      const profile = req.file
+      if(!profile) throw new BADREQUEST()
+        const result = await this._agencyProfileService.uploadProfile(agencyId,profile)
+      sendResponse(res,STATUS_CODE.OK,true,MESSAGES.UPDATED,result)
+  }
 }

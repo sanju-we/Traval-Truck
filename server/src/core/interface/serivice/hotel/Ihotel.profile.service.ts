@@ -21,4 +21,5 @@ export interface IHotelProfileService {
   ): Promise<vendorRequestDTO | null>;
 
   deleteImage(id:string,documentUrl:string,key:string) : Promise<vendorRequestDTO>;
+  uploadImage(id:string,image:Express.Multer.File) : Promise<vendorRequestDTO | null>
 }

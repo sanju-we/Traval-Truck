@@ -38,5 +38,6 @@ restaurantProfileRouter
     restaurantProfileController.updateDocuments.bind(restaurantProfileController),
   )
   .delete('/delete-image',asyncHandler(restaurantProfileController.deleteImage.bind(restaurantProfileController)))
+  .post('/upload-profile', upload.single('profile'), asyncHandler(restaurantProfileController.uploadImage.bind(restaurantProfileController)))
 
 export default restaurantProfileRouter;

@@ -8,15 +8,15 @@ import { googleCallback } from '../../utils/googleAuth.js';
 const authRouter = Router();
 const authController = container.get<IController>('IController');
 
-const otpLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-});
+  const otpLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 5,
+  });
 
-const resetLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  max: 3,
-});
+  const resetLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 3,
+  });
 
 authRouter
   .get('/login', (req, res) => {

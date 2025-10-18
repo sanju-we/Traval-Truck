@@ -8,6 +8,7 @@ export interface vendorRequestDTO {
   ownerName: string;
   email: string;
   role: string;
+  logo:string;
   bankDetails: {
     accountHolder: string;
     accountNumber: string;
@@ -30,6 +31,7 @@ export const toVendorRequestDTO = (vendor: IRestaurant | IHotel | IAgency): vend
   ownerName: vendor.ownerName,
   bankDetails: vendor.bankDetails,
   documents: vendor.documents,
+  logo:vendor.logo,
   email: vendor.email,
   role: vendor.role,
   isApproved: vendor.isApproved,

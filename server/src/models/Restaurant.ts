@@ -43,6 +43,10 @@ const restaurantSchema = new Schema<IRestaurant>({
       type: String,
     },
   ],
+  logo:{
+    type:String,
+    default:null
+  },
   bankDetails: {
     accountHolder: {
       type: String,

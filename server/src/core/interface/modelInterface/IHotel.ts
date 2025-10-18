@@ -13,6 +13,7 @@ export interface IHotel extends Document {
   packages: Schema.Types.ObjectId[];
   reviews: Schema.Types.ObjectId[];
   images: string[];
+  logo:string;
   bankDetails: {
     accountHolder: string;
     accountNumber: string;

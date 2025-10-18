@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { IRestaurantProfileController } from '../../core/interface/controllerInterface/restaurant/Irestaurant.profile.controller.js';
 import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository.js';
 import { inject, injectable } from 'inversify';
-import { sendResponse, UserNotFoundError } from '../../utils/resAndErrors.js';
+import { BADREQUEST, sendResponse, UserNotFoundError } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
 import { IRestaurantProfileService } from '../../core/interface/serivice/restaurant/IRestaurant.profile.service.js';
@@ -70,5 +70,13 @@ export class RestaurantProfileController implements IRestaurantProfileController
       const restaurantId = req.user.id
       const restaurant = await this._restaurantProfileService.deleteImage(restaurantId,documentUrl,key)
       sendResponse(res,STATUS_CODE.OK,true,MESSAGES.DELETED,restaurant)
+  }
+
+  async uploadImage(req: Request, res: Response): Promise<void> {
+      const image = req.file
+      if(!image) throw new BADREQUEST()
+        const restaurantId = req.user.id;
+      const updated = await this._restaurantProfileService.uploadImage(restaurantId,image)
+      sendResponse(res,STATUS_CODE.OK,true,MESSAGES.UPDATED,updated)
   }
 }

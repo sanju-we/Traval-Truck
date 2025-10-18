@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
 import { IJWT } from '../../core/interface/JWT/JWTInterface.js';
-import { sendResponse } from '../../utils/resAndErrors.js';
+import { BADREQUEST, sendResponse } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { IAuthRepository } from '../../core/interface/repositorie/IAuth.Repository.js';
 import z from 'zod';
@@ -18,7 +18,7 @@ export class ProfileController implements IUserProfileController {
     @inject('IJWT') private readonly _jwt: IJWT,
     @inject('IAuthRepository') private _authRepository: IAuthRepository,
     @inject('IUserProfileService') private readonly _profileService: IUserProfileService,
-  ) {}
+  ) { }
 
   async profile(req: Request, res: Response): Promise<void> {
     if (!req.cookies?.accessToken) {
@@ -63,5 +63,14 @@ export class ProfileController implements IUserProfileController {
     const userData = await this._profileService.updateProfile(formData, user);
     logger.info(`userData : ${userData}`);
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, userData);
+  }
+
+  async uploadProfile(req: Request, res: Response): Promise<void> {
+    const profile = req.file
+    if (!profile) throw new BADREQUEST()
+    const userId = req.user.id
+    logger.info(`formData = ${JSON.stringify(req.file)}`)
+    const updated = await this._profileService.uploadProfileImage(userId, profile)
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updated)
   }
 }

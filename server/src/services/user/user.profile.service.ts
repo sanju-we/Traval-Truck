@@ -5,10 +5,12 @@ import z from 'zod';
 import { userEdit, Userauth } from 'types/index.js';
 import { UserNotFoundError } from '../../utils/resAndErrors.js';
 import { IUser } from 'types';
+import { singleUpload } from '../../utils/upload.cloudinary.js';
+import { toUserProfileDTO, userProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
 
 @injectable()
 export class UserProfileService implements IUserProfileService {
-  constructor(@inject('IAuthRepository') private readonly _authRespository: IAuthRepository) {}
+  constructor(@inject('IAuthRepository') private readonly _authRespository: IAuthRepository) { }
 
   async setInterest(interests: string[], id: string): Promise<void> {
     const schema = z.object({
@@ -27,5 +29,13 @@ export class UserProfileService implements IUserProfileService {
     if (!updateUser) throw new UserNotFoundError();
 
     return updateUser;
+  }
+
+  async uploadProfileImage(id: string, image: Express.Multer.File): Promise<userProfileDTO | null> {
+    const result = await singleUpload(image, 'Travel-Truck-Document')
+
+    const update = await this._authRespository.update(id, { profilePicture: result })
+    if (update) return toUserProfileDTO(update)
+    return null
   }
 }

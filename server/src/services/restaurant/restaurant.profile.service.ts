@@ -49,7 +49,7 @@ export class RestaurantProfileService implements IRestaurantProfileService {
       update = await this._restaurantAuthRepo.update(id, { [`documents.${fileName}`]: result });
     }
 
-    if(update) return toVendorRequestDTO(update);
+    if (update) return toVendorRequestDTO(update);
     return null
   }
 
@@ -60,5 +60,12 @@ export class RestaurantProfileService implements IRestaurantProfileService {
     const data = await this._restaurantAuthRepo.update(id, { [`documents.${key}`]: null })
     if (!data) throw new UserNotFoundError()
     return toVendorRequestDTO(data)
+  }
+
+  async uploadImage(id: string, image: Express.Multer.File): Promise<vendorRequestDTO | null> {
+    const result = await singleUpload(image, 'Travel-Truck-Document')
+    const update = await this._restaurantAuthRepo.update(id, { logo: result })
+    if (update) return toVendorRequestDTO(update)
+    return null
   }
 }

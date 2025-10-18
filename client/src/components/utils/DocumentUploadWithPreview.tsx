@@ -1,111 +1,148 @@
-'use client';
+// 'use client';
 
-import React, { useState, useCallback, useRef } from 'react';
-import Cropper from 'react-easy-crop';
-import { getCroppedImg } from './cropImage';
+// import React, { useRef, useState, useCallback } from 'react';
+// import Cropper from 'react-easy-crop';
+// import { getCroppedImg } from '../utils/cropImage';
+// import { motion, AnimatePresence } from 'framer-motion';
+// import { X } from 'lucide-react';
 
-interface DocumentUploadWithPreviewProps {
-  label: string;
-  existingUrl?: string; // if already existing preview
-  onChange: (file: Blob | File) => void;
-}
+// interface DocumentUploadWithPreviewProps {
+//   label: string;
+//   existingUrl?: string;
+//   onChange: (file: File | Blob | null) => void;
+// }
 
-export default function DocumentUploadWithPreview({
-  label,
-  existingUrl,
-  onChange,
-}: DocumentUploadWithPreviewProps) {
-  const [imageSrc, setImageSrc] = useState<string | null>(existingUrl || null);
-  const [crop, setCrop] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<{
-    width: number;
-    height: number;
-    x: number;
-    y: number;
-  } | null>(null);
+// export default function DocumentUploadWithPreview({
+//   label,
+//   existingUrl,
+//   onChange,
+// }: DocumentUploadWithPreviewProps) {
+//   const [imageSrc, setImageSrc] = useState<string | null>(existingUrl || null);
+//   const [cropModalOpen, setCropModalOpen] = useState(false);
+//   const [crop, setCrop] = useState({ x: 0, y: 0 });
+//   const [zoom, setZoom] = useState(1);
+//   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+//   const inputRef = useRef<HTMLInputElement>(null);
 
-  const inputRef = useRef<HTMLInputElement>(null);
+//   // Select file
+//   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const file = e.target.files?.[0];
+//     if (!file) return;
 
-  const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImageSrc(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+//     const reader = new FileReader();
+//     reader.onload = () => {
+//       setImageSrc(reader.result as string);
+//       setCropModalOpen(true);
+//     };
+//     reader.readAsDataURL(file);
+//   };
 
-  const onCropComplete = useCallback((_: any, croppedPixels: any) => {
-    setCroppedAreaPixels(croppedPixels);
-  }, []);
+//   // Crop complete
+//   const onCropComplete = useCallback((_: any, croppedAreaPixels: any) => {
+//     setCroppedAreaPixels(croppedAreaPixels);
+//   }, []);
 
-  const showCroppedImage = useCallback(async () => {
-    if (!imageSrc || !croppedAreaPixels) return;
-    const blob = await getCroppedImg(imageSrc, croppedAreaPixels, 0);
-    if (blob) {
-      onChange(blob);
-      const blobUrl = URL.createObjectURL(blob);
-      setImageSrc(blobUrl);
-    }
-  }, [imageSrc, croppedAreaPixels, onChange]);
+//   // Save cropped image
+//   const handleCropSave = useCallback(async () => {
+//     if (!imageSrc || !croppedAreaPixels) return;
+//     try {
+//       const blob = await getCroppedImg(imageSrc, croppedAreaPixels);
+//       if (blob) {
+//         const blobUrl = URL.createObjectURL(blob);
+//         setImageSrc(blobUrl);
+//         onChange(blob);
+//       }
+//     } catch (err) {
+//       console.error('Crop failed:', err);
+//     } finally {
+//       setCropModalOpen(false);
+//     }
+//   }, [imageSrc, croppedAreaPixels, onChange]);
 
-  return (
-    <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-      <div className="border border-gray-300 rounded-md overflow-hidden relative">
-        {imageSrc ? (
-          <div className="relative w-full h-64 bg-black">
-            <Cropper
-              image={imageSrc}
-              crop={crop}
-              zoom={zoom}
-              aspect={4 / 3}
-              onCropChange={setCrop}
-              onCropComplete={onCropComplete}
-              onZoomChange={setZoom}
-            />
-          </div>
-        ) : (
-          <div
-            className="w-full h-32 flex items-center justify-center bg-gray-100 cursor-pointer"
-            onClick={() => inputRef.current?.click()}
-          >
-            <span className="text-gray-400">Click to upload image</span>
-          </div>
-        )}
-        <input
-          type="file"
-          accept="image/*"
-          className="hidden"
-          ref={inputRef}
-          onChange={onSelectFile}
-        />
-      </div>
+//   // Remove image
+//   const handleRemove = () => {
+//     setImageSrc(null);
+//     onChange(null);
+//   };
 
-      {imageSrc && (
-        <div className="mt-2 flex gap-2">
-          <button
-            type="button"
-            onClick={showCroppedImage}
-            className="px-3 py-1 bg-emerald-500 text-white rounded-md"
-          >
-            Crop & Use
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setImageSrc(null);
-              onChange(new File([], '')); // clear
-            }}
-            className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md"
-          >
-            Remove
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
+//   return (
+//     <div className="space-y-2">
+//       <label className="block text-sm font-medium text-gray-700">{label}</label>
+
+//       {imageSrc ? (
+//         <div className="relative w-48 h-48 rounded-lg overflow-hidden border border-gray-300 bg-gray-100">
+//           <img
+//             src={imageSrc}
+//             alt="Document Preview"
+//             className="w-full h-full object-cover"
+//           />
+//           <button
+//             type="button"
+//             onClick={handleRemove}
+//             className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1 hover:bg-black"
+//           >
+//             <X size={14} />
+//           </button>
+//         </div>
+//       ) : (
+//         <div
+//           onClick={() => inputRef.current?.click()}
+//           className="flex items-center justify-center w-48 h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+//         >
+//           <p className="text-gray-400 text-sm text-center px-2">Click to upload</p>
+//         </div>
+//       )}
+
+//       <input
+//         type="file"
+//         accept="image/*"
+//         className="hidden"
+//         ref={inputRef}
+//         onChange={handleFileSelect}
+//       />
+
+//       {/* Cropping Modal */}
+//       <AnimatePresence>
+//         {cropModalOpen && (
+//           <motion.div
+//             initial={{ opacity: 0 }}
+//             animate={{ opacity: 1 }}
+//             exit={{ opacity: 0 }}
+//             className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center"
+//           >
+//             <div className="bg-white p-4 rounded-lg shadow-lg w-[90vw] max-w-md">
+//               <h2 className="text-lg font-semibold mb-2">Crop your image</h2>
+//               <div className="relative w-full h-64 bg-black">
+//                 <Cropper
+//                   image={imageSrc!}
+//                   crop={crop}
+//                   zoom={zoom}
+//                   aspect={4 / 3}
+//                   cropShape="rect"
+//                   showGrid={false}
+//                   onCropChange={setCrop}
+//                   onZoomChange={setZoom}
+//                   onCropComplete={onCropComplete}
+//                 />
+//               </div>
+//               <div className="flex justify-between mt-4">
+//                 <button
+//                   onClick={() => setCropModalOpen(false)}
+//                   className="px-4 py-1 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300"
+//                 >
+//                   Cancel
+//                 </button>
+//                 <button
+//                   onClick={handleCropSave}
+//                   className="px-4 py-1 rounded-md bg-emerald-600 text-white hover:bg-emerald-700"
+//                 >
+//                   Save Crop
+//                 </button>
+//               </div>
+//             </div>
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+//     </div>
+//   );
+// }

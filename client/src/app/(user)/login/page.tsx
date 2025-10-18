@@ -4,8 +4,11 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setTokens } from '@/redux/authSlice';
 import { useRouter } from 'next/navigation';
+import { ShowerHeadIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '@/services/api';
+import {FcGoogle } from 'react-icons/fc'
+import {FaEye, FaEyeSlash } from 'react-icons/fa'
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -41,11 +44,11 @@ export default function LoginPage() {
         router.push('/');
       } else {
         toast.error(data.message || 'Login failed');
+        setIsLoading(false);
       }
     } catch (err) {
-      toast.error('Something went wrong. Try again.');
-    } finally {
       setIsLoading(false);
+      toast.error('Something went wrong. Try again.');
     }
   };
 
@@ -68,14 +71,13 @@ export default function LoginPage() {
             <input
               type="email"
               name="email"
-              placeholder="you@example.com"
+              placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
               className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-600"
             />
           </div>
 
-          {/* Password */}
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Password
@@ -84,7 +86,7 @@ export default function LoginPage() {
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
-                placeholder="••••••••"
+                placeholder="Enter Password"
                 value={formData.password}
                 onChange={handleChange}
                 className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-600"
@@ -94,7 +96,7 @@ export default function LoginPage() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-2 text-gray-500 text-sm"
               >
-                {showPassword ? '🙈' : '👁️'}
+                {showPassword ? <FaEyeSlash/> : <FaEye/>}
               </button>
             </div>
           </div>
@@ -136,7 +138,7 @@ export default function LoginPage() {
             onClick={() => (window.location.href = 'http://localhost:5000/api/user/auth/google')}
             className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 py-2.5 rounded-md hover:bg-gray-50 transition"
           >
-            <img src="/google-icon.svg" alt="Google" className="w-5 h-5" />
+            <FcGoogle style={{ marginRight: -2 }} />
             Continue with Google
           </button>
         </form>

@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { IAgency } from '../core/interface/modelInterface/IAgency.js';
+import { string } from 'zod';
 
 const agencySchema = new Schema<IAgency>({
   companyName: {
@@ -40,6 +41,10 @@ const agencySchema = new Schema<IAgency>({
       type: String,
     },
   ],
+  logo:{
+    type:String,
+    default:null
+  },
   bankDetails: {
     accountHolder: {
       type: String,
