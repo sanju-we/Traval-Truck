@@ -24,5 +24,7 @@ export default interface VendorProfile {
   documents?: VendorDocuments;
   isApproved: boolean;
   isBlocked: boolean;
+  isRestricted: boolean;
   createdAt: string;
+  reason:string
 }

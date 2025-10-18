@@ -95,7 +95,8 @@ const agencySchema = new Schema<IAgency>({
   },
   reason:{
     type:String,
-    required: false
+    required: false,
+    default:''
   }
 });
 

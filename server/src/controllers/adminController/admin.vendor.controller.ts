@@ -49,6 +49,7 @@ export class AdminVendorController implements IAdminVendorController {
     })
     const {reason} =bosySchema.parse(req.body)
     const { id, action, role } = schema.parse(req.params);
+    logger.info('*****************')
     await this._adminVenderService.updateStatus(id, action, role,reason);
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.APPROVED);
   }

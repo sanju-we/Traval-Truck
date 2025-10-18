@@ -97,7 +97,8 @@ const restaurantSchema = new Schema<IRestaurant>({
   },
   reason:{
     type:String,
-    required: false
+    required: false,
+    default:''
   }
 });
 

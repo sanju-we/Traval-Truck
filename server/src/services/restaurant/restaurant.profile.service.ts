@@ -49,7 +49,10 @@ export class RestaurantProfileService implements IRestaurantProfileService {
       update = await this._restaurantAuthRepo.update(id, { [`documents.${fileName}`]: result });
     }
 
-    if (update) return toVendorRequestDTO(update);
+    if (update) {
+      update.isRestricted ? await this._restaurantAuthRepo.update(id,{isRestricted:false}) :''
+      return toVendorRequestDTO(update);
+    }
     return null
   }
 

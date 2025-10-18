@@ -36,6 +36,7 @@ export interface Userauth {
   interesets?: string[];
   role: string;
   isBlocked: boolean;
+  isRestricted?: boolean
 }
 export interface VendorAuth {
   id: string;
@@ -44,6 +45,7 @@ export interface VendorAuth {
   ownerName?: string;
   role: string;
   isBlocked: boolean;
+  isRestricted: boolean
 }
 
 // General Types

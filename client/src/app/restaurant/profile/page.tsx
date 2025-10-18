@@ -13,6 +13,7 @@ import Cropper from 'react-easy-crop';
 import getCroppedImg from '@/components/utils/UserCropImage';
 import VendorProfile from '@/types/vendor/profile';
 import DocumentUploadWithPreview from '@/components/utils/DocumentUploadWithPreview';
+import RestrictionBanner from '@/components/vendor/RestrictionBanner';
 
 export default function VendorProfilePage() {
   const [vendor, setVendor] = useState<VendorProfile | null>(null);
@@ -30,6 +31,7 @@ export default function VendorProfilePage() {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
   const [isCropping, setIsCropping] = useState(false);
   const [profileLoad, setProfileLoad] = useState(false);
+  const [isResubmitting, setIsResubmitting] = useState(false);
 
   useEffect(() => {
     async function fetchVendor() {
@@ -220,7 +222,8 @@ export default function VendorProfilePage() {
         toast.error(data.message || 'Upload failed');
         return;
       }
-      toast.success('All documents uploaded successfully!');
+      if(data.message === 'Re-submission request send') setIsResubmitting(true)
+      toast.success(data.message);
       if (data.data !== null) {
         setVendor(data.data);
         setFormData(data.data);
@@ -294,6 +297,9 @@ export default function VendorProfilePage() {
       <SideNavbar />
 
       <div className="flex-1 px-6 py-10">
+          {vendor.reason != "" && (
+            <RestrictionBanner reason={vendor.reason}/>
+          )}
         <div className="bg-white p-6 rounded-2xl shadow-md flex flex-col md:flex-row items-center gap-6">
           <div className="relative w-[120px] h-[120px] flex-shrink-0">
             <Image
@@ -317,8 +323,9 @@ export default function VendorProfilePage() {
               <button
                 onClick={() => setIsUpload(true)}
                 className="px-4 py-2 border border-emerald-500 text-emerald-500 rounded-lg hover:bg-emerald-50 text-sm"
+                disabled={isResubmitting ? true : false}
               >
-                Attach Documents
+                {!vendor.isRestricted ? "Attach Documents" : "Resubmit Documents"}
               </button>
             </div>
           </div>

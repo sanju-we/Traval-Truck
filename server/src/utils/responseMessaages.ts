@@ -35,6 +35,7 @@ export enum MESSAGES {
   REJECTED = 'Rejected successfully',
   UNVERIFIED = 'Marked as unverified',
   VERIFIED = 'Verified successfully',
+  RESUBMITED = 'Re-submission request send',
 
   // -------------------- AUTH --------------------
   EMAIL_OTP_REQUIRED = 'Email and OTP are required',
