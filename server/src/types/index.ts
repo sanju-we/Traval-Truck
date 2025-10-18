@@ -12,23 +12,23 @@ export interface UserData {
   name: string;
   email: string;
   password: string;
-  phone: number;
+  phoneNumber: number;
 }
 export interface userProfileDTO {
   id: string;
   name: string;
   email: string;
+  profilePicture?: string;
   phoneNumber?: number;
   role: string;
 }
 
 export interface userEdit {
-  name:string,
-  userName:string,
-  phoneNumber:number
+  name: string;
+  userName: string;
+  phoneNumber: number;
 }
 
-// {\n  _id: new ObjectId('68d6f500634a89c53390addd'),\n  name: 'Sanju pn',\n  email: 'sanju@gmail.com',\n  interest: [],\n  password: '$2b$10$jRoAeJveo2OIHazxOcW/vOfCt/RwH6eGrOdFfuAIKwK5PXs1mpQZy',\n  createdOn: 2025-09-26T18:51:49.609Z,\n  role: 'user',\n  isBlocked: false,\n  __v: 0\n}
 export interface Userauth {
   id: string;
   name?: string;

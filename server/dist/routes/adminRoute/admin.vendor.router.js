@@ -7,5 +7,6 @@ const adminVendorController = container.get('IAdminVendorController');
 adminVendorRoute
     .get('/allRequests', verifyAdminToken, asyncHandler(adminVendorController.showAllRequsestes.bind(adminVendorController)))
     .get('/allUsers', verifyAdminToken, asyncHandler(adminVendorController.showAllUsers.bind(adminVendorController)))
+    .patch('/block-toggle/:id/:role', asyncHandler(adminVendorController.blockTongle.bind(adminVendorController)))
     .patch('/:id/:action/:role', verifyAdminToken, asyncHandler(adminVendorController.updateStatus.bind(adminVendorController)));
 export default adminVendorRoute;

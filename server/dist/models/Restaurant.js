@@ -49,9 +49,17 @@ const restaurantSchema = new Schema({
         type: String,
         required: true,
     },
+    isApproved: {
+        type: Boolean,
+        default: false,
+    },
     isRestricted: {
         type: Boolean,
         default: false,
+    },
+    role: {
+        type: String,
+        required: true,
     },
 });
 export const Restaurant = model('Restaurant', restaurantSchema);

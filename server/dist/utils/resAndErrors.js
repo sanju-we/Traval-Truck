@@ -39,7 +39,7 @@ export class InvalidOtpError extends HttpError {
 }
 export class UserNotFoundError extends HttpError {
     constructor() {
-        super(401, 'Invalid credentials');
+        super(400, 'Invalid credentials');
     }
 }
 export class NoAccessToken extends HttpError {
@@ -49,12 +49,12 @@ export class NoAccessToken extends HttpError {
 }
 export class InvalidCredentialsError extends HttpError {
     constructor() {
-        super(401, 'Invalid credentials');
+        super(400, 'Invalid credentials');
     }
 }
 export class InvalidResetTokenError extends HttpError {
     constructor() {
-        super(401, 'Invalid or expired reset token');
+        super(400, 'Invalid or expired reset token');
     }
 }
 export class UNAUTHORIZEDUserFounf extends HttpError {

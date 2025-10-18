@@ -4,13 +4,15 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setTokens } from '@/redux/authSlice';
 import { useRouter } from 'next/navigation';
+import { ShowerHeadIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '@/services/api';
+import {FcGoogle } from 'react-icons/fc'
+import {FaEye, FaEyeSlash } from 'react-icons/fa'
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
@@ -30,122 +32,125 @@ export default function LoginPage() {
     try {
       const res = await api.post('/user/auth/login', formData);
       const data = res.data;
-      console.log('data:', data);
 
       if (data.success) {
         toast.success('Login successful!');
         dispatch(
-          setTokens({ accessToken: data.data.accessToken, refreshToken: data.data.refreshToken }),
+          setTokens({
+            accessToken: data.data.accessToken,
+            refreshToken: data.data.refreshToken,
+          }),
         );
         router.push('/');
       } else {
-        console.log(data)
-        toast.error(`${data.message}`);
+        toast.error(data.message || 'Login failed');
+        setIsLoading(false);
       }
     } catch (err) {
-      console.error('Login error:', err);
-    } finally {
       setIsLoading(false);
+      toast.error('Something went wrong. Try again.');
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center bg-white">
-      {/* Header */}
-      <header className="w-full flex justify-between items-center px-6 py-4 shadow-sm">
-        <h1 className="text-lg font-bold">Travel Truck</h1>
-        <button
-          onClick={() => router.push('/signup')}
-          className="px-4 py-2 text-sm font-medium border rounded-lg hover:bg-gray-100"
-        >
-          Sign up
-        </button>
-      </header>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="w-full max-w-md bg-white shadow-md rounded-xl p-8 space-y-6">
+        {/* Header */}
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-800">Welcome Back</h1>
+          <p className="text-sm text-gray-500 mt-1">Sign in to your account</p>
+        </div>
 
-      {/* Main */}
-      <main className="min-h-screen flex flex-col items-center w-full max-w-md mt-10 px-6">
-        <h2 className="text-2xl font-bold">Welcome back</h2>
-        <p className="text-gray-500 text-sm mt-2">Login with your credentials</p>
-        <h6 className="text-emerald-500 mt-2">{message}</h6>
-
-        <form className="w-full mt-6 space-y-4">
+        {/* Form */}
+        <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium">Email</label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email address
+            </label>
             <input
               type="email"
               name="email"
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
-              className="mt-1 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-600"
             />
           </div>
 
-          {/* Password */}
           <div>
-            <label className="block text-sm font-medium">Password</label>
-            <div className="relative">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <div className="relative mt-1">
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
-                placeholder="Enter your password"
+                placeholder="Enter Password"
                 value={formData.password}
                 onChange={handleChange}
-                className="mt-1 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-600"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-3 flex items-center text-gray-400"
+                className="absolute right-3 top-2 text-gray-500 text-sm"
               >
-                👁
+                {showPassword ? <FaEyeSlash/> : <FaEye/>}
               </button>
             </div>
           </div>
 
-          {/* Forgot password */}
-          <p className="text-sm text-gray-500 hover:text-gray-700 cursor-pointer">
-            <a href="/forgetPassword" className="text-purple-600 hover:underline">
+          {/* Forgot Password */}
+          <div className="text-right">
+            <a href="/forgetPassword" className="text-sm text-gray-600 hover:underline">
               Forgot password?
             </a>
-          </p>
+          </div>
 
           {/* Login Button */}
           <button
-            type="button"
+            type="submit"
             onClick={handleLogin}
             disabled={isLoading}
-            className="w-full bg-purple-600 text-white font-semibold py-2 rounded-lg hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gray-800 text-white font-semibold py-2.5 rounded-md hover:bg-gray-900 transition disabled:opacity-50"
           >
             {isLoading ? (
-              <div className="flex items-center justify-center gap-2">
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <span className="flex items-center justify-center">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
                 Logging in...
-              </div>
+              </span>
             ) : (
-              'Log in'
+              'Sign In'
             )}
           </button>
 
-          {/* Google Login */}
+          {/* Separator */}
+          <div className="flex items-center gap-2 text-gray-400 text-sm">
+            <div className="flex-grow h-px bg-gray-200"></div>
+            or
+            <div className="flex-grow h-px bg-gray-200"></div>
+          </div>
+
+          {/* Google Button */}
           <button
             type="button"
-            className="w-full bg-gray-100 font-medium py-2 rounded-lg hover:bg-gray-200 transition"
             onClick={() => (window.location.href = 'http://localhost:5000/api/user/auth/google')}
+            className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 py-2.5 rounded-md hover:bg-gray-50 transition"
           >
-            Continue with GOOGLE
+            <FcGoogle style={{ marginRight: -2 }} />
+            Continue with Google
           </button>
         </form>
 
         {/* Footer */}
-        <p className="mt-6 text-sm text-gray-500">
+        <p className="text-center text-sm text-gray-500">
           Don’t have an account?{' '}
-          <a href="/signup" className="text-purple-600 hover:underline">
-            Sign up here
+          <a href="/signup" className="text-gray-700 font-medium hover:underline">
+            Sign up
           </a>
         </p>
-      </main>
+      </div>
     </div>
   );
 }

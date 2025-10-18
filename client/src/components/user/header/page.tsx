@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 export function Header() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifyOpen, setNotifyOpen] = useState(false);
-  const [showLogoutModal, setShowLogoutModal] = useState(false); // new state for logout modal
+  const [showLogoutModal, setShowLogoutModal] = useState(false); 
   const [user, setUser] = useState<{ profilePicture?: string } | null>(null);
 
   const profileRef = useRef<HTMLDivElement>(null);
@@ -171,9 +171,7 @@ export function Header() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl shadow-xl p-6 w-96 relative">
             <h2 className="text-xl font-semibold text-center mb-2">Confirm Logout</h2>
-            <p className="text-gray-600 text-center mb-6">
-              Are you sure you want to log out?
-            </p>
+            <p className="text-gray-600 text-center mb-6">Are you sure you want to log out?</p>
 
             <div className="flex justify-center gap-4">
               <button

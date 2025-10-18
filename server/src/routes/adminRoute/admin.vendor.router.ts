@@ -26,6 +26,6 @@ adminVendorRoute
     '/:id/:action/:role',
     verifyAdminToken,
     asyncHandler(adminVendorController.updateStatus.bind(adminVendorController)),
-  )
+  );
 
 export default adminVendorRoute;

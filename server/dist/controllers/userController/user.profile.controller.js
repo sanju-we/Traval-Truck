@@ -18,31 +18,51 @@ import { logger } from '../../utils/logger.js';
 import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
 let ProfileController = class ProfileController {
-    _IJWT;
+    _jwt;
     _authRepository;
-    _profilesevice;
-    constructor(_IJWT, _authRepository, _profilesevice) {
-        this._IJWT = _IJWT;
+    _profileService;
+    constructor(_jwt, _authRepository, _profileService) {
+        this._jwt = _jwt;
         this._authRepository = _authRepository;
-        this._profilesevice = _profilesevice;
+        this._profileService = _profileService;
     }
     async profile(req, res) {
-        logger.info(`request recieved from the user`);
-        const { id } = await this._IJWT.verify(req.cookies?.accessToken);
+        if (!req.cookies?.accessToken) {
+            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Access token required');
+        }
+        const { id } = await this._jwt.verify(req.cookies.accessToken);
         const userData = await this._authRepository.findById(id);
-        if (!userData)
-            return sendResponse(res, STATUS_CODE.BAD_REQUEST, false, 'User not found');
+        if (!userData) {
+            return sendResponse(res, STATUS_CODE.NOT_FOUND, false, 'User not found');
+        }
         const user = toUserProfileDTO(userData);
+        logger.info(`User profile retrieved for ID ${JSON.stringify(userData)}`);
         sendResponse(res, STATUS_CODE.OK, true, 'User profile found', user);
     }
     async intrest(req, res) {
         const schema = z.object({
-            interests: z.array(z.string())
+            interests: z.array(z.string().min(1)).nonempty(),
         });
         const { interests } = schema.parse(req.body);
-        const user = req.user;
-        await this._profilesevice.setInterest(interests, user.id);
+        if (!req.user?.id) {
+            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'User not authenticated');
+        }
+        await this._profileService.setInterest(interests, req.user.id);
+        logger.info(`Interests updated for user ID ${req.user.id}`);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED);
+    }
+    async updateUser(req, res) {
+        const schema = z.object({
+            name: z.string(),
+            userName: z.string(),
+            phoneNumber: z.preprocess((val) => Number(val), z.number())
+        });
+        const formData = req.body;
+        logger.info(`Validated user data: ${JSON.stringify(formData)}`);
+        const user = req.user;
+        const userData = await this._profileService.updateProfile(formData, user);
+        logger.info(`userData : ${userData}`);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, userData);
     }
 };
 ProfileController = __decorate([

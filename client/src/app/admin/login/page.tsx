@@ -40,11 +40,11 @@ export default function LoginPage() {
         router.push('/admin');
       } else {
         toast.error(`${data.message}`);
+        setIsLoading(false);
       }
     } catch (err) {
       toast.error('Login failed');
       console.error('Login error:', err);
-    } finally {
       setIsLoading(false);
     }
   };

@@ -8,6 +8,19 @@ export interface vendorRequestDTO {
   ownerName: string;
   email: string;
   role: string;
+  logo:string;
+  bankDetails: {
+    accountHolder: string;
+    accountNumber: string;
+    bankName: string;
+    ifscCode: string;
+  };
+  documents: {
+    registrationCertificate: string;
+    panCard: string;
+    bankProof: string;
+    ownerIdProof: string;
+  };
   isApproved: boolean;
   phone: number;
 }
@@ -16,6 +29,9 @@ export const toVendorRequestDTO = (vendor: IRestaurant | IHotel | IAgency): vend
   id: vendor._id.toString(),
   companyName: vendor.companyName,
   ownerName: vendor.ownerName,
+  bankDetails: vendor.bankDetails,
+  documents: vendor.documents,
+  logo:vendor.logo,
   email: vendor.email,
   role: vendor.role,
   isApproved: vendor.isApproved,

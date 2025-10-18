@@ -1,6 +1,6 @@
 import { injectable } from 'inversify';
-import { Request, Response } from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import { Response } from 'express';
+import jwt from 'jsonwebtoken';
 import { IJWT } from '../core/interface/JWT/JWTInterface.js';
 import { ResetToken } from '../types/index.js';
 import { InvalidResetTokenError } from '../utils/resAndErrors.js';

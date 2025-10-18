@@ -12,7 +12,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { injectable, inject } from 'inversify';
 import bcrypt from 'bcryptjs';
-import { OtpExpiredError, EmailAlreadyRegisteredError, InvalidOtpError, UserNotFoundError, InvalidCredentialsError, } from '../../utils/resAndErrors.js';
+import { OtpExpiredError, EmailAlreadyRegisteredError, InvalidOtpError, UserNotFoundError, InvalidCredentialsError, RESTRICTED_USER, } from '../../utils/resAndErrors.js';
 import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
 import { z } from 'zod';
 import { logger } from '../../utils/logger.js';
@@ -36,7 +36,7 @@ let AuthService = class AuthService {
                 name: z.string().min(1),
                 email: z.email(),
                 password: z.string().min(8),
-                phone: z.number(),
+                phoneNumber: z.number(),
             }),
         });
         schema.parse({ email: enteredEmail, otp: enteredOtp, userData });
@@ -50,10 +50,10 @@ let AuthService = class AuthService {
         if (existingUser)
             throw new EmailAlreadyRegisteredError();
         const hashedPassword = await bcrypt.hash(userData.password, 10);
-        const userDoc = await this._authRepository.createUser({
+        const userDoc = await this._authRepository.create({
             name: userData.name,
             email: userData.email,
-            phone: userData.phone,
+            phoneNumber: userData.phoneNumber,
             isBlocked: false,
             password: hashedPassword,
             role: 'user',
@@ -78,6 +78,8 @@ let AuthService = class AuthService {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch)
             throw new InvalidCredentialsError();
+        if (user.isBlocked)
+            throw new RESTRICTED_USER();
         const { accessToken, refreshToken } = await this._jwtUtil.generateToken({
             id: user.id,
             role: user.role,
@@ -93,7 +95,7 @@ let AuthService = class AuthService {
         const userData = await this._authRepository.findByEmail(email);
         if (!userData)
             throw new UserNotFoundError();
-        let user = { id: userData.id, email: userData.email };
+        const user = { id: userData.id, email: userData.email };
         const { resetLink } = await this._jwtUtil.generateResetToken(user);
         await this._emailService.sendEmail(email, 'Password Reset', `Reset your password: ${resetLink}`);
         logger.info(`From UserAuth->sendLink:- Password reset link sent to ${email}`);

@@ -1,47 +1,55 @@
+// src/repositories/restaurant/restaurant.auth.repository.ts
+import { injectable } from 'inversify';
+import { BaseRepository, RepositoryError } from '../../repositories/baseRepository.js';
 import { IRestaurant } from '../../core/interface/modelInterface/IRestaurant.js';
 import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository.js';
 import { Restaurant } from '../../models/Restaurant.js';
-import { vendorData, allRequest } from 'types';
 import {
   toVendorRequestDTO,
   vendorRequestDTO,
 } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
+import { logger } from '../../utils/logger.js';
+import z from 'zod';
 
-export class RestaurantAuthRepository implements IRestaurantAuthRepository {
-  async findByEmail(email: string): Promise<IRestaurant | null> {
-    return await Restaurant.findOne({ email: email });
+@injectable()
+export class RestaurantAuthRepository
+  extends BaseRepository<IRestaurant>
+  implements IRestaurantAuthRepository
+{
+  constructor() {
+    super(Restaurant);
   }
 
-  async findById(id: string): Promise<IRestaurant | null> {
-    return await Restaurant.findById(id);
+  async findByIdAndUpdatePassword(id: string, hashedPassword: string): Promise<IRestaurant | null> {
+    try {
+      const restaurant = await this.update(id, { password: hashedPassword });
+      if (!restaurant) {
+        logger.warn(`Restaurant not found for ID ${id} when updating password`);
+        throw new RepositoryError('Restaurant not found');
+      }
+      logger.info(`Password updated for restaurant ID ${id}`);
+      return restaurant;
+    } catch (err: any) {
+      logger.error(`Failed to update password for restaurant ID ${id}: ${err.message}`);
+      throw new RepositoryError(`Failed to update password: ${err.message}`);
+    }
   }
 
-  async createRestauratn(
-    data: vendorData & { isApproved: boolean; role: string },
-  ): Promise<IRestaurant> {
-    return await Restaurant.create(data);
-  }
-
-  async findByIdAndUpdatePassword(id: string, hashedPassword: string): Promise<void> {
-    await Restaurant.findByIdAndUpdate(id, { password: hashedPassword });
-  }
-
-  async findAllRequest(): Promise<vendorRequestDTO[]> {
-    const allReq = await Restaurant.find({ isApproved: false });
-    return allReq.map(toVendorRequestDTO);
-  }
-
-  async findByIdAndUpdateAction(id: string, action: boolean, field: string): Promise<void> {
-    await Restaurant.findByIdAndUpdate(id, { [field]: action });
-  }
-
-  async findAll(): Promise<vendorRequestDTO[]> {
-    const users = await Restaurant.find({ isApproved: true });
-    return users.map(toVendorRequestDTO);
-  }
+  async findByIdAndUpdateAction(id: string, action: boolean, field: string, reason ?: string): Promise<void> {
+      if(reason != '') {
+        await Restaurant.findByIdAndUpdate(id, { reason: reason });
+      }
+      await Restaurant.findByIdAndUpdate(id, { [field]: action });
+    }
 
   async findByStatus(status: boolean): Promise<vendorRequestDTO[]> {
-    const res = await Restaurant.find({ isApproved:status }); // Or isBlocked: false/true depending on your model
-    return res.map(toVendorRequestDTO);
+    try {
+      const restaurants = await this.findAllUser({ isApproved: status });
+      logger.debug(`Found ${restaurants.length} restaurants with isApproved=${status}`);
+      return restaurants.map(toVendorRequestDTO);
+    } catch (err: any) {
+      logger.error(`Failed to find restaurants by status ${status}: ${err.message}`);
+      throw new RepositoryError(`Failed to find restaurants by status: ${err.message}`);
+    }
   }
 }

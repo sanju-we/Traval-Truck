@@ -7,28 +7,14 @@ import { SideNavbar } from '@/components/admin/SideNavbar';
 import { useDispatch } from 'react-redux';
 import { setSelectedUser } from '@/redux/userDetailsSlice';
 import { useRouter } from 'next/navigation';
-
-interface User {
-  id: string;
-  name?: string;
-  userName?: string;
-  profilePicture?: string;
-  ownerName?: string;
-  companyName?: string;
-  isApproved?: boolean;
-  isBlocked?: boolean;
-  phone?: number;
-  email: string;
-  role: string;
-  createdAt: string;
-}
+import User from '@/types/user/profile';
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState('status');
   const [page, setPage] = useState(1);
-  const [limit] = useState(10);
+  const [limit] = useState(5);
   const [totalPages, setTotalPages] = useState(1);
 
   const dispatch = useDispatch();
@@ -84,14 +70,20 @@ export default function UsersPage() {
             />
 
             <div className="flex gap-4">
-              <select className="px-4 py-2 border rounded-lg text-sm text-gray-700" onChange={handleRoleSort}>
+              <select
+                className="px-4 py-2 border rounded-lg text-sm text-gray-700"
+                onChange={handleRoleSort}
+              >
                 <option>Role</option>
                 <option>User</option>
                 <option>Restaurant</option>
                 <option>Hotel</option>
                 <option>Agency</option>
               </select>
-              <select className="px-4 py-2 border rounded-lg text-sm text-gray-700" onChange={(e) => setStatus(e.target.value)}>
+              <select
+                className="px-4 py-2 border rounded-lg text-sm text-gray-700"
+                onChange={(e) => setStatus(e.target.value)}
+              >
                 <option>Status</option>
                 <option>Active</option>
                 <option>Blocked</option>
@@ -133,8 +125,8 @@ export default function UsersPage() {
                             user.role === 'admin'
                               ? 'bg-purple-100 text-purple-600'
                               : user.role === 'Restaurant Owner'
-                              ? 'bg-yellow-100 text-yellow-700'
-                              : 'bg-green-100 text-green-700'
+                                ? 'bg-yellow-100 text-yellow-700'
+                                : 'bg-green-100 text-green-700'
                           }`}
                         >
                           {user.role}
@@ -172,7 +164,9 @@ export default function UsersPage() {
               <button
                 key={i + 1}
                 className={`px-3 py-1 rounded-md ${
-                  page === i + 1 ? 'bg-purple-600 text-white' : 'border text-gray-600 hover:bg-gray-100'
+                  page === i + 1
+                    ? 'bg-purple-600 text-white'
+                    : 'border text-gray-600 hover:bg-gray-100'
                 }`}
                 onClick={() => handlePageChange(i + 1)}
               >

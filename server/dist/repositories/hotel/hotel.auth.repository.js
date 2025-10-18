@@ -1,27 +1,19 @@
+import { BaseRepository, RepositoryError } from '../../repositories/baseRepository.js';
 import { Hotel } from '../../models/Hotel.js';
-import { toVendorRequestDTO, } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
-export class HotelAuthRepository {
-    async findByEmail(email) {
-        return await Hotel.findOne({ email: email });
-    }
-    async findById(id) {
-        return await Hotel.findById(id);
-    }
-    async createHotel(data) {
-        return await Hotel.create(data);
+import z from 'zod';
+export class HotelAuthRepository extends BaseRepository {
+    constructor() {
+        super(Hotel);
     }
     async updateHotelPasswordById(id, hashedPassword) {
-        await Hotel.findByIdAndUpdate(id, { password: hashedPassword });
-    }
-    async findAllRequest() {
-        const allReq = await Hotel.find({ isApproved: false });
-        return allReq.map(toVendorRequestDTO);
+        await this.update(id, { password: hashedPassword });
     }
     async findByIdAndUpdateAction(id, action, field) {
-        await Hotel.findByIdAndUpdate(id, { [field]: action });
-    }
-    async findAll() {
-        const users = await Hotel.find({ isApproved: true });
-        return users.map(toVendorRequestDTO);
+        z.string().min(1).parse(field);
+        z.boolean().parse(action);
+        const hotel = await this.update(id, { [field]: action });
+        if (!hotel) {
+            throw new RepositoryError('Restaurant not found');
+        }
     }
 }

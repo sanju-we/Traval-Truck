@@ -32,28 +32,28 @@ export class AuthController implements IController {
       email: z.string().email(),
     });
     const { email } = schema.parse(req.body);
+    logger.info(`OTP sent to ${email}`);
 
     const otp = await this._generalService.generateOtp();
     await this._generalService.storeOtp(email, otp);
     await this._emailService.otpSend(email, otp);
 
-    logger.info(`OTP sent to ${email}`);
     sendResponse(res, STATUS_CODE.OK, true, 'OTP sent successfully');
   }
 
   async verify(req: Request, res: Response): Promise<void> {
     const schema = z.object({
-      email: z.string().email(),
+      email: z.email(),
       otp: z.string().length(6),
       userData: z.object({
         name: z.string().min(1),
-        email: z.string().email(),
+        email: z.email(),
         password: z.string().min(8),
-        phone: z.number(),
+        phoneNumber: z.number(),
       }),
     });
     const { email, otp, userData } = schema.parse(req.body);
-
+    logger.info(req.body);
     const { user, accessToken, refreshToken } = await this._authService.verify(
       email,
       otp,
@@ -74,7 +74,6 @@ export class AuthController implements IController {
       email: z.email(),
       password: z.string().min(8),
     });
-    logger.info(`fuck in `);
     const { email, password } = schema.parse(req.body);
 
     const result = await this._authService.verifyLogin(email, password);

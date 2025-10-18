@@ -21,7 +21,7 @@ export default function VendorRestrictedPage() {
 
         {/* Actions */}
         <div className="flex gap-4">
-          <Button variant="secondary" onClick={() => router.push('/hotel/profile')}>
+          <Button variant="secondary" onClick={() => router.push('/agency')}>
             Back to Home
           </Button>
           <Button variant="default" onClick={() => router.push('/support')}>

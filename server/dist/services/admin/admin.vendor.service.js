@@ -11,29 +11,30 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { injectable, inject } from 'inversify';
+import z from 'zod';
 import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors.js';
 import { logger } from '../../utils/logger.js';
 let AdminVendorService = class AdminVendorService {
     _userRepository;
-    _agecyRepository;
+    _agencyrepository;
     _hotelRepository;
     _restaurantRepository;
-    constructor(_userRepository, _agecyRepository, _hotelRepository, _restaurantRepository) {
+    constructor(_userRepository, _agencyrepository, _hotelRepository, _restaurantRepository) {
         this._userRepository = _userRepository;
-        this._agecyRepository = _agecyRepository;
+        this._agencyrepository = _agencyrepository;
         this._hotelRepository = _hotelRepository;
         this._restaurantRepository = _restaurantRepository;
     }
     async updateStatus(id, action, role) {
-        // const schema = z.object({
-        //   id: z.string(),
-        //   action: z.enum(['approve', 'reject']),
-        //   role: z.enum(['agency', 'hotel', 'restaurant']),
-        // });
-        // schema.parse({ id, action, role });
+        const schema = z.object({
+            id: z.string(),
+            action: z.enum(['approve', 'reject']),
+            role: z.enum(['agency', 'hotel', 'restaurant']),
+        });
+        schema.parse({ id, action, role });
         let vendor;
         if (role === 'agency') {
-            vendor = await this._agecyRepository.fingById(id);
+            vendor = await this._agencyrepository.findById(id);
         }
         else if (role === 'hotel') {
             logger.info(`ivda eththi tto`);
@@ -52,11 +53,43 @@ let AdminVendorService = class AdminVendorService {
         }
         const field = action === 'approve' ? 'isApproved' : 'isRestricted';
         const repo = role === 'agency'
-            ? this._agecyRepository
+            ? this._agencyrepository
             : role === 'hotel'
                 ? this._hotelRepository
                 : this._restaurantRepository;
         await repo.findByIdAndUpdateAction(id, true, field);
+    }
+    async updateBlock(id, role) {
+        const schema = z.object({
+            id: z.string(),
+            role: z.string(),
+        });
+        schema.parse({ id, role });
+        let user;
+        if (role === 'user') {
+            user = await this._userRepository.findById(id);
+            if (!user)
+                throw new UserNotFoundError();
+            await this._userRepository.findByIdAndUpdateAction(id, !user.isBlocked, 'isBlocked');
+        }
+        else if (role === 'agency') {
+            user = await this._agencyrepository.findById(id);
+            if (!user)
+                throw new UserNotFoundError();
+            await this._agencyrepository.findByIdAndUpdateAction(id, !user.isApproved, 'isApproved');
+        }
+        else if (role === 'hotel') {
+            user = await this._hotelRepository.findById(id);
+            if (!user)
+                throw new UserNotFoundError();
+            await this._hotelRepository.findByIdAndUpdateAction(id, !user.isApproved, 'isApproved');
+        }
+        else {
+            user = await this._restaurantRepository.findById(id);
+            if (!user)
+                throw new UserNotFoundError();
+            await this._restaurantRepository.findByIdAndUpdateAction(id, !user.isApproved, 'isApproved');
+        }
     }
 };
 AdminVendorService = __decorate([

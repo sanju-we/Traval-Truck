@@ -13,6 +13,6 @@ export interface IUser extends Document {
   bio: string;
   profilePicture: string;
   createdOn: Date;
-  role: 'user' | 'admin' | 'hotel' | 'restaurant' | 'agency';
+  role: string;
   isBlocked: boolean;
 }

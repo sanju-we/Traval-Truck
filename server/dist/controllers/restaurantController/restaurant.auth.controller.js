@@ -29,9 +29,7 @@ let RestaurantAuthController = class RestaurantAuthController {
     }
     async sendOtp(req, res) {
         const schema = z.object({
-            email: z
-                .string()
-                .regex(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/),
+            email: z.email(),
         });
         const { email } = schema.parse(req.body);
         const otp = await this._generalService.generateOtp();
@@ -51,9 +49,11 @@ let RestaurantAuthController = class RestaurantAuthController {
                 phone: z.number(),
             }),
         });
+        logger.info(`ggggggoooooooooooooooooooooooo`);
         const { email, otp, restaurantData } = schema.parse(req.body);
         const result = await this._restaurantService.verifyRestaurantSignup(email, otp, restaurantData);
         await this._IJWT.setTokenInCookies(res, result.accessToken, result.refreshToken);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.REGISTER_SUCCESS);
     }
     async verifyRestaurantLogin(req, res) {
         const schema = z.object({

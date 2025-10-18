@@ -42,6 +42,8 @@ import { IAgencyAuthService } from '../../core/interface/serivice/agency/Iagency
 import { agencyAuthService } from '../../services/agency/agency.auth.service.js';
 import { IAgencyProfileController } from '../../core/interface/controllerInterface/agency/Iagency.profile.controller.js';
 import { AgencyProfileController } from '../../controllers/agencyController/agency.profile.controller.js';
+import { IAgencyProfileService } from '../../core/interface/serivice/agency/Iagenc.profile.service.js';
+import { AgencyProfileService } from '../../services/agency/agency.profile.service.js';
 
 // ------------------------------------------------------Hotel------------------------------------------------------------------------
 import { IHotelAuthController } from '../../core/interface/controllerInterface/hotel/Ihotel.auth.controller.js';
@@ -52,6 +54,8 @@ import { IHotelAuthService } from '../../core/interface/serivice/hotel/Ihotel.au
 import { HotelAuthService } from '../../services/hotel/hotel.auth.service.js';
 import { IHotelProfileController } from '../../core/interface/controllerInterface/hotel/Ihotel.profile.controller.js';
 import { HotelProfileCotroller } from '../../controllers/hotelController/hote.profile.controller.js';
+import { IHotelProfileService } from '../../core/interface/serivice/hotel/Ihotel.profile.service.js';
+import { HotelProfileService } from '../../services/hotel/hotel.profile.service.js';
 
 // ----------------------------------------------------Restaurant------------------------------------------------------------------
 import { IRestaurantAuthController } from '../../core/interface/controllerInterface/restaurant/Irestaurant.auth.controller.js';
@@ -62,6 +66,8 @@ import { IRestaurantAuthRepository } from '../../core/interface/repositorie/rest
 import { RestaurantAuthRepository } from '../../repositories/restaunrat/restaurant.auth.repository.js';
 import { IRestaurantProfileController } from '../../core/interface/controllerInterface/restaurant/Irestaurant.profile.controller.js';
 import { RestaurantProfileController } from '../../controllers/restaurantController/restaurant.profile.controller.js';
+import { IRestaurantProfileService } from '../../core/interface/serivice/restaurant/IRestaurant.profile.service.js';
+import { RestaurantProfileService } from '../../services/restaurant/restaurant.profile.service.js';
 
 const container = new Container();
 
@@ -90,12 +96,14 @@ container.bind<IAgencyAuthController>('IAgencyAuthController').to(AgencyAuthCont
 container.bind<IAgencyRespository>('IAgencyRespository').to(agencyRepository);
 container.bind<IAgencyAuthService>('IAgencyAuthService').to(agencyAuthService);
 container.bind<IAgencyProfileController>('IAgencyProfileController').to(AgencyProfileController);
+container.bind<IAgencyProfileService>('IAgencyProfileService').to(AgencyProfileService);
 
 // --------------------------------------------------------Hotel containers---------------------------------------------------------------
 container.bind<IHotelAuthController>('IHotelAuthController').to(HotelAuthController);
 container.bind<IHotelAuthRepository>('IHotelAuthRepository').to(HotelAuthRepository);
 container.bind<IHotelAuthService>('IHotelAuthService').to(HotelAuthService);
 container.bind<IHotelProfileController>('IHotelProfileController').to(HotelProfileCotroller);
+container.bind<IHotelProfileService>('IHotelProfileService').to(HotelProfileService);
 
 // -------------------------------------------------------Restaurant container----------------------------------------------------------
 container.bind<IRestaurantAuthController>('IRestaurantAuthController').to(RestaurantAuthController);
@@ -104,5 +112,6 @@ container.bind<IRestaurantAuthService>('IRestaurantAuthService').to(RestaurantAu
 container
   .bind<IRestaurantProfileController>('IRestaurantProfileController')
   .to(RestaurantProfileController);
+container.bind<IRestaurantProfileService>('IRestaurantProfileService').to(RestaurantProfileService);
 
 export { container };

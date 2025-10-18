@@ -33,11 +33,11 @@ export default function LoginPage() {
         router.push('/restaurant/profile');
       } else {
         toast.error(`${data.message}`);
+        setIsLoading(false);
       }
     } catch (err) {
       toast.error('Login failed');
       console.error('Login error:', err);
-    } finally {
       setIsLoading(false);
     }
   };

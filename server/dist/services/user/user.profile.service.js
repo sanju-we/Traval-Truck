@@ -10,8 +10,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { inject, injectable } from "inversify";
-import z from "zod";
+import { inject, injectable } from 'inversify';
+import z from 'zod';
+import { UserNotFoundError } from '../../utils/resAndErrors.js';
 let UserProfileService = class UserProfileService {
     _authRespository;
     constructor(_authRespository) {
@@ -20,10 +21,19 @@ let UserProfileService = class UserProfileService {
     async setInterest(interests, id) {
         const schema = z.object({
             interests: z.array(z.string()),
-            id: z.string()
+            id: z.string(),
         });
         schema.parse({ interests, id });
         await this._authRespository.findByIdAndUpdateAction(id, interests, 'interest');
+    }
+    async updateProfile(formData, user) {
+        const userData = await this._authRespository.findById(user.id);
+        if (!userData)
+            throw new UserNotFoundError();
+        const updateUser = await this._authRespository.findByIdAndUpdateProfile(userData.id, formData);
+        if (!updateUser)
+            throw new UserNotFoundError();
+        return updateUser;
     }
 };
 UserProfileService = __decorate([

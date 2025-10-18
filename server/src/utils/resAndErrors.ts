@@ -1,5 +1,4 @@
 import { Response } from 'express';
-import { STATUS_CODE } from './HTTPStatusCode.js';
 
 export function sendResponse<T = unknown>(
   res: Response,
@@ -10,14 +9,6 @@ export function sendResponse<T = unknown>(
 ) {
   res.status(status).json({ success, message, data });
 }
-
-// export function throwErrorWithRes(res: Response, message: string, statusCode = 400): never {
-//   console.error('Throwing error:', message);
-//   res.status(statusCode).json({ message });
-//   const error = new Error(message) as Error & { statusCode: number };
-//   error.statusCode = statusCode;
-//   throw error;
-// }
 
 export function throwError(message: string, statusCode = 400): never {
   console.error('Throwing error:', message);
@@ -72,6 +63,12 @@ export class InvalidCredentialsError extends HttpError {
   }
 }
 
+export class ImageDeleteInCloudinary extends HttpError {
+  constructor() {
+    super(400, 'Failed to delete image from Cloudinary');
+  }
+}
+
 export class InvalidResetTokenError extends HttpError {
   constructor() {
     super(400, 'Invalid or expired reset token');
@@ -81,6 +78,12 @@ export class InvalidResetTokenError extends HttpError {
 export class UNAUTHORIZEDUserFounf extends HttpError {
   constructor() {
     super(401, "User don't have access to this route");
+  }
+}
+
+export class BADREQUEST extends HttpError {
+  constructor() {
+    super(401, 'Required fileds are missing');
   }
 }
 

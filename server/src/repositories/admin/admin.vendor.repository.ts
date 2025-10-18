@@ -5,8 +5,12 @@ import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Iho
 import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository.js';
 import { inject, injectable } from 'inversify';
 import { logger } from '../../utils/logger.js';
-import { vendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
+import {
+  vendorRequestDTO,
+  toVendorRequestDTO,
+} from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
 import { userProfileDTO } from 'types';
+import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
 
 @injectable()
 export class AdminVendorRepository implements IAdminVendorRepository {
@@ -18,40 +22,49 @@ export class AdminVendorRepository implements IAdminVendorRepository {
     @inject('IAuthRepository') private readonly _userRepository: IAuthRepository,
   ) {}
   async findAllRequests(): Promise<vendorRequestDTO[]> {
-    const hotelDatas = await this._hotelRepository.findAllRequest();
-    const agencyDatas = await this._agencyRepository.findAllRequest();
-    const restaurantDatas = await this._restaurantRepository.findAllRequest();
+    const hotelDatas = await this._hotelRepository.findAllUser({ isApproved: false }, {});
+    const agencyDatas = await this._agencyRepository.findAllUser({ isApproved: false }, {});
+    const restaurantDatas = await this._restaurantRepository.findAllUser({ isApproved: false }, {});
     logger.info(`hotelData : ${hotelDatas}`);
 
     const allData = [...hotelDatas, ...agencyDatas, ...restaurantDatas];
-    return allData;
+    return allData.map(toVendorRequestDTO);
   }
 
-  async findAllUsers(page: number = 1, limit: number = 10): Promise<{
-  data: (vendorRequestDTO | userProfileDTO)[];
-  total: number;
-  page: number;
-  totalPages: number;
-}> {
-  const userData = await this._userRepository.findAll();
-  const agencyData = await this._agencyRepository.findAll();
-  const hotelData = await this._hotelRepository.findAll();
-  const restaurantData = await this._restaurantRepository.findAll();
+  async findAllUsers(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{
+    data: (vendorRequestDTO | userProfileDTO)[];
+    total: number;
+    page: number;
+    totalPages: number;
+  }> {
+    const userData = await this._userRepository.findAllUser({}, {});
+    const agencyData = await this._agencyRepository.findAllUser({ isApproved: true }, {});
+    const hotelData = await this._hotelRepository.findAllUser({ isApproved: true }, {});
+    const restaurantData = await this._restaurantRepository.findAllUser({ isApproved: true }, {});
 
-  const allUsers = [...userData, ...agencyData, ...hotelData, ...restaurantData];
+    const vendorDTO: vendorRequestDTO[] = [
+      ...agencyData.map(toVendorRequestDTO),
+      ...hotelData.map(toVendorRequestDTO),
+      ...restaurantData.map(toVendorRequestDTO),
+    ];
+    const allUserDTO = [...userData.map(toUserProfileDTO)];
+    const allUsers = [...allUserDTO, ...vendorDTO];
 
-  const total = allUsers.length;
-  const totalPages = Math.ceil(total / limit);
+    const total = allUsers.length;
+    const totalPages = Math.ceil(total / limit);
 
-  const start = (page - 1) * limit;
-  const end = start + limit;
-  const paginated = allUsers.slice(start, end);
+    const start = (page - 1) * limit;
+    const end = start + limit;
+    const paginated = allUsers.slice(start, end);
 
-  return {
-    data: paginated,
-    total,
-    page,
-    totalPages,
-  };
-}
+    return {
+      data: paginated,
+      total,
+      page,
+      totalPages,
+    };
+  }
 }

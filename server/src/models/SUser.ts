@@ -1,5 +1,5 @@
 import { IUser } from '../core/interface/modelInterface/IUser.js';
-import { Schema, model, InferSchemaType } from 'mongoose';
+import { Schema, model } from 'mongoose';
 // inferASchemaType and hyderatedDocument
 const userSchema: Schema = new Schema<IUser>({
   name: {

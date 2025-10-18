@@ -1,6 +1,5 @@
-import { Document, Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { IRestaurant } from '../core/interface/modelInterface/IRestaurant.js';
-import { boolean } from 'zod';
 
 const restaurantSchema = new Schema<IRestaurant>({
   companyName: {
@@ -44,6 +43,38 @@ const restaurantSchema = new Schema<IRestaurant>({
       type: String,
     },
   ],
+  logo:{
+    type:String,
+    default:null
+  },
+  bankDetails: {
+    accountHolder: {
+      type: String,
+    },
+    accountNumber: {
+      type: String,
+    },
+    ifscCode: {
+      type: String,
+    },
+    bankName: {
+      type: String,
+    },
+  },
+  documents: {
+    registrationCertificate: {
+      type: String,
+    },
+    panCard: {
+      type: String,
+    },
+    bankProof: {
+      type: String,
+    },
+    ownerIdProof: {
+      type: String,
+    },
+  },
   phone: {
     type: Number,
     required: true,
@@ -64,6 +95,10 @@ const restaurantSchema = new Schema<IRestaurant>({
     type: String,
     required: true,
   },
+  reason:{
+    type:String,
+    required: false
+  }
 });
 
 export const Restaurant = model<IRestaurant>('Restaurant', restaurantSchema);

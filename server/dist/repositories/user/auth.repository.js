@@ -7,54 +7,64 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import { injectable, inject } from 'inversify';
+// src/repositories/user/auth.repository.ts
+import { injectable } from 'inversify';
+import { BaseRepository, RepositoryError } from '../../repositories/baseRepository.js';
 import { User } from '../../models/SUser.js';
-import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
 import { logger } from '../../utils/logger.js';
-let AuthRepository = class AuthRepository {
-    emailService;
-    constructor(emailService) {
-        this.emailService = emailService;
-    }
-    async findByEmail(email) {
-        try {
-            return await User.findOne({ email }).exec();
-        }
-        catch (err) {
-            logger.error(`Failed to find user by email: ${err.message}`);
-            throw new Error('Database error');
-        }
-    }
-    async findById(id) {
-        try {
-            return await User.findById(id).exec();
-        }
-        catch (error) {
-            logger.error(`Failed to find user by ID: ${error.message}`);
-            throw new Error('Database error');
-        }
-    }
-    async createUser(data) {
-        return await User.create(data);
+import z from 'zod';
+let AuthRepository = class AuthRepository extends BaseRepository {
+    constructor() {
+        super(User);
     }
     async updatePasswordById(id, password) {
-        await User.findByIdAndUpdate(id, { password }).exec();
-        logger.info(`Password updated for user ID ${id}`);
-    }
-    async findAll() {
-        const users = await User.find({ role: 'user' });
-        return users.map(toUserProfileDTO);
+        try {
+            const user = await this.update(id, { password });
+            if (!user) {
+                logger.warn(`User not found for ID ${id} when updating password`);
+                throw new RepositoryError('User not found');
+            }
+            logger.info(`Password updated for user ID ${id}`);
+        }
+        catch (err) {
+            logger.error(`Failed to update password for user ID ${id}: ${err.message}`);
+            throw new RepositoryError(`Failed to update password: ${err.message}`);
+        }
     }
     async findByIdAndUpdateAction(id, action, field) {
-        await User.findByIdAndUpdate(id, { [field]: action });
+        const schema = z.union([z.boolean(), z.array(z.string())]);
+        try {
+            schema.parse(action); // Validate action
+            const user = await this.update(id, { [field]: action });
+            if (!user) {
+                logger.warn(`User not found for ID ${id} when updating ${field}`);
+                throw new RepositoryError('User not found');
+            }
+            logger.info(`Updated ${field} for user ID ${id}`);
+        }
+        catch (err) {
+            logger.error(`Failed to update ${field} for user ID ${id}: ${err.message}`);
+            throw new RepositoryError(`Failed to update ${field}: ${err.message}`);
+        }
+    }
+    async findByIdAndUpdateProfile(id, data) {
+        try {
+            const user = await this.update(id, data);
+            if (!user) {
+                logger.warn(`User not found for ID ${id} when updating profile`);
+                throw new RepositoryError('User not found');
+            }
+            logger.info(`Profile updated for user ID ${id}`);
+            return user;
+        }
+        catch (err) {
+            logger.error(`Failed to update profile for user ID ${id}: ${err.message}`);
+            throw new RepositoryError(`Failed to update profile: ${err.message}`);
+        }
     }
 };
 AuthRepository = __decorate([
     injectable(),
-    __param(0, inject('IEmailService')),
-    __metadata("design:paramtypes", [Object])
+    __metadata("design:paramtypes", [])
 ], AuthRepository);
 export { AuthRepository };

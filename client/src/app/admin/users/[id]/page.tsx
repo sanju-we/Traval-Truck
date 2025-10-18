@@ -26,7 +26,7 @@ export default function UserDetailsPage() {
   const handleToggleBlock = async () => {
     const actionText = isBlocked ? 'unblock' : 'block';
     const confirmAction = window.confirm(
-      `Are you sure you want to ${actionText} this ${user.role}?`
+      `Are you sure you want to ${actionText} this ${user.role}?`,
     );
 
     if (!confirmAction) return; // Stop if user cancels
@@ -37,9 +37,7 @@ export default function UserDetailsPage() {
 
       if (data.success) {
         setIsBlocked(!isBlocked);
-        toast.success(
-          !isBlocked ? 'User blocked successfully' : 'User unblocked successfully'
-        );
+        toast.success(!isBlocked ? 'User blocked successfully' : 'User unblocked successfully');
       }
     } catch (error) {
       console.error('Error toggling block:', error);
@@ -144,9 +142,7 @@ export default function UserDetailsPage() {
             <div>
               <p className="font-medium">Status</p>
               <p
-                className={`text-sm font-semibold ${
-                  isBlocked ? 'text-red-600' : 'text-green-600'
-                }`}
+                className={`text-sm font-semibold ${isBlocked ? 'text-red-600' : 'text-green-600'}`}
               >
                 {isBlocked ? 'Blocked' : 'Active'}
               </p>

@@ -29,9 +29,7 @@ let HotelAuthController = class HotelAuthController {
     }
     async sendOtp(req, res) {
         const schema = z.object({
-            email: z
-                .string()
-                .regex(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/),
+            email: z.email(),
         });
         const { email } = schema.parse(req.body);
         const otp = await this._generalService.generateOtp();
@@ -42,16 +40,12 @@ let HotelAuthController = class HotelAuthController {
     }
     async verify(req, res) {
         const schema = z.object({
-            email: z
-                .string()
-                .regex(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/),
+            email: z.email(),
             otp: z.string().length(6),
             hotelData: z.object({
                 companyName: z.string(),
                 ownerName: z.string(),
-                email: z
-                    .string()
-                    .regex(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/),
+                email: z.email(),
                 password: z.string().min(8),
                 phone: z.number(),
             }),
@@ -64,13 +58,12 @@ let HotelAuthController = class HotelAuthController {
     }
     async verifyHotelLogin(req, res) {
         const schema = z.object({
-            email: z
-                .string()
-                .regex(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/),
+            email: z.email(),
             password: z.string().min(8),
         });
         const { email, password } = schema.parse(req.body);
         const result = await this._hotelService.verifyHotelLogin(email, password);
+        logger.info(`got it in here`);
         await this._ijwt.setTokenInCookies(res, result.accessToken, result.refreshToken);
         logger.info(`${result.hotel.companyName} loggeIn successfully`);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.LOGIN_SUCCESS);
@@ -102,7 +95,7 @@ let HotelAuthController = class HotelAuthController {
         await this._hotelService.resetHotelPassword(newPassword, token);
     }
     async getDashboard(req, res) {
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ACCOUNT_BLOCKED);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS);
     }
 };
 HotelAuthController = __decorate([
