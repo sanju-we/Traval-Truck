@@ -23,6 +23,8 @@ export interface vendorRequestDTO {
   };
   isApproved: boolean;
   phone: number;
+  isRestricted:boolean;
+  reason:string;
 }
 
 export const toVendorRequestDTO = (vendor: IRestaurant | IHotel | IAgency): vendorRequestDTO => ({
@@ -36,4 +38,6 @@ export const toVendorRequestDTO = (vendor: IRestaurant | IHotel | IAgency): vend
   role: vendor.role,
   isApproved: vendor.isApproved,
   phone: vendor.phone,
+  isRestricted:vendor.isRestricted,
+  reason:vendor.reason
 });

@@ -8,6 +8,7 @@ import { MESSAGES } from '../../utils/responseMessaages.js';
 import { IRestaurantProfileService } from '../../core/interface/serivice/restaurant/IRestaurant.profile.service.js';
 import { logger } from '../../utils/logger.js';
 import z from 'zod';
+import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
 
 @injectable()
 export class RestaurantProfileController implements IRestaurantProfileController {
@@ -21,7 +22,7 @@ export class RestaurantProfileController implements IRestaurantProfileController
     const user = req.user;
     const restaurant = await this._restaurantAuthRepository.findById(user.id);
     if (!restaurant) throw new UserNotFoundError();
-    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS, restaurant);
+    sendResponse(res, STATUS_CODE.OK, true,MESSAGES.SUCCESS, toVendorRequestDTO(restaurant));
   }
 
   async getdashboard(req: Request, res: Response): Promise<void> {
@@ -55,13 +56,14 @@ export class RestaurantProfileController implements IRestaurantProfileController
 
   async updateDocuments(req: Request, res: Response): Promise<void> {
     const restaurantId = req.user.id;
+    const restricted = req.user.isRestricted
     const files = req.files as {
       [fieldname: string]: Express.Multer.File[];
     };
 
     const update = this._restaurantProfileService.updateDocuments(restaurantId, files);
     update.then((data) => {
-      sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, data);
+      sendResponse(res, STATUS_CODE.OK, true, restricted ? MESSAGES.RESUBMITED : MESSAGES.SUCCESS, data);
     });
   }
 

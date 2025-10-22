@@ -94,7 +94,7 @@ export async function verifyHotelToken(req: Request, res: Response, next: NextFu
     }
 
     if (hotel.isRestricted) {
-      if (req.url !== '/profile') {
+      if (req.url !== '/profile' && req.url == '/update-documents') {
         if (!hotel.isApproved) throw new UNAUTHORIZEDUserFounf();
       }
     }
@@ -138,7 +138,7 @@ export async function verifyAgencyToken(req: Request, res: Response, next: NextF
     }
 
     if (agency.isRestricted) {
-      if (req.url !== '/profile') {
+      if (req.url !== '/profile' && req.url !== '/update-documents') {
         if (!agency.isApproved) throw new UNAUTHORIZEDUserFounf();
       }
     }
@@ -182,10 +182,9 @@ export async function verifyRestaurantToken(req: Request, res: Response, next: N
       return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
     }
 
-    if (restaurant.isRestricted) {
-      if (req.url !== '/profile') {
-        logger.info(`req.url:${req.url}`);
-        if (!restaurant.isApproved) throw new RESTRICTED_USER();
+     if (restaurant.isRestricted) {
+      if (req.url !== '/profile' && req.url !== '/update-documents') {
+        if (!restaurant.isApproved) throw new UNAUTHORIZEDUserFounf();
       }
     }
 

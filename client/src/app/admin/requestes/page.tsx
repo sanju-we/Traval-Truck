@@ -59,8 +59,8 @@ export default function VendorRequestsPage() {
     reason?: string,
   ) => {
     try {
-      console.log(id,action,role,reason)
-      const payload = action === 'reject' ? { reason } : {};
+      console.log(id, action, role, reason)
+      const payload = reason ? { reason } : { reason: '' };
       const res = await api.patch(`/admin/vendor/${id}/${action}/${role}`, payload);
 
       if (res.data.success) {
@@ -120,7 +120,7 @@ export default function VendorRequestsPage() {
                     <td className="px-4 py-3 text-sm">{req.companyName}</td>
                     <td className="px-4 py-3 text-center text-sm">{req.role}</td>
                     <td className="px-4 py-3 flex justify-center gap-2">
-                      {req.isApproved === false ? (
+                      {(req.isApproved === false && !req.isRestricted) ? (
                         <button
                           onClick={() =>
                             handleViewDocuments(
@@ -138,9 +138,12 @@ export default function VendorRequestsPage() {
                         >
                           <Eye size={14} /> View Documents
                         </button>
-                      ) : (
-                        <span className="text-gray-500 text-sm">No action available</span>
-                      )}
+                      ) : req.isRestricted ? (
+                        <span className="text-red-500 text-sm">Vendor Restricted</span>
+                      ) :
+                        (
+                          <span className="text-gray-500 text-sm">No action available</span>
+                        )}
                     </td>
                   </tr>
                 ))}
@@ -197,11 +200,10 @@ export default function VendorRequestsPage() {
                     setShowRejectDropdown(false);
                   }
                 }}
-                className={`px-4 py-2 rounded-md text-white ${
-                  rejectReason
+                className={`px-4 py-2 rounded-md text-white ${rejectReason
                     ? 'bg-red-600 hover:bg-red-700'
                     : 'bg-red-400 cursor-not-allowed'
-                }`}
+                  }`}
               >
                 Confirm Reject
               </button>

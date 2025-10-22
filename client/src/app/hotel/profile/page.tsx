@@ -13,6 +13,7 @@ import Cropper from 'react-easy-crop';
 import getCroppedImg from '@/components/utils/UserCropImage';
 import VendorProfile from '@/types/vendor/profile';
 import DocumentUploadWithPreview from '@/components/utils/DocumentUploadWithPreview';
+import RestrictionBanner from '@/components/vendor/RestrictionBanner';
 
 export default function VendorProfilePage() {
   const [vendor, setVendor] = useState<VendorProfile | null>(null);
@@ -30,6 +31,7 @@ export default function VendorProfilePage() {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
   const [isCropping, setIsCropping] = useState(false);
   const [profileLoad, setProfileLoad] = useState(false);
+  const [isResubmitting, setIsResubmitting] = useState(false);
 
   useEffect(() => {
     async function fetchVendor() {
@@ -219,7 +221,8 @@ export default function VendorProfilePage() {
         toast.error(data.message || 'Upload failed');
         return;
       }
-      toast.success('All documents uploaded successfully!');
+      if (data.message === 'Re-submission request send') setIsResubmitting(true)
+      toast.success(data.message);
       if (data.data !== null) {
         setVendor(data.data);
         setFormData(data.data);
@@ -293,6 +296,9 @@ export default function VendorProfilePage() {
       <SideNavbar />
 
       <div className="flex-1 px-6 py-10">
+        {vendor.reason != "" && (
+          <RestrictionBanner reason={vendor.reason} />
+        )}
         <div className="bg-white p-6 rounded-2xl shadow-md flex flex-col md:flex-row items-center gap-6">
           <div className="relative w-[120px] h-[120px] flex-shrink-0">
             <Image
@@ -313,12 +319,13 @@ export default function VendorProfilePage() {
               >
                 <Edit size={16} /> Edit Profile
               </button>
-              <button
+              {!vendor.isApproved && <button
                 onClick={() => setIsUpload(true)}
                 className="px-4 py-2 border border-emerald-500 text-emerald-500 rounded-lg hover:bg-emerald-50 text-sm"
+                disabled={isResubmitting ? true : false}
               >
-                Attach Documents
-              </button>
+                {!vendor.isRestricted ? "Attach Documents" : "Resubmit Documents"}
+              </button> }
             </div>
           </div>
         </div>
@@ -422,7 +429,7 @@ export default function VendorProfilePage() {
                 <div className="flex flex-col items-center mb-5">
                   <div className="relative group">
                     <img
-                      src={formData.logo || '/images/profile.jpg'}
+                      src={formData.logo || '/images/profile.jpeg'}
                       alt="Profile Preview"
                       className="w-28 h-28 rounded-full object-cover border-4 border-emerald-500 transition duration-300 group-hover:opacity-80"
                     />

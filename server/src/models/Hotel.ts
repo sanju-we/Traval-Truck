@@ -104,7 +104,8 @@ const hotelSchema = new Schema<IHotel>({
   },
   reason:{
     type:String,
-    required: false
+    required: false,
+    default:''
   }
 });
 
