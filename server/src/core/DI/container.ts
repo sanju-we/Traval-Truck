@@ -32,6 +32,12 @@ import { IAdminVendorRepository } from '../../core/interface/repositorie/admin/I
 import { AdminVendorRepository } from '../../repositories/admin/admin.vendor.repository.js';
 import { IAdminVendorService } from '../../core/interface/serivice/admin/IAdmin.vendor.service.js';
 import { AdminVendorService } from '../../services/admin/admin.vendor.service.js';
+import { IAdminSubscriptionController } from '../../core/interface/controllerInterface/admin/Iadmin.subscription.controller.js';
+import { AdminSubscriptionController } from '../../controllers/adminController/admin.subscription.controller.js';
+import { IAdminSubscriptionService } from '../../core/interface/serivice/admin/IAdmin.subscription.service.js';
+import { AdminSubscriptionService } from '../../services/admin/admin.subscription.service.js';
+import { IAdminSubscriptionRepository } from '../../core/interface/repositorie/admin/Iadmin.subscription.repository.js';
+import { AdminSubscriptionRepository } from '../../repositories/admin/admin.subscription.repository.js';
 
 // ----------------------------------------------------agency----------------------------------------------------------------------
 import { IAgencyAuthController } from '../../core/interface/controllerInterface/agency/agency.Iauth.controller.js';
@@ -90,6 +96,9 @@ container.bind<IAdminAuthService>('IAdminAuthService').to(AdminAuthService);
 container.bind<IAdminVendorController>('IAdminVendorController').to(AdminVendorController);
 container.bind<IAdminVendorRepository>('IAdminVendorRepository').to(AdminVendorRepository);
 container.bind<IAdminVendorService>('IAdminVendorService').to(AdminVendorService);
+container.bind<IAdminSubscriptionController>('IAdminSubscriptionController').to(AdminSubscriptionController);
+container.bind<IAdminSubscriptionService>('IAdminSubscriptionService').to(AdminSubscriptionService)
+container.bind<IAdminSubscriptionRepository>('IAdminSubscriptionRepository').to(AdminSubscriptionRepository)
 
 // ------------------------------------------------------agency containers--------------------------------------------------------
 container.bind<IAgencyAuthController>('IAgencyAuthController').to(AgencyAuthController);

@@ -73,3 +73,16 @@ export interface allRequest {
   isApproved: boolean;
   role: string;
 }
+
+export interface subscriptionData {
+  Name: string,
+  Amount: number,
+  Category: string,
+  Description: string,
+  Duration: {
+    startingDate: string,
+    endingDate: string,
+  },
+  Features: string[],
+  Valid: number
+}

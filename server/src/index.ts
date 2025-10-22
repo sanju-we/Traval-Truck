@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db.js';
 import { createApp } from './app.js';
