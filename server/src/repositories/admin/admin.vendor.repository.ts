@@ -22,14 +22,25 @@ export class AdminVendorRepository implements IAdminVendorRepository {
     @inject('IAuthRepository') private readonly _userRepository: IAuthRepository,
   ) {}
   async findAllRequests(): Promise<vendorRequestDTO[]> {
-    const hotelDatas = await this._hotelRepository.findAllUser({ isApproved: false }, {});
-    const agencyDatas = await this._agencyRepository.findAllUser({ isApproved: false }, {});
-    const restaurantDatas = await this._restaurantRepository.findAllUser({ isApproved: false }, {});
-    logger.info(`hotelData : ${hotelDatas}`);
+  const hotelDatas = await this._hotelRepository.findAllUser({ isApproved: false }, {});
+  const agencyDatas = await this._agencyRepository.findAllUser({ isApproved: false }, {});
+  const restaurantDatas = await this._restaurantRepository.findAllUser({ isApproved: false }, {});
+  logger.info(`hotelData : ${hotelDatas}`);
 
-    const allData = [...hotelDatas, ...agencyDatas, ...restaurantDatas];
-    return allData.map(toVendorRequestDTO);
-  }
+  const allData = [...hotelDatas, ...agencyDatas, ...restaurantDatas];
+
+  const completeData = allData.filter((item) => {
+    const bank = item.bankDetails;
+    return bank &&
+      bank.accountNumber &&
+      bank.ifscCode &&
+      bank.bankName &&
+      bank.accountHolder;
+  });
+
+  return completeData.map(toVendorRequestDTO);
+}
+
 
   async findAllUsers(
     page: number = 1,

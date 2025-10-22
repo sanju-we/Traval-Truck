@@ -24,9 +24,23 @@ export default function SignUpPage() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [isOtpLoading, setIsOtpLoading] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [timer, setTimer] = useState(60);
+  const [isResendingOtp, setIsResendingOtp] = useState(false);
 
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
   const route = useRouter();
+
+  const handleTimer = () => {
+    const interval = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -53,11 +67,11 @@ export default function SignUpPage() {
 
     if (!formData.name.trim()) newError.name = 'Name is required';
 
-    if (!formData.email) {
-      newError.email = 'Email is required';
-    } else if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(formData.email)) {
-      newError.email = 'Invalid email address';
-    }
+    // if (!formData.email) {
+    //   newError.email = 'Email is required';
+    // } else if (!/^[a-zA-Z0-9._%+-]+\.com$/.test(formData.email)) {
+    //   newError.email = 'Invalid email address';
+    // }
 
     if (!formData.phoneNumber) {
       newError.phone = 'Phone is required';
@@ -92,6 +106,8 @@ export default function SignUpPage() {
         setShowOtpInput(true);
         setMessage('✅ OTP sent to your email');
         setErrors({});
+        setTimer(60);       // Start the timer
+        handleTimer();      // Trigger countdown
       } else {
         setMessage(`❌ ${data.error}`);
       }
@@ -101,6 +117,31 @@ export default function SignUpPage() {
       setIsOtpLoading(false);
     }
   };
+
+  const handleResendOtp = async () => {
+    setIsResendingOtp(true);
+
+    try {
+      const res = await api.post('/user/auth/sendOtp', {
+        email: formData.email,
+      });
+
+      const data = res.data;
+
+      if (data.success) {
+        toast.success('OTP resent to your email');
+        setTimer(60);
+        handleTimer();
+      } else {
+        toast.error(data.error);
+      }
+    } catch (err) {
+      toast.error('Failed to resend OTP');
+    } finally {
+      setIsResendingOtp(false);
+    }
+  };
+
 
   const handleVerifyOtp = async () => {
     const otpCode = otp.join('');
@@ -261,6 +302,26 @@ export default function SignUpPage() {
               </div>
             </div>
           )}
+
+          {showOtpInput && (
+            <>
+              <div className="flex flex-col items-center gap-2 text-sm text-gray-600 mt-3">
+                <span>Didn't receive OTP?</span>
+                {timer > 0 ? (
+                  <span className="text-gray-500">Resend available in {timer}s</span>
+                ) : (
+                  <button
+                    onClick={handleResendOtp}
+                    disabled={isResendingOtp}
+                    className="text-blue-600 font-medium hover:underline"
+                  >
+                    {isResendingOtp ? 'Resending...' : 'Resend OTP'}
+                  </button>
+                )}
+              </div>
+            </>
+          )}
+
 
           {!showOtpInput ? (
             <>

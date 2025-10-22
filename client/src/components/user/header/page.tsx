@@ -134,7 +134,7 @@ export function Header() {
               className="w-10 h-10 rounded-full bg-gray-300 overflow-hidden border-2 border-emerald-500"
             >
               <img
-                src={user?.profilePicture || '/images/profile.jpg'}
+                src={user?.profilePicture || '/images/profile.jpeg'}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />

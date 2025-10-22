@@ -11,6 +11,7 @@ export default interface User {
   email: string;
   role: string;
   createdAt: string;
+  logo:string;
 }
 
 export interface UserProfile {

@@ -138,7 +138,7 @@ export async function verifyAgencyToken(req: Request, res: Response, next: NextF
     }
 
     if (agency.isRestricted) {
-      if (req.url !== '/profile') {
+      if (req.url !== '/profile' && req.url !== '/update-documents') {
         if (!agency.isApproved) throw new UNAUTHORIZEDUserFounf();
       }
     }

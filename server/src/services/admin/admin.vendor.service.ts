@@ -53,6 +53,7 @@ export class AdminVendorService implements IAdminVendorService {
           : this._restaurantRepository;
 
     await repo.findByIdAndUpdateAction(id, true, field, reason ? reason : '');
+    if (action == 'approve') await repo.update(id,{reason:''})
   }
 
   async updateBlock(id: string, role: string): Promise<void> {

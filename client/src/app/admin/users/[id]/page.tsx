@@ -9,11 +9,14 @@ import api from '@/services/api';
 import { toast } from 'react-hot-toast';
 import Image from 'next/image';
 import { SideNavbar } from '@/components/admin/SideNavbar';
+import { motion, AnimatePresence } from 'framer-motion';
+import { XCircle, CheckCircle } from 'lucide-react';
 
 export default function UserDetailsPage() {
   const user = useSelector((state: RootState) => state.details.selectedUser);
   const [loading, setLoading] = useState(false);
   const [isBlocked, setIsBlocked] = useState(user?.isBlocked);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   if (!user) {
     return (
@@ -24,13 +27,6 @@ export default function UserDetailsPage() {
   }
 
   const handleToggleBlock = async () => {
-    const actionText = isBlocked ? 'unblock' : 'block';
-    const confirmAction = window.confirm(
-      `Are you sure you want to ${actionText} this ${user.role}?`,
-    );
-
-    if (!confirmAction) return; // Stop if user cancels
-
     try {
       setLoading(true);
       const { data } = await api.patch(`/admin/vendor/block-toggle/${user.id}/${user.role}`);
@@ -44,8 +40,11 @@ export default function UserDetailsPage() {
       toast.error('Something went wrong. Try again!');
     } finally {
       setLoading(false);
+      setShowConfirmModal(false);
     }
   };
+
+  const actionText = isBlocked ? 'unblock' : 'block';
 
   return (
     <div className="flex">
@@ -53,7 +52,7 @@ export default function UserDetailsPage() {
       <SideNavbar active="Users" />
 
       {/* Main Content */}
-      <div className="flex-1 max-w-4xl mx-auto mt-12">
+      <div className="flex-1 max-w-4xl mx-auto mt-12 relative">
         <Card className="shadow-lg rounded-2xl border border-gray-200">
           <CardHeader className="flex items-center justify-between">
             <CardTitle className="text-2xl font-bold">
@@ -63,7 +62,7 @@ export default function UserDetailsPage() {
             <div className="flex items-center gap-3">
               <Button
                 variant={isBlocked ? 'default' : 'secondary'}
-                onClick={handleToggleBlock}
+                onClick={() => setShowConfirmModal(true)}
                 disabled={loading}
               >
                 {loading ? 'Processing...' : isBlocked ? 'Unblock User' : 'Block User'}
@@ -74,19 +73,20 @@ export default function UserDetailsPage() {
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
             {/* Profile */}
             <div className="flex flex-col items-center md:col-span-2 mb-4">
-              {/* <Image
-                src={user.profilePicture || '/images/profile.jpg'}
+              <Image
+                src={
+                  user.profilePicture
+                    ? user.profilePicture
+                    : user.logo
+                    ? user.logo
+                    : '/images/profile.jpg'
+                }
                 alt="Profile Picture"
                 width={120}
                 height={120}
                 className="rounded-full border shadow-md object-cover"
-              /> */}
+              />
               <p className="mt-2 text-sm font-medium">{user.userName || 'Unknown User'}</p>
-            </div>
-
-            <div>
-              <p className="font-medium">ID</p>
-              <p className="text-sm text-gray-500">{user.id}</p>
             </div>
 
             <div>
@@ -149,6 +149,52 @@ export default function UserDetailsPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Confirmation Modal */}
+        <AnimatePresence>
+          {showConfirmModal && (
+            <motion.div
+              className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                className="bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-md text-center"
+                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              >
+                <h2 className="text-lg font-semibold mb-2">
+                  Confirm {actionText.charAt(0).toUpperCase() + actionText.slice(1)}
+                </h2>
+                <p className="text-gray-600 mb-6 text-sm">
+                  Are you sure you want to {actionText} this {user.role}? This action can be
+                  reversed later if needed.
+                </p>
+
+                <div className="flex justify-center gap-3">
+                  <button
+                    onClick={() => setShowConfirmModal(false)}
+                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleToggleBlock}
+                    className={`px-4 py-2 rounded-md text-white flex items-center gap-1 transition ${
+                      isBlocked
+                        ? 'bg-green-600 hover:bg-green-700'
+                        : 'bg-red-600 hover:bg-red-700'
+                    }`}
+                  >
+                    <CheckCircle size={16} /> {actionText === 'block' ? 'Block' : 'Unblock'}
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

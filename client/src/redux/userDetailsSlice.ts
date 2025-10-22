@@ -12,6 +12,8 @@ interface User {
   isBlocked?: boolean;
   phone?: number;
   createdAt?: string;
+  profilePicture?:string;
+  logo?:string;
 }
 
 interface UserState {

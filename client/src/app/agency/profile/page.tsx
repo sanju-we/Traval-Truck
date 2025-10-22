@@ -320,13 +320,13 @@ export default function VendorProfilePage() {
               >
                 <Edit size={16} /> Edit Profile
               </button>
-              <button
+              {!vendor.isApproved && <button
                 onClick={() => setIsUpload(true)}
                 className="px-4 py-2 border border-emerald-500 text-emerald-500 rounded-lg hover:bg-emerald-50 text-sm"
                 disabled={isResubmitting ? true : false}
               >
                 {!vendor.isRestricted ? "Attach Documents" : "Resubmit Documents"}
-              </button>
+              </button> }
             </div>
           </div>
         </div>
@@ -430,7 +430,7 @@ export default function VendorProfilePage() {
                 <div className="flex flex-col items-center mb-5">
                   <div className="relative group">
                     <img
-                      src={formData.logo || '/images/profile.jpg'}
+                      src={formData.logo || '/images/profile.jpeg'}
                       alt="Profile Preview"
                       className="w-28 h-28 rounded-full object-cover border-4 border-emerald-500 transition duration-300 group-hover:opacity-80"
                     />

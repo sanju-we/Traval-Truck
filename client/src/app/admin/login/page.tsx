@@ -127,14 +127,6 @@ export default function LoginPage() {
               'Log in'
             )}
           </button>
-
-          {/* Google Login */}
-          <button
-            type="button"
-            className="w-full bg-gray-100 font-medium py-2 rounded-lg hover:bg-gray-200 transition"
-          >
-            Continue with GOOGLE
-          </button>
         </form>
 
         {/* Footer */}
