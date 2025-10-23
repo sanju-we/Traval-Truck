@@ -33,44 +33,62 @@ function SideNavbar() {
         <div className="flex flex-col space-y-4">
           <h1 className="text-2xl font-semibold text-gray-800">Travel Agency</h1>
           <div className="space-y-2">
-            <button
-              className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded"
-              onClick={() => router.push('/restaurant')}
+            <div className='hover:bg-gray-200 rounded-md'>
+              <button
+              className="flex items-center space-x-2 p-2 text-black-600  rounded"
+              onClick={() => router.push('/agency')}
             >
               <Home className="material-icons">home</Home>
               <span>Dashboard</span>
             </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
+            </div>
+            <div className='hover:bg-gray-200 rounded-md'>
+              <button className="flex items-center space-x-2 p-2 text-black-600  rounded"
+              onClick={() => router.push('/agency/packages')}>
               <FlagTriangleRightIcon />
-              Bookings / Trips
+              Packages
             </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
+            </div>
+            <div className='hover:bg-gray-200 rounded-md'>
+              <button className="flex items-center space-x-2 p-2 text-black-600  rounded"
+              onClick={() => router.push('/agency/partner')}>
               <Hotel className="material-icons">hotel</Hotel>
               <span>Partners</span>
             </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
+            </div>
+            <div className='hover:bg-gray-200 rounded-md'>
+              <button className="flex items-center space-x-2 p-2 text-black-600 rounded">
               <PersonStanding className="material-icons">person</PersonStanding>
               <span>Guests</span>
             </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
+            </div>
+            <div className='hover:bg-gray-200 rounded-md'>
+              <button className="flex items-center space-x-2 p-2 text-black-600  rounded">
               <IndianRupee className="material-icons">payment</IndianRupee>
               <span>Payments</span>
             </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
+            </div>
+            <div className='hover:bg-gray-200 rounded-md'>
+              <button className="flex items-center space-x-2 p-2 text-black-600  rounded">
               <Inbox className="material-icons">chat</Inbox>
               <span>Chat</span>
             </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
-              <BarChart className="material-icons">bar_chart</BarChart>
-              <span>Reports</span>
-            </button>
-            <button
-              className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded"
+            </div>
+            <div className='hover:bg-gray-200 rounded-md'>
+              <button className="flex items-center space-x-2 p-2 text-black-600 rounded">
+                <BarChart className="material-icons">bar_chart</BarChart>
+                <span>Reports</span>
+              </button>
+            </div>
+            <div className='hover:bg-red-600 rounded-md'>
+              <button
+              className="flex items-center space-x-2 p-2 text-gray-60 rounded"
               onClick={() => setShowModal(!showModal)}
             >
               <LogOut className="material-icons">LogOut</LogOut>
               <span>Logout</span>
             </button>
+            </div>
           </div>
         </div>
         <AnimatePresence>
@@ -97,7 +115,7 @@ function SideNavbar() {
 
                 {/* Title + Message */}
                 <h2 className="text-xl font-semibold text-center mb-2">Confirm Logout</h2>
-                <p className="text-gray-600 text-center mb-6">
+                <p className="text-black-600 text-center mb-6">
                   Are you sure you want to log out from your admin dashboard?
                 </p>
 
