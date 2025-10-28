@@ -41,9 +41,9 @@ const agencySchema = new Schema<IAgency>({
       type: String,
     },
   ],
-  logo:{
-    type:String,
-    default:null
+  logo: {
+    type: String,
+    default: null,
   },
   bankDetails: {
     accountHolder: {
@@ -93,10 +93,14 @@ const agencySchema = new Schema<IAgency>({
     type: Boolean,
     default: false,
   },
-  reason:{
-    type:String,
+  reason: {
+    type: String,
     required: false,
-    default:''
+    default: '',
+  },
+  partners:{
+    type:[String],
+    required:false
   }
 });
 

@@ -13,6 +13,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 import { inject, injectable } from 'inversify';
 import z from 'zod';
 import { UserNotFoundError } from '../../utils/resAndErrors.js';
+import { singleUpload } from '../../utils/upload.cloudinary.js';
+import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
 let UserProfileService = class UserProfileService {
     _authRespository;
     constructor(_authRespository) {
@@ -34,6 +36,13 @@ let UserProfileService = class UserProfileService {
         if (!updateUser)
             throw new UserNotFoundError();
         return updateUser;
+    }
+    async uploadProfileImage(id, image) {
+        const result = await singleUpload(image, 'Travel-Truck-Document');
+        const update = await this._authRespository.update(id, { profilePicture: result });
+        if (update)
+            return toUserProfileDTO(update);
+        return null;
     }
 };
 UserProfileService = __decorate([

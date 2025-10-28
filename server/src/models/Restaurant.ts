@@ -43,9 +43,9 @@ const restaurantSchema = new Schema<IRestaurant>({
       type: String,
     },
   ],
-  logo:{
-    type:String,
-    default:null
+  logo: {
+    type: String,
+    default: null,
   },
   bankDetails: {
     accountHolder: {
@@ -95,11 +95,11 @@ const restaurantSchema = new Schema<IRestaurant>({
     type: String,
     required: true,
   },
-  reason:{
-    type:String,
+  reason: {
+    type: String,
     required: false,
-    default:''
-  }
+    default: '',
+  },
 });
 
 export const Restaurant = model<IRestaurant>('Restaurant', restaurantSchema);

@@ -16,11 +16,11 @@ const hotelSchema = new Schema({
     },
     gstNumber: {
         type: String,
-        required: false
+        required: false,
     },
     taxId: {
         type: String,
-        required: false
+        required: false,
     },
     rating: {
         type: Number,
@@ -40,7 +40,7 @@ const hotelSchema = new Schema({
     reviews: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Reviews'
+            ref: 'Reviews',
         },
     ],
     images: [
@@ -48,6 +48,10 @@ const hotelSchema = new Schema({
             type: String,
         },
     ],
+    logo: {
+        type: String,
+        default: null,
+    },
     bankDetails: {
         accountHolder: {
             type: String,
@@ -56,11 +60,11 @@ const hotelSchema = new Schema({
             type: String,
         },
         ifscCode: {
-            type: String
+            type: String,
         },
         bankName: {
             type: String,
-        }
+        },
     },
     documents: {
         registrationCertificate: {
@@ -70,11 +74,11 @@ const hotelSchema = new Schema({
             type: String,
         },
         bankProof: {
-            type: String
+            type: String,
         },
         ownerIdProof: {
             type: String,
-        }
+        },
     },
     phone: {
         type: Number,
@@ -86,7 +90,7 @@ const hotelSchema = new Schema({
     },
     isApproved: {
         type: Boolean,
-        default: false
+        default: false,
     },
     role: {
         type: String,
@@ -95,6 +99,11 @@ const hotelSchema = new Schema({
     isRestricted: {
         type: Boolean,
         default: false,
+    },
+    reason: {
+        type: String,
+        required: false,
+        default: '',
     },
 });
 export const Hotel = model('Hotel', hotelSchema);

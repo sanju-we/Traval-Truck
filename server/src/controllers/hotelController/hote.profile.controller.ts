@@ -17,7 +17,7 @@ export class HotelProfileCotroller implements IHotelProfileController {
   constructor(
     @inject('IHotelAuthRepository') private readonly _hotelAuthRepository: IHotelAuthRepository,
     @inject('IHotelProfileService') private readonly _hoteService: IHotelProfileService,
-  ) { }
+  ) {}
 
   async getHotelProfile(req: Request, res: Response): Promise<void> {
     const user = req.user;
@@ -51,29 +51,35 @@ export class HotelProfileCotroller implements IHotelProfileController {
 
   async updateDocument(req: Request, res: Response): Promise<void> {
     const hotelId = req.user.id;
-    const restricted = req.user.isRestricted
+    const restricted = req.user.isRestricted;
     const files = req.files as {
       [fieldname: string]: Express.Multer.File[];
     };
 
     const update = this._hoteService.updateDocuments(hotelId, files);
     update.then((data) => {
-      sendResponse(res, STATUS_CODE.OK, true, restricted ? MESSAGES.RESUBMITED : MESSAGES.SUCCESS, data);
+      sendResponse(
+        res,
+        STATUS_CODE.OK,
+        true,
+        restricted ? MESSAGES.RESUBMITED : MESSAGES.SUCCESS,
+        data,
+      );
     });
   }
 
   async deleteImage(req: Request, res: Response): Promise<void> {
-    const { documentUrl, key } = req.body
-    const hotelId = req.user.id
-    const hotel = await this._hoteService.deleteImage(hotelId, documentUrl, key)
-    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DELETED, hotel)
+    const { documentUrl, key } = req.body;
+    const hotelId = req.user.id;
+    const hotel = await this._hoteService.deleteImage(hotelId, documentUrl, key);
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DELETED, hotel);
   }
 
   async uploadProfile(req: Request, res: Response): Promise<void> {
-    const profile = req.file
-    if (!profile) throw new BADREQUEST()
-    const hotelId = req.user.id
-    const update = await this._hoteService.uploadImage(hotelId, profile)
-    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, update)
+    const profile = req.file;
+    if (!profile) throw new BADREQUEST();
+    const hotelId = req.user.id;
+    const update = await this._hoteService.uploadImage(hotelId, profile);
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, update);
   }
 }

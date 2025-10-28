@@ -13,7 +13,7 @@ export class RestaurantProfileService implements IRestaurantProfileService {
   constructor(
     @inject('IRestaurantAuthRepository')
     private readonly _restaurantAuthRepo: IRestaurantAuthRepository,
-  ) { }
+  ) {}
   async updateProfile(
     id: string,
     data: {
@@ -50,25 +50,25 @@ export class RestaurantProfileService implements IRestaurantProfileService {
     }
 
     if (update) {
-      update.isRestricted ? await this._restaurantAuthRepo.update(id,{isRestricted:false}) :''
+      update.isRestricted ? await this._restaurantAuthRepo.update(id, { isRestricted: false }) : '';
       return toVendorRequestDTO(update);
     }
-    return null
+    return null;
   }
 
   async deleteImage(id: string, documentUrl: string, key: string): Promise<vendorRequestDTO> {
-    const publicId = await extractPublicId(documentUrl)
-    const result = await deleteImage(publicId)
-    if (!result) throw new ImageDeleteInCloudinary()
-    const data = await this._restaurantAuthRepo.update(id, { [`documents.${key}`]: null })
-    if (!data) throw new UserNotFoundError()
-    return toVendorRequestDTO(data)
+    const publicId = await extractPublicId(documentUrl);
+    const result = await deleteImage(publicId);
+    if (!result) throw new ImageDeleteInCloudinary();
+    const data = await this._restaurantAuthRepo.update(id, { [`documents.${key}`]: null });
+    if (!data) throw new UserNotFoundError();
+    return toVendorRequestDTO(data);
   }
 
   async uploadImage(id: string, image: Express.Multer.File): Promise<vendorRequestDTO | null> {
-    const result = await singleUpload(image, 'Travel-Truck-Document')
-    const update = await this._restaurantAuthRepo.update(id, { logo: result })
-    if (update) return toVendorRequestDTO(update)
-    return null
+    const result = await singleUpload(image, 'Travel-Truck-Document');
+    const update = await this._restaurantAuthRepo.update(id, { logo: result });
+    if (update) return toVendorRequestDTO(update);
+    return null;
   }
 }

@@ -22,7 +22,7 @@ export class RestaurantProfileController implements IRestaurantProfileController
     const user = req.user;
     const restaurant = await this._restaurantAuthRepository.findById(user.id);
     if (!restaurant) throw new UserNotFoundError();
-    sendResponse(res, STATUS_CODE.OK, true,MESSAGES.SUCCESS, toVendorRequestDTO(restaurant));
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS, toVendorRequestDTO(restaurant));
   }
 
   async getdashboard(req: Request, res: Response): Promise<void> {
@@ -56,29 +56,39 @@ export class RestaurantProfileController implements IRestaurantProfileController
 
   async updateDocuments(req: Request, res: Response): Promise<void> {
     const restaurantId = req.user.id;
-    const restricted = req.user.isRestricted
+    const restricted = req.user.isRestricted;
     const files = req.files as {
       [fieldname: string]: Express.Multer.File[];
     };
 
     const update = this._restaurantProfileService.updateDocuments(restaurantId, files);
     update.then((data) => {
-      sendResponse(res, STATUS_CODE.OK, true, restricted ? MESSAGES.RESUBMITED : MESSAGES.SUCCESS, data);
+      sendResponse(
+        res,
+        STATUS_CODE.OK,
+        true,
+        restricted ? MESSAGES.RESUBMITED : MESSAGES.SUCCESS,
+        data,
+      );
     });
   }
 
   async deleteImage(req: Request, res: Response): Promise<void> {
-      const {documentUrl,key} = req.body
-      const restaurantId = req.user.id
-      const restaurant = await this._restaurantProfileService.deleteImage(restaurantId,documentUrl,key)
-      sendResponse(res,STATUS_CODE.OK,true,MESSAGES.DELETED,restaurant)
+    const { documentUrl, key } = req.body;
+    const restaurantId = req.user.id;
+    const restaurant = await this._restaurantProfileService.deleteImage(
+      restaurantId,
+      documentUrl,
+      key,
+    );
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DELETED, restaurant);
   }
 
   async uploadImage(req: Request, res: Response): Promise<void> {
-      const image = req.file
-      if(!image) throw new BADREQUEST()
-        const restaurantId = req.user.id;
-      const updated = await this._restaurantProfileService.uploadImage(restaurantId,image)
-      sendResponse(res,STATUS_CODE.OK,true,MESSAGES.UPDATED,updated)
+    const image = req.file;
+    if (!image) throw new BADREQUEST();
+    const restaurantId = req.user.id;
+    const updated = await this._restaurantProfileService.uploadImage(restaurantId, image);
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updated);
   }
 }

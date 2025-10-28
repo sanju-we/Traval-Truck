@@ -10,7 +10,7 @@ import { deleteImage, extractPublicId, singleUpload } from '../../utils/upload.c
 
 @injectable()
 export class AgencyProfileService implements IAgencyProfileService {
-  constructor(@inject('IAgencyRespository') private readonly _agencyAuthRepo: IAgencyRespository) { }
+  constructor(@inject('IAgencyRespository') private readonly _agencyAuthRepo: IAgencyRespository) {}
   async updateProfile(
     id: string,
     data: {
@@ -34,7 +34,10 @@ export class AgencyProfileService implements IAgencyProfileService {
     return toVendorRequestDTO(update);
   }
 
-  async updateDocument(id: string,files: { [fieldname: string]: Express.Multer.File[] },): Promise<vendorRequestDTO | null> {
+  async updateDocument(
+    id: string,
+    files: { [fieldname: string]: Express.Multer.File[] },
+  ): Promise<vendorRequestDTO | null> {
     let update;
     for (const fieldname in files) {
       const file = files[fieldname][0];
@@ -43,26 +46,26 @@ export class AgencyProfileService implements IAgencyProfileService {
       update = await this._agencyAuthRepo.update(id, { [`documents.${fieldname}`]: result });
     }
     if (update) {
-      update.isRestricted ? await this._agencyAuthRepo.update(id,{isRestricted:false}) :''
+      update.isRestricted ? await this._agencyAuthRepo.update(id, { isRestricted: false }) : '';
       return toVendorRequestDTO(update);
     }
 
-    return null
+    return null;
   }
 
   async deleteImage(id: string, documentUrl: string, key: string): Promise<vendorRequestDTO> {
-    const publicId = extractPublicId(documentUrl)
-    const result = await deleteImage(publicId)
-    if (!result) throw new ImageDeleteInCloudinary()
-    const updated = await this._agencyAuthRepo.update(id, { [`documents.${key}`]: null })
-    if (!updated) throw new UserNotFoundError()
-    return toVendorRequestDTO(updated)
+    const publicId = extractPublicId(documentUrl);
+    const result = await deleteImage(publicId);
+    if (!result) throw new ImageDeleteInCloudinary();
+    const updated = await this._agencyAuthRepo.update(id, { [`documents.${key}`]: null });
+    if (!updated) throw new UserNotFoundError();
+    return toVendorRequestDTO(updated);
   }
 
   async uploadProfile(id: string, image: Express.Multer.File): Promise<vendorRequestDTO | null> {
-      const result = await singleUpload(image,'Travel-Travel-Document')
-      const update = await this._agencyAuthRepo.update(id,{logo:result})
-      if(update) return toVendorRequestDTO(update)
-      return null
+    const result = await singleUpload(image, 'Travel-Travel-Document');
+    const update = await this._agencyAuthRepo.update(id, { logo: result });
+    if (update) return toVendorRequestDTO(update);
+    return null;
   }
 }

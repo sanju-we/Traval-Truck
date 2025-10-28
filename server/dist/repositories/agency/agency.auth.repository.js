@@ -8,7 +8,10 @@ export class agencyRepository extends BaseRepository {
         await Agency.findByIdAndUpdate(id, { password: hashedPassword });
         return;
     }
-    async findByIdAndUpdateAction(id, action, field) {
+    async findByIdAndUpdateAction(id, action, field, reason) {
+        if (reason != '') {
+            await Agency.findByIdAndUpdate(id, { reason: reason });
+        }
         await Agency.findByIdAndUpdate(id, { [field]: action });
     }
 }

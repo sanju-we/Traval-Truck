@@ -10,14 +10,14 @@ const SubscriptionsSchema: Schema = new Schema({
       type: Date,
     },
     endingDate: {
-      type: Date
-    }
+      type: Date,
+    },
   },
   Valid: { type: Number },
   Description: { type: String },
   Amount: { type: Number },
-  Features: [{ type: String, }],
-  IsActive: { type: Boolean,default:false },
+  Features: [{ type: String }],
+  IsActive: { type: Boolean, default: false },
   CreatedAt: { type: Date },
 });
 

@@ -13,7 +13,7 @@ const containerStyle: React.CSSProperties = {
   height: "400px",
 };
 
-const defaultCenter = { lat: 28.6139, lng: 77.2090 }; // Example: San Francisco
+const defaultCenter = { lat: 11.2587531, lng: 75.78041 }; 
 
 const MapComponent: React.FC<MapComponentProps> = ({
   apiKey,

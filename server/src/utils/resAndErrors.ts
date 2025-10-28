@@ -81,6 +81,12 @@ export class UNAUTHORIZEDUserFounf extends HttpError {
   }
 }
 
+export class DataUpdatingError extends HttpError {
+  constructor() {
+    super(400, "Updating Error");
+  }
+}
+
 export class BADREQUEST extends HttpError {
   constructor() {
     super(401, 'Required fileds are missing');

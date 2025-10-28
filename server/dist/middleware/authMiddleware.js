@@ -73,7 +73,7 @@ export async function verifyHotelToken(req, res, next) {
             return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
         }
         if (hotel.isRestricted) {
-            if (req.url !== '/profile') {
+            if (req.url !== '/profile' && req.url == '/update-documents') {
                 if (!hotel.isApproved)
                     throw new UNAUTHORIZEDUserFounf();
             }
@@ -111,7 +111,7 @@ export async function verifyAgencyToken(req, res, next) {
             return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
         }
         if (agency.isRestricted) {
-            if (req.url !== '/profile') {
+            if (req.url !== '/profile' && req.url !== '/update-documents') {
                 if (!agency.isApproved)
                     throw new UNAUTHORIZEDUserFounf();
             }
@@ -150,10 +150,9 @@ export async function verifyRestaurantToken(req, res, next) {
             return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
         }
         if (restaurant.isRestricted) {
-            if (req.url !== '/profile') {
-                logger.info(`req.url:${req.url}`);
+            if (req.url !== '/profile' && req.url !== '/update-documents') {
                 if (!restaurant.isApproved)
-                    throw new RESTRICTED_USER();
+                    throw new UNAUTHORIZEDUserFounf();
             }
         }
         req.user = toVendorAuth(restaurant);

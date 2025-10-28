@@ -3,20 +3,22 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Edit3, MapPin, Phone, Mail, Plus } from "lucide-react";
+import { Edit3, MapPin, Phone, Mail, Plus, User } from "lucide-react";
 import axios from "axios";
 import EditPartnerModal from "../../../components/agency/EditPartnerModal";
 import AddPartnerModal from "../../../components/agency/AddPartnerModal";
 import MapComponent from '@/components/Map';
+import api from "@/services/api";
+import SideNavbar from "@/components/agency/SideNavbar";
 
 interface Partner {
-  _id: string;
+  id: string;
   PartnerType: "Hotel" | "Restaurant";
-  PartnerName: string;
-  Status: "Active" | "Inactive" | "Pending";
-  ContactPerson: string;
-  Phone: number;
-  Media: {
+  partnerName: string;
+  status: "Active" | "Inactive" | "Pending";
+  contactPerson: string;
+  phone: number;
+  media: {
     Gallery: string[];
     Logo: string;
   };
@@ -26,8 +28,10 @@ interface Partner {
     Description: string;
     Facilities: string[];
   }[];
-  Email: string;
-  Location: string;
+  email: string;
+  location: {
+    coordinates:string[]
+  };
 }
 
 export default function PartnerListingPage() {
@@ -38,8 +42,9 @@ export default function PartnerListingPage() {
 
   const fetchPartners = async () => {
     try {
-      const res = await axios.get("/api/partners");
-      setPartners(res.data);
+      const res = await api.get("/agency/partner/getAllPartners");
+      console.log(res.data.data)
+      setPartners(res.data.data);
     } catch (error) {
       console.error("Error fetching partners:", error);
     }
@@ -50,100 +55,107 @@ export default function PartnerListingPage() {
   }, []);
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold text-gray-800">Partners</h1>
-        <Button
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white"
-          onClick={() => setShowAddModal(true)}
-        >
-          <Plus size={18} />
-          Add Partner
-        </Button>
-      </div>
+    <div className="flex bg-gray-50 min-h-screen">
+      <SideNavbar />
 
-      {/* Partner Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {partners.length > 0 ? (
-          partners.map((partner) => (
-            <Card
-              key={partner._id}
-              className="rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition"
-            >
-              <CardHeader className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-3">
-                  <img
-                    src={partner.Media?.Logo || "/placeholder-logo.png"}
-                    alt={partner.PartnerName}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                  <div>
-                    <h2 className="text-lg font-semibold">{partner.PartnerName}</h2>
-                    <p className="text-sm text-gray-500">{partner.PartnerType}</p>
-                  </div>
-                </CardTitle>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setSelectedPartner(partner);
-                    setShowEditModal(true);
-                  }}
-                >
-                  <Edit3 size={16} />
-                </Button>
-              </CardHeader>
+      <div className="flex-1 p-8 space-y-6">
+        {/* Page Header */}
+        <div className="flex justify-between items-center sticky top-0 bg-gray-50 pb-4 z-10">
+          <h1 className="text-3xl font-bold text-gray-800">Partners</h1>
+          <Button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow-md"
+          >
+            <Plus size={18} /> Add Partner
+          </Button>
+        </div>
 
-              <CardContent className="text-sm text-gray-700 space-y-2">
-                <div className="flex justify-between">
-                  <span>Status:</span>
-                  <span
-                    className={`font-semibold ${
-                      partner.Status === "Active"
-                        ? "text-green-600"
-                        : partner.Status === "Pending"
-                        ? "text-orange-600"
-                        : "text-red-600"
-                    }`}
+        {/* Partner Cards */}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {partners.length > 0 ? (
+            partners.map((partner) => (
+              <Card
+                key={partner.id}
+                className="rounded-2xl shadow-sm border border-gray-200 bg-white hover:shadow-lg hover:scale-[1.01] transition-all duration-200"
+              >
+                <CardHeader className="flex justify-between items-center">
+                  <CardTitle className="flex items-center gap-3">
+                    <img
+                      src={partner.media?.Logo || "/images/profile.jpeg"}
+                      alt={partner.partnerName}
+                      className="w-12 h-12 rounded-full object-cover border"
+                    />
+                    <div>
+                      <h2 className="text-lg font-semibold">{partner.partnerName}</h2>
+                      <p className="text-sm text-gray-500">{partner.PartnerType}</p>
+                    </div>
+                  </CardTitle>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setSelectedPartner(partner);
+                      setShowEditModal(true);
+                    }}
                   >
-                    {partner.Status}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <MapPin size={14} />
-                  <span>{partner.Location}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Phone size={14} />
-                  <span>{partner.Phone}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Mail size={14} />
-                  <span>{partner.Email}</span>
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        ) : (
-          <p className="text-gray-600 text-center col-span-full">
-            No partners found.
-          </p>
+                    <Edit3 size={16} />
+                  </Button>
+                </CardHeader>
+
+                <CardContent className="text-sm text-gray-700 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium text-gray-600">Status</span>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        partner.status === "Active"
+                          ? "bg-green-100 text-green-700"
+                          : partner.status === "Pending"
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-red-100 text-red-700"
+                      }`}
+                    >
+                      {partner.status}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <User size={14} /> {partner.contactPerson}
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <Phone size={14} /> {partner.phone}
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-600 truncate">
+                    <Mail size={14} /> {partner.email}
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <div className="col-span-full flex flex-col items-center justify-center text-center p-10 bg-white rounded-2xl shadow-sm">
+              <img src="/images/empty.svg" alt="No Partners" className="w-40 mb-4 opacity-80" />
+              <h3 className="text-gray-700 font-semibold mb-2">No Partners Yet</h3>
+              <p className="text-gray-500 text-sm mb-4">Start by adding your first partner.</p>
+              <Button onClick={() => setShowAddModal(true)} className="bg-blue-600 text-white">
+                <Plus size={16} className="mr-1" /> Add Partner
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {/* Modals */}
+        {showAddModal && (
+          <AddPartnerModal
+            onClose={() => setShowAddModal(false)}
+            onAdd={fetchPartners}
+          />
+        )}
+
+        {showEditModal && selectedPartner && (
+          <EditPartnerModal
+            partner={selectedPartner}
+            onClose={() => setShowEditModal(false)}
+            onUpdate={fetchPartners}
+          />
         )}
       </div>
-
-      {/* Add Partner Modal */}
-      {showAddModal && (
-        <AddPartnerModal/>
-      )}
-
-      {/* Edit Partner Modal */}
-      {showEditModal && selectedPartner && (
-        <EditPartnerModal
-          partner={selectedPartner}
-          onClose={() => setShowEditModal(false)}
-          onUpdate={fetchPartners}
-        />
-      )}
     </div>
   );
 }

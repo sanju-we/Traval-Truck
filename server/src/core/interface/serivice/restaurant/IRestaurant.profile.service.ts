@@ -20,6 +20,6 @@ export interface IRestaurantProfileService {
     files: { [fieldname: string]: Express.Multer.File[] },
   ): Promise<vendorRequestDTO | null>;
 
-  deleteImage(id:string,documentUrl:string,key:string) : Promise<vendorRequestDTO>
-  uploadImage(id:string,image:Express.Multer.File) : Promise<vendorRequestDTO | null>
+  deleteImage(id: string, documentUrl: string, key: string): Promise<vendorRequestDTO>;
+  uploadImage(id: string, image: Express.Multer.File): Promise<vendorRequestDTO | null>;
 }

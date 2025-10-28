@@ -23,11 +23,12 @@ export interface IAgency extends Document {
   packages: Schema.Types.ObjectId[];
   reviews: Schema.Types.ObjectId[];
   images: string[];
-  logo:string;
+  logo: string;
   phone: number;
   ownerName: string;
   isApproved: boolean;
   role: string;
   isRestricted: boolean;
-  reason: string
+  reason: string;
+  partners:string[];
 }

@@ -13,7 +13,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 import { injectable, inject } from 'inversify';
 import z from 'zod';
 import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors.js';
-import { logger } from '../../utils/logger.js';
 let AdminVendorService = class AdminVendorService {
     _userRepository;
     _agencyrepository;
@@ -25,19 +24,19 @@ let AdminVendorService = class AdminVendorService {
         this._hotelRepository = _hotelRepository;
         this._restaurantRepository = _restaurantRepository;
     }
-    async updateStatus(id, action, role) {
+    async updateStatus(id, action, role, reason) {
         const schema = z.object({
             id: z.string(),
             action: z.enum(['approve', 'reject']),
             role: z.enum(['agency', 'hotel', 'restaurant']),
+            reason: z.string().nullable(),
         });
-        schema.parse({ id, action, role });
+        schema.parse({ id, action, role, reason });
         let vendor;
         if (role === 'agency') {
             vendor = await this._agencyrepository.findById(id);
         }
         else if (role === 'hotel') {
-            logger.info(`ivda eththi tto`);
             vendor = await this._hotelRepository.findById(id);
         }
         else {
@@ -57,7 +56,9 @@ let AdminVendorService = class AdminVendorService {
             : role === 'hotel'
                 ? this._hotelRepository
                 : this._restaurantRepository;
-        await repo.findByIdAndUpdateAction(id, true, field);
+        await repo.findByIdAndUpdateAction(id, true, field, reason ? reason : '');
+        if (action == 'approve')
+            await repo.update(id, { reason: '' });
     }
     async updateBlock(id, role) {
         const schema = z.object({

@@ -38,6 +38,38 @@ const agencySchema = new Schema({
             type: String,
         },
     ],
+    logo: {
+        type: String,
+        default: null,
+    },
+    bankDetails: {
+        accountHolder: {
+            type: String,
+        },
+        accountNumber: {
+            type: String,
+        },
+        ifscCode: {
+            type: String,
+        },
+        bankName: {
+            type: String,
+        },
+    },
+    documents: {
+        registrationCertificate: {
+            type: String,
+        },
+        panCard: {
+            type: String,
+        },
+        bankProof: {
+            type: String,
+        },
+        ownerIdProof: {
+            type: String,
+        },
+    },
     phone: {
         type: Number,
         required: true,
@@ -48,6 +80,7 @@ const agencySchema = new Schema({
     },
     isApproved: {
         type: Boolean,
+        default: false,
     },
     role: {
         type: String,
@@ -56,6 +89,11 @@ const agencySchema = new Schema({
     isRestricted: {
         type: Boolean,
         default: false,
+    },
+    reason: {
+        type: String,
+        required: false,
+        default: '',
     },
 });
 export const Agency = model('Agency', agencySchema);

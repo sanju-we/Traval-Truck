@@ -8,7 +8,7 @@ export interface vendorRequestDTO {
   ownerName: string;
   email: string;
   role: string;
-  logo:string;
+  logo: string;
   bankDetails: {
     accountHolder: string;
     accountNumber: string;
@@ -23,8 +23,8 @@ export interface vendorRequestDTO {
   };
   isApproved: boolean;
   phone: number;
-  isRestricted:boolean;
-  reason:string;
+  isRestricted: boolean;
+  reason: string;
 }
 
 export const toVendorRequestDTO = (vendor: IRestaurant | IHotel | IAgency): vendorRequestDTO => ({
@@ -33,11 +33,11 @@ export const toVendorRequestDTO = (vendor: IRestaurant | IHotel | IAgency): vend
   ownerName: vendor.ownerName,
   bankDetails: vendor.bankDetails,
   documents: vendor.documents,
-  logo:vendor.logo,
+  logo: vendor.logo,
   email: vendor.email,
   role: vendor.role,
   isApproved: vendor.isApproved,
   phone: vendor.phone,
-  isRestricted:vendor.isRestricted,
-  reason:vendor.reason
+  isRestricted: vendor.isRestricted,
+  reason: vendor.reason,
 });

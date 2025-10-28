@@ -45,12 +45,12 @@ export class AdminVendorController implements IAdminVendorController {
       role: z.enum(['agency', 'hotel', 'restaurant']),
     });
     const bosySchema = z.object({
-      reason: z.string().nullable()
-    })
-    const {reason} =bosySchema.parse(req.body)
+      reason: z.string().nullable(),
+    });
+    const { reason } = bosySchema.parse(req.body);
     const { id, action, role } = schema.parse(req.params);
-    logger.info('*****************')
-    await this._adminVenderService.updateStatus(id, action, role,reason);
+    logger.info('*****************');
+    await this._adminVenderService.updateStatus(id, action, role, reason);
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.APPROVED);
   }
 

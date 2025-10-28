@@ -35,6 +35,7 @@ export var MESSAGES;
     MESSAGES["REJECTED"] = "Rejected successfully";
     MESSAGES["UNVERIFIED"] = "Marked as unverified";
     MESSAGES["VERIFIED"] = "Verified successfully";
+    MESSAGES["RESUBMITED"] = "Re-submission request send";
     // -------------------- AUTH --------------------
     MESSAGES["EMAIL_OTP_REQUIRED"] = "Email and OTP are required";
     MESSAGES["EMAIL_PASSWORD_REQUIRED"] = "Email and password are required";

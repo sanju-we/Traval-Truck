@@ -41,6 +41,38 @@ const restaurantSchema = new Schema({
             type: String,
         },
     ],
+    logo: {
+        type: String,
+        default: null,
+    },
+    bankDetails: {
+        accountHolder: {
+            type: String,
+        },
+        accountNumber: {
+            type: String,
+        },
+        ifscCode: {
+            type: String,
+        },
+        bankName: {
+            type: String,
+        },
+    },
+    documents: {
+        registrationCertificate: {
+            type: String,
+        },
+        panCard: {
+            type: String,
+        },
+        bankProof: {
+            type: String,
+        },
+        ownerIdProof: {
+            type: String,
+        },
+    },
     phone: {
         type: Number,
         required: true,
@@ -60,6 +92,11 @@ const restaurantSchema = new Schema({
     role: {
         type: String,
         required: true,
+    },
+    reason: {
+        type: String,
+        required: false,
+        default: '',
     },
 });
 export const Restaurant = model('Restaurant', restaurantSchema);

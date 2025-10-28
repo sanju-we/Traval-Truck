@@ -5,19 +5,19 @@ import { string } from 'zod';
 export const dining = {
   Cuisines: String,
   Image: String,
-  Name: String
-}
+  Name: String,
+};
 export const itinerary = {
   Activities: [String],
   Day: Number,
-  Titile: String
-}
+  Titile: String,
+};
 export const reviews = {
   Comment: String,
   Date: Date,
   Rating: Number,
-  userID: String
-}
+  userID: String,
+};
 
 const packageSchema = new Schema<IPackage>({
   Title: {
@@ -39,7 +39,7 @@ const packageSchema = new Schema<IPackage>({
     Description: { type: String },
     image: { type: String },
     Name: { type: String },
-    id: { type: String, Ref: 'Partner' }
+    id: { type: String, Ref: 'Partner' },
   },
   Discoveries: {
     type: [String],
@@ -48,5 +48,5 @@ const packageSchema = new Schema<IPackage>({
   AvailableFoods: { type: [String] },
   itinerary: { type: [itinerary] },
   reviews: { type: [reviews] },
-  CreatedBy: { type: Date, default: new Date() }
-})
+  CreatedBy: { type: Date, default: new Date() },
+});

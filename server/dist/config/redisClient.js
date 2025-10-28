@@ -7,7 +7,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-// src/config/redisClient.ts
 import { createClient } from 'redis';
 import { injectable } from 'inversify';
 import { logger } from '../utils/logger.js';

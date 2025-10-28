@@ -10,7 +10,7 @@ export interface IPackage extends Document {
     Description: string;
     Image: string;
     Name: string;
-    id:Types.ObjectId;
+    id: Types.ObjectId;
   }[];
   Discoveries: string[];
   dining: {

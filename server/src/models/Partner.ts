@@ -1,27 +1,32 @@
 import { Schema, model } from 'mongoose';
 import { IPartner } from '../core/interface/modelInterface/IPartner.js';
 
-const PartnerSchema: Schema = new Schema({
-  PartnerType: { type: String, enum: [ 'Hotel', 'Restaurant' ] },
+const PartnerSchema: Schema = new Schema<IPartner>({
+  PartnerType: { type: String, enum: ['Hotel', 'Restaurant'] },
   PartnerName: { type: String },
-  Status: { type: String, enum: [ 'Active', 'Inactive', 'Pending' ] },
+  Status: { type: String, enum: ['Active', 'Inactive', 'Pending'] },
   ContactPerson: { type: String },
   Phone: { type: Number },
   Media: {
-     Gallery: [{ type: String,  }],
-     Logo: { type: String },
+    Gallery: [{ type: String }],
+    Logo: { type: String },
   },
-  Details: [{
-     AvgPriceRange: { type: Number },
-     Category: { type: String },
-     Description: { type: String },
-     Facilities: [{ type: String,  }],
-  }],
+  Details: [
+    {
+      AvgPriceRange: { type: Number },
+      Category: { type: String },
+      Description: { type: String },
+      Facilities: [{ type: String }],
+    },
+  ],
   Email: { type: String },
   Location: {
-  type: { type: String, enum: ['Point'], default: 'Point' },
-  coordinates: [Number], // [lng, lat]
-},
+    type: String,
+    default: "",
+  },
+  partner: {
+    type: [String]
+  }
 });
 
 // const partnerData = {
@@ -33,5 +38,4 @@ const PartnerSchema: Schema = new Schema({
 //   },
 // };
 
-
-export const Partner = model<IPartner>('Hotel', PartnerSchema);
+export const Partner = model<IPartner>('Partner', PartnerSchema);

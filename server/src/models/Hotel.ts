@@ -50,9 +50,9 @@ const hotelSchema = new Schema<IHotel>({
       type: String,
     },
   ],
-  logo:{
-    type:String,
-    default:null
+  logo: {
+    type: String,
+    default: null,
   },
   bankDetails: {
     accountHolder: {
@@ -102,11 +102,11 @@ const hotelSchema = new Schema<IHotel>({
     type: Boolean,
     default: false,
   },
-  reason:{
-    type:String,
+  reason: {
+    type: String,
     required: false,
-    default:''
-  }
+    default: '',
+  },
 });
 
 export const Hotel = model<IHotel>('Hotel', hotelSchema);

@@ -6,7 +6,6 @@ import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Iho
 import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository.js';
 import z from 'zod';
 import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors.js';
-import { logger } from '../../utils/logger.js';
 
 @injectable()
 export class AdminVendorService implements IAdminVendorService {
@@ -16,14 +15,19 @@ export class AdminVendorService implements IAdminVendorService {
     @inject('IHotelAuthRepository') private readonly _hotelRepository: IHotelAuthRepository,
     @inject('IRestaurantAuthRepository')
     private readonly _restaurantRepository: IRestaurantAuthRepository,
-  ) { }
+  ) {}
 
-  async updateStatus(id: string, action: string, role: string, reason: string | null): Promise<void> {
+  async updateStatus(
+    id: string,
+    action: string,
+    role: string,
+    reason: string | null,
+  ): Promise<void> {
     const schema = z.object({
       id: z.string(),
       action: z.enum(['approve', 'reject']),
       role: z.enum(['agency', 'hotel', 'restaurant']),
-      reason: z.string().nullable()
+      reason: z.string().nullable(),
     });
     schema.parse({ id, action, role, reason });
     let vendor;
@@ -53,7 +57,7 @@ export class AdminVendorService implements IAdminVendorService {
           : this._restaurantRepository;
 
     await repo.findByIdAndUpdateAction(id, true, field, reason ? reason : '');
-    if (action == 'approve') await repo.update(id,{reason:''})
+    if (action == 'approve') await repo.update(id, { reason: '' });
   }
 
   async updateBlock(id: string, role: string): Promise<void> {

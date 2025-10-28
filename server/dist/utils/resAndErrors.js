@@ -1,13 +1,6 @@
 export function sendResponse(res, status, success, message, data) {
     res.status(status).json({ success, message, data });
 }
-// export function throwErrorWithRes(res: Response, message: string, statusCode = 400): never {
-//   console.error('Throwing error:', message);
-//   res.status(statusCode).json({ message });
-//   const error = new Error(message) as Error & { statusCode: number };
-//   error.statusCode = statusCode;
-//   throw error;
-// }
 export function throwError(message, statusCode = 400) {
     console.error('Throwing error:', message);
     const error = new Error(message);
@@ -52,6 +45,11 @@ export class InvalidCredentialsError extends HttpError {
         super(400, 'Invalid credentials');
     }
 }
+export class ImageDeleteInCloudinary extends HttpError {
+    constructor() {
+        super(400, 'Failed to delete image from Cloudinary');
+    }
+}
 export class InvalidResetTokenError extends HttpError {
     constructor() {
         super(400, 'Invalid or expired reset token');
@@ -60,6 +58,11 @@ export class InvalidResetTokenError extends HttpError {
 export class UNAUTHORIZEDUserFounf extends HttpError {
     constructor() {
         super(401, "User don't have access to this route");
+    }
+}
+export class BADREQUEST extends HttpError {
+    constructor() {
+        super(401, 'Required fileds are missing');
     }
 }
 export class InvalidAction extends HttpError {

@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import AddPackageModal from "@/components/agency/AddPackageModal"
 import { Plus, Edit3 } from "lucide-react";
 import axios from "axios";
+import SideNavbar from "@/components/agency/SideNavbar";
 // import AddPackageModal from "./AddPackageModal"; // your existing modal component
 
 interface Package {
@@ -58,9 +60,10 @@ export default function PackageListingPage() {
   }, []);
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header Section */}
-      <div className="flex justify-between items-center">
+    <div className="flex bg-gray-50 min-h-screen">
+      <SideNavbar />
+
+      <div className="flex-1 p-8 space-y-6">
         <h1 className="text-2xl font-semibold text-gray-800">Travel Packages</h1>
         <Button
           onClick={() => setShowModal(true)}
@@ -117,6 +120,12 @@ export default function PackageListingPage() {
       </div>
 
       {/* Add Package Modal */}
+      {showModal && (
+        <AddPackageModal
+          onClose={() => setShowModal(false)}
+          onPackageAdded={fetchPackages}
+        />
+      )}
       {/* {showModal && <AddPackageModal onClose={() => setShowModal(false)} onPackageAdded={fetchPackages} />} */}
     </div>
   );

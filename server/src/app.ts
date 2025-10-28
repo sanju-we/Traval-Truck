@@ -12,18 +12,19 @@ import { errorHandler } from './middleware/errorHandler.js';
 const app = express();
 
 // middle wares
-const orginAllowed = ['http://localhost:3000', 'http://localhost:3001'];
-app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const originAllowed = ['http://localhost:3000', 'http://localhost:3001'];
 app.use(
   cors({
-    origin: orginAllowed,
+    origin: originAllowed,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization' ],
     credentials: true,
   }),
 );
+// app.options('*', cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(morgan('dev'));
 app.use('/api/user', userRouter);
 app.use('/api/admin', adminRouter);

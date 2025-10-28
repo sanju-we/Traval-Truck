@@ -11,14 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { injectable } from 'inversify';
 import { BaseRepository, RepositoryError } from '../../repositories/baseRepository.js';
 import { Restaurant } from '../../models/Restaurant.js';
-import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
+import { toVendorRequestDTO, } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
 import { logger } from '../../utils/logger.js';
-import z from 'zod';
-const vendorDataSchema = z.object({
-    name: z.string().min(1),
-    email: z.string().email(),
-    password: z.string().min(6),
-});
 let RestaurantAuthRepository = class RestaurantAuthRepository extends BaseRepository {
     constructor() {
         super(Restaurant);
@@ -38,22 +32,11 @@ let RestaurantAuthRepository = class RestaurantAuthRepository extends BaseReposi
             throw new RepositoryError(`Failed to update password: ${err.message}`);
         }
     }
-    async findByIdAndUpdateAction(id, action, field) {
-        try {
-            z.string().min(1).parse(field);
-            z.boolean().parse(action);
-            const restaurant = await this.update(id, { [field]: action });
-            if (!restaurant) {
-                logger.warn(`Restaurant not found for ID ${id} when updating ${field}`);
-                throw new RepositoryError('Restaurant not found');
-            }
-            logger.info(`Updated ${field} for restaurant ID ${id}`);
-            // return restaurant;
+    async findByIdAndUpdateAction(id, action, field, reason) {
+        if (reason != '') {
+            await Restaurant.findByIdAndUpdate(id, { reason: reason });
         }
-        catch (err) {
-            logger.error(`Failed to update ${field} for restaurant ID ${id}: ${err.message}`);
-            throw new RepositoryError(`Failed to update ${field}: ${err.message}`);
-        }
+        await Restaurant.findByIdAndUpdate(id, { [field]: action });
     }
     async findByStatus(status) {
         try {

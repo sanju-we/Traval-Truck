@@ -11,7 +11,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from 'inversify';
-import { sendResponse } from '../../utils/resAndErrors.js';
+import { BADREQUEST, sendResponse } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import z from 'zod';
 import { logger } from '../../utils/logger.js';
@@ -55,7 +55,7 @@ let ProfileController = class ProfileController {
         const schema = z.object({
             name: z.string(),
             userName: z.string(),
-            phoneNumber: z.preprocess((val) => Number(val), z.number())
+            phoneNumber: z.preprocess((val) => Number(val), z.number()),
         });
         const formData = req.body;
         logger.info(`Validated user data: ${JSON.stringify(formData)}`);
@@ -63,6 +63,15 @@ let ProfileController = class ProfileController {
         const userData = await this._profileService.updateProfile(formData, user);
         logger.info(`userData : ${userData}`);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, userData);
+    }
+    async uploadProfile(req, res) {
+        const profile = req.file;
+        if (!profile)
+            throw new BADREQUEST();
+        const userId = req.user.id;
+        logger.info(`formData = ${JSON.stringify(req.file)}`);
+        const updated = await this._profileService.uploadProfileImage(userId, profile);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updated);
     }
 };
 ProfileController = __decorate([

@@ -13,7 +13,7 @@ export interface IHotel extends Document {
   packages: Schema.Types.ObjectId[];
   reviews: Schema.Types.ObjectId[];
   images: string[];
-  logo:string;
+  logo: string;
   bankDetails: {
     accountHolder: string;
     accountNumber: string;
@@ -31,5 +31,5 @@ export interface IHotel extends Document {
   isApproved: boolean;
   role: string;
   isRestricted: boolean;
-  reason: string
+  reason: string;
 }

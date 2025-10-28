@@ -13,10 +13,15 @@ export class HotelAuthRepository extends BaseRepository<IHotel> implements IHote
     await this.update(id, { password: hashedPassword });
   }
 
-  async findByIdAndUpdateAction(id: string, action: boolean, field: string, reason ?: string): Promise<void> {
-      if(reason != '') {
-        await Hotel.findByIdAndUpdate(id, { reason: reason });
-      }
-      await Hotel.findByIdAndUpdate(id, { [field]: action });
+  async findByIdAndUpdateAction(
+    id: string,
+    action: boolean,
+    field: string,
+    reason?: string,
+  ): Promise<void> {
+    if (reason != '') {
+      await Hotel.findByIdAndUpdate(id, { reason: reason });
     }
+    await Hotel.findByIdAndUpdate(id, { [field]: action });
+  }
 }

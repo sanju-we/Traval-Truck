@@ -13,4 +13,5 @@ export interface IAgencyAuthService {
   ): Promise<{ accessToken: string; refreshToken: string; agencyData: agencyProfileDTO }>;
   sendAgencyResetLink(email: string): Promise<void>;
   resetPassword(token: string, newPassword: string): Promise<void>;
+  updatepartner(id:string,partnerId:string):Promise<boolean>;
 }

@@ -182,7 +182,7 @@ export async function verifyRestaurantToken(req: Request, res: Response, next: N
       return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
     }
 
-     if (restaurant.isRestricted) {
+    if (restaurant.isRestricted) {
       if (req.url !== '/profile' && req.url !== '/update-documents') {
         if (!restaurant.isApproved) throw new UNAUTHORIZEDUserFounf();
       }

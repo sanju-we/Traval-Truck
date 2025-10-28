@@ -15,12 +15,12 @@ export class AgencyProfileController implements IAgencyProfileController {
   constructor(
     @inject('IAgencyRespository') private readonly _agencyRepository: IAgencyRespository,
     @inject('IAgencyProfileService') private readonly _agencyProfileService: IAgencyProfileService,
-  ) { }
+  ) {}
   async getAgency(req: Request, res: Response): Promise<void> {
     const user = req.user;
     const agency = await this._agencyRepository.findById(user.id);
     if (!agency) throw new UserNotFoundError();
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS, toVendorRequestDTO(agency));
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS, toVendorRequestDTO(agency));
   }
 
   async getDashboard(req: Request, res: Response): Promise<void> {
@@ -52,7 +52,7 @@ export class AgencyProfileController implements IAgencyProfileController {
 
   async updateDocument(req: Request, res: Response): Promise<void> {
     const agencyId = req.user.id;
-    const restricted = req.user.isRestricted
+    const restricted = req.user.isRestricted;
     const files = req.files as {
       [fieldname: string]: Express.Multer.File[];
     };
@@ -60,24 +60,30 @@ export class AgencyProfileController implements IAgencyProfileController {
 
     const update = this._agencyProfileService.updateDocument(agencyId, files);
     update.then((data) => {
-      sendResponse(res, STATUS_CODE.OK, true,restricted ? MESSAGES.RESUBMITED : MESSAGES.SUCCESS, data);
+      sendResponse(
+        res,
+        STATUS_CODE.OK,
+        true,
+        restricted ? MESSAGES.RESUBMITED : MESSAGES.SUCCESS,
+        data,
+      );
     });
   }
 
   async deleteImage(req: Request, res: Response): Promise<void> {
-    const agencyId = req.user.id
-    const { documentUrl,key } = req.body
-    if (!documentUrl) throw new BADREQUEST()
-    logger.info(`requested get on the server side`)
-    const agency = await this._agencyProfileService.deleteImage(agencyId, documentUrl, key)
-    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DELETED,agency)
+    const agencyId = req.user.id;
+    const { documentUrl, key } = req.body;
+    if (!documentUrl) throw new BADREQUEST();
+    logger.info(`requested get on the server side`);
+    const agency = await this._agencyProfileService.deleteImage(agencyId, documentUrl, key);
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DELETED, agency);
   }
 
   async uploadProfile(req: Request, res: Response): Promise<void> {
-    const agencyId = req.user.id
-      const profile = req.file
-      if(!profile) throw new BADREQUEST()
-        const result = await this._agencyProfileService.uploadProfile(agencyId,profile)
-      sendResponse(res,STATUS_CODE.OK,true,MESSAGES.UPDATED,result)
+    const agencyId = req.user.id;
+    const profile = req.file;
+    if (!profile) throw new BADREQUEST();
+    const result = await this._agencyProfileService.uploadProfile(agencyId, profile);
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, result);
   }
 }

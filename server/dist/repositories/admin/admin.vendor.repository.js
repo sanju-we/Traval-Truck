@@ -12,7 +12,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { inject, injectable } from 'inversify';
 import { logger } from '../../utils/logger.js';
-import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
+import { toVendorRequestDTO, } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
 import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
 let AdminVendorRepository = class AdminVendorRepository {
     _restaurantRepository;
@@ -31,14 +31,22 @@ let AdminVendorRepository = class AdminVendorRepository {
         const restaurantDatas = await this._restaurantRepository.findAllUser({ isApproved: false }, {});
         logger.info(`hotelData : ${hotelDatas}`);
         const allData = [...hotelDatas, ...agencyDatas, ...restaurantDatas];
-        return allData.map(toVendorRequestDTO);
+        const completeData = allData.filter((item) => {
+            const bank = item.bankDetails;
+            return bank && bank.accountNumber && bank.ifscCode && bank.bankName && bank.accountHolder;
+        });
+        return completeData.map(toVendorRequestDTO);
     }
     async findAllUsers(page = 1, limit = 10) {
         const userData = await this._userRepository.findAllUser({}, {});
         const agencyData = await this._agencyRepository.findAllUser({ isApproved: true }, {});
         const hotelData = await this._hotelRepository.findAllUser({ isApproved: true }, {});
         const restaurantData = await this._restaurantRepository.findAllUser({ isApproved: true }, {});
-        const vendorDTO = [...agencyData.map(toVendorRequestDTO), ...hotelData.map(toVendorRequestDTO), ...restaurantData.map(toVendorRequestDTO)];
+        const vendorDTO = [
+            ...agencyData.map(toVendorRequestDTO),
+            ...hotelData.map(toVendorRequestDTO),
+            ...restaurantData.map(toVendorRequestDTO),
+        ];
         const allUserDTO = [...userData.map(toUserProfileDTO)];
         const allUsers = [...allUserDTO, ...vendorDTO];
         const total = allUsers.length;

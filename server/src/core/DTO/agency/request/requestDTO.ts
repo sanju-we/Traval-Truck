@@ -9,7 +9,7 @@ export interface VendorAuth {
   ownerName: string;
   role: string;
   isBlocked: boolean;
-  isRestricted:boolean;
+  isRestricted: boolean;
 }
 
 export const toVendorAuth = (vendor: IRestaurant | IHotel | IAgency): VendorAuth => ({
@@ -19,5 +19,5 @@ export const toVendorAuth = (vendor: IRestaurant | IHotel | IAgency): VendorAuth
   ownerName: vendor.ownerName,
   role: vendor.ownerName,
   isBlocked: vendor.isApproved,
-  isRestricted: vendor.isRestricted
+  isRestricted: vendor.isRestricted,
 });

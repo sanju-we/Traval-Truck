@@ -18,7 +18,7 @@ export class ProfileController implements IUserProfileController {
     @inject('IJWT') private readonly _jwt: IJWT,
     @inject('IAuthRepository') private _authRepository: IAuthRepository,
     @inject('IUserProfileService') private readonly _profileService: IUserProfileService,
-  ) { }
+  ) {}
 
   async profile(req: Request, res: Response): Promise<void> {
     if (!req.cookies?.accessToken) {
@@ -66,11 +66,11 @@ export class ProfileController implements IUserProfileController {
   }
 
   async uploadProfile(req: Request, res: Response): Promise<void> {
-    const profile = req.file
-    if (!profile) throw new BADREQUEST()
-    const userId = req.user.id
-    logger.info(`formData = ${JSON.stringify(req.file)}`)
-    const updated = await this._profileService.uploadProfileImage(userId, profile)
-    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updated)
+    const profile = req.file;
+    if (!profile) throw new BADREQUEST();
+    const userId = req.user.id;
+    logger.info(`formData = ${JSON.stringify(req.file)}`);
+    const updated = await this._profileService.uploadProfileImage(userId, profile);
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updated);
   }
 }

@@ -11,26 +11,84 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from 'inversify';
-import { sendResponse } from '../../utils/resAndErrors.js';
+import { BADREQUEST, sendResponse, UserNotFoundError } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
+import z from 'zod';
+import { logger } from '../../utils/logger.js';
+import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
 let AgencyProfileController = class AgencyProfileController {
     _agencyRepository;
-    constructor(_agencyRepository) {
+    _agencyProfileService;
+    constructor(_agencyRepository, _agencyProfileService) {
         this._agencyRepository = _agencyRepository;
+        this._agencyProfileService = _agencyProfileService;
     }
     async getAgency(req, res) {
         const user = req.user;
         const agency = await this._agencyRepository.findById(user.id);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS, agency);
+        if (!agency)
+            throw new UserNotFoundError();
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS, toVendorRequestDTO(agency));
     }
     async getDashboard(req, res) {
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS);
+    }
+    async update(req, res) {
+        const schema = z.object({
+            ownerName: z.string(),
+            companyName: z.string(),
+            phone: z.string(),
+            bankDetails: z.object({
+                accountHolder: z.string(),
+                accountNumber: z.string(),
+                bankName: z.string(),
+                ifscCode: z.string(),
+            }),
+        });
+        const { ownerName, companyName, phone, bankDetails } = schema.parse(req.body);
+        const agencyId = req.user.id;
+        const updatedAgency = await this._agencyProfileService.updateProfile(agencyId, {
+            ownerName,
+            companyName,
+            phone: Number(phone),
+            bankDetails,
+        });
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updatedAgency);
+    }
+    async updateDocument(req, res) {
+        const agencyId = req.user.id;
+        const restricted = req.user.isRestricted;
+        const files = req.files;
+        if (!files)
+            throw new BADREQUEST();
+        const update = this._agencyProfileService.updateDocument(agencyId, files);
+        update.then((data) => {
+            sendResponse(res, STATUS_CODE.OK, true, restricted ? MESSAGES.RESUBMITED : MESSAGES.SUCCESS, data);
+        });
+    }
+    async deleteImage(req, res) {
+        const agencyId = req.user.id;
+        const { documentUrl, key } = req.body;
+        if (!documentUrl)
+            throw new BADREQUEST();
+        logger.info(`requested get on the server side`);
+        const agency = await this._agencyProfileService.deleteImage(agencyId, documentUrl, key);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DELETED, agency);
+    }
+    async uploadProfile(req, res) {
+        const agencyId = req.user.id;
+        const profile = req.file;
+        if (!profile)
+            throw new BADREQUEST();
+        const result = await this._agencyProfileService.uploadProfile(agencyId, profile);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, result);
     }
 };
 AgencyProfileController = __decorate([
     injectable(),
     __param(0, inject('IAgencyRespository')),
-    __metadata("design:paramtypes", [Object])
+    __param(1, inject('IAgencyProfileService')),
+    __metadata("design:paramtypes", [Object, Object])
 ], AgencyProfileController);
 export { AgencyProfileController };

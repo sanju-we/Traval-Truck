@@ -50,6 +50,12 @@ import { IAgencyProfileController } from '../../core/interface/controllerInterfa
 import { AgencyProfileController } from '../../controllers/agencyController/agency.profile.controller.js';
 import { IAgencyProfileService } from '../../core/interface/serivice/agency/Iagenc.profile.service.js';
 import { AgencyProfileService } from '../../services/agency/agency.profile.service.js';
+import { IAgencyPartnerController } from '../../core/interface/controllerInterface/agency/Iagency.partner.controller.js';
+import { AgencyPartnerController } from '../../controllers/agencyController/agency.partner.controller.js';
+import { IAgencyPartnerRepository } from '../../core/interface/repositorie/agency/Iagency.partner.repostitory.js';
+import { AgencyPartnerRepository } from '../../repositories/agency/agency.partner.repository.js';
+import { IAgencyPartnerService } from '../../core/interface/serivice/agency/Iagency.partner.service.js';
+import { AgencyPartnerService } from '../../services/agency/agency.partner.service.js';
 
 // ------------------------------------------------------Hotel------------------------------------------------------------------------
 import { IHotelAuthController } from '../../core/interface/controllerInterface/hotel/Ihotel.auth.controller.js';
@@ -96,9 +102,13 @@ container.bind<IAdminAuthService>('IAdminAuthService').to(AdminAuthService);
 container.bind<IAdminVendorController>('IAdminVendorController').to(AdminVendorController);
 container.bind<IAdminVendorRepository>('IAdminVendorRepository').to(AdminVendorRepository);
 container.bind<IAdminVendorService>('IAdminVendorService').to(AdminVendorService);
-container.bind<IAdminSubscriptionController>('IAdminSubscriptionController').to(AdminSubscriptionController);
-container.bind<IAdminSubscriptionService>('IAdminSubscriptionService').to(AdminSubscriptionService)
-container.bind<IAdminSubscriptionRepository>('IAdminSubscriptionRepository').to(AdminSubscriptionRepository)
+container
+  .bind<IAdminSubscriptionController>('IAdminSubscriptionController')
+  .to(AdminSubscriptionController);
+container.bind<IAdminSubscriptionService>('IAdminSubscriptionService').to(AdminSubscriptionService);
+container
+  .bind<IAdminSubscriptionRepository>('IAdminSubscriptionRepository')
+  .to(AdminSubscriptionRepository);
 
 // ------------------------------------------------------agency containers--------------------------------------------------------
 container.bind<IAgencyAuthController>('IAgencyAuthController').to(AgencyAuthController);
@@ -106,6 +116,9 @@ container.bind<IAgencyRespository>('IAgencyRespository').to(agencyRepository);
 container.bind<IAgencyAuthService>('IAgencyAuthService').to(agencyAuthService);
 container.bind<IAgencyProfileController>('IAgencyProfileController').to(AgencyProfileController);
 container.bind<IAgencyProfileService>('IAgencyProfileService').to(AgencyProfileService);
+container.bind<IAgencyPartnerController>('IAgencyPartnerController').to(AgencyPartnerController);
+container.bind<IAgencyPartnerRepository>('IAgencyPartnerRepository').to(AgencyPartnerRepository);
+container.bind<IAgencyPartnerService>('IAgencyPartnerService').to(AgencyPartnerService);
 
 // --------------------------------------------------------Hotel containers---------------------------------------------------------------
 container.bind<IHotelAuthController>('IHotelAuthController').to(HotelAuthController);

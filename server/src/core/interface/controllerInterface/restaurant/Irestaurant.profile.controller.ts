@@ -5,6 +5,6 @@ export interface IRestaurantProfileController {
   getdashboard(req: Request, res: Response): Promise<void>;
   updateProfile(req: Request, res: Response): Promise<void>;
   updateDocuments(req: Request, res: Response): Promise<void>;
-  deleteImage(req:Request,res:Response) : Promise<void>;
-  uploadImage(req:Request,res:Response) : Promise<void>;
+  deleteImage(req: Request, res: Response): Promise<void>;
+  uploadImage(req: Request, res: Response): Promise<void>;
 }

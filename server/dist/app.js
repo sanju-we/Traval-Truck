@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors({
     origin: orginAllowed,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin'],
     credentials: true,
 }));
 app.use(morgan('dev'));

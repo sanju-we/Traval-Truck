@@ -30,7 +30,14 @@ hotelProfileRouter
     ]),
     asyncHandler(hotelProfileController.updateDocument.bind(hotelProfileController)),
   )
-  .delete('/delete-image',asyncHandler(hotelProfileController.deleteImage.bind(hotelProfileController)))
-  .post('/upload-profile',upload.single('profile'), asyncHandler(hotelProfileController.uploadProfile.bind(hotelProfileController)))
+  .delete(
+    '/delete-image',
+    asyncHandler(hotelProfileController.deleteImage.bind(hotelProfileController)),
+  )
+  .post(
+    '/upload-profile',
+    upload.single('profile'),
+    asyncHandler(hotelProfileController.uploadProfile.bind(hotelProfileController)),
+  );
 
 export default hotelProfileRouter;

@@ -1,6 +1,5 @@
-import { BaseRepository, RepositoryError } from '../../repositories/baseRepository.js';
+import { BaseRepository } from '../../repositories/baseRepository.js';
 import { Hotel } from '../../models/Hotel.js';
-import z from 'zod';
 export class HotelAuthRepository extends BaseRepository {
     constructor() {
         super(Hotel);
@@ -8,12 +7,10 @@ export class HotelAuthRepository extends BaseRepository {
     async updateHotelPasswordById(id, hashedPassword) {
         await this.update(id, { password: hashedPassword });
     }
-    async findByIdAndUpdateAction(id, action, field) {
-        z.string().min(1).parse(field);
-        z.boolean().parse(action);
-        const hotel = await this.update(id, { [field]: action });
-        if (!hotel) {
-            throw new RepositoryError('Restaurant not found');
+    async findByIdAndUpdateAction(id, action, field, reason) {
+        if (reason != '') {
+            await Hotel.findByIdAndUpdate(id, { reason: reason });
         }
+        await Hotel.findByIdAndUpdate(id, { [field]: action });
     }
 }

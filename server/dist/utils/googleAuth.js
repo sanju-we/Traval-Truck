@@ -17,7 +17,6 @@ export const googleCallback = async (req, res) => {
         if (!payload)
             throw new Error('No user info from Google');
         logger.info(`got it here ${payload.picture}`);
-        // Check or create user in DB
         let user = await User.findOne({ email: payload.email });
         if (!user) {
             user = new User({
@@ -27,7 +26,7 @@ export const googleCallback = async (req, res) => {
                 profilePicture: payload.picture,
                 role: 'user',
                 isBlocked: false,
-                phoneNumber: 0
+                phoneNumber: 0,
             });
             await user.save();
         }
@@ -39,7 +38,7 @@ export const googleCallback = async (req, res) => {
         // Set tokens in cookies
         await jwtService.setTokenInCookies(res, accessToken, refreshToken);
         res.cookie('allowDrive', 'true', { path: '/' });
-        res.redirect('http://localhost:3000/signup');
+        res.redirect('http://localhost:3000');
     }
     catch (err) {
         logger.error(`Google Auth Failed: ${err.message}`);

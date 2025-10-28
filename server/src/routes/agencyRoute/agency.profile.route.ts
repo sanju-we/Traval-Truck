@@ -35,7 +35,14 @@ agencyProfileRouter
     ]),
     asyncHandler(agencyProfileController.updateDocument.bind(agencyProfileController)),
   )
-  .delete('/delete-image',asyncHandler(agencyProfileController.deleteImage.bind(agencyProfileController)))
-  .post('/upload-profile',upload.single('profile'),asyncHandler(agencyProfileController.uploadProfile.bind(agencyProfileController)))
+  .delete(
+    '/delete-image',
+    asyncHandler(agencyProfileController.deleteImage.bind(agencyProfileController)),
+  )
+  .post(
+    '/upload-profile',
+    upload.single('profile'),
+    asyncHandler(agencyProfileController.uploadProfile.bind(agencyProfileController)),
+  );
 
 export default agencyProfileRouter;

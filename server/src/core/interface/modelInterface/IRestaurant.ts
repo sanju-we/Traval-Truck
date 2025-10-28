@@ -24,11 +24,11 @@ export interface IRestaurant extends Document {
   foodItems: Schema.Types.ObjectId;
   reviews: Schema.Types.ObjectId[];
   images: string[];
-  logo:string;
+  logo: string;
   phone: number;
   ownerName: string;
   role: string;
   isApproved: boolean;
   isRestricted: boolean;
-  reason: string
+  reason: string;
 }

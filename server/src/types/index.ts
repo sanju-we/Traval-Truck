@@ -36,7 +36,7 @@ export interface Userauth {
   interesets?: string[];
   role: string;
   isBlocked: boolean;
-  isRestricted?: boolean
+  isRestricted?: boolean;
 }
 export interface VendorAuth {
   id: string;
@@ -45,7 +45,7 @@ export interface VendorAuth {
   ownerName?: string;
   role: string;
   isBlocked: boolean;
-  isRestricted: boolean
+  isRestricted: boolean;
 }
 
 // General Types
@@ -75,14 +75,14 @@ export interface allRequest {
 }
 
 export interface subscriptionData {
-  Name: string,
-  Amount: number,
-  Category: string,
-  Description: string,
+  Name: string;
+  Amount: number;
+  Category: string;
+  Description: string;
   Duration: {
-    startingDate: string,
-    endingDate: string,
-  },
-  Features: string[],
-  Valid: number
+    startingDate: string;
+    endingDate: string;
+  };
+  Features: string[];
+  Valid: number;
 }

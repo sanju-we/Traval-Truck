@@ -10,9 +10,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { inject, injectable } from "inversify";
-import { UserNotFoundError } from "../../utils/resAndErrors.js";
-import { toVendorRequestDTO } from "../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js";
+import { inject, injectable } from 'inversify';
+import { ImageDeleteInCloudinary, UserNotFoundError } from '../../utils/resAndErrors.js';
+import { toVendorRequestDTO, } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
+import { deleteImage, extractPublicId, singleUpload } from '../../utils/upload.cloudinary.js';
 let HotelProfileService = class HotelProfileService {
     _hotelAuthRepo;
     constructor(_hotelAuthRepo) {
@@ -26,6 +27,36 @@ let HotelProfileService = class HotelProfileService {
         if (!update)
             throw new UserNotFoundError();
         return toVendorRequestDTO(update);
+    }
+    async updateDocuments(hotelId, files) {
+        let update;
+        for (const fileName in files) {
+            const file = files[fileName][0];
+            const result = await singleUpload(file, 'Travel-Truck-Vendor-Document');
+            update = await this._hotelAuthRepo.update(hotelId, { [`documents.${fileName}`]: result });
+        }
+        if (update) {
+            update.isRestricted ? await this._hotelAuthRepo.update(hotelId, { isRestricted: false }) : '';
+            return toVendorRequestDTO(update);
+        }
+        return null;
+    }
+    async deleteImage(id, documentUrl, key) {
+        const publicUrl = extractPublicId(documentUrl);
+        const result = await deleteImage(publicUrl);
+        if (!result)
+            throw new ImageDeleteInCloudinary();
+        const updated = await this._hotelAuthRepo.update(id, { [`documents.${key}`]: null });
+        if (!updated)
+            throw new UserNotFoundError();
+        return toVendorRequestDTO(updated);
+    }
+    async uploadImage(id, image) {
+        const result = await singleUpload(image, 'Travel-Truck-Document');
+        const updated = await this._hotelAuthRepo.update(id, { logo: result });
+        if (updated)
+            return toVendorRequestDTO(updated);
+        return null;
     }
 };
 HotelProfileService = __decorate([

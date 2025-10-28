@@ -3,8 +3,12 @@ export const toVendorRequestDTO = (vendor) => ({
     companyName: vendor.companyName,
     ownerName: vendor.ownerName,
     bankDetails: vendor.bankDetails,
+    documents: vendor.documents,
+    logo: vendor.logo,
     email: vendor.email,
     role: vendor.role,
     isApproved: vendor.isApproved,
     phone: vendor.phone,
+    isRestricted: vendor.isRestricted,
+    reason: vendor.reason,
 });

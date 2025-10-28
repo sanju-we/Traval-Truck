@@ -10,7 +10,7 @@ import { toUserProfileDTO, userProfileDTO } from '../../core/DTO/user/Response/u
 
 @injectable()
 export class UserProfileService implements IUserProfileService {
-  constructor(@inject('IAuthRepository') private readonly _authRespository: IAuthRepository) { }
+  constructor(@inject('IAuthRepository') private readonly _authRespository: IAuthRepository) {}
 
   async setInterest(interests: string[], id: string): Promise<void> {
     const schema = z.object({
@@ -32,10 +32,10 @@ export class UserProfileService implements IUserProfileService {
   }
 
   async uploadProfileImage(id: string, image: Express.Multer.File): Promise<userProfileDTO | null> {
-    const result = await singleUpload(image, 'Travel-Truck-Document')
+    const result = await singleUpload(image, 'Travel-Truck-Document');
 
-    const update = await this._authRespository.update(id, { profilePicture: result })
-    if (update) return toUserProfileDTO(update)
-    return null
+    const update = await this._authRespository.update(id, { profilePicture: result });
+    if (update) return toUserProfileDTO(update);
+    return null;
   }
 }

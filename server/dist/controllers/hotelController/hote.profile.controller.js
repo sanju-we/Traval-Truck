@@ -10,12 +10,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { sendResponse, UserNotFoundError } from '../../utils/resAndErrors.js';
+import { BADREQUEST, sendResponse, UserNotFoundError } from '../../utils/resAndErrors.js';
 import { inject, injectable } from 'inversify';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
 import z from 'zod';
-import { logger } from '../../utils/logger.js';
+import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
 let HotelProfileCotroller = class HotelProfileCotroller {
     _hotelAuthRepository;
     _hoteService;
@@ -28,10 +28,9 @@ let HotelProfileCotroller = class HotelProfileCotroller {
         const hotel = await this._hotelAuthRepository.findById(user.id);
         if (!hotel)
             throw new UserNotFoundError();
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS, hotel);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS, toVendorRequestDTO(hotel));
     }
     async updateProfile(req, res) {
-        logger.info(`req.body ${JSON.stringify(req.body)}`);
         const schema = z.object({
             ownerName: z.string(),
             companyName: z.string(),
@@ -40,13 +39,41 @@ let HotelProfileCotroller = class HotelProfileCotroller {
                 accountHolder: z.string(),
                 accountNumber: z.string(),
                 bankName: z.string(),
-                ifscCode: z.string()
-            })
+                ifscCode: z.string(),
+            }),
         });
         const { ownerName, phone, companyName, bankDetails } = schema.parse(req.body);
         const user = req.user;
-        const updatedHotel = await this._hoteService.updateProfile(user.id, { ownerName, companyName, phone: Number(phone), bankDetails });
+        const updatedHotel = await this._hoteService.updateProfile(user.id, {
+            ownerName,
+            companyName,
+            phone: Number(phone),
+            bankDetails,
+        });
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updatedHotel);
+    }
+    async updateDocument(req, res) {
+        const hotelId = req.user.id;
+        const restricted = req.user.isRestricted;
+        const files = req.files;
+        const update = this._hoteService.updateDocuments(hotelId, files);
+        update.then((data) => {
+            sendResponse(res, STATUS_CODE.OK, true, restricted ? MESSAGES.RESUBMITED : MESSAGES.SUCCESS, data);
+        });
+    }
+    async deleteImage(req, res) {
+        const { documentUrl, key } = req.body;
+        const hotelId = req.user.id;
+        const hotel = await this._hoteService.deleteImage(hotelId, documentUrl, key);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DELETED, hotel);
+    }
+    async uploadProfile(req, res) {
+        const profile = req.file;
+        if (!profile)
+            throw new BADREQUEST();
+        const hotelId = req.user.id;
+        const update = await this._hoteService.uploadImage(hotelId, profile);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, update);
     }
 };
 HotelProfileCotroller = __decorate([

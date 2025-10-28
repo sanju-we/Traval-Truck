@@ -35,12 +35,17 @@ export class RestaurantAuthRepository
     }
   }
 
-  async findByIdAndUpdateAction(id: string, action: boolean, field: string, reason ?: string): Promise<void> {
-      if(reason != '') {
-        await Restaurant.findByIdAndUpdate(id, { reason: reason });
-      }
-      await Restaurant.findByIdAndUpdate(id, { [field]: action });
+  async findByIdAndUpdateAction(
+    id: string,
+    action: boolean,
+    field: string,
+    reason?: string,
+  ): Promise<void> {
+    if (reason != '') {
+      await Restaurant.findByIdAndUpdate(id, { reason: reason });
     }
+    await Restaurant.findByIdAndUpdate(id, { [field]: action });
+  }
 
   async findByStatus(status: boolean): Promise<vendorRequestDTO[]> {
     try {

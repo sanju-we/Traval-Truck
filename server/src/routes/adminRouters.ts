@@ -7,8 +7,9 @@ import adminSubscriptionRouter from './adminRoute/admin.subscription.js';
 
 const adminRouter = Router();
 
-adminRouter.use('/auth', adminAuthRoute)
-.use('/vendor', verifyAdminToken, adminVendorRoute)
-.use('/subscription',adminSubscriptionRouter)
+adminRouter
+  .use('/auth', adminAuthRoute)
+  .use('/vendor', verifyAdminToken, adminVendorRoute)
+  .use('/subscription', adminSubscriptionRouter);
 
 export default adminRouter;

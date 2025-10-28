@@ -33,25 +33,23 @@ function SideNavbar() {
         <div className="flex flex-col space-y-4">
           <h1 className="text-2xl font-semibold text-gray-800">Travel Agency</h1>
           <div className="space-y-2">
-            <div className='hover:bg-gray-200 rounded-md'>
+            <div className='hover:bg-gray-200 rounded-md' onClick={() => router.push('/agency')}>
               <button
               className="flex items-center space-x-2 p-2 text-black-600  rounded"
-              onClick={() => router.push('/agency')}
             >
               <Home className="material-icons">home</Home>
               <span>Dashboard</span>
             </button>
             </div>
-            <div className='hover:bg-gray-200 rounded-md'>
-              <button className="flex items-center space-x-2 p-2 text-black-600  rounded"
+            <div className='hover:bg-gray-200 rounded-md'
               onClick={() => router.push('/agency/packages')}>
+              <button className="flex items-center space-x-2 p-2 text-black-600  rounded">
               <FlagTriangleRightIcon />
               Packages
             </button>
             </div>
-            <div className='hover:bg-gray-200 rounded-md'>
-              <button className="flex items-center space-x-2 p-2 text-black-600  rounded"
-              onClick={() => router.push('/agency/partner')}>
+            <div className='hover:bg-gray-200 rounded-md' onClick={() => router.push('/agency/partner')}>
+              <button className="flex items-center space-x-2 p-2 text-black-600  rounded">
               <Hotel className="material-icons">hotel</Hotel>
               <span>Partners</span>
             </button>
