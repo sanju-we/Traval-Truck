@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import { STATUS_CODE } from './HTTPStatusCode.js';
 
 export function sendResponse<T = unknown>(
   res: Response,
@@ -102,5 +103,11 @@ export class InvalidAction extends HttpError {
 export class RESTRICTED_USER extends HttpError {
   constructor() {
     super(401, 'This user is Restricted by the admin');
+  }
+}
+
+export class Data_Creation_Error extends HttpError {
+  constructor() {
+    super(STATUS_CODE.BAD_REQUEST, 'Data uploading error');
   }
 }

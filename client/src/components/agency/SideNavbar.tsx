@@ -78,6 +78,13 @@ function SideNavbar() {
                 <span>Reports</span>
               </button>
             </div>
+            <div className='hover:bg-gray-200 rounded-md'>
+              <button className="flex items-center space-x-2 p-2 text-black-600 rounded"
+              onClick={() => router.push('/agency/profile')}>
+                <BarChart className="material-icons">bar_chart</BarChart>
+                <span>Profile</span>
+              </button>
+            </div>
             <div className='hover:bg-red-600 rounded-md'>
               <button
               className="flex items-center space-x-2 p-2 text-gray-60 rounded"

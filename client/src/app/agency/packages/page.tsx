@@ -1,132 +1,295 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import AddPackageModal from "@/components/agency/AddPackageModal"
-import { Plus, Edit3 } from "lucide-react";
-import axios from "axios";
+import AddPackageModal from "@/components/agency/AddPackageModal";
+import { Plus, Edit3, ChevronLeft, ChevronRight } from "lucide-react";
+import api from "@/services/api";
 import SideNavbar from "@/components/agency/SideNavbar";
-// import AddPackageModal from "./AddPackageModal"; // your existing modal component
+import toast from "react-hot-toast";
+
+interface Partner {
+  _id: string;
+  PartnerName: string;
+  PartnerType: string;
+  Location: string;
+  Email: string;
+  Phone: number;
+  Status: string;
+  Media: {
+    Logo: string;
+    Gallery: string[];
+  };
+}
+
+interface Itinerary {
+  activities: string[];
+  day: number;
+  title: string;
+}
+
+interface Review {
+  Comment: string;
+  Date: string;
+  Rating: number;
+  UserName?: string;
+}
 
 interface Package {
   _id: string;
-  Title: string;
-  Duration: string;
-  Price: number;
-  Description: string;
-  hotels: {
-    Description: string;
-    Image: string;
-    Name: string;
-    id: string;
-  }[];
-  Discoveries: string[];
-  dining: {
-    Cuisine: string;
-    Image: string;
-    Name: string;
-  }[];
-  AvailableFoods: string[];
-  itinerary: {
-    Activities: string[];
-    Day: number;
-    Title: string;
-  }[];
-  reviews: {
-    Comment: string;
-    Date: string;
-    Rating: number;
-    UserName: string;
-  }[];
+  title: string;
+  duration: string;
+  price: number;
+  description: string;
+  hotels: Partner[];
+  dining: Partner[];
+  discoveries: string[];
+  availableFoods: string[];
+  itinerary: Itinerary[];
+  reviews: Review[];
   CreatedBy: string;
 }
 
 export default function PackageListingPage() {
   const [packages, setPackages] = useState<Package[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 6;
 
-  const fetchPackages = async () => {
+  const fetchPackages = async (pageNumber = 1) => {
     try {
-      const res = await axios.get("/api/packages");
-      setPackages(res.data);
+      const { data } = await api.get(
+        `/agency/package/getAllPackages?page=${pageNumber}&limit=${limit}`
+      );
+      if (!data.success) return toast.error(data.message);
+
+      setPackages(data.data.data || []);
+      setTotalPages(data.data.totalPages || 1);
+      setPage(data.data.currentPage || 1);
     } catch (error) {
       console.error("Error fetching packages:", error);
+      toast.error("Something went wrong while fetching packages");
     }
   };
 
   useEffect(() => {
-    fetchPackages();
-  }, []);
+    fetchPackages(page);
+  }, [page]);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages) return;
+    setPage(newPage);
+  };
 
   return (
-    <div className="flex bg-gray-50 min-h-screen">
+    <div className="flex min-h-screen bg-gray-50">
       <SideNavbar />
 
-      <div className="flex-1 p-8 space-y-6">
-        <h1 className="text-2xl font-semibold text-gray-800">Travel Packages</h1>
-        <Button
-          onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
-        >
-          <Plus size={18} /> Add New Package
-        </Button>
-      </div>
+      <div className="flex-1 p-8">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-2xl font-semibold text-gray-900">
+            Travel Packages
+          </h1>
+          <Button
+            onClick={() => setShowModal(true)}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+          >
+            <Plus size={18} /> Add Package
+          </Button>
+        </div>
 
-      {/* Package Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {packages.length > 0 ? (
-          packages.map((pkg) => (
-            <Card key={pkg._id} className="rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition">
-              <CardHeader>
-                <CardTitle className="flex justify-between items-center">
-                  <span>{pkg.Title}</span>
-                  <Button variant="outline" className="flex items-center gap-1">
-                    <Edit3 size={16} /> Edit
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 line-clamp-3 mb-3">{pkg.Description}</p>
-
-                <div className="flex justify-between text-sm text-gray-700">
-                  <span>Duration:</span>
-                  <span className="font-medium">{pkg.Duration}</span>
-                </div>
-                <div className="flex justify-between text-sm text-gray-700">
-                  <span>Price:</span>
-                  <span className="font-medium">₹{pkg.Price}</span>
-                </div>
-
-                {pkg.hotels && pkg.hotels.length > 0 && (
-                  <div className="mt-3 flex items-center gap-3">
-                    <img
-                      src={pkg.hotels[0].Image}
-                      alt={pkg.hotels[0].Name}
-                      className="w-12 h-12 rounded-lg object-cover"
-                    />
-                    <div>
-                      <p className="text-sm font-semibold">{pkg.hotels[0].Name}</p>
-                      <p className="text-xs text-gray-500">Partner Hotel</p>
-                    </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          {packages.length > 0 ? (
+            packages.map((pkg) => (
+              <Card
+                key={pkg._id}
+                className="border border-gray-200 shadow-sm rounded-xl hover:shadow-md transition-all duration-200"
+              >
+                <CardHeader className="pb-2">
+                  <div className="flex justify-between items-center">
+                    <CardTitle className="text-lg font-medium text-gray-800">
+                      {pkg.title}
+                    </CardTitle>
+                    <Button
+                      variant="outline"
+                      className="flex items-center gap-1 text-gray-700 hover:bg-gray-100"
+                    >
+                      <Edit3 size={16} /> Edit
+                    </Button>
                   </div>
-                )}
-              </CardContent>
-            </Card>
-          ))
-        ) : (
-          <p className="text-gray-600 text-center col-span-full">No packages found. Add a new one!</p>
+                </CardHeader>
+
+                <CardContent className="space-y-4">
+                  <p className="text-sm text-gray-600 line-clamp-3">
+                    {pkg.description}
+                  </p>
+
+                  <div className="flex justify-between text-sm text-gray-700 border-t pt-3">
+                    <span>Duration</span>
+                    <span className="font-medium">{pkg.duration}</span>
+                  </div>
+
+                  <div className="flex justify-between text-sm text-gray-700">
+                    <span>Price</span>
+                    <span className="font-medium">₹{pkg.price}</span>
+                  </div>
+
+                  {pkg.hotels?.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-800 mb-1">
+                        Hotels
+                      </h3>
+                      <div className="space-y-2">
+                        {pkg.hotels.map((hotel, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-center gap-3 border rounded-md p-2 bg-white"
+                          >
+                            <img
+                              src={hotel.Media?.Logo || "/placeholder-hotel.png"}
+                              alt={hotel.PartnerName}
+                              className="w-10 h-10 rounded-md object-cover"
+                            />
+                            <div>
+                              <p className="text-sm font-medium">
+                                {hotel.PartnerName}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {hotel.Location}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {pkg.dining?.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-800 mb-1">
+                        Dining
+                      </h3>
+                      <div className="space-y-2">
+                        {pkg.dining.map((dine, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-center gap-3 border rounded-md p-2 bg-white"
+                          >
+                            <img
+                              src={dine.Media?.Logo || "/placeholder-dining.png"}
+                              alt={dine.PartnerName}
+                              className="w-10 h-10 rounded-md object-cover"
+                            />
+                            <div>
+                              <p className="text-sm font-medium">
+                                {dine.PartnerName}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {dine.Location}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {pkg.discoveries?.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-800 mb-1">
+                        Discoveries
+                      </h3>
+                      <ul className="text-sm text-gray-600 space-y-1">
+                        {pkg.discoveries.map((item, idx) => (
+                          <li key={idx}>• {item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {pkg.availableFoods?.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-800 mb-1">
+                        Available Foods
+                      </h3>
+                      <ul className="text-sm text-gray-600 space-y-1">
+                        {pkg.availableFoods.map((food, idx) => (
+                          <li key={idx}>• {food}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {pkg.itinerary?.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-800 mb-1">
+                        Itinerary
+                      </h3>
+                      <div className="space-y-2">
+                        {pkg.itinerary.map((day, idx) => (
+                          <div
+                            key={idx}
+                            className="border-l-2 border-blue-500 pl-3 text-sm"
+                          >
+                            <p className="font-medium">
+                              Day {day.day}: {day.title}
+                            </p>
+                            <ul className="text-xs text-gray-600 ml-2">
+                              {day.activities.map((act, i) => (
+                                <li key={i}>• {act}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <p className="text-gray-600 text-center col-span-full">
+              No packages found. Add a new one to get started.
+            </p>
+          )}
+        </div>
+
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center mt-10 gap-4">
+            <Button
+              variant="outline"
+              onClick={() => handlePageChange(page - 1)}
+              disabled={page === 1}
+              className="flex items-center gap-1"
+            >
+              <ChevronLeft size={16} /> Prev
+            </Button>
+
+            <span className="text-sm text-gray-700">
+              Page {page} of {totalPages}
+            </span>
+
+            <Button
+              variant="outline"
+              onClick={() => handlePageChange(page + 1)}
+              disabled={page === totalPages}
+              className="flex items-center gap-1"
+            >
+              Next <ChevronRight size={16} />
+            </Button>
+          </div>
         )}
       </div>
 
-      {/* Add Package Modal */}
       {showModal && (
         <AddPackageModal
           onClose={() => setShowModal(false)}
-          onPackageAdded={fetchPackages}
+          onPackageAdded={() => fetchPackages(page)}
+          setPackages={setPackages}
         />
       )}
-      {/* {showModal && <AddPackageModal onClose={() => setShowModal(false)} onPackageAdded={fetchPackages} />} */}
     </div>
   );
 }

@@ -40,13 +40,15 @@ function SideNavbar() {
               <Home className="material-icons">home</Home>
               <span>Dashboard</span>
             </button>
+            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded"
+            onClick={() => router.push('/hotel/rooms')}
+            >
+              <Hotel className="material-icons">hotel</Hotel>
+              <span>Rooms</span>
+            </button>
             <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
               <FlagTriangleRightIcon />
               Bookings / Trips
-            </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
-              <Hotel className="material-icons">hotel</Hotel>
-              <span>Partners</span>
             </button>
             <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
               <PersonStanding className="material-icons">person</PersonStanding>
