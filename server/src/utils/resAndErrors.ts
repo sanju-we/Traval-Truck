@@ -52,6 +52,12 @@ export class UserNotFoundError extends HttpError {
   }
 }
 
+export class DataNotFoundError extends HttpError {
+  constructor() {
+    super(400, 'No data found');
+  }
+}
+
 export class NoAccessToken extends HttpError {
   constructor() {
     super(403, 'Invalid Token');
@@ -109,5 +115,11 @@ export class RESTRICTED_USER extends HttpError {
 export class Data_Creation_Error extends HttpError {
   constructor() {
     super(STATUS_CODE.BAD_REQUEST, 'Data uploading error');
+  }
+}
+
+export class Files_Missing extends HttpError {
+  constructor() {
+    super(STATUS_CODE.BAD_REQUEST, 'Images are missing');
   }
 }

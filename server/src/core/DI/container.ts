@@ -74,6 +74,12 @@ import { IHotelProfileController } from '../../core/interface/controllerInterfac
 import { HotelProfileCotroller } from '../../controllers/hotelController/hote.profile.controller.js';
 import { IHotelProfileService } from '../../core/interface/serivice/hotel/Ihotel.profile.service.js';
 import { HotelProfileService } from '../../services/hotel/hotel.profile.service.js';
+import { IHotelRoomsController } from '../../core/interface/controllerInterface/hotel/Ihotel.rooms.controller.js';
+import { HotelRoomsController } from '../../controllers/hotelController/hotel.rooms.controller.js';
+import { IHotelRoomsService } from '../../core/interface/serivice/hotel/Ihotel.rooms.service.js';
+import { HotelRoomsService } from '../../services/hotel/hotel.rooms.service.js';
+import { IHotelRoomsRepository } from '../../core/interface/repositorie/Hotel/Ihotel.rooms.repository.js';
+import { HotelRoomsRepository } from '../../repositories/hotel/hotel.rooms.repository.js';
 
 // ----------------------------------------------------Restaurant------------------------------------------------------------------
 import { IRestaurantAuthController } from '../../core/interface/controllerInterface/restaurant/Irestaurant.auth.controller.js';
@@ -135,6 +141,9 @@ container.bind<IHotelAuthRepository>('IHotelAuthRepository').to(HotelAuthReposit
 container.bind<IHotelAuthService>('IHotelAuthService').to(HotelAuthService);
 container.bind<IHotelProfileController>('IHotelProfileController').to(HotelProfileCotroller);
 container.bind<IHotelProfileService>('IHotelProfileService').to(HotelProfileService);
+container.bind<IHotelRoomsController>('IHotelRoomsController').to(HotelRoomsController);
+container.bind<IHotelRoomsService>('IHotelRoomsService').to(HotelRoomsService);
+container.bind<IHotelRoomsRepository>('IHotelRoomsRepository').to(HotelRoomsRepository)
 
 // -------------------------------------------------------Restaurant container----------------------------------------------------------
 container.bind<IRestaurantAuthController>('IRestaurantAuthController').to(RestaurantAuthController);

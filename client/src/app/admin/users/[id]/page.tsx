@@ -48,10 +48,8 @@ export default function UserDetailsPage() {
 
   return (
     <div className="flex">
-      {/* Sidebar */}
       <SideNavbar active="Users" />
 
-      {/* Main Content */}
       <div className="flex-1 max-w-4xl mx-auto mt-12 relative">
         <Card className="shadow-lg rounded-2xl border border-gray-200">
           <CardHeader className="flex items-center justify-between">
@@ -71,7 +69,6 @@ export default function UserDetailsPage() {
           </CardHeader>
 
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
-            {/* Profile */}
             <div className="flex flex-col items-center md:col-span-2 mb-4">
               <Image
                 src={
