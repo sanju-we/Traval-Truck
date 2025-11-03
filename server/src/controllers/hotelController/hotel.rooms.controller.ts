@@ -29,14 +29,43 @@ export class HotelRoomsController implements IHotelRoomsController {
     const hotelId = req.user.id
     if (!files || Object.keys(files).length === 0) throw new Files_Missing();
     const allFiles: Express.Multer.File[] = Object.values(files).flat();
-    const addedData = await this._roomService.addRoom({...data,HotelId:hotelId}, allFiles)
+    const addedData = await this._roomService.addRoom({ ...data, HotelId: hotelId }, allFiles)
     if (addedData) return sendResponse(res, STATUS_CODE.CREATED, true, MESSAGES.CREATED, addedData)
     throw new Data_Creation_Error()
   }
 
   async getRoom(req: Request, res: Response): Promise<void> {
     const roomId = req.params.id
-      const room = await this._roomService.getRoom(roomId)
-      sendResponse(res,STATUS_CODE.OK,true,MESSAGES.SUCCESS,room)
+    const room = await this._roomService.getRoom(roomId)
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS, room)
+  }
+
+  async updateRoomStatus(req: Request, res: Response): Promise<void> {
+    const data = req.body;
+    const updatedData = await this._roomService.updateStatus(data)
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updatedData)
+  }
+
+  async updateBlock(req: Request, res: Response): Promise<void> {
+    const data = req.body
+    const updateData = await this._roomService.updateBlock(data)
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updateData)
+  }
+
+  async getEditRoom(req: Request, res: Response): Promise<void> {
+    const id = req.params.id
+    const updatedRoom = await this._roomService.getEditRoom(id)
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS, updatedRoom)
+  }
+
+  async updateRoom(req: Request, res: Response): Promise<void> {
+    const data = req.body;
+    const id = req.params.id
+    const files = req.files 
+    if (!files) throw new Files_Missing();
+    logger.info(files)
+    const allFiles: Express.Multer.File[] = Object.values(files).flat();
+    const updatedRoom = await this._roomService.updateRoom(data,id,allFiles)
+    sendResponse(res,STATUS_CODE.OK,true,MESSAGES.UPDATED,updatedRoom)
   }
 }

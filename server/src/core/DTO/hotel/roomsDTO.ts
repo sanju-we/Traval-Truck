@@ -21,6 +21,7 @@ export interface RoomsDTO{
   Status:string;
   CreatedAt:Date;
   HotelId:string;
+  isBlocked:boolean;
 }
 
 export const toRoomsDTO = (Room:IRooms) : RoomsDTO => ({
@@ -35,5 +36,6 @@ export const toRoomsDTO = (Room:IRooms) : RoomsDTO => ({
   Available:Room.AvailableCount,
   Status:Room.Status,
   CreatedAt:Room.CreatedAt,
-  HotelId:Room.HotelId
+  HotelId:Room.HotelId,
+  isBlocked:Room.isBlocked
 })

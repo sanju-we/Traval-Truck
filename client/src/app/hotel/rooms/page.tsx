@@ -31,6 +31,7 @@ interface Room {
   Capacity: number;
   Description: string;
   PricePerNight: number;
+  Status:string
 }
 
 export default function RoomsPage() {
@@ -39,7 +40,7 @@ export default function RoomsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
   const [Description, setDescription] = useState("");
-  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
+  const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
   const [loading, setLoading] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const router = useRouter()
@@ -159,7 +160,7 @@ export default function RoomsPage() {
                   <TableRow>
                     <TableHead>Room No.</TableHead>
                     <TableHead>Capacity</TableHead>
-                    <TableHead>Description</TableHead>
+                    <TableHead>Status</TableHead>
                     <TableHead>Price (₹/Night)</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
@@ -171,26 +172,22 @@ export default function RoomsPage() {
                       <TableCell>{room.Capacity} Adults</TableCell>
                       <TableCell>
                         <span
-                          className={`px-3 py-1 rounded-full text-sm font-medium ${room.Description === "Available"
+                          className={`px-3 py-1 rounded-full text-sm font-medium ${room.Status === "Available"
                               ? "bg-green-100 text-green-700"
-                              : room.Description === "Occupied"
+                              : room.Status === "Occupied"
                                 ? "bg-red-100 text-red-700"
-                                : room.Description === "Cleaning"
+                                : room.Status === "Cleaning"
                                   ? "bg-yellow-100 text-yellow-700"
                                   : "bg-gray-100 text-gray-700"
                             }`}
                         >
-                          {room.Description}
+                          {room.Status}
                         </span>
                       </TableCell>
                       <TableCell>₹{room.PricePerNight}</TableCell>
                       <TableCell>
                         <div className="space-x-3 text-sm font-medium text-blue-600">
                           <button onClick={()=> router.push(`/hotel/rooms/${room.id}`)}>View</button>
-                          <span className="text-gray-400">|</span>
-                          <button>Edit</button>
-                          <span className="text-gray-400">|</span>
-                          <button className="text-red-500">Disable</button>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -207,16 +204,16 @@ export default function RoomsPage() {
                 >
                   <div className="flex justify-between items-start mb-3">
                     <span
-                      className={`px-3 py-1 text-xs rounded-full font-medium ${room.Description === "Available"
+                      className={`px-3 py-1 text-xs rounded-full font-medium ${room.Status === "Available"
                           ? "bg-green-100 text-green-700"
-                          : room.Description === "Occupied"
+                          : room.Status === "Occupied"
                             ? "bg-red-100 text-red-700"
-                            : room.Description === "Cleaning"
+                            : room.Status === "Cleaning"
                               ? "bg-yellow-100 text-yellow-700"
                               : "bg-gray-100 text-gray-700"
                         }`}
                     >
-                      {room.Description}
+                      {room.Status}
                     </span>
                   </div>
                   <p className="text-gray-600">Room No: {room.RoomNumber}</p>
@@ -227,9 +224,7 @@ export default function RoomsPage() {
                     ₹{room.PricePerNight.toLocaleString()}
                   </p>
                   <div className="flex justify-between text-sm text-blue-600 mt-4">
-                    <button>View</button>
-                    <button>Edit</button>
-                    <button className="text-red-500">Disable</button>
+                    <button onClick={()=> router.push(`/hotel/rooms/${room.id}`)}>View</button>
                   </div>
                 </div>
               ))}

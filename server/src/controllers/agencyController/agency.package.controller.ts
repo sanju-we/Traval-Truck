@@ -26,13 +26,3 @@ export class agencyPackageController implements IAgencyPackageController {
       sendResponse(res,STATUS_CODE.OK,true,MESSAGES.CREATED,createdData)
   }
 }
-
-// "availableFoods":["sdf","dfs","biriyani"],
-// "description":"sdfsdfsdf",
-// "dining":["6900ecf9c482d9836423a687","6900ec12c482d9836423a661"],
-// "discoveries":["sdf","ds"],
-// "duration":"5 days ",
-// "hotels":["6900e91cc482d9836423a607"],
-// "itinerary":[{"activities":["set-up the hotel ","visit kappad beach"],"day":1,"title":"Arriving"}],
-// "price":"15000",
-// "title":"Jilla"

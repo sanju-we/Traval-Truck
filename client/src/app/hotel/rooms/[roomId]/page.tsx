@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import { useRouter,useParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/seperator";
@@ -9,11 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import api from "@/services/api";
 import toast from "react-hot-toast";
-import { prevStep } from "@/redux/userDriveSlice";
-import { Data } from "@react-google-maps/api";
+import EditRoomModal from "@/components/hotel/EditRoomModal";
 
-interface IRoom {
-  _id: string;
+export interface IRoom {
+  id: string;
   RoomNumber: number;
   Description: string;
   PricePerNight: number;
@@ -35,37 +34,55 @@ interface IRoom {
   Status: string;
   CreatedAt: string;
   HotelId: string;
+  isBlocked: Boolean;
 }
 
 export default function RoomDetails() {
   const { roomId } = useParams();
   const navigate = useRouter();
   const [room, setRoom] = useState<IRoom | null>(null);
-  console.log(roomId)
+  const [openEdit, setOpenEdit] = useState(false);
+  const [roomData, setRoomData] = useState(room);
+
   useEffect(() => {
     async function fetchRoom() {
       const res = await api.get(`/hotel/rooms/getRoom/${roomId}`);
       const data = res.data;
+      console.log(data.data)
       setRoom(data.data);
     }
     fetchRoom();
   }, [roomId]);
 
-  async function tongleStatus(id:string){
-    const status = !room?.Status
-    const {data} = await api.patch('/hotel/rooms/updateStatus',{id,status})
-    if(data.success){
+  async function tongleStatus(id: string) {
+    const status = room?.Status == 'Available' ? 'Maintance' : 'Available'
+    const { data } = await api.patch('/hotel/rooms/updateStatus', { id, status })
+    console.log(data)
+    if (data.success) {
       toast.success(`Status updates as ${status}`)
       setRoom(data.data)
-    }
-    toast.error(data.message)
+    } else toast.error(data.message)
+  }
+
+  const handleSave = (updatedRoom: any) => {
+    console.log(updatedRoom)
+    setRoom(updatedRoom);
+  };
+
+  async function tongleBlock(id: string) {
+    const status = room?.isBlocked ? false : true
+    const { data } = await api.patch('/hotel/rooms/updateBlock', { id, status })
+    console.log(data)
+    if (data.success) {
+      toast.success(`Status updates as ${status}`)
+      setRoom(data.data)
+    } else toast.error(data.message)
   }
 
   if (!room) return <div className="p-10 text-center">Loading room details...</div>;
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
-      {/* Breadcrumb */}
       <div className="text-sm text-gray-500 mb-2">
         <span
           onClick={() => navigate.push("/hotel/rooms")}
@@ -76,11 +93,11 @@ export default function RoomDetails() {
         / Room No. {room.RoomNumber}
       </div>
 
-      {/* Header */}
       <div className="flex justify-between items-start">
         <div>
           <h1 className="text-2xl font-semibold">Room Details - Room No. {room.RoomNumber}</h1>
           <p className="text-gray-500">Overview of room status, pricing, and recent activity.</p>
+          <Button onClick={() => setOpenEdit(true)}>Edit</Button>
         </div>
         <Button variant="outline" onClick={() => navigate.push("/hotel/rooms")}>
           ← Back to All Rooms
@@ -97,8 +114,8 @@ export default function RoomDetails() {
               room.Status === "Available"
                 ? "success"
                 : room.Status === "Maintenance"
-                ? "destructive"
-                : "secondary"
+                  ? "destructive"
+                  : "secondary"
             }
           >
             {room.Status}
@@ -159,7 +176,6 @@ export default function RoomDetails() {
         </Card>
       </div>
 
-      {/* Status Change Log */}
       <div>
         <h2 className="font-semibold text-lg mb-2">Status Change Log</h2>
         <Card>
@@ -188,9 +204,18 @@ export default function RoomDetails() {
       </div>
 
       <div className="flex gap-4">
-        <Button variant="secondary">{room.Status == 'Available' ? 'Mark as Maintenance' : 'Mark as Available'}</Button>
-        <Button variant="danger">Disable Room</Button>
+        <Button variant="secondary" onClick={() => tongleStatus(room.id)}>{room.Status == 'Available' ? 'Mark as Maintenance' : 'Mark as Available'}</Button>
+        <Button variant={room.isBlocked ? 'default' : 'danger'} onClick={() => tongleBlock(room.id)}>{room.isBlocked ? 'Enable Room' : 'Disable Room'}</Button>
+        <Button variant="outline" >Edit Room</Button>
       </div>
+      {openEdit && (
+        <EditRoomModal
+          isOpen={openEdit}
+          onClose={() => setOpenEdit(false)}
+          onSave={handleSave}
+          room={room}
+        />
+      )}
     </div>
   );
 }

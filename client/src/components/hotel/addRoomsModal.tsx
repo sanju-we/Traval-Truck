@@ -119,12 +119,14 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
       data.append("PricePerNight", formData.price);
       data.append("Capacity", formData.capacity);
       data.append("Description", formData.description);
-      data.append("Facilities", JSON.stringify(formData.amenities));
+      data.append("Facilities", JSON.parse(JSON.stringify(formData.amenities)));
 
       formData.images.forEach((img) => {
         data.append("images", img);
       });
-      console.log(formData)
+      for(let da of data){
+      console.log(da)
+      }
       const res = await api.post("/hotel/rooms/addRooms", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });

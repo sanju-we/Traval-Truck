@@ -26,16 +26,13 @@ export async function verifyToken(req: Request, res: Response, next: NextFunctio
       authHeader && authHeader.startsWith('Bearer ')
         ? authHeader.split(' ')[1]
         : req.cookies?.accessToken;
-    logger.info(`Token received from middleware->verifyToken : ${token}`);
 
     if (!token) {
       return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
     }
 
-    logger.info(`payload gotit`);
     const payload = jwt.verify(token, secret) as { id: string; role: string };
     if (!payload) return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
-    logger.info(`payload: ${JSON.stringify(payload)}`);
 
     const user = await User.findById(payload.id);
     if (!user) {
@@ -70,19 +67,16 @@ export async function verifyHotelToken(req: Request, res: Response, next: NextFu
       authHeader && authHeader.startsWith('Bearer ')
         ? authHeader.split(' ')[1]
         : req.cookies?.accessToken;
-    logger.info(`Token received from middleware->verifyToken : ${token}`);
 
     if (!token) {
       return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
     }
 
-    logger.info(`payload gotit`);
     const payload = jwt.verify(token, secret) as { id: string; email: string; role: string };
     if (!payload) {
       ijwt.blacklistRefreshToken(res);
       return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
     }
-    logger.info(`payload: ${JSON.stringify(payload)}`);
 
     const hotel = await Hotel.findById(payload.id);
     if (!hotel) {
@@ -117,16 +111,13 @@ export async function verifyAgencyToken(req: Request, res: Response, next: NextF
       authHeader && authHeader.startsWith('Bearer ')
         ? authHeader.split(' ')[1]
         : req.cookies?.accessToken;
-    logger.info(`Token received from middleware->verifyToken : ${token}`);
 
     if (!token) {
       return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
     }
 
-    logger.info(`payload gotit`);
     const payload = jwt.verify(token, secret) as { id: string; email: string; role: string };
     if (!payload) return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
-    logger.info(`payload: ${JSON.stringify(payload)}`);
 
     const agency = await Agency.findById(payload.id);
     if (!agency) {
@@ -143,7 +134,6 @@ export async function verifyAgencyToken(req: Request, res: Response, next: NextF
       }
     }
 
-    logger.info(`Requestes url ${req.url}`);
 
     req.user = toVendorAuth(agency);
 
@@ -162,16 +152,13 @@ export async function verifyRestaurantToken(req: Request, res: Response, next: N
       authHeader && authHeader.startsWith('Bearer ')
         ? authHeader.split(' ')[1]
         : req.cookies?.accessToken;
-    logger.info(`Token received from middleware->verifyToken : ${token}`);
 
     if (!token) {
       return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
     }
 
-    logger.info(`payload gotit`);
     const payload = jwt.verify(token, secret) as { id: string; email: string; role: string };
     if (!payload) return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
-    logger.info(`payload: ${JSON.stringify(payload)}`);
 
     const restaurant = await Restaurant.findById(payload.id);
     if (!restaurant) {
@@ -206,16 +193,13 @@ export async function verifyAdminToken(req: Request, res: Response, next: NextFu
       authHeader && authHeader.startsWith('Bearer ')
         ? authHeader.split(' ')[1]
         : req.cookies?.accessToken;
-    logger.info(`Token received from middleware->verifyToken : ${token}`);
 
     if (!token) {
       return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
     }
 
-    logger.info(`payload gotit`);
     const payload = jwt.verify(token, secret) as { id: string; email: string; role: string };
     if (!payload) return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
-    logger.info(`payload: ${JSON.stringify(payload)}`);
 
     const admin = await User.findById(payload.id);
     if (!admin) {
