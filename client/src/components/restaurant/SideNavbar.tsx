@@ -2,8 +2,8 @@ import {
   LogOut,
   Home,
   FlagTriangleRightIcon,
-  Hotel,
-  PersonStanding,
+  Utensils,
+  BetweenVerticalEnd,
   Paperclip,
   IndianRupee,
   Inbox,
@@ -32,23 +32,17 @@ function SideNavbar() {
       <div className="w-64 bg-white shadow-lg p-6">
         <div className="flex flex-col space-y-4">
           <h1 className="text-2xl font-semibold text-gray-800">Travel Agency</h1>
-          <div className="space-y-2">
+          <div className="space-y-2 ">
             <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
               <Home className="material-icons">home</Home>
               <span>Dashboard</span>
             </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
-              <FlagTriangleRightIcon />
-              Bookings / Trips
+            <div className='hover:bg-gray-200 rounded' onClick={()=> router.push('/restaurant/foods')}>
+              <button className="flex items-center space-x-2 p-2 text-gray-600">
+              <Utensils className="material-icons">Foods</Utensils>
+              <span>Foods</span>
             </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
-              <Hotel className="material-icons">hotel</Hotel>
-              <span>Partners</span>
-            </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
-              <PersonStanding className="material-icons">person</PersonStanding>
-              <span>Guests</span>
-            </button>
+            </div>
             <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
               <IndianRupee className="material-icons">payment</IndianRupee>
               <span>Payments</span>

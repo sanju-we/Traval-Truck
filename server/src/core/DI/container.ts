@@ -92,6 +92,12 @@ import { IRestaurantProfileController } from '../../core/interface/controllerInt
 import { RestaurantProfileController } from '../../controllers/restaurantController/restaurant.profile.controller.js';
 import { IRestaurantProfileService } from '../../core/interface/serivice/restaurant/IRestaurant.profile.service.js';
 import { RestaurantProfileService } from '../../services/restaurant/restaurant.profile.service.js';
+import { IRestaurantFoodController } from '../../core/interface/controllerInterface/restaurant/Irestaurant.food.controller.js';
+import { RestaurantFoodController } from '../../controllers/restaurantController/restaurant.food.controller.js';
+import { IRestaurantFoodService } from '../../core/interface/serivice/restaurant/Irestaurant.food.service.js';
+import { RestaurantFoodService } from '../../services/restaurant/restaurant.food.service.js';
+import { IRestaurantFoodRespository } from '../../core/interface/repositorie/restaurant/Irestaurant.food.repository.js';
+import { RestaurantFoodRepository } from '../../repositories/restaunrat/restaurant.food.repository.js';
 
 const container = new Container();
 
@@ -114,13 +120,9 @@ container.bind<IAdminAuthService>('IAdminAuthService').to(AdminAuthService);
 container.bind<IAdminVendorController>('IAdminVendorController').to(AdminVendorController);
 container.bind<IAdminVendorRepository>('IAdminVendorRepository').to(AdminVendorRepository);
 container.bind<IAdminVendorService>('IAdminVendorService').to(AdminVendorService);
-container
-  .bind<IAdminSubscriptionController>('IAdminSubscriptionController')
-  .to(AdminSubscriptionController);
+container.bind<IAdminSubscriptionController>('IAdminSubscriptionController').to(AdminSubscriptionController);
 container.bind<IAdminSubscriptionService>('IAdminSubscriptionService').to(AdminSubscriptionService);
-container
-  .bind<IAdminSubscriptionRepository>('IAdminSubscriptionRepository')
-  .to(AdminSubscriptionRepository);
+container.bind<IAdminSubscriptionRepository>('IAdminSubscriptionRepository').to(AdminSubscriptionRepository);
 
 // ------------------------------------------------------agency containers--------------------------------------------------------
 container.bind<IAgencyAuthController>('IAgencyAuthController').to(AgencyAuthController);
@@ -149,9 +151,10 @@ container.bind<IHotelRoomsRepository>('IHotelRoomsRepository').to(HotelRoomsRepo
 container.bind<IRestaurantAuthController>('IRestaurantAuthController').to(RestaurantAuthController);
 container.bind<IRestaurantAuthRepository>('IRestaurantAuthRepository').to(RestaurantAuthRepository);
 container.bind<IRestaurantAuthService>('IRestaurantAuthService').to(RestaurantAuthService);
-container
-  .bind<IRestaurantProfileController>('IRestaurantProfileController')
-  .to(RestaurantProfileController);
+container.bind<IRestaurantProfileController>('IRestaurantProfileController').to(RestaurantProfileController);
 container.bind<IRestaurantProfileService>('IRestaurantProfileService').to(RestaurantProfileService);
+container.bind<IRestaurantFoodController>('IRestaurantFoodController').to(RestaurantFoodController);
+container.bind<IRestaurantFoodService>('IRestaurantFoodService').to(RestaurantFoodService);
+container.bind<IRestaurantFoodRespository>('IRestaurantFoodRespository').to(RestaurantFoodRepository);
 
 export { container };

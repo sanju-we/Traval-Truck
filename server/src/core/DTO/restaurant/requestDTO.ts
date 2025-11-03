@@ -1,0 +1,23 @@
+import { IFoods } from "../../../core/interface/modelInterface/IFoods.js"
+
+export interface foodDTO{
+  id:string,
+  name:string,
+  description:string,
+  price:number,
+  availableQuantity:number,
+  category:string,
+  images:string[],
+  status:string
+}
+
+export const toFoodDTO = (food:IFoods):foodDTO => ({
+  id:food._id.toString(),
+  name:food.Name,
+  description:food.Description,
+  price:food.Price,
+  availableQuantity:food.AvailableQuantity,
+  category:food.Category,
+  images:food.Image,
+  status:food.Status
+})

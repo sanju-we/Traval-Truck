@@ -64,12 +64,12 @@ export class NoAccessToken extends HttpError {
   }
 }
 
+
 export class InvalidCredentialsError extends HttpError {
   constructor() {
     super(400, 'Invalid credentials');
   }
 }
-
 export class ImageDeleteInCloudinary extends HttpError {
   constructor() {
     super(400, 'Failed to delete image from Cloudinary');
