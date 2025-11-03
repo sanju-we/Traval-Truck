@@ -1,4 +1,5 @@
 export interface foodType{
+  id:string,
   Name:string,
   Description:string,
   Price:number,

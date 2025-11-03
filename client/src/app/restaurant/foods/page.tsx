@@ -8,11 +8,12 @@ import SideNavbar from "@/components/restaurant/SideNavbar";
 import FoodModal from "@/components/restaurant/addFoodModal";
 import api from "@/services/api";
 import toast from "react-hot-toast";
+import { FoodData } from "@/components/restaurant/addFoodModal";
 
 export default function FoodList() {
   const [foods, setFoods] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingFood, setEditingFood] = useState(false);
+  const [editingFood, setEditingFood] = useState<FoodData | null>(null)
   const [formData, setFormData] = useState({
     Restaurant: "",
     name: "",
@@ -56,11 +57,16 @@ export default function FoodList() {
     }
   }
 
-  function handleSave() {
+  function handleSave(savedFood:FoodData) {
+    console.log('savedFood:',savedFood)
     if (editingFood) {
-      // Update logic
+      setFoods((prev) =>
+      prev.map((food) =>
+        food.id === savedFood.id ? savedFood : food
+      )
+    );
     } else {
-      setFoods((prev) => [...prev, { ...formData, id: Date.now().toString() }]);
+      setFoods((prev) => [...prev, savedFood]);
     }
     setIsModalOpen(false);
     setFormData({
@@ -74,11 +80,11 @@ export default function FoodList() {
     });
   }
 
-  function handleEdit(food: any) {
-    setEditingFood(true);
-    setFormData(food);
+  function handleEdit(food: FoodData) {
+    setEditingFood(food);
     setIsModalOpen(true);
   }
+
 
   function handleDelete(id: string) {
     setFoods((prev) => prev.filter((f) => f.id !== id));
@@ -93,7 +99,7 @@ export default function FoodList() {
           <h1 className="text-3xl font-semibold">🍴 Food Items</h1>
           <Button onClick={() => {
             setIsModalOpen(true);
-            setEditingFood(false);
+            setEditingFood(null);
           }}>
             <Plus className="w-4 h-4 mr-2" /> Add Food
           </Button>
@@ -136,6 +142,7 @@ export default function FoodList() {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onSave={handleSave}
+          editingFood={editingFood} // ✅
         />
       </div>
     </div>

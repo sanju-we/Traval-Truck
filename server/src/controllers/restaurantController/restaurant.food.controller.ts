@@ -18,7 +18,7 @@ export class RestaurantFoodController implements IRestaurantFoodController {
     const id = req.user.id;
     const files = req.files as Express.Multer.File[]
     if (!files) throw new Files_Missing()
-      logger.info(req.files)
+    logger.info(req.files)
     const created = await this._foodService.addFood({ ...data, Price: Number(data.Price), AvailableQuantity: Number(data.AvailableQuantity) }, files, id)
     sendResponse(res, STATUS_CODE.CREATED, true, MESSAGES.CREATED, created)
   }
@@ -27,5 +27,13 @@ export class RestaurantFoodController implements IRestaurantFoodController {
     const id = req.user.id
     const allFoods = await this._foodService.getAllData(id)
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, allFoods)
+  }
+
+  async update(req: Request, res: Response): Promise<void> {
+    const data = req.body;
+    const files = req.files as Express.Multer.File[]
+    if (!files) throw new Files_Missing()
+    const updateData = await this._foodService.update({...data,Price:Number(data.Price),AvailableQuantity:Number(data.AvailableQuantity)},files)
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updateData)
   }
 }

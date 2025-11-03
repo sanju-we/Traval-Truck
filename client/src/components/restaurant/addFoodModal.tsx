@@ -7,18 +7,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ImageCropperModal } from './ImagesCroperModalForRestaurant';
 import toast from 'react-hot-toast';
-import axios from 'axios'; // ✅ Import axios for API requests
 import api from '@/services/api';
 
-interface FoodData {
+export interface FoodData {
+  id: string;
   Restaurant: string;
-  Name: string;
-  Price: number | string;
-  AvailableQuantity: number | string;
-  Category: string;
-  Description: string;
-  Image: string[];
-  Status: string;
+  name: string;
+  price: number | string;
+  availableQuantity: number | string;
+  category: string;
+  description: string;
+  images: string[];
+  status: string;
 }
 
 interface FoodModalProps {
@@ -30,24 +30,47 @@ interface FoodModalProps {
 
 export default function FoodModal({ isOpen, onClose, onSave, editingFood }: FoodModalProps) {
   const [formData, setFormData] = useState<FoodData>({
+    id: editingFood?.id || '',
     Restaurant: '',
-    Name: editingFood?.Name || '',
-    Price: editingFood?.Price || '',
-    AvailableQuantity: editingFood?.AvailableQuantity || '',
-    Category: editingFood?.Category || '',
-    Description: editingFood?.Description || '',
-    Image: editingFood?.Image || [],
-    Status: editingFood?.Status || ''
+    name: editingFood?.name || '',
+    price: editingFood?.price || '',
+    availableQuantity: editingFood?.availableQuantity || '',
+    category: editingFood?.category || '',
+    description: editingFood?.description || '',
+    images: editingFood?.images || [],
+    status: editingFood?.status || ''
   });
+  console.log('editingFood:', editingFood)
 
-  const [images, setImages] = useState<string[]>(formData.Image || []);
+  const [images, setImages] = useState<string[]>(formData.images || []);
   const [croppingImage, setCroppingImage] = useState<string | null>(null);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setFormData((prev) => ({ ...prev, Image: images }));
+    setFormData((prev) => ({ ...prev, images }));
   }, [images]);
+
+  useEffect(() => {
+    if (editingFood) {
+      setFormData(editingFood);
+      setImages(editingFood.images || []);
+    } else {
+      setFormData({
+        id: '',
+        Restaurant: '',
+        name: '',
+        price: '',
+        availableQuantity: '',
+        category: '',
+        description: '',
+        images: [],
+        status: ''
+      });
+      setImages([]);
+    }
+  }, [editingFood]);
+
 
   if (!isOpen) return null;
 
@@ -78,7 +101,7 @@ export default function FoodModal({ isOpen, onClose, onSave, editingFood }: Food
     } else {
       setPendingFiles([]);
     }
-  };
+  }
 
   const handleDeleteImage = (index: number) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
@@ -92,7 +115,7 @@ export default function FoodModal({ isOpen, onClose, onSave, editingFood }: Food
   };
 
   const handleSubmit = async () => {
-    if (!formData.Name || !formData.Price) {
+    if (!formData.name || !formData.price) {
       toast.error('Please fill all required fields.');
       return;
     }
@@ -102,13 +125,13 @@ export default function FoodModal({ isOpen, onClose, onSave, editingFood }: Food
 
       const form = new FormData();
 
-      form.append('Restaurant', formData.Restaurant);
-      form.append('Name', formData.Name);
-      form.append('Price', String(formData.Price));
-      form.append('AvailableQuantity', String(formData.AvailableQuantity));
-      form.append('Category', formData.Category);
-      form.append('Description', formData.Description);
-      form.append('Status', formData.Status);
+      form.append('id', editingFood ? editingFood.id : '')
+      form.append('Name', formData.name);
+      form.append('Price', String(formData.price));
+      form.append('AvailableQuantity', String(formData.availableQuantity));
+      form.append('Category', formData.category);
+      form.append('Description', formData.description);
+      form.append('Status', formData.status);
 
       for (const img of images) {
         if (img.startsWith('data:image')) {
@@ -120,16 +143,23 @@ export default function FoodModal({ isOpen, onClose, onSave, editingFood }: Food
         }
       }
 
-      const response = await api.post(`/restaurant/food/addItem`, form, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      let res;
+      if (!editingFood) {
+        res = await api.post(`/restaurant/food/addItem`, form, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+      } else {
+        res = await api.patch('/restaurant/food/update', form, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        })
+      }
 
-      if (response.data.success) {
+      if (res.data.success) {
         toast.success(editingFood ? 'Food item updated!' : 'Food item added!');
-        onSave(formData);
+        onSave(res.data.data);
         onClose();
       } else {
-        toast.error(response.data.message || 'Failed to save food item.');
+        toast.error(res.data.message || 'Failed to save food item.');
       }
     } catch (error: any) {
       console.error(error);
@@ -159,25 +189,25 @@ export default function FoodModal({ isOpen, onClose, onSave, editingFood }: Food
           <div className="space-y-3">
             <div>
               <Label>Name</Label>
-              <Input name="Name" value={formData.Name} onChange={handleChange} />
+              <Input name="name" value={formData.name} onChange={handleChange} />
             </div>
 
             <div>
               <Label>Description</Label>
-              <Input name="Description" value={formData.Description} onChange={handleChange} />
+              <Input name="description" value={formData.description} onChange={handleChange} />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label>Price</Label>
-                <Input name="Price" type="number" value={formData.Price} onChange={handleChange} />
+                <Input name="price" type="number" value={formData.price} onChange={handleChange} />
               </div>
               <div>
                 <Label>Available Quantity</Label>
                 <Input
-                  name="AvailableQuantity"
+                  name="availableQuantity"
                   type="number"
-                  value={formData.AvailableQuantity}
+                  value={formData.availableQuantity}
                   onChange={handleChange}
                 />
               </div>
@@ -185,13 +215,13 @@ export default function FoodModal({ isOpen, onClose, onSave, editingFood }: Food
 
             <div>
               <Label>Category</Label>
-              <Input name="Category" value={formData.Category} onChange={handleChange} />
+              <Input name="category" value={formData.category} onChange={handleChange} />
             </div>
             <div>
               <Label>Status</Label>
               <select
-                name="Status"
-                value={formData.Status}
+                name="status"
+                value={formData.status}
                 onChange={handleChange}
                 className="border rounded-md w-full p-2"
               >
@@ -202,7 +232,6 @@ export default function FoodModal({ isOpen, onClose, onSave, editingFood }: Food
             </div>
 
 
-            {/* Images */}
             <div>
               <Label>Images (Max 10)</Label>
               <div className="flex flex-wrap gap-3 mt-2">
