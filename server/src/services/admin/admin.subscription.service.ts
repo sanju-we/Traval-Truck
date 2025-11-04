@@ -1,7 +1,7 @@
 import { subscriptionData } from 'types/index.js';
 import { IAdminSubscriptionService } from '../../core/interface/serivice/admin/IAdmin.subscription.service.js';
 import { inject, injectable } from 'inversify';
-import { IAdminSubscriptionRepository } from '../../core/interface/repositorie/admin/Iadmin.subscription.repository.js';
+import { ISubscriptionRepository } from '../../core/interface/repositorie/ISubscription.respository.js';
 import { subscriptionDTO, toSubdcriptionDTO } from '../../core/DTO/subscription.dto.js';
 import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors.js';
 import { logger } from '../../utils/logger.js';
@@ -9,8 +9,8 @@ import { logger } from '../../utils/logger.js';
 @injectable()
 export class AdminSubscriptionService implements IAdminSubscriptionService {
   constructor(
-    @inject('IAdminSubscriptionRepository')
-    private readonly _adminSubscriptionRepo: IAdminSubscriptionRepository,
+    @inject('ISubscriptionRepository')
+    private readonly _adminSubscriptionRepo: ISubscriptionRepository,
   ) {}
   async addSub(data: subscriptionData): Promise<subscriptionDTO> {
     const value = {

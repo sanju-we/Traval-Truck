@@ -4,36 +4,44 @@ import { Package } from "../../models/Package.js";
 import { IPackage } from "../../core/interface/modelInterface/Ipackage.js";
 import { logger } from "../../utils/logger.js";
 import { PackageResDTO, toPackageResDTO } from "../../core/DTO/agency/response/agency.packageDTO.js";
-import { Data_Creation_Error } from "../../utils/resAndErrors.js";
+import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors.js";
 
 export class AgencyPackageRepository extends BaseRepository<IPackage> implements IAgencyPackageRepository {
   constructor() {
     super(Package)
   }
 
-  async findAllPackageWithPartners(page = 1): Promise<{ data: PackageResDTO[], total: number, page: number, totalPages: number }> {
-  const limit = 6; // ✅ 6 packages per page
-  const skip = (page - 1) * limit;
+  async findAllPackageWithPartners(page = 1, lim?: number): Promise<{ data: PackageResDTO[], total: number, page: number, totalPages: number }> {
+    const limit = lim || 6; // ✅ 6 packages per page
+    const skip = (page - 1) * limit;
 
-  // ✅ Fetch paginated data
-  const [packages, total] = await Promise.all([
-    Package.find()
+    // ✅ Fetch paginated data
+    const [packages, total] = await Promise.all([
+      Package.find()
+        .populate('hotels')
+        .populate('dining')
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Package.countDocuments()
+    ]);
+
+    if (!packages.length) throw new Data_Creation_Error();
+    logger.debug('package', packages)
+    return {
+      data: packages.map(toPackageResDTO),
+      total,
+      page,
+      totalPages: Math.ceil(total / limit)
+    };
+  }
+
+  async findPackageWithPartner(id: string): Promise<PackageResDTO> {
+    const data = await Package.findById(id)
       .populate('hotels')
       .populate('dining')
-      .skip(skip)
-      .limit(limit)
-      .lean(), // ensures plain JS objects
-    Package.countDocuments()
-  ]);
-
-  if (!packages.length) throw new Data_Creation_Error();
-
-  return {
-    data: packages.map(toPackageResDTO),
-    total,
-    page,
-    totalPages: Math.ceil(total / limit)
-  };
-}
-
+      .lean()
+    if (data) return toPackageResDTO(data)
+    throw new DataNotFoundError()
+  }
 }

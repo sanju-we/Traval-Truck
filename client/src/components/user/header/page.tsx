@@ -66,19 +66,19 @@ export function Header() {
 
         {/* Navigation */}
         <nav className="hidden md:flex gap-6 text-sm font-medium text-gray-700">
-          <a href="/user/home" className="hover:text-emerald-600">
+          <a href="/" className="hover:text-emerald-600">
             Home
           </a>
-          <a href="/user/package" className="hover:text-emerald-600">
+          <a href="/package" className="hover:text-emerald-600">
             Packages
           </a>
-          <a href="/user/hotel" className="hover:text-emerald-600">
+          <a href="/hotels" className="hover:text-emerald-600">
             Hotels
           </a>
-          <a href="/user/description" className="hover:text-emerald-600">
+          <a href="/description" className="hover:text-emerald-600">
             Destinations
           </a>
-          <a href="/user/trips" className="hover:text-emerald-600">
+          <a href="/trips" className="hover:text-emerald-600">
             Tips
           </a>
         </nav>

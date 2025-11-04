@@ -19,14 +19,15 @@ export function throwError(message: string, statusCode = 400): never {
 }
 
 export class HttpError extends Error {
-  constructor(
-    public statusCode: number,
-    message: string,
-  ) {
+  statusCode: number;
+  constructor(statusCode: number, message: string) {
     super(message);
+    this.statusCode = statusCode;
     this.name = this.constructor.name;
+    Error.captureStackTrace(this, this.constructor);
   }
 }
+
 
 export class OtpExpiredError extends HttpError {
   constructor() {
@@ -72,7 +73,7 @@ export class InvalidCredentialsError extends HttpError {
 }
 export class ImageDeleteInCloudinary extends HttpError {
   constructor() {
-    super(400, 'Failed to delete image from Cloudinary');
+    super(400, 'Failed to delete image');
   }
 }
 
@@ -96,7 +97,7 @@ export class DataUpdatingError extends HttpError {
 
 export class BADREQUEST extends HttpError {
   constructor() {
-    super(401, 'Required fileds are missing');
+    super(400, 'Required fileds are missing');
   }
 }
 
@@ -108,7 +109,7 @@ export class InvalidAction extends HttpError {
 
 export class RESTRICTED_USER extends HttpError {
   constructor() {
-    super(401, 'This user is Restricted by the admin');
+    super(400, 'This user is Restricted by the admin');
   }
 }
 

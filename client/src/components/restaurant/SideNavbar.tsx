@@ -1,9 +1,9 @@
 import {
   LogOut,
   Home,
-  FlagTriangleRightIcon,
+  UserPlus,
   Utensils,
-  BetweenVerticalEnd,
+  Subscript,
   Paperclip,
   IndianRupee,
   Inbox,
@@ -41,6 +41,12 @@ function SideNavbar() {
               <button className="flex items-center space-x-2 p-2 text-gray-600">
               <Utensils className="material-icons">Foods</Utensils>
               <span>Foods</span>
+            </button>
+            </div>
+            <div className='hover:bg-gray-200 rounded' onClick={()=> router.push('/restaurant/subscription')}>
+              <button className="flex items-center space-x-2 p-2 text-gray-600">
+              <UserPlus className="material-icons">Subscriptions</UserPlus>
+              <span>Subscriptions</span>
             </button>
             </div>
             <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">

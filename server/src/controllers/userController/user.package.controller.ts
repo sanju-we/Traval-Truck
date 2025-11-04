@@ -1,0 +1,35 @@
+import { PackageDTO } from "@core/DTO/agency/request/packageDTO.js";
+import { IUserPackageController } from "../../core/interface/controllerInterface/user/Iuser.package.controller.js";
+import { IUserPackageService } from "../../core/interface/serivice/user/IUser.package.service.js";
+import { inject, injectable } from "inversify";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
+import { BADREQUEST, sendResponse } from "../../utils/resAndErrors.js";
+import { MESSAGES } from "../../utils/responseMessaages.js";
+import { Request, Response } from "express";
+import { logger } from "../../utils/logger.js";
+
+@injectable()
+export class UserPackageController implements IUserPackageController {
+  constructor(
+    @inject('IUserPackageService') private readonly _userPackageService: IUserPackageService
+  ) { }
+  async getLatestPackage(req: Request, res: Response): Promise<void> {
+    const data = await this._userPackageService.getLatestPackage()
+    logger.info(data)
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, data)
+  }
+
+  async getAllPackage(req: Request, res: Response): Promise<void> {
+    const { page, limit } = req.query
+    if(!page || !limit) throw new BADREQUEST()
+    const data = await this._userPackageService.getAllPackage(Number(page), Number(limit))
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, data)
+  }
+
+  async getPackage(req: Request, res: Response): Promise<void> {
+      const id = req.params.id
+      if(!id) throw new BADREQUEST()
+      const data = await this._userPackageService.getPackage(String(id))
+      sendResponse(res,STATUS_CODE.OK,true,MESSAGES.DATA_FOUND,data)
+  }
+}

@@ -1,11 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
 import mongoose from 'mongoose';
+import { HttpError } from '../utils/resAndErrors.js';
 import { logger } from '../utils/logger.js';
 
 export function errorHandler(err: any, req: Request, res: Response, next: NextFunction) {
   let status = err.statusCode || 500;
   let message = 'Something went wrong. Please try again later.';
+
+  if (err instanceof HttpError) {
+    status = err.statusCode;
+    message = err.message;
+  }
+
 
   logger.error('--- Error Handler ---');
   logger.error('Name:', err.name);

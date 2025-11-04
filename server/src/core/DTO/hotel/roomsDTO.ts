@@ -1,5 +1,6 @@
 import { IRooms } from "../../../core/interface/modelInterface/IRooms.js";
 
+
 export interface reviews{
   Comment:string;
   CreatedAt:Date;

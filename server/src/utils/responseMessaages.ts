@@ -12,6 +12,7 @@ export enum MESSAGES {
   INVALID_ID = 'Invalid ID provided',
   INVALID_PROFILE_DATA = 'Invalid profile data',
   NO_DATA = 'No data available',
+  DATA_FOUND = 'Data Found SuccessFully',
   NO_RESULTS_FOUND = 'No results found',
   NOT_FOUND = 'Resource not found',
   ALL_DATA_FOUND = 'All data found',

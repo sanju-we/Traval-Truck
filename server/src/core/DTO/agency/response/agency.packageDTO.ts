@@ -21,6 +21,7 @@ interface ItineraryDTO {
 }
 
 export interface PackageResDTO {
+  id:string;
   availableFoods: string[];
   description: string;
   dining: (string | PartnerDTO)[];
@@ -33,6 +34,7 @@ export interface PackageResDTO {
 }
 
 export const toPackageResDTO = (pkg: IPackage): PackageResDTO => ({
+  id:pkg._id.toString(),
   availableFoods: pkg.availableFoods || [],
   description: pkg.description || "",
   dining: pkg.dining || [],        
