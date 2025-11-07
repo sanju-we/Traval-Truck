@@ -4,11 +4,16 @@ import { JWT } from '../../utils/JWTtoken.js';
 import { RedisClient } from '../../config/redisClient.js';
 import { EmailService } from '../../services/email.service.js';
 import { GeneralService } from '../../services/general.service.js';
+import { SubscriptionRepository } from '../../repositories/subscription.repository.js';
 import { AuthService } from '../../services/user/auth.service.js';
 import { AuthRepository } from '../../repositories/user/auth.repository.js';
 import { AuthController } from '../../controllers/userController/user.auth.controller.js';
 import { ProfileController } from '../../controllers/userController/user.profile.controller.js';
 import { UserProfileService } from '../../services/user/user.profile.service.js';
+import { UserPackageController } from '../../controllers/userController/user.package.controller.js';
+import { UserPackageSerivce } from '../../services/user/user.package.service.js';
+import { UserHotelsController } from '../../controllers/userController/user.hotels.controller.js';
+import { UserHotelsService } from '../../services/user/user.hotels.service.js';
 import { AdminAuthService } from '../../services/admin/admin.auth.service.js';
 import { AdminAuthController } from '../../controllers/adminController/admin.auth.controller.js';
 import { AdminVendorController } from '../../controllers/adminController/admin.vendor.controller.js';
@@ -16,7 +21,6 @@ import { AdminVendorRepository } from '../../repositories/admin/admin.vendor.rep
 import { AdminVendorService } from '../../services/admin/admin.vendor.service.js';
 import { AdminSubscriptionController } from '../../controllers/adminController/admin.subscription.controller.js';
 import { AdminSubscriptionService } from '../../services/admin/admin.subscription.service.js';
-import { AdminSubscriptionRepository } from '../../repositories/admin/admin.subscription.repository.js';
 import { AgencyAuthController } from '../../controllers/agencyController/agency.auth.controller.js';
 import { agencyRepository } from '../../repositories/agency/agency.auth.repository.js';
 import { agencyAuthService } from '../../services/agency/agency.auth.service.js';
@@ -25,16 +29,27 @@ import { AgencyProfileService } from '../../services/agency/agency.profile.servi
 import { AgencyPartnerController } from '../../controllers/agencyController/agency.partner.controller.js';
 import { AgencyPartnerRepository } from '../../repositories/agency/agency.partner.repository.js';
 import { AgencyPartnerService } from '../../services/agency/agency.partner.service.js';
+import { agencyPackageController } from '../../controllers/agencyController/agency.package.controller.js';
+import { AgencyPackageService } from '../../services/agency/agency.package.service.js';
+import { AgencyPackageRepository } from '../../repositories/agency/agency.package.repository.js';
 import { HotelAuthController } from '../../controllers/hotelController/hotel.auth.controller.js';
 import { HotelAuthRepository } from '../../repositories/hotel/hotel.auth.repository.js';
 import { HotelAuthService } from '../../services/hotel/hotel.auth.service.js';
 import { HotelProfileCotroller } from '../../controllers/hotelController/hote.profile.controller.js';
 import { HotelProfileService } from '../../services/hotel/hotel.profile.service.js';
+import { HotelRoomsController } from '../../controllers/hotelController/hotel.rooms.controller.js';
+import { HotelRoomsService } from '../../services/hotel/hotel.rooms.service.js';
+import { HotelRoomsRepository } from '../../repositories/hotel/hotel.rooms.repository.js';
 import { RestaurantAuthController } from '../../controllers/restaurantController/restaurant.auth.controller.js';
 import { RestaurantAuthService } from '../../services/restaurant/restaurant.auth.service.js';
 import { RestaurantAuthRepository } from '../../repositories/restaunrat/restaurant.auth.repository.js';
 import { RestaurantProfileController } from '../../controllers/restaurantController/restaurant.profile.controller.js';
 import { RestaurantProfileService } from '../../services/restaurant/restaurant.profile.service.js';
+import { RestaurantFoodController } from '../../controllers/restaurantController/restaurant.food.controller.js';
+import { RestaurantFoodService } from '../../services/restaurant/restaurant.food.service.js';
+import { RestaurantFoodRepository } from '../../repositories/restaunrat/restaurant.food.repository.js';
+import { RestaurantSubscriptionController } from '../../controllers/restaurantController/restaurant.subscription.controller.js';
+import { RestaurantSubscriptionService } from '../../services/restaurant/restaurant.subscription.service.js';
 const container = new Container();
 // ------------------------------------------------general container-----------------------------------------------------------------
 container.bind('IJWT').to(JWT).inSingletonScope();
@@ -47,19 +62,19 @@ container.bind('IAuthService').to(AuthService);
 container.bind('IController').to(AuthController);
 container.bind('IUserProfileController').to(ProfileController);
 container.bind('IUserProfileService').to(UserProfileService);
+container.bind('IUserPackageController').to(UserPackageController);
+container.bind('IUserPackageService').to(UserPackageSerivce);
+container.bind('IUserHotelsController').to(UserHotelsController);
+container.bind('IUserHotelsService').to(UserHotelsService);
 // -----------------------------------------------------admin containers----------------------------------------------------------------------
 container.bind('IAdminAuthController').to(AdminAuthController);
 container.bind('IAdminAuthService').to(AdminAuthService);
 container.bind('IAdminVendorController').to(AdminVendorController);
 container.bind('IAdminVendorRepository').to(AdminVendorRepository);
 container.bind('IAdminVendorService').to(AdminVendorService);
-container
-    .bind('IAdminSubscriptionController')
-    .to(AdminSubscriptionController);
+container.bind('IAdminSubscriptionController').to(AdminSubscriptionController);
 container.bind('IAdminSubscriptionService').to(AdminSubscriptionService);
-container
-    .bind('IAdminSubscriptionRepository')
-    .to(AdminSubscriptionRepository);
+container.bind('ISubscriptionRepository').to(SubscriptionRepository);
 // ------------------------------------------------------agency containers--------------------------------------------------------
 container.bind('IAgencyAuthController').to(AgencyAuthController);
 container.bind('IAgencyRespository').to(agencyRepository);
@@ -69,18 +84,27 @@ container.bind('IAgencyProfileService').to(AgencyProfileService);
 container.bind('IAgencyPartnerController').to(AgencyPartnerController);
 container.bind('IAgencyPartnerRepository').to(AgencyPartnerRepository);
 container.bind('IAgencyPartnerService').to(AgencyPartnerService);
+container.bind('IAgencyPackageController').to(agencyPackageController);
+container.bind('IAgencyPackageService').to(AgencyPackageService);
+container.bind('IAgencyPackageRepository').to(AgencyPackageRepository);
 // --------------------------------------------------------Hotel containers---------------------------------------------------------------
 container.bind('IHotelAuthController').to(HotelAuthController);
 container.bind('IHotelAuthRepository').to(HotelAuthRepository);
 container.bind('IHotelAuthService').to(HotelAuthService);
 container.bind('IHotelProfileController').to(HotelProfileCotroller);
 container.bind('IHotelProfileService').to(HotelProfileService);
+container.bind('IHotelRoomsController').to(HotelRoomsController);
+container.bind('IHotelRoomsService').to(HotelRoomsService);
+container.bind('IHotelRoomsRepository').to(HotelRoomsRepository);
 // -------------------------------------------------------Restaurant container----------------------------------------------------------
 container.bind('IRestaurantAuthController').to(RestaurantAuthController);
 container.bind('IRestaurantAuthRepository').to(RestaurantAuthRepository);
 container.bind('IRestaurantAuthService').to(RestaurantAuthService);
-container
-    .bind('IRestaurantProfileController')
-    .to(RestaurantProfileController);
+container.bind('IRestaurantProfileController').to(RestaurantProfileController);
 container.bind('IRestaurantProfileService').to(RestaurantProfileService);
+container.bind('IRestaurantFoodController').to(RestaurantFoodController);
+container.bind('IRestaurantFoodService').to(RestaurantFoodService);
+container.bind('IRestaurantFoodRespository').to(RestaurantFoodRepository);
+container.bind('IRestaurantSubscriptionController').to(RestaurantSubscriptionController);
+container.bind('IRestaurantSubscriptionService').to(RestaurantSubscriptionService);
 export { container };

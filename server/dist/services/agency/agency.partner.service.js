@@ -13,21 +13,41 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 import { inject, injectable } from 'inversify';
 import { toPartnerDTO } from '../../core/DTO/agency/response/agency.partners.js';
 import { UserNotFoundError } from '../../utils/resAndErrors.js';
+import { singleUpload } from '../../utils/upload.cloudinary.js';
+import { logger } from '../../utils/logger.js';
+import { agencyValidator } from '../../validators/agency.validator.js';
 let AgencyPartnerService = class AgencyPartnerService {
     _agencyPartnerRepo;
-    constructor(_agencyPartnerRepo) {
+    _agencyValidator;
+    constructor(_agencyPartnerRepo, _agencyValidator) {
         this._agencyPartnerRepo = _agencyPartnerRepo;
+        this._agencyValidator = _agencyValidator;
     }
-    async getAllThePartner() {
-        const allPartners = await this._agencyPartnerRepo.findAllUser({}, {});
+    async getAllThePartner(agencyId) {
+        const allPartners = await this._agencyPartnerRepo.findAllUser({ partner: agencyId }, {});
         if (allPartners)
             return allPartners.map(toPartnerDTO);
+        throw new UserNotFoundError();
+    }
+    async addPartner(data, logoFile, galleryFiles, agencyId) {
+        const parsedData = await this._agencyValidator.agencyAddPartner(data);
+        const logoUrl = await singleUpload(logoFile, 'Travel-Travel-Document');
+        const galleoryUrls = [];
+        for (let file of galleryFiles) {
+            let url = await singleUpload(file, 'Travel-Travel-Document');
+            galleoryUrls.push(url);
+        }
+        logger.info({ ...parsedData, Media: { ...(parsedData.media || {}), Logo: logoUrl, Gallery: galleoryUrls }, partner: [...(parsedData.partner || []), agencyId] });
+        const partner = await this._agencyPartnerRepo.create({ ...parsedData, Media: { ...(parsedData.media || {}), Logo: logoUrl, Gallery: galleoryUrls }, partner: [...(parsedData.partner || []), agencyId] });
+        if (partner)
+            return toPartnerDTO(partner);
         throw new UserNotFoundError();
     }
 };
 AgencyPartnerService = __decorate([
     injectable(),
     __param(0, inject('IAgencyPartnerRepository')),
-    __metadata("design:paramtypes", [Object])
+    __param(1, inject('agencyValidator')),
+    __metadata("design:paramtypes", [Object, agencyValidator])
 ], AgencyPartnerService);
 export { AgencyPartnerService };

@@ -6,6 +6,7 @@ import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Iho
 import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository.js';
 import z from 'zod';
 import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors.js';
+import { ISubscriptionValidator } from '../../core/interface/validator/Isubscription.validator.js';
 
 @injectable()
 export class AdminVendorService implements IAdminVendorService {
@@ -13,8 +14,8 @@ export class AdminVendorService implements IAdminVendorService {
     @inject('IAuthRepository') private readonly _userRepository: IAuthRepository,
     @inject('IAgencyRespository') private readonly _agencyrepository: IAgencyRespository,
     @inject('IHotelAuthRepository') private readonly _hotelRepository: IHotelAuthRepository,
-    @inject('IRestaurantAuthRepository')
-    private readonly _restaurantRepository: IRestaurantAuthRepository,
+    @inject('IRestaurantAuthRepository') private readonly _restaurantRepository: IRestaurantAuthRepository,
+    @inject('ISubscriptionValidator') private readonly _subscriptionValidator : ISubscriptionValidator
   ) {}
 
   async updateStatus(
@@ -23,13 +24,8 @@ export class AdminVendorService implements IAdminVendorService {
     role: string,
     reason: string | null,
   ): Promise<void> {
-    const schema = z.object({
-      id: z.string(),
-      action: z.enum(['approve', 'reject']),
-      role: z.enum(['agency', 'hotel', 'restaurant']),
-      reason: z.string().nullable(),
-    });
-    schema.parse({ id, action, role, reason });
+    await this._subscriptionValidator.updateStatusValidator(id, action, role);
+    if (reason) await this._subscriptionValidator.reasonValidation(reason)
     let vendor;
     if (role === 'agency') {
       vendor = await this._agencyrepository.findById(id);
@@ -61,11 +57,7 @@ export class AdminVendorService implements IAdminVendorService {
   }
 
   async updateBlock(id: string, role: string): Promise<void> {
-    const schema = z.object({
-      id: z.string(),
-      role: z.string(),
-    });
-    schema.parse({ id, role });
+    await this._subscriptionValidator.updateBlockValidator( id, role );
     let user;
     if (role === 'user') {
       user = await this._userRepository.findById(id);

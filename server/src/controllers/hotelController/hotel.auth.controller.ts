@@ -1,5 +1,4 @@
 import { inject, injectable } from 'inversify';
-import z from 'zod';
 import { logger } from '../../utils/logger.js';
 import { IHotelAuthController } from '../../core/interface/controllerInterface/hotel/Ihotel.auth.controller.js';
 import { IJWT } from '../../core/interface/JWT/JWTInterface.js';
@@ -21,10 +20,7 @@ export class HotelAuthController implements IHotelAuthController {
   ) {}
 
   async sendOtp(req: Request, res: Response): Promise<void> {
-    const schema = z.object({
-      email: z.email(),
-    });
-    const { email } = schema.parse(req.body);
+    const { email } = req.body
     const otp = await this._generalService.generateOtp();
     await this._generalService.storeOtp(email, otp);
     await this._emailService.otpSend(email, otp);
@@ -33,18 +29,7 @@ export class HotelAuthController implements IHotelAuthController {
   }
 
   async verify(req: Request, res: Response): Promise<void> {
-    const schema = z.object({
-      email: z.email(),
-      otp: z.string().length(6),
-      hotelData: z.object({
-        companyName: z.string(),
-        ownerName: z.string(),
-        email: z.email(),
-        password: z.string().min(8),
-        phone: z.number(),
-      }),
-    });
-    const { email, otp, hotelData } = schema.parse(req.body);
+    const { email, otp, hotelData } = req.body;
     const { hotel, accessToken, refreshToken } = await this._hotelService.verifyHotel(
       email,
       otp,
@@ -56,11 +41,7 @@ export class HotelAuthController implements IHotelAuthController {
   }
 
   async verifyHotelLogin(req: Request, res: Response): Promise<void> {
-    const schema = z.object({
-      email: z.email(),
-      password: z.string().min(8),
-    });
-    const { email, password } = schema.parse(req.body);
+    const { email, password } = req.body;
     const result = await this._hotelService.verifyHotelLogin(email, password);
     logger.info(`got it in here`);
     await this._ijwt.setTokenInCookies(res, result.accessToken, result.refreshToken);
@@ -78,24 +59,13 @@ export class HotelAuthController implements IHotelAuthController {
   }
 
   async forgotPassword(req: Request, res: Response): Promise<void> {
-    const schema = z.object({
-      email: z
-        .string()
-        .regex(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        ),
-    });
-    const { email } = schema.parse(req.body);
+    const { email } = req.body
     await this._hotelService.sendResetLink(email);
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.RESET_PASSWORD_SENDED);
   }
 
   async resetPasword(req: Request, res: Response): Promise<void> {
-    const schema = z.object({
-      newPassword: z.string().min(8),
-      token: z.string(),
-    });
-    const { newPassword, token } = schema.parse(req.body);
+    const { newPassword, token } = req.body
     await this._hotelService.resetHotelPassword(newPassword, token);
   }
 

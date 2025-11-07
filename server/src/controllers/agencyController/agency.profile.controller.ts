@@ -6,7 +6,6 @@ import { BADREQUEST, sendResponse, UserNotFoundError } from '../../utils/resAndE
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
 import { IAgencyProfileService } from '../../core/interface/serivice/agency/Iagenc.profile.service.js';
-import z from 'zod';
 import { logger } from '../../utils/logger.js';
 import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
 
@@ -28,18 +27,7 @@ export class AgencyProfileController implements IAgencyProfileController {
   }
 
   async update(req: Request, res: Response): Promise<void> {
-    const schema = z.object({
-      ownerName: z.string(),
-      companyName: z.string(),
-      phone: z.string(),
-      bankDetails: z.object({
-        accountHolder: z.string(),
-        accountNumber: z.string(),
-        bankName: z.string(),
-        ifscCode: z.string(),
-      }),
-    });
-    const { ownerName, companyName, phone, bankDetails } = schema.parse(req.body);
+    const { ownerName, companyName, phone, bankDetails } = req.body;
     const agencyId = req.user.id;
     const updatedAgency = await this._agencyProfileService.updateProfile(agencyId, {
       ownerName,

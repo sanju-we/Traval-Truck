@@ -1,12 +1,13 @@
 export const toPartnerDTO = (partner) => ({
     id: partner._id.toString(),
     partnerName: partner.PartnerName,
-    partnerType: partner.PartnerType,
+    PartnerType: partner.PartnerType,
     contactPerson: partner.ContactPerson,
     status: partner.Status,
     phone: partner.Phone,
-    media: partner.media,
-    details: partner.details,
+    media: partner.Media,
+    details: partner.Details,
     email: partner.Email,
     location: partner.Location,
+    partner: partner.partner
 });

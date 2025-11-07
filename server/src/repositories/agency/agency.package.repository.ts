@@ -4,7 +4,7 @@ import { Package } from "../../models/Package.js";
 import { IPackage } from "../../core/interface/modelInterface/Ipackage.js";
 import { logger } from "../../utils/logger.js";
 import { PackageResDTO, toPackageResDTO } from "../../core/DTO/agency/response/agency.packageDTO.js";
-import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors.js";
+import { DataNotFoundError } from "../../utils/resAndErrors.js";
 
 export class AgencyPackageRepository extends BaseRepository<IPackage> implements IAgencyPackageRepository {
   constructor() {
@@ -12,21 +12,18 @@ export class AgencyPackageRepository extends BaseRepository<IPackage> implements
   }
 
   async findAllPackageWithPartners(page = 1, lim?: number): Promise<{ data: PackageResDTO[], total: number, page: number, totalPages: number }> {
-    const limit = lim || 6; // ✅ 6 packages per page
+    const limit = lim || 6; 
     const skip = (page - 1) * limit;
 
-    // ✅ Fetch paginated data
     const [packages, total] = await Promise.all([
       Package.find()
-        .populate('hotels')
-        .populate('dining')
         .skip(skip)
         .limit(limit)
         .lean(),
       Package.countDocuments()
     ]);
 
-    if (!packages.length) throw new Data_Creation_Error();
+    if (!packages.length) throw new DataNotFoundError();
     logger.debug('package', packages)
     return {
       data: packages.map(toPackageResDTO),
@@ -38,9 +35,6 @@ export class AgencyPackageRepository extends BaseRepository<IPackage> implements
 
   async findPackageWithPartner(id: string): Promise<PackageResDTO> {
     const data = await Package.findById(id)
-      .populate('hotels')
-      .populate('dining')
-      .lean()
     if (data) return toPackageResDTO(data)
     throw new DataNotFoundError()
   }

@@ -6,14 +6,12 @@ export interface IPackage extends Document {
   duration: string;
   price: number;
   description: string;
-  hotels: string[];
   discoveries: string[];
-  dining: string[];
   availableFoods: string[];
   itinerary: {
-    Activities: string[];
-    Day: number;
-    Title: string;
+    activities: string[];
+    day: number;
+    title: string;
   }[];
   reviews: {
     Comment: string;

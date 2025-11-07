@@ -17,15 +17,12 @@ export async function verifyToken(req, res, next) {
         const token = authHeader && authHeader.startsWith('Bearer ')
             ? authHeader.split(' ')[1]
             : req.cookies?.accessToken;
-        logger.info(`Token received from middleware->verifyToken : ${token}`);
         if (!token) {
             return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
         }
-        logger.info(`payload gotit`);
         const payload = jwt.verify(token, secret);
         if (!payload)
             return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
-        logger.info(`payload: ${JSON.stringify(payload)}`);
         const user = await User.findById(payload.id);
         if (!user) {
             ijwt.blacklistRefreshToken(res);
@@ -54,17 +51,14 @@ export async function verifyHotelToken(req, res, next) {
         const token = authHeader && authHeader.startsWith('Bearer ')
             ? authHeader.split(' ')[1]
             : req.cookies?.accessToken;
-        logger.info(`Token received from middleware->verifyToken : ${token}`);
         if (!token) {
             return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
         }
-        logger.info(`payload gotit`);
         const payload = jwt.verify(token, secret);
         if (!payload) {
             ijwt.blacklistRefreshToken(res);
             return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
         }
-        logger.info(`payload: ${JSON.stringify(payload)}`);
         const hotel = await Hotel.findById(payload.id);
         if (!hotel) {
             return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Hotel not found');
@@ -94,15 +88,12 @@ export async function verifyAgencyToken(req, res, next) {
         const token = authHeader && authHeader.startsWith('Bearer ')
             ? authHeader.split(' ')[1]
             : req.cookies?.accessToken;
-        logger.info(`Token received from middleware->verifyToken : ${token}`);
         if (!token) {
             return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
         }
-        logger.info(`payload gotit`);
         const payload = jwt.verify(token, secret);
         if (!payload)
             return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
-        logger.info(`payload: ${JSON.stringify(payload)}`);
         const agency = await Agency.findById(payload.id);
         if (!agency) {
             return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Hotel not found');
@@ -116,7 +107,6 @@ export async function verifyAgencyToken(req, res, next) {
                     throw new UNAUTHORIZEDUserFounf();
             }
         }
-        logger.info(`Requestes url ${req.url}`);
         req.user = toVendorAuth(agency);
         next();
     }
@@ -133,15 +123,12 @@ export async function verifyRestaurantToken(req, res, next) {
         const token = authHeader && authHeader.startsWith('Bearer ')
             ? authHeader.split(' ')[1]
             : req.cookies?.accessToken;
-        logger.info(`Token received from middleware->verifyToken : ${token}`);
         if (!token) {
             return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
         }
-        logger.info(`payload gotit`);
         const payload = jwt.verify(token, secret);
         if (!payload)
             return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
-        logger.info(`payload: ${JSON.stringify(payload)}`);
         const restaurant = await Restaurant.findById(payload.id);
         if (!restaurant) {
             return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Hotel not found');
@@ -171,15 +158,12 @@ export async function verifyAdminToken(req, res, next) {
         const token = authHeader && authHeader.startsWith('Bearer ')
             ? authHeader.split(' ')[1]
             : req.cookies?.accessToken;
-        logger.info(`Token received from middleware->verifyToken : ${token}`);
         if (!token) {
             return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
         }
-        logger.info(`payload gotit`);
         const payload = jwt.verify(token, secret);
         if (!payload)
             return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
-        logger.info(`payload: ${JSON.stringify(payload)}`);
         const admin = await User.findById(payload.id);
         if (!admin) {
             return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Admin not found');

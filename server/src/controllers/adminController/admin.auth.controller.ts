@@ -1,7 +1,5 @@
 import { Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
-import { IAuthRepository } from '../../core/interface/repositorie/IAuth.Repository.js';
-import z from 'zod';
 import { HttpError } from '../../utils/resAndErrors.js';
 import { IAdminAuthService } from '../../core/interface/serivice/admin/IAdmin.auth.service.js';
 import { sendResponse } from '../../utils/resAndErrors.js';
@@ -14,17 +12,12 @@ import { IAdminAuthController } from '../../core/interface/controllerInterface/a
 export class AdminAuthController implements IAdminAuthController {
   constructor(
     @inject('IJWT') private readonly _IJWT: IJWT,
-    @inject('IAuthRepository') private readonly _authRepository: IAuthRepository,
     @inject('IAdminAuthService') private readonly _adminauthService: IAdminAuthService,
   ) {}
 
   async login(req: Request, res: Response): Promise<void> {
-    const schema = z.object({
-      email: z.string(),
-      password: z.string().min(8),
-    });
 
-    const { email, password } = schema.parse(req.body);
+    const { email, password } = req.body;
 
     const data = await this._adminauthService.verifyAdminEmail(email, password);
     await this._IJWT.setTokenInCookies(res, data.accessToken, data.refreshToken);

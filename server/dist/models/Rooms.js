@@ -1,0 +1,28 @@
+import mongoose, { Schema } from "mongoose";
+const RoomsSchema = new Schema({
+    RoomNumber: { type: Number },
+    Name: { type: String },
+    Description: { type: String },
+    PricePerNight: { type: Number },
+    Capacity: { type: Number },
+    Facilities: [{ type: String, }],
+    Images: [{ type: String, }],
+    Reviews: [{
+            Comment: { type: String },
+            CreatedAt: { type: Date },
+            Name: { type: String },
+            Rating: { type: String },
+            UserId: { type: Schema.Types.ObjectId },
+        }],
+    Rating: {
+        Average: { type: Number },
+        Count: { type: Number },
+    },
+    AvailableCount: { type: Number },
+    Status: { type: String, enum: ['Available', 'Occupid', 'Maintenance'] },
+    CreatedAt: { type: Date },
+    HotelId: { type: Schema.Types.ObjectId },
+    isBlocked: { type: Boolean, default: false }
+});
+const Rooms = mongoose.model('Rooms', RoomsSchema);
+export default Rooms;

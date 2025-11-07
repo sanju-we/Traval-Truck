@@ -16,6 +16,7 @@ import {
 } from '../../utils/resAndErrors.js';
 import { toHotelProfile, HotelProfileDTO } from '../../core/DTO/hotel/hotel.dto.js';
 import { logger } from '../../utils/logger.js';
+import { IAuthValidator } from '../../core/interface/validator/Iauth.validator.js';
 
 @injectable()
 export class HotelAuthService implements IHotelAuthService {
@@ -24,6 +25,7 @@ export class HotelAuthService implements IHotelAuthService {
     @inject('IRedisClient') private readonly _redisClient: IRedisClient,
     @inject('IHotelAuthRepository') private readonly _hotelRepo: IHotelAuthRepository,
     @inject('IEmailService') private readonly _emailService: IEmailService,
+    @inject('IAuthValidator') private readonly _authValidator : IAuthValidator
   ) {}
 
   async verifyHotel(
@@ -31,26 +33,7 @@ export class HotelAuthService implements IHotelAuthService {
     enteredOtp: string,
     hotelData: vendorData,
   ): Promise<{ hotel: HotelProfileDTO; accessToken: string; refreshToken: string }> {
-    const schema = z.object({
-      email: z
-        .string()
-        .regex(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        ),
-      otp: z.string().length(6),
-      hotelData: z.object({
-        companyName: z.string(),
-        ownerName: z.string(),
-        email: z
-          .string()
-          .regex(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-          ),
-        password: z.string().min(8),
-        phone: z.number(),
-      }),
-    });
-    schema.parse({ otp: enteredOtp, email: enteredEmail, hotelData });
+    await this._authValidator.signUpValidator( enteredOtp, enteredEmail, hotelData );
 
     const pending = await this._redisClient.get(`pending:${enteredEmail}`);
     if (!pending) throw new OtpExpiredError();
@@ -90,16 +73,8 @@ export class HotelAuthService implements IHotelAuthService {
     email: string,
     password: string,
   ): Promise<{ hotel: HotelProfileDTO; accessToken: string; refreshToken: string }> {
-    const schema = z.object({
-      email: z
-        .string()
-        .regex(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        ),
-      password: z.string().min(8),
-    });
 
-    schema.parse({ email, password });
+    await this._authValidator.loginValidator( email, password );
 
     const existingHotel = await this._hotelRepo.findByEmail(email);
     if (!existingHotel) throw new UserNotFoundError();
@@ -130,11 +105,7 @@ export class HotelAuthService implements IHotelAuthService {
   }
 
   async resetHotelPassword(newPassword: string, token: string): Promise<void> {
-    const schema = z.object({
-      newPassword: z.string().min(8),
-      token: z.string(),
-    });
-    schema.parse({ newPassword, token });
+    await this._authValidator.resetPasswordValidator(token,newPassword)
     const payload = await this._ijwt.verifyResetToken(token);
     if (!payload) throw new InvalidResetTokenError();
 

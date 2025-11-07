@@ -1,11 +1,7 @@
 import mongoose, { Schema, model } from 'mongoose';
 import { IPackage } from '../core/interface/modelInterface/Ipackage.js';
 
-export const dining = {
-  Cuisines: String,
-  Image: String,
-  Name: String,
-};
+
 export const itinerary = {
   activities: [String],
   day: Number,
@@ -34,11 +30,6 @@ const packageSchema = new Schema<IPackage>({
   description: {
     type: String,
   },
-  hotels: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Partner' }],
-  discoveries: {
-    type: [String],
-  },
-  dining: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Partner' }],
   availableFoods: { type: [String] },
   itinerary: { type: [itinerary] },
   reviews: { type: [reviews] },

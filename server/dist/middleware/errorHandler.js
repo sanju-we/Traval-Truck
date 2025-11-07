@@ -1,11 +1,17 @@
 import { ZodError } from 'zod';
 import mongoose from 'mongoose';
+import { HttpError } from '../utils/resAndErrors.js';
 import { logger } from '../utils/logger.js';
 export function errorHandler(err, req, res, next) {
     let status = err.statusCode || 500;
     let message = 'Something went wrong. Please try again later.';
+    if (err instanceof HttpError) {
+        status = err.statusCode;
+        message = err.message;
+    }
     logger.error('--- Error Handler ---');
     logger.error('Name:', err.name);
+    logger.info(err);
     logger.error('Message:', err.message);
     if (err.stack)
         logger.error('Stack:', err.stack);

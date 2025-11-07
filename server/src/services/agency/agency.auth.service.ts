@@ -17,7 +17,7 @@ import {
   UserNotFoundError,
   InvalidCredentialsError,
 } from '../../utils/resAndErrors.js';
-import z from 'zod';
+import { IAuthValidator } from '../../core/interface/validator/Iauth.validator.js';
 import bcrypt from 'bcryptjs';
 
 @injectable()
@@ -27,6 +27,7 @@ export class agencyAuthService implements IAgencyAuthService {
     @inject('IAgencyRespository') private readonly _agencyRepository: IAgencyRespository,
     @inject('IJWT') private readonly _ijwt: IJWT,
     @inject('IEmailService') private readonly _emailService: IEmailService,
+    @inject('IAuthValidator') private readonly _authValidator : IAuthValidator
   ) { }
 
   async verifyAgencySignup(
@@ -34,18 +35,8 @@ export class agencyAuthService implements IAgencyAuthService {
     enteredOtp: string,
     agencyData: vendorData,
   ): Promise<{ accessToken: string; refreshToken: string; agencyData: agencyProfileDTO }> {
-    const schema = z.object({
-      email: z.string(),
-      otp: z.string(),
-      agencyData: z.object({
-        ownerName: z.string(),
-        companyName: z.string(),
-        email: z.string(),
-        password: z.string(),
-        phone: z.number(),
-      }),
-    });
-    schema.parse({ email: enteredEmail, otp: enteredOtp, agencyData: agencyData });
+
+    await this._authValidator.signUpValidator(enteredEmail,enteredOtp,agencyData);
 
     const pending = await this._redisClient.get(`pending:${enteredEmail}`);
     if (!pending) throw new OtpExpiredError();
@@ -82,11 +73,8 @@ export class agencyAuthService implements IAgencyAuthService {
     email: string,
     password: string,
   ): Promise<{ accessToken: string; refreshToken: string; agencyData: agencyProfileDTO }> {
-    const schema = z.object({
-      email: z.string(),
-      password: z.string(),
-    });
-    schema.parse({ email, password });
+    
+    await this._authValidator.loginValidator( email, password );
 
     const agency = await this._agencyRepository.findByEmail(email);
     if (!agency) throw new UserNotFoundError();
@@ -103,10 +91,8 @@ export class agencyAuthService implements IAgencyAuthService {
   }
 
   async sendAgencyResetLink(email: string): Promise<void> {
-    const schema = z.object({
-      email: z.string().email(),
-    });
-    schema.parse({ email });
+    
+    await this._authValidator.emailValidator( email );
 
     const agencyData = await this._agencyRepository.findByEmail(email);
     if (!agencyData) throw new UserNotFoundError();
@@ -123,6 +109,8 @@ export class agencyAuthService implements IAgencyAuthService {
   }
 
   async resetPassword(token: string, newPassword: string): Promise<void> {
+
+    await this._authValidator.resetPasswordValidator(token,newPassword)
     const payload = await this._ijwt.verifyResetToken(token);
     const agency = await this._agencyRepository.findById(payload.id);
     if (!agency) throw new UserNotFoundError();

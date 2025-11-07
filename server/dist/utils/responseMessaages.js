@@ -13,6 +13,7 @@ export var MESSAGES;
     MESSAGES["INVALID_ID"] = "Invalid ID provided";
     MESSAGES["INVALID_PROFILE_DATA"] = "Invalid profile data";
     MESSAGES["NO_DATA"] = "No data available";
+    MESSAGES["DATA_FOUND"] = "Data Found SuccessFully";
     MESSAGES["NO_RESULTS_FOUND"] = "No results found";
     MESSAGES["NOT_FOUND"] = "Resource not found";
     MESSAGES["ALL_DATA_FOUND"] = "All data found";

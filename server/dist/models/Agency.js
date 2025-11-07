@@ -95,5 +95,9 @@ const agencySchema = new Schema({
         required: false,
         default: '',
     },
+    partners: {
+        type: [String],
+        required: false
+    }
 });
 export const Agency = model('Agency', agencySchema);

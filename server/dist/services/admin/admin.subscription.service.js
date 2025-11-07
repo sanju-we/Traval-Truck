@@ -76,7 +76,7 @@ let AdminSubscriptionService = class AdminSubscriptionService {
 };
 AdminSubscriptionService = __decorate([
     injectable(),
-    __param(0, inject('IAdminSubscriptionRepository')),
+    __param(0, inject('ISubscriptionRepository')),
     __metadata("design:paramtypes", [Object])
 ], AdminSubscriptionService);
 export { AdminSubscriptionService };

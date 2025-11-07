@@ -6,11 +6,13 @@ import { singleUpload } from "../../utils/upload.cloudinary.js";
 import { IHotelRoomsRepository } from "../../core/interface/repositorie/Hotel/Ihotel.rooms.repository.js";
 import { inject, injectable } from "inversify";
 import { DataNotFoundError } from "../../utils/resAndErrors.js";
+import { IAuthValidator } from "../../core/interface/validator/Iauth.validator.js";
 
 @injectable()
 export class HotelRoomsService implements IHotelRoomsService {
   constructor(
-    @inject('IHotelRoomsRepository') private readonly _roomsRepo: IHotelRoomsRepository
+    @inject('IHotelRoomsRepository') private readonly _roomsRepo: IHotelRoomsRepository,
+    @inject('IAuthValidator') private readonly _authValidator : IAuthValidator
   ) { }
 
   async getAllRooms(hotelID: string): Promise<RoomsDTO[]> {
@@ -19,40 +21,8 @@ export class HotelRoomsService implements IHotelRoomsService {
   }
 
   async addRoom(data: RoomsDTO, file: Express.Multer.File[]): Promise<RoomsDTO> {
-    const roomSchema = z.object({
-      Facilities: z
-        .string(),
-      Capacity: z
-        .union([z.string(), z.number()])
-        .transform((val) => Number(val))
-        .refine((val) => !isNaN(val) && val > 0, {
-          message: "Capacity must be a valid positive number",
-        }),
-
-      Description: z
-        .string()
-        .min(3, { message: "Description must be at least 3 characters long" }),
-
-      PricePerNight: z
-        .union([z.string(), z.number()])
-        .transform((val) => Number(val))
-        .refine((val) => !isNaN(val) && val >= 0, {
-          message: "Price must be a valid non-negative number",
-        }),
-
-      RoomNumber: z
-        .union([z.string(), z.number()])
-        .transform((val) => Number(val))
-        .refine((val) => !isNaN(val), {
-          message: "Room number must be a valid number",
-        }),
-
-      roomType: z
-        .string()
-        .min(2, { message: "Room type must be at least 2 characters long" }),
-    });
+    await this._authValidator.RoomValidator(data)
     logger.info(data.Images)
-    roomSchema.parse(data)
     let Image: string[] = []
     for (let img of file) {
       let url = await singleUpload(img, 'Travel-Travel-Document')
@@ -71,11 +41,8 @@ export class HotelRoomsService implements IHotelRoomsService {
   }
 
   async updateStatus(data: { id: string, status: string }): Promise<RoomsDTO> {
-    const schema = z.object({
-      id: z.string().min(10),
-      status: z.enum(['Available', 'Maintance'])
-    })
-    schema.parse(data)
+    
+    await this._authValidator.updateStatusValidator(data.id,data.status)
     const update = await this._roomsRepo.update(data.id, { ['Status']: data.status })
     if (update) return toRoomsDTO(update)
     throw new DataNotFoundError()

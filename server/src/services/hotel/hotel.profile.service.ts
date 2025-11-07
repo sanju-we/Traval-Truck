@@ -7,11 +7,13 @@ import {
   vendorRequestDTO,
 } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
 import { deleteImage, extractPublicId, singleUpload } from '../../utils/upload.cloudinary.js';
+import { IAuthValidator } from '../../core/interface/validator/Iauth.validator.js';
 
 @injectable()
 export class HotelProfileService implements IHotelProfileService {
   constructor(
     @inject('IHotelAuthRepository') private readonly _hotelAuthRepo: IHotelAuthRepository,
+    @inject('IAuthValidator') private readonly _authValidator : IAuthValidator
   ) {}
   async updateProfile(
     id: string,
@@ -27,6 +29,7 @@ export class HotelProfileService implements IHotelProfileService {
       };
     },
   ): Promise<vendorRequestDTO> {
+    await this._authValidator.profileUpdateValidator(data.ownerName,data.companyName,data.phone,data.bankDetails)
     const hotel = await this._hotelAuthRepo.findById(id);
     if (!hotel) throw new UserNotFoundError();
 

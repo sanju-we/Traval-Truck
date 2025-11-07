@@ -11,48 +11,47 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from 'inversify';
-import { sendResponse } from '../../utils/resAndErrors.js';
+import { BADREQUEST, DataUpdatingError, sendResponse } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
-import z from 'zod';
 import { logger } from '../../utils/logger.js';
 let AgencyPartnerController = class AgencyPartnerController {
     _agencyPartnerService;
-    constructor(_agencyPartnerService) {
+    _agencyAuthService;
+    constructor(_agencyPartnerService, _agencyAuthService) {
         this._agencyPartnerService = _agencyPartnerService;
+        this._agencyAuthService = _agencyAuthService;
     }
     async getAllPartners(req, res) {
-        const allUsers = await this._agencyPartnerService.getAllThePartner();
+        const agencyId = req.user.id;
+        const allUsers = await this._agencyPartnerService.getAllThePartner(agencyId);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, allUsers);
     }
     async addPartner(req, res) {
         logger.info('req.body', req.body);
-        const schema = z.object({
-            ContactPerson: z.string(),
-            Coordinates: z.object({
-                lat: z.number(),
-                lng: z.number(),
-            }),
-            Details: z.array(z.object({
-                AvgPriceRange: z.number().nonnegative(),
-                Category: z.string(),
-                Description: z.string(),
-                Facilities: z.array(z.string()),
-            })),
-            Email: z.email(),
-            Location: z.string(),
-            PartnerName: z.string(),
-            PartnerType: z.enum(['Hotel', 'Restaurant']),
-            Phone: z.string(),
-            Status: z.string(),
-        });
-        const data = schema.parse(req.body);
+        req.body.Coordinates = JSON.parse(req.body.Coordinates);
+        req.body.Details = JSON.parse(req.body.Details);
+        const files = req.files;
+        if (!files)
+            throw new BADREQUEST();
+        const agencyId = req.user.id;
+        const logoFile = files.Logo?.[0];
+        const galleryFiles = files.Gallery;
+        const data = req.body;
+        const partner = await this._agencyPartnerService.addPartner(data, logoFile, galleryFiles, agencyId);
+        const isUpdated = await this._agencyAuthService.updatepartner(agencyId, partner.id);
+        if (isUpdated)
+            sendResponse(res, STATUS_CODE.OK, true, MESSAGES.CREATED, partner);
+        throw new DataUpdatingError();
+    }
+    async editPartner(req, res) {
     }
 };
 AgencyPartnerController = __decorate([
     injectable(),
     __param(0, inject('IAgencyPartnerService')),
-    __metadata("design:paramtypes", [Object])
+    __param(1, inject('IAgencyAuthService')),
+    __metadata("design:paramtypes", [Object, Object])
 ], AgencyPartnerController);
 export { AgencyPartnerController };
 // {"ContactPerson":"Sanju pn",
@@ -64,4 +63,5 @@ export { AgencyPartnerController };
 // "PartnerName":"paragon",
 // "PartnerType":"Hotel",
 // "Phone":"09495806650",
+// Invalid input: expected object, received string, Invalid input: expected array, received string
 // "Status":"Pending"}

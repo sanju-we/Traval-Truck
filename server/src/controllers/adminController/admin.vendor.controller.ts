@@ -1,5 +1,4 @@
 import { IAdminVendorController } from '../../core/interface/controllerInterface/admin/Iadmin.vendor.controller.js';
-import z from 'zod';
 import { logger } from '../../utils/logger.js';
 import { sendResponse } from '../../utils/resAndErrors.js';
 import { HttpError } from '../../utils/resAndErrors.js';
@@ -39,38 +38,21 @@ export class AdminVendorController implements IAdminVendorController {
   }
 
   async updateStatus(req: Request, res: Response): Promise<void> {
-    const schema = z.object({
-      id: z.string(),
-      action: z.enum(['approve', 'reject']),
-      role: z.enum(['agency', 'hotel', 'restaurant']),
-    });
-    const bosySchema = z.object({
-      reason: z.string().nullable(),
-    });
-    const { reason } = bosySchema.parse(req.body);
-    const { id, action, role } = schema.parse(req.params);
-    logger.info('*****************');
+    const { reason } = req.body;
+    const { id, action, role } = req.params;
     await this._adminVenderService.updateStatus(id, action, role, reason);
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.APPROVED);
   }
 
   async blockTongle(req: Request, res: Response): Promise<void> {
     logger.info(`request got in here role:`);
-    const schema = z.object({
-      id: z.string(),
-      role: z.string(),
-    });
-    const { id, role } = schema.parse(req.params);
+    const { id, role } = req.params;
     await this._adminVenderService.updateBlock(id, role);
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED);
   }
 
   async sortUsers(req: Request, res: Response): Promise<void> {
-    const schema = z.object({
-      sort: z.string(),
-      status: z.string(),
-    });
-    const { sort, status } = schema.parse(req.query);
+    const { sort, status } = req.query;
     const data = await this._adminVenderService;
   }
 }

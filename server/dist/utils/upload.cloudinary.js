@@ -12,7 +12,7 @@ export const singleUpload = (file, folder) => {
     });
 };
 export const multipleUploads = async (files, folder) => {
-    const urls = []; 
+    const urls = [];
     for (const file of files) {
         const url = await singleUpload(file, folder);
         urls.push(url);

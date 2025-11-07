@@ -1,3 +1,4 @@
+import { STATUS_CODE } from './HTTPStatusCode.js';
 export function sendResponse(res, status, success, message, data) {
     res.status(status).json({ success, message, data });
 }
@@ -13,6 +14,7 @@ export class HttpError extends Error {
         super(message);
         this.statusCode = statusCode;
         this.name = this.constructor.name;
+        Error.captureStackTrace(this, this.constructor);
     }
 }
 export class OtpExpiredError extends HttpError {
@@ -35,6 +37,11 @@ export class UserNotFoundError extends HttpError {
         super(400, 'Invalid credentials');
     }
 }
+export class DataNotFoundError extends HttpError {
+    constructor() {
+        super(400, 'No data found');
+    }
+}
 export class NoAccessToken extends HttpError {
     constructor() {
         super(403, 'Invalid Token');
@@ -47,7 +54,7 @@ export class InvalidCredentialsError extends HttpError {
 }
 export class ImageDeleteInCloudinary extends HttpError {
     constructor() {
-        super(400, 'Failed to delete image from Cloudinary');
+        super(400, 'Failed to delete image');
     }
 }
 export class InvalidResetTokenError extends HttpError {
@@ -60,9 +67,14 @@ export class UNAUTHORIZEDUserFounf extends HttpError {
         super(401, "User don't have access to this route");
     }
 }
+export class DataUpdatingError extends HttpError {
+    constructor() {
+        super(400, "Updating Error");
+    }
+}
 export class BADREQUEST extends HttpError {
     constructor() {
-        super(401, 'Required fileds are missing');
+        super(400, 'Required fileds are missing');
     }
 }
 export class InvalidAction extends HttpError {
@@ -72,6 +84,16 @@ export class InvalidAction extends HttpError {
 }
 export class RESTRICTED_USER extends HttpError {
     constructor() {
-        super(401, 'This user is Restricted by the admin');
+        super(400, 'This user is Restricted by the admin');
+    }
+}
+export class Data_Creation_Error extends HttpError {
+    constructor() {
+        super(STATUS_CODE.BAD_REQUEST, 'Data uploading error');
+    }
+}
+export class Files_Missing extends HttpError {
+    constructor() {
+        super(STATUS_CODE.BAD_REQUEST, 'Images are missing');
     }
 }

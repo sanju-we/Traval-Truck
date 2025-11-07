@@ -19,9 +19,12 @@ const PartnerSchema = new Schema({
     ],
     Email: { type: String },
     Location: {
-        type: { type: String, enum: ['Point'], default: 'Point' },
-        coordinates: [Number], // [lng, lat]
+        type: String,
+        default: "",
     },
+    partner: {
+        type: [String]
+    }
 });
 // const partnerData = {
 //   PartnerName: name,

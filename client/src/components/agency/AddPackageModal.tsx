@@ -16,8 +16,6 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
     duration: "",
     price: "",
     description: "",
-    hotels: [] as string[],
-    dining: [] as string[],
     discoveries: [] as string[],
     availableFoods: [] as string[],
     itinerary: [
@@ -29,39 +27,12 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
     ],
   });
 
-  // ✅ Fetch partners
-  useEffect(() => {
-    const fetchPartners = async () => {
-      try {
-        const res = await api.get("/agency/partner/getAllPartners");
-        if (res.data.success) setPartners(res.data.data);
-      } catch (error) {
-        console.error("Failed to load partners:", error);
-        toast.error("Failed to load partners");
-      }
-    };
-    fetchPartners();
-  }, []);
-
-  // ✅ Field change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: "" })); // clear error on change
   };
 
-  // ✅ Checkbox selection
-  const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev) => {
-      const arr = prev[name as keyof typeof formData] as string[];
-      return {
-        ...prev,
-        [name]: arr.includes(value)
-          ? arr.filter((v) => v !== value)
-          : [...arr, value],
-      };
-    });
-  };
 
   // ✅ Add discovery
   const handleAddDiscovery = () => {
@@ -113,8 +84,6 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
     if (!formData.duration.trim()) newErrors.duration = "Duration is required";
     if (!formData.price.trim()) newErrors.price = "Price is required";
     if (!formData.description.trim()) newErrors.description = "Description is required";
-    if (formData.hotels.length === 0) newErrors.hotels = "At least one hotel must be selected";
-    if (formData.dining.length === 0) newErrors.dining = "At least one dining option must be selected";
 
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) {
@@ -194,47 +163,6 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
             {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
           </div>
 
-          {/* ✅ Hotels */}
-          <div>
-            <label className="text-sm text-gray-700 font-medium">Select Hotels</label>
-            <div className="border rounded-md p-2 max-h-32 overflow-y-auto mt-1">
-              {partners
-                .filter((p) => p.PartnerType === "Hotel")
-                .map((partner) => (
-                  <div key={partner.id} className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={formData.hotels.includes(partner.id)}
-                      onChange={() => handleSelectChange("hotels", partner.id)}
-                    />
-                    <span className="text-sm">{partner.partnerName}</span>
-                  </div>
-                ))}
-            </div>
-            {errors.hotels && <p className="text-red-500 text-sm">{errors.hotels}</p>}
-          </div>
-
-          {/* ✅ Dining */}
-          <div>
-            <label className="text-sm text-gray-700 font-medium">Select Dining</label>
-            <div className="border rounded-md p-2 max-h-32 overflow-y-auto mt-1">
-              {partners
-                .filter((p) => p.PartnerType === "Restaurant")
-                .map((partner) => (
-                  <div key={partner.id} className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={formData.dining.includes(partner.id)}
-                      onChange={() => handleSelectChange("dining", partner.id)}
-                    />
-                    <span className="text-sm">{partner.partnerName}</span>
-                  </div>
-                ))}
-            </div>
-            {errors.dining && <p className="text-red-500 text-sm">{errors.dining}</p>}
-          </div>
-
-          {/* ✅ Discoveries */}
           <div>
             <label className="text-sm font-medium text-gray-700">Discoveries</label>
             {formData.discoveries.map((item, index) => (

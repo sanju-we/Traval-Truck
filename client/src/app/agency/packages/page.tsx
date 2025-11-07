@@ -9,19 +9,6 @@ import api from "@/services/api";
 import SideNavbar from "@/components/agency/SideNavbar";
 import toast from "react-hot-toast";
 
-interface Partner {
-  _id: string;
-  PartnerName: string;
-  PartnerType: string;
-  Location: string;
-  Email: string;
-  Phone: number;
-  Status: string;
-  Media: {
-    Logo: string;
-    Gallery: string[];
-  };
-}
 
 interface Itinerary {
   activities: string[];
@@ -42,8 +29,6 @@ interface Package {
   duration: string;
   price: number;
   description: string;
-  hotels: Partner[];
-  dining: Partner[];
   discoveries: string[];
   availableFoods: string[];
   itinerary: Itinerary[];
@@ -135,66 +120,6 @@ export default function PackageListingPage() {
                     <span>Price</span>
                     <span className="font-medium">₹{pkg.price}</span>
                   </div>
-
-                  {pkg.hotels?.length > 0 && (
-                    <div>
-                      <h3 className="text-sm font-semibold text-gray-800 mb-1">
-                        Hotels
-                      </h3>
-                      <div className="space-y-2">
-                        {pkg.hotels.map((hotel, idx) => (
-                          <div
-                            key={idx}
-                            className="flex items-center gap-3 border rounded-md p-2 bg-white"
-                          >
-                            <img
-                              src={hotel.Media?.Logo || "/placeholder-hotel.png"}
-                              alt={hotel.PartnerName}
-                              className="w-10 h-10 rounded-md object-cover"
-                            />
-                            <div>
-                              <p className="text-sm font-medium">
-                                {hotel.PartnerName}
-                              </p>
-                              <p className="text-xs text-gray-500">
-                                {hotel.Location}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {pkg.dining?.length > 0 && (
-                    <div>
-                      <h3 className="text-sm font-semibold text-gray-800 mb-1">
-                        Dining
-                      </h3>
-                      <div className="space-y-2">
-                        {pkg.dining.map((dine, idx) => (
-                          <div
-                            key={idx}
-                            className="flex items-center gap-3 border rounded-md p-2 bg-white"
-                          >
-                            <img
-                              src={dine.Media?.Logo || "/placeholder-dining.png"}
-                              alt={dine.PartnerName}
-                              className="w-10 h-10 rounded-md object-cover"
-                            />
-                            <div>
-                              <p className="text-sm font-medium">
-                                {dine.PartnerName}
-                              </p>
-                              <p className="text-xs text-gray-500">
-                                {dine.Location}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
 
                   {pkg.discoveries?.length > 0 && (
                     <div>

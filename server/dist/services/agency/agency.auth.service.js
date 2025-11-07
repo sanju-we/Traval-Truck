@@ -108,6 +108,17 @@ let agencyAuthService = class agencyAuthService {
         logger.info(`${agency.companyName} password updated`);
         return;
     }
+    async updatepartner(id, partnerId) {
+        const agency = await this._agencyRepository.findById(id);
+        if (!agency)
+            throw new UserNotFoundError();
+        agency.partners.push(partnerId);
+        const done = await agency.save();
+        if (done)
+            return true;
+        else
+            return false;
+    }
 };
 agencyAuthService = __decorate([
     injectable(),

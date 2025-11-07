@@ -1,13 +1,13 @@
-import { Schema } from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 export const dining = {
     Cuisines: String,
     Image: String,
     Name: String,
 };
 export const itinerary = {
-    Activities: [String],
-    Day: Number,
-    Titile: String,
+    activities: [String],
+    day: Number,
+    title: String,
 };
 export const reviews = {
     Comment: String,
@@ -16,33 +16,29 @@ export const reviews = {
     userID: String,
 };
 const packageSchema = new Schema({
-    Title: {
+    title: {
         type: String,
         required: true,
     },
-    Duration: {
+    duration: {
         type: String,
         required: true,
     },
-    Price: {
+    price: {
         type: Number,
         required: true,
     },
-    Description: {
+    description: {
         type: String,
     },
-    hotels: {
-        Description: { type: String },
-        image: { type: String },
-        Name: { type: String },
-        id: { type: String, Ref: 'Partner' },
-    },
-    Discoveries: {
+    hotels: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Partner' }],
+    discoveries: {
         type: [String],
     },
-    dining: { type: [dining] },
-    AvailableFoods: { type: [String] },
+    dining: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Partner' }],
+    availableFoods: { type: [String] },
     itinerary: { type: [itinerary] },
     reviews: { type: [reviews] },
     CreatedBy: { type: Date, default: new Date() },
 });
+export const Package = model('Package', packageSchema);

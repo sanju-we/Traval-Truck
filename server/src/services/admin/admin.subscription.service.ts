@@ -5,14 +5,16 @@ import { ISubscriptionRepository } from '../../core/interface/repositorie/ISubsc
 import { subscriptionDTO, toSubdcriptionDTO } from '../../core/DTO/subscription.dto.js';
 import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors.js';
 import { logger } from '../../utils/logger.js';
+import { ISubscriptionValidator } from '../../core/interface/validator/Isubscription.validator.js';
 
 @injectable()
 export class AdminSubscriptionService implements IAdminSubscriptionService {
   constructor(
-    @inject('ISubscriptionRepository')
-    private readonly _adminSubscriptionRepo: ISubscriptionRepository,
+    @inject('ISubscriptionRepository') private readonly _adminSubscriptionRepo: ISubscriptionRepository,
+    @inject('ISubscriptionValidator') private readonly _subscriptionValidator : ISubscriptionValidator
   ) {}
   async addSub(data: subscriptionData): Promise<subscriptionDTO> {
+    await this._subscriptionValidator.addSubscriptionValidator(data.Name,data.Amount,data.Category,data.Description,data.Duration,data.Features,data.Valid)
     const value = {
       Name: data.Name,
       Duration: {
@@ -30,15 +32,16 @@ export class AdminSubscriptionService implements IAdminSubscriptionService {
     if (created) return toSubdcriptionDTO(created);
     throw new UserNotFoundError();
   }
-
+  
   async getAllSubscriptions(): Promise<subscriptionDTO[]> {
     const datas = await this._adminSubscriptionRepo.findAllUser({}, {});
     logger.info('data comming from the repository is ', datas);
     if (datas) return datas.map(toSubdcriptionDTO);
     throw new UserNotFoundError();
   }
-
+  
   async editSubscription(data: subscriptionData, id: string): Promise<subscriptionDTO> {
+    await this._subscriptionValidator.addSubscriptionValidator(data.Name,data.Amount,data.Category,data.Description,data.Duration,data.Features,data.Valid)
     const value = {
       Name: data.Name,
       Duration: {
@@ -51,7 +54,6 @@ export class AdminSubscriptionService implements IAdminSubscriptionService {
       Category: data.Category,
       Valid: data.Valid,
     };
-    logger.info('value that just before sending to the repo', value);
     const update = await this._adminSubscriptionRepo.update(id, value);
     if (update) return toSubdcriptionDTO(update);
     throw new UserNotFoundError();
