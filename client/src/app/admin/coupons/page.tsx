@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { SideNavbar } from "@/components/admin/SideNavbar";
 import { motion } from "framer-motion";
 import { CouponDTO } from "@/types/coupon.type";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 export default function CouponsPage() {
   const [coupons, setCoupons] = useState<CouponDTO[]>([]);
@@ -17,6 +18,8 @@ export default function CouponsPage() {
   const [addOpen, setAddOpen] = useState(false);
   const [editData, setEditData] = useState<CouponDTO | null>(null);
   const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [toggleTarget, setToggleTarget] = useState<any>(null);
 
   const fetchCoupons = async () => {
     try {
@@ -34,21 +37,27 @@ export default function CouponsPage() {
     fetchCoupons();
   }, []);
 
-  // ✅ Toggle coupon active status
-  const handleToggle = async (coupon: CouponDTO) => {
-    const newStatus = !coupon.isActive;
-    setLoadingId(coupon.id);
+  const handleToggleClick = (coupon: any) => {
+    setToggleTarget(coupon);
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmToggle = async () => {
+    if (!toggleTarget) return;
+    setLoadingId(toggleTarget.id);
+    setShowConfirmModal(false);
 
     try {
-      const res = await api.put(`/admin/coupons/toggle/${coupon.id}`, {
-        isActive: newStatus,
-      });
-
+      const res = await api.put(`/admin/coupons/toggle/${toggleTarget.id}`);
       if (res.data.success) {
-        toast.success(`Coupon ${newStatus ? "activated" : "deactivated"}!`);
+        toast.success(
+          `Coupon ${toggleTarget.isActive ? "deactivated" : "activated"} successfully!`
+        );
         setCoupons((prev) =>
           prev.map((c) =>
-            c.id === coupon.id ? { ...c, isActive: newStatus } : c
+            c.id === toggleTarget.id
+              ? { ...c, isActive: !c.isActive }
+              : c
           )
         );
       } else {
@@ -56,9 +65,10 @@ export default function CouponsPage() {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Error updating coupon status.");
+      toast.error("Error toggling coupon status.");
     } finally {
       setLoadingId(null);
+      setToggleTarget(null);
     }
   };
 
@@ -134,44 +144,25 @@ export default function CouponsPage() {
                         </td>
                         <td className="p-3">
                           <span
-                            className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                              c.isActive
-                                ? "bg-green-100 text-green-700"
-                                : "bg-red-100 text-red-600"
-                            }`}
+                            className={`px-2 py-1 rounded-full text-xs font-semibold ${c.isActive
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-600"
+                              }`}
                           >
                             {c.isActive ? "Active" : "Expired"}
                           </span>
                         </td>
                         <td className="p-3">
                           <button
-                            onClick={() => handleToggle(c)}
-                            disabled={loadingId === c.id}
-                            className={`relative w-14 h-7 rounded-full transition-colors duration-300 ${
-                              c.isActive ? "bg-green-500" : "bg-gray-400"
-                            }`}
+                            onClick={() => handleToggleClick(c)}
+                            className={`relative w-14 h-7 rounded-full transition-colors duration-300 ${c.isActive ? "bg-green-500" : "bg-gray-400"
+                              }`}
                           >
                             <motion.div
                               layout
-                              className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full shadow-md transition-transform ${
-                                c.isActive
-                                  ? "translate-x-7"
-                                  : "translate-x-0"
-                              }`}
-                            >
-                              {loadingId === c.id && (
-                                <motion.span
-                                  className="absolute inset-0 flex items-center justify-center"
-                                  initial={{ opacity: 0 }}
-                                  animate={{ opacity: 1 }}
-                                >
-                                  <Loader2
-                                    className="animate-spin text-orange-600"
-                                    size={12}
-                                  />
-                                </motion.span>
-                              )}
-                            </motion.div>
+                              className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full shadow-md transition-transform ${c.isActive ? "translate-x-7" : "translate-x-0"
+                                }`}
+                            />
                           </button>
                         </td>
                         <td className="p-3 flex justify-end gap-3">
@@ -197,6 +188,19 @@ export default function CouponsPage() {
               onSaved={fetchCoupons}
             />
           )}
+          <ConfirmModal
+            show={showConfirmModal}
+            title={
+              toggleTarget?.isActive
+                ? "Deactivate this coupon?"
+                : "Activate this coupon?"
+            }
+            description={`Are you sure you want to ${toggleTarget?.isActive ? "deactivate" : "activate"
+              } the coupon "${toggleTarget?.couponCode}"?`}
+            onConfirm={handleConfirmToggle}
+            onCancel={() => setShowConfirmModal(false)}
+            loading={loadingId === toggleTarget?.id}
+          />
           {editData && (
             <EditCouponModal
               coupon={editData}

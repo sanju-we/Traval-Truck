@@ -30,4 +30,10 @@ export class AdminCouponController implements IAdminCouponController {
       const updatedCoupon = await this._couponService.updateCoupon(id,data)
       sendResponse(res,STATUS_CODE.OK,true,MESSAGES.UPDATED,updatedCoupon)
   }
+
+  async tongleStatus(req: Request, res: Response): Promise<void> {
+      const id = req.params.id;
+      const updatedData = await this._couponService.updateCouponStatus(id)
+      sendResponse(res,STATUS_CODE.OK,true,MESSAGES.UPDATED,updatedData)
+  }
 }

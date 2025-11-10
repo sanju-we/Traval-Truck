@@ -3,7 +3,7 @@ import { CouponDTO, toCouponDTO } from "../../core/DTO/admin/coupon/admin.coupon
 import { IAdminCouponService } from "../../core/interface/serivice/admin/IAdmin.coupon.service.js";
 import { ICouponValidator } from "../../core/interface/validator/Icoupon.validator.js";
 import { IAdminCouponRepository } from "../../core/interface/repositorie/admin/Iadmin.coupon.repository.js";
-import { Data_Creation_Error, DataUpdatingError } from "../../utils/resAndErrors.js";
+import { Data_Creation_Error, DataNotFoundError, DataUpdatingError } from "../../utils/resAndErrors.js";
 
 @injectable()
 export class AdminCouponService implements IAdminCouponService {
@@ -28,6 +28,15 @@ export class AdminCouponService implements IAdminCouponService {
     await this._couponValidator.addCouponValidator(data);
     await this._couponValidator.IdValidator(id);
     const update = await this._couponRepository.update(id, data);
+    if (update) return toCouponDTO(update)
+    throw new DataUpdatingError()
+  }
+
+  async updateCouponStatus(id: string): Promise<CouponDTO> {
+    await this._couponValidator.IdValidator(id);
+    const data = await this._couponRepository.findById(id)
+    if (!data) throw new DataNotFoundError()
+    const update = await this._couponRepository.update(id, { isActive: !data.isActive })
     if (update) return toCouponDTO(update)
     throw new DataUpdatingError()
   }

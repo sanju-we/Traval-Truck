@@ -49,7 +49,7 @@ export class CouponValidator implements ICouponValidator {
   async IdValidator(id: string): Promise<void> {
     const objectIdSchema = z
       .string()
-      .regex(/^[0-9a-fA-F]{24}$/, "Invalid MongoDB ObjectId");
-      objectIdSchema.parse(id)
+      .regex(/^[0-9a-fA-F]{24}$/, "Invalid Data Id");
+    objectIdSchema.parse(id)
   }
 }
