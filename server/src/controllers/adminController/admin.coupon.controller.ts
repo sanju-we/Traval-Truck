@@ -23,4 +23,11 @@ export class AdminCouponController implements IAdminCouponController {
     const coupon = await this._couponService.addCoupon(data)
     sendResponse(res, STATUS_CODE.CREATED, true, MESSAGES.CREATED, coupon)
   }
+
+  async update(req: Request, res: Response): Promise<void> {
+      const data = req.body;
+      const id = req.params.id;
+      const updatedCoupon = await this._couponService.updateCoupon(id,data)
+      sendResponse(res,STATUS_CODE.OK,true,MESSAGES.UPDATED,updatedCoupon)
+  }
 }

@@ -3,7 +3,7 @@ import { CouponDTO, toCouponDTO } from "../../core/DTO/admin/coupon/admin.coupon
 import { IAdminCouponService } from "../../core/interface/serivice/admin/IAdmin.coupon.service.js";
 import { ICouponValidator } from "../../core/interface/validator/Icoupon.validator.js";
 import { IAdminCouponRepository } from "../../core/interface/repositorie/admin/Iadmin.coupon.repository.js";
-import { Data_Creation_Error } from "../../utils/resAndErrors.js";
+import { Data_Creation_Error, DataUpdatingError } from "../../utils/resAndErrors.js";
 
 @injectable()
 export class AdminCouponService implements IAdminCouponService {
@@ -22,5 +22,13 @@ export class AdminCouponService implements IAdminCouponService {
     const createdData = await this._couponRepository.create(data)
     if (createdData) return toCouponDTO(createdData)
     throw new Data_Creation_Error()
+  }
+
+  async updateCoupon(id: string, data: CouponDTO): Promise<CouponDTO> {
+    await this._couponValidator.addCouponValidator(data);
+    await this._couponValidator.IdValidator(id);
+    const update = await this._couponRepository.update(id, data);
+    if (update) return toCouponDTO(update)
+    throw new DataUpdatingError()
   }
 }

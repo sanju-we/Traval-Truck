@@ -7,7 +7,8 @@ const couponRouter = Router()
 const couponController = container.get<IAdminCouponController>('IAdminCouponController')
 
 couponRouter
-.get('/all',asyncHandler(couponController.getAll.bind(couponController)))
-.post('/add',asyncHandler(couponController.add.bind(couponController)))
+  .get('/all', asyncHandler(couponController.getAll.bind(couponController)))
+  .post('/add', asyncHandler(couponController.add.bind(couponController)))
+  .patch('/edit/:id', asyncHandler(couponController.update.bind(couponController)))
 
 export default couponRouter

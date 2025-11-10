@@ -3,23 +3,26 @@
 import { useEffect, useState } from "react";
 import api from "@/services/api";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, Plus, Loader2, Tag } from "lucide-react";
+import { Pencil, Plus, Loader2, Tag } from "lucide-react";
 import AddCouponModal from "@/components/admin/addCouponModal";
 import EditCouponModal from "@/components/admin/editCouponModal";
 import toast from "react-hot-toast";
 import { SideNavbar } from "@/components/admin/SideNavbar";
+import { motion } from "framer-motion";
+import { CouponDTO } from "@/types/coupon.type";
 
 export default function CouponsPage() {
-  const [coupons, setCoupons] = useState<any[]>([]);
+  const [coupons, setCoupons] = useState<CouponDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [addOpen, setAddOpen] = useState(false);
-  const [editData, setEditData] = useState<any | null>(null);
+  const [editData, setEditData] = useState<CouponDTO | null>(null);
+  const [loadingId, setLoadingId] = useState<string | null>(null);
 
   const fetchCoupons = async () => {
     try {
       setLoading(true);
       const { data } = await api.get("/admin/coupons/all");
-      setCoupons(data.data.data || []);
+      setCoupons(data?.data?.data || []);
     } catch {
       toast.error("Failed to load coupons");
     } finally {
@@ -31,14 +34,31 @@ export default function CouponsPage() {
     fetchCoupons();
   }, []);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this coupon?")) return;
+  // ✅ Toggle coupon active status
+  const handleToggle = async (coupon: CouponDTO) => {
+    const newStatus = !coupon.isActive;
+    setLoadingId(coupon.id);
+
     try {
-      await api.delete(`/vendor/coupons/${id}`);
-      toast.success("Coupon deleted successfully");
-      fetchCoupons();
-    } catch {
-      toast.error("Failed to delete coupon");
+      const res = await api.put(`/admin/coupons/toggle/${coupon.id}`, {
+        isActive: newStatus,
+      });
+
+      if (res.data.success) {
+        toast.success(`Coupon ${newStatus ? "activated" : "deactivated"}!`);
+        setCoupons((prev) =>
+          prev.map((c) =>
+            c.id === coupon.id ? { ...c, isActive: newStatus } : c
+          )
+        );
+      } else {
+        toast.error(res.data.message || "Failed to update coupon status.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error updating coupon status.");
+    } finally {
+      setLoadingId(null);
     }
   };
 
@@ -90,7 +110,8 @@ export default function CouponsPage() {
                       <th className="p-3">Value</th>
                       <th className="p-3">Expiry</th>
                       <th className="p-3">Status</th>
-                      <th className="p-3 text-right">Actions</th>
+                      <th className="p-3">Update Status</th>
+                      <th className="p-3 text-right">Edit</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -122,18 +143,43 @@ export default function CouponsPage() {
                             {c.isActive ? "Active" : "Expired"}
                           </span>
                         </td>
+                        <td className="p-3">
+                          <button
+                            onClick={() => handleToggle(c)}
+                            disabled={loadingId === c.id}
+                            className={`relative w-14 h-7 rounded-full transition-colors duration-300 ${
+                              c.isActive ? "bg-green-500" : "bg-gray-400"
+                            }`}
+                          >
+                            <motion.div
+                              layout
+                              className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full shadow-md transition-transform ${
+                                c.isActive
+                                  ? "translate-x-7"
+                                  : "translate-x-0"
+                              }`}
+                            >
+                              {loadingId === c.id && (
+                                <motion.span
+                                  className="absolute inset-0 flex items-center justify-center"
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                >
+                                  <Loader2
+                                    className="animate-spin text-orange-600"
+                                    size={12}
+                                  />
+                                </motion.span>
+                              )}
+                            </motion.div>
+                          </button>
+                        </td>
                         <td className="p-3 flex justify-end gap-3">
                           <button
                             className="text-blue-600 hover:text-blue-800 transition-colors"
                             onClick={() => setEditData(c)}
                           >
                             <Pencil size={18} />
-                          </button>
-                          <button
-                            className="text-red-600 hover:text-red-800 transition-colors"
-                            onClick={() => handleDelete(c._id)}
-                          >
-                            <Trash2 size={18} />
                           </button>
                         </td>
                       </tr>
@@ -146,7 +192,10 @@ export default function CouponsPage() {
 
           {/* Modals */}
           {addOpen && (
-            <AddCouponModal onClose={() => setAddOpen(false)} onSaved={fetchCoupons} />
+            <AddCouponModal
+              onClose={() => setAddOpen(false)}
+              onSaved={fetchCoupons}
+            />
           )}
           {editData && (
             <EditCouponModal

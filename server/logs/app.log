@@ -10052,3 +10052,33 @@
 {"level":"info","message":"Redis client connected","timestamp":"2025-11-10T14:37:10.653Z"}
 {"level":"info","message":"Database connected","timestamp":"2025-11-10T14:37:12.229Z"}
 {"level":"info","message":"Server running on http://localhost:5000","timestamp":"2025-11-10T14:37:12.246Z"}
+{"level":"info","message":"Redis client connected","timestamp":"2025-11-10T15:04:57.665Z"}
+{"level":"info","message":"Database connected","timestamp":"2025-11-10T15:05:05.637Z"}
+{"level":"info","message":"Server running on http://localhost:5000","timestamp":"2025-11-10T15:05:05.648Z"}
+{"level":"error","message":"--- Error Handler ---","timestamp":"2025-11-10T15:05:19.065Z"}
+{"level":"error","message":"Name:","timestamp":"2025-11-10T15:05:19.071Z"}
+{"level":"info","message":"[\n  {\n    \"origin\": \"string\",\n    \"code\": \"invalid_format\",\n    \"format\": \"regex\",\n    \"pattern\": \"/^[A-Z0-9\\\\-]+$/\",\n    \"path\": [\n      \"couponCode\"\n    ],\n    \"message\": \"Coupon code must contain only A-Z, 0-9, and '-' characters\"\n  },\n  {\n    \"expected\": \"number\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"maxUsage\"\n    ],\n    \"message\": \"Invalid input: expected number, received undefined\"\n  }\n]","name":"ZodError","timestamp":"2025-11-10T15:05:19.073Z"}
+{"level":"error","message":"Message:","timestamp":"2025-11-10T15:05:19.075Z"}
+{"level":"error","message":"Stack:","timestamp":"2025-11-10T15:05:19.080Z"}
+{"level":"error","message":"----------------------","timestamp":"2025-11-10T15:05:19.097Z"}
+{"level":"error","message":"--- Error Handler ---","timestamp":"2025-11-10T15:06:37.489Z"}
+{"level":"error","message":"Name:","timestamp":"2025-11-10T15:06:37.507Z"}
+{"level":"info","message":"[\n  {\n    \"origin\": \"string\",\n    \"code\": \"invalid_format\",\n    \"format\": \"regex\",\n    \"pattern\": \"/^[A-Z0-9\\\\-]+$/\",\n    \"path\": [\n      \"couponCode\"\n    ],\n    \"message\": \"Coupon code must contain only A-Z, 0-9, and '-' characters\"\n  },\n  {\n    \"expected\": \"number\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"maxUsage\"\n    ],\n    \"message\": \"Invalid input: expected number, received undefined\"\n  }\n]","name":"ZodError","timestamp":"2025-11-10T15:06:37.507Z"}
+{"level":"error","message":"Message:","timestamp":"2025-11-10T15:06:37.512Z"}
+{"level":"error","message":"Stack:","timestamp":"2025-11-10T15:06:37.537Z"}
+{"level":"error","message":"----------------------","timestamp":"2025-11-10T15:06:37.555Z"}
+{"level":"error","message":"--- Error Handler ---","timestamp":"2025-11-10T15:06:55.810Z"}
+{"level":"error","message":"Name:","timestamp":"2025-11-10T15:06:55.991Z"}
+{"level":"info","message":"[\n  {\n    \"origin\": \"string\",\n    \"code\": \"invalid_format\",\n    \"format\": \"regex\",\n    \"pattern\": \"/^[A-Z0-9\\\\-]+$/\",\n    \"path\": [\n      \"couponCode\"\n    ],\n    \"message\": \"Coupon code must contain only A-Z, 0-9, and '-' characters\"\n  },\n  {\n    \"expected\": \"number\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"maxUsage\"\n    ],\n    \"message\": \"Invalid input: expected number, received undefined\"\n  }\n]","name":"ZodError","timestamp":"2025-11-10T15:06:56.057Z"}
+{"level":"error","message":"Message:","timestamp":"2025-11-10T15:06:56.158Z"}
+{"level":"error","message":"Stack:","timestamp":"2025-11-10T15:06:56.210Z"}
+{"level":"error","message":"----------------------","timestamp":"2025-11-10T15:06:56.344Z"}
+{"level":"info","message":"Redis client connected","timestamp":"2025-11-10T15:09:25.160Z"}
+{"level":"info","message":"Database connected","timestamp":"2025-11-10T15:09:30.151Z"}
+{"level":"info","message":"Server running on http://localhost:5000","timestamp":"2025-11-10T15:09:30.160Z"}
+{"level":"error","message":"--- Error Handler ---","timestamp":"2025-11-10T15:09:34.760Z"}
+{"level":"error","message":"Name:","timestamp":"2025-11-10T15:09:34.761Z"}
+{"level":"info","message":"[\n  {\n    \"origin\": \"string\",\n    \"code\": \"invalid_format\",\n    \"format\": \"regex\",\n    \"pattern\": \"/^[0-9\\\\-]+$/\",\n    \"path\": [\n      \"couponCode\"\n    ],\n    \"message\": \"Coupon code must contain only Positive Numbers and '-' characters Only\"\n  },\n  {\n    \"expected\": \"number\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"maxUsage\"\n    ],\n    \"message\": \"Invalid input: expected number, received undefined\"\n  }\n]","name":"ZodError","timestamp":"2025-11-10T15:09:34.762Z"}
+{"level":"error","message":"Message:","timestamp":"2025-11-10T15:09:34.763Z"}
+{"level":"error","message":"Stack:","timestamp":"2025-11-10T15:09:34.772Z"}
+{"level":"error","message":"----------------------","timestamp":"2025-11-10T15:09:34.776Z"}

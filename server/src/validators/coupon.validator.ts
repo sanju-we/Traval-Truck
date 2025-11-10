@@ -11,7 +11,7 @@ export class CouponValidator implements ICouponValidator {
           .trim()
           .min(4, "Coupon code must be at least 4 characters long")
           .max(20, "Coupon code cannot exceed 20 characters")
-          .regex(/^[A-Z0-9\-]+$/, "Coupon code must contain only A-Z, 0-9, and '-' characters"),
+          .regex(/^[A-Z0-9\-]+$/, "Coupon code must contain only Capital Letters, Positive Numbers, and '-' characters Only"),
 
         discountType: z.enum(["percentage", "flat"]),
 
@@ -31,11 +31,6 @@ export class CouponValidator implements ICouponValidator {
             return !isNaN(date.getTime()) && date > new Date();
           }, "Expiry date must be a valid future date"),
 
-        maxUsage: z
-          .number()
-          .int("Max usage must be an integer")
-          .positive("Max usage must be greater than 0"),
-
         isActive: z.boolean(),
       })
       .refine(
@@ -48,5 +43,13 @@ export class CouponValidator implements ICouponValidator {
           path: ["discountValue"],
         }
       );
+    CouponSchema.parse(data)
+  }
+
+  async IdValidator(id: string): Promise<void> {
+    const objectIdSchema = z
+      .string()
+      .regex(/^[0-9a-fA-F]{24}$/, "Invalid MongoDB ObjectId");
+      objectIdSchema.parse(id)
   }
 }
