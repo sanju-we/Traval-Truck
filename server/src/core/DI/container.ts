@@ -14,6 +14,8 @@ import { IAuthValidator } from '../interface/validator/Iauth.validator.js';
 import { authValidator } from '../../validators/auth.validator.js';
 import { ISubscriptionValidator } from '../../core/interface/validator/Isubscription.validator.js';
 import { SubscriptionValidator } from '../../validators/subscription.validator.js';
+import { ICouponValidator } from '../../core/interface/validator/Icoupon.validator.js';
+import { CouponValidator } from '../../validators/coupon.validator.js';
 
 // ----------------------------------------------------user-------------------------------------------------------------
 import { IAuthService } from '../../core/interface/serivice/user/auth.interface.js';
@@ -50,6 +52,12 @@ import { IAdminSubscriptionController } from '../../core/interface/controllerInt
 import { AdminSubscriptionController } from '../../controllers/adminController/admin.subscription.controller.js';
 import { IAdminSubscriptionService } from '../../core/interface/serivice/admin/IAdmin.subscription.service.js';
 import { AdminSubscriptionService } from '../../services/admin/admin.subscription.service.js';
+import { IAdminCouponController } from '../../core/interface/controllerInterface/admin/Iadmin.coupon.controller.js';
+import { AdminCouponController } from '../../controllers/adminController/admin.coupon.controller.js';
+import { IAdminCouponService } from '../../core/interface/serivice/admin/IAdmin.coupon.service.js';
+import { AdminCouponService } from '../../services/admin/admin.coupon.service.js';
+import { IAdminCouponRepository } from '../../core/interface/repositorie/admin/Iadmin.coupon.repository.js';
+import { AdminCouponRepository } from '../../repositories/admin/admin.coupon.repository.js';
 
 // ----------------------------------------------------agency----------------------------------------------------------------------
 import { IAgencyAuthController } from '../../core/interface/controllerInterface/agency/agency.Iauth.controller.js';
@@ -118,6 +126,7 @@ container.bind<IEmailService>('IEmailService').to(EmailService).inSingletonScope
 container.bind<IGeneralService>('IGeneralService').to(GeneralService).inSingletonScope();
 container.bind<IAuthValidator>('IAuthValidator').to(authValidator);
 container.bind<ISubscriptionValidator>('ISubscriptionValidator').to(SubscriptionValidator);
+container.bind<ICouponValidator>('ICouponValidator').to(CouponValidator)
 
 // ---------------------------------------------------user container-------------------------------------------------------------------------
 container.bind<IAuthRepository>('IAuthRepository').to(AuthRepository);
@@ -139,6 +148,9 @@ container.bind<IAdminVendorService>('IAdminVendorService').to(AdminVendorService
 container.bind<IAdminSubscriptionController>('IAdminSubscriptionController').to(AdminSubscriptionController);
 container.bind<IAdminSubscriptionService>('IAdminSubscriptionService').to(AdminSubscriptionService);
 container.bind<ISubscriptionRepository>('ISubscriptionRepository').to(SubscriptionRepository);
+container.bind<IAdminCouponController>('IAdminCouponController').to(AdminCouponController);
+container.bind<IAdminCouponService>('IAdminCouponService').to(AdminCouponService);
+container.bind<IAdminCouponRepository>('IAdminCouponRepository').to(AdminCouponRepository)
 
 // ------------------------------------------------------agency containers--------------------------------------------------------
 container.bind<IAgencyAuthController>('IAgencyAuthController').to(AgencyAuthController);

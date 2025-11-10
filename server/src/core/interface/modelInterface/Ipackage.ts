@@ -1,4 +1,4 @@
-import { Document, Schema, Types } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export interface IPackage extends Document {
   _id: Types.ObjectId;
@@ -20,4 +20,5 @@ export interface IPackage extends Document {
     UserName: string;
   }[];
   CreatedBy: Date;
+  images:string[];
 }

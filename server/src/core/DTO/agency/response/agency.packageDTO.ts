@@ -16,6 +16,7 @@ export interface PackageResDTO {
   itinerary: ItineraryDTO[];
   price: number;
   title: string;
+  images:string[];
 }
 
 export const toPackageResDTO = (pkg: IPackage): PackageResDTO => ({
@@ -27,4 +28,5 @@ export const toPackageResDTO = (pkg: IPackage): PackageResDTO => ({
   itinerary: pkg.itinerary || [],
   price: pkg.price || 0,
   title: pkg.title || "",
+  images:pkg.images || []
 });

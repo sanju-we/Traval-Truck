@@ -3,14 +3,16 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2 } from "lucide-react";
+import { Loader2, X, ImagePlus } from "lucide-react";
 import api from "@/services/api";
 import toast from "react-hot-toast";
+import Cropper from "react-easy-crop";
+import getCroppedImg from "@/components/utils/UserCropImage";
 
 export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
   const [loading, setLoading] = useState(false);
-  const [partners, setPartners] = useState<any[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [images, setImages] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     title: "",
     duration: "",
@@ -27,63 +29,98 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
     ],
   });
 
+  // 🖼️ Cropper States
+  const [isCropping, setIsCropping] = useState(false);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+  const [currentImage, setCurrentImage] = useState<string | null>(null);
+  const [profileLoad, setProfileLoad] = useState(false);
+
+  // ----------------------------
+  // ✅ Handle Input Changes
+  // ----------------------------
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "" })); // clear error on change
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
+  // ----------------------------
+  // ✅ Image Upload + Cropping
+  // ----------------------------
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files ? Array.from(e.target.files) : [];
+    if (files.length === 0) return;
 
-  // ✅ Add discovery
-  const handleAddDiscovery = () => {
-    setFormData((prev) => ({
-      ...prev,
-      discoveries: [...prev.discoveries, ""],
-    }));
+    if (images.length + files.length > 5) {
+      toast.error("You can upload up to 5 images only.");
+      return;
+    }
+
+    const file = files[0];
+    const imageUrl = URL.createObjectURL(file);
+    setCurrentImage(imageUrl);
+    setIsCropping(true);
   };
+
+  const handleCropComplete = async () => {
+    try {
+      setProfileLoad(true);
+      const croppedImage = await getCroppedImg(currentImage!, croppedAreaPixels);
+      setImages((prev) => [...prev, croppedImage]);
+      toast.success("Image cropped successfully!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to crop image.");
+    } finally {
+      setProfileLoad(false);
+      setIsCropping(false);
+      setCurrentImage(null);
+    }
+  };
+
+  const handleDeleteImage = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // ----------------------------
+  // ✅ Dynamic Fields
+  // ----------------------------
+  const handleAddDiscovery = () =>
+    setFormData((prev) => ({ ...prev, discoveries: [...prev.discoveries, ""] }));
 
   const handleDiscoveryChange = (index: number, value: string) => {
-    setFormData((prev) => {
-      const updated = [...prev.discoveries];
-      updated[index] = value;
-      return { ...prev, discoveries: updated };
-    });
+    const updated = [...formData.discoveries];
+    updated[index] = value;
+    setFormData({ ...formData, discoveries: updated });
   };
 
-  // ✅ Add food
-  const handleAddFood = () => {
-    setFormData((prev) => ({
-      ...prev,
-      availableFoods: [...prev.availableFoods, ""],
-    }));
-  };
+  const handleAddFood = () =>
+    setFormData((prev) => ({ ...prev, availableFoods: [...prev.availableFoods, ""] }));
 
   const handleFoodChange = (index: number, value: string) => {
-    setFormData((prev) => {
-      const updated = [...prev.availableFoods];
-      updated[index] = value;
-      return { ...prev, availableFoods: updated };
-    });
+    const updated = [...formData.availableFoods];
+    updated[index] = value;
+    setFormData({ ...formData, availableFoods: updated });
   };
 
-  // ✅ Add itinerary day
-  const handleAddItinerary = () => {
+  const handleAddItinerary = () =>
     setFormData((prev) => ({
       ...prev,
-      itinerary: [
-        ...prev.itinerary,
-        { day: prev.itinerary.length + 1, title: "", activities: [""] },
-      ],
+      itinerary: [...prev.itinerary, { day: prev.itinerary.length + 1, title: "", activities: [""] }],
     }));
-  };
 
-  // ✅ Validate inputs before submit
+  // ----------------------------
+  // ✅ Validation
+  // ----------------------------
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.title.trim()) newErrors.title = "Package title is required";
     if (!formData.duration.trim()) newErrors.duration = "Duration is required";
     if (!formData.price.trim()) newErrors.price = "Price is required";
     if (!formData.description.trim()) newErrors.description = "Description is required";
+    if (images.length === 0) newErrors.images = "At least one image is required";
 
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) {
@@ -93,16 +130,39 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
     return true;
   };
 
-  // ✅ Submit form
+  // ----------------------------
+  // ✅ Submit Handler
+  // ----------------------------
   const handleSubmit = async () => {
     if (!validateForm()) return;
-
     setLoading(true);
+
     try {
-      const res = await api.post("/agency/package/addPackage", formData);
+      const form = new FormData();
+      form.append("title", formData.title);
+      form.append("duration", formData.duration);
+      form.append("price", formData.price);
+      form.append("description", formData.description);
+      form.append("discoveries", JSON.stringify(formData.discoveries));
+      form.append("availableFoods", JSON.stringify(formData.availableFoods));
+      form.append("itinerary", JSON.stringify(formData.itinerary));
+
+      for (const img of images) {
+        const res = await fetch(img);
+        const blob = await res.blob();
+        form.append("images", blob, "package.jpg");
+      }
+
+      for(let i of form){
+        console.log(i)
+      }
+      const res = await api.post("/agency/package/addPackage", form, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
       if (res.data.success) {
-        setPackages(res.data.data)
         toast.success("Package added successfully!");
+        setPackages(res.data.data);
         onAdd?.();
         onClose();
       } else {
@@ -122,47 +182,45 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
         <h2 className="text-xl font-semibold mb-4">Add New Package</h2>
 
         <div className="space-y-3">
+          <Input name="title" placeholder="Package Title" onChange={handleChange} value={formData.title} />
+          {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
+
+          <Input name="duration" placeholder="Duration (e.g. 5 Days)" onChange={handleChange} value={formData.duration} />
+          {errors.duration && <p className="text-red-500 text-sm">{errors.duration}</p>}
+
+          <Input name="price" placeholder="Price" type="number" onChange={handleChange} value={formData.price} />
+          {errors.price && <p className="text-red-500 text-sm">{errors.price}</p>}
+
+          <Textarea name="description" placeholder="Description" onChange={handleChange} value={formData.description} />
+          {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
+
+          {/* ✅ Image Upload */}
           <div>
-            <Input
-              name="title"
-              placeholder="Package Title"
-              onChange={handleChange}
-              value={formData.title}
-            />
-            {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
+            <label className="text-sm font-medium text-gray-700">Images (Max 5)</label>
+            <div className="flex flex-wrap gap-3 mt-2">
+              {images.map((img, index) => (
+                <div key={index} className="relative w-24 h-24">
+                  <img src={img} alt="preview" className="w-full h-full object-cover rounded-md border" />
+                  <button
+                    onClick={() => handleDeleteImage(index)}
+                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
+                  >
+                    <X size={12} />
+                  </button>
+                </div>
+              ))}
+              {images.length < 5 && (
+                <label className="border rounded-md w-24 h-24 flex flex-col items-center justify-center cursor-pointer text-gray-500">
+                  <ImagePlus size={20} />
+                  <span className="text-xs">Add</span>
+                  <input type="file" hidden accept="image/*" multiple={false} onChange={handleFileChange} />
+                </label>
+              )}
+            </div>
+            {errors.images && <p className="text-red-500 text-sm">{errors.images}</p>}
           </div>
 
-          <div>
-            <Input
-              name="duration"
-              placeholder="Duration (e.g. 5 Days)"
-              onChange={handleChange}
-              value={formData.duration}
-            />
-            {errors.duration && <p className="text-red-500 text-sm">{errors.duration}</p>}
-          </div>
-
-          <div>
-            <Input
-              name="price"
-              placeholder="Price"
-              type="number"
-              onChange={handleChange}
-              value={formData.price}
-            />
-            {errors.price && <p className="text-red-500 text-sm">{errors.price}</p>}
-          </div>
-
-          <div>
-            <Textarea
-              name="description"
-              placeholder="Description"
-              onChange={handleChange}
-              value={formData.description}
-            />
-            {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
-          </div>
-
+          {/* ✅ Discoveries */}
           <div>
             <label className="text-sm font-medium text-gray-700">Discoveries</label>
             {formData.discoveries.map((item, index) => (
@@ -267,6 +325,56 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
           </Button>
         </div>
       </div>
+
+      {/* 🖼️ Cropper Modal */}
+      {isCropping && (
+        <div className="fixed inset-0 bg-black/60 flex flex-col items-center justify-center z-50">
+          <div className="relative bg-white rounded-2xl w-[90%] max-w-lg h-[500px] overflow-hidden">
+            <Cropper
+              image={currentImage || ""}
+              crop={crop}
+              zoom={zoom}
+              aspect={4 / 3}
+              cropShape="rect"
+              showGrid={true}
+              onCropChange={setCrop}
+              onZoomChange={setZoom}
+              onCropComplete={(_, croppedAreaPixels) => setCroppedAreaPixels(croppedAreaPixels)}
+            />
+
+            <div className="absolute bottom-20 left-0 right-0 flex justify-center">
+              <input
+                type="range"
+                min={1}
+                max={3}
+                step={0.1}
+                value={zoom}
+                onChange={(e) => setZoom(Number(e.target.value))}
+                className="w-2/3"
+              />
+            </div>
+
+            <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4">
+              <button
+                onClick={() => setIsCropping(false)}
+                className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCropComplete}
+                className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600"
+              >
+                {profileLoad ? (
+                  <div className="w-4 h-4 border-2 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  "Save Crop"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
