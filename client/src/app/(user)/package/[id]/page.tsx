@@ -196,6 +196,9 @@ export default function PackageDetailsPage() {
                 </ul>
               </div>
             ))}
+            <button className="mt-3 w-full px-4 py-2 bg-emerald-500 text-white text-sm rounded-lg hover:bg-emerald-600">
+              Book Now
+            </button>
           </div>
         </section>
       )}

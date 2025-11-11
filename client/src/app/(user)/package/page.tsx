@@ -13,7 +13,7 @@ interface Package {
   description: string;
   duration: string;
   price: number;
-  imageUrl?: string;
+  images: string[];
 }
 
 export default function PackagesPage() {
@@ -72,7 +72,7 @@ export default function PackagesPage() {
                 onClick={()=>router.push(`/package/${pkg.id}`)}
               >
                 <img
-                  src={pkg.imageUrl || '/images/default.jpg'}
+                  src={pkg.images ? pkg.images[0] : '/images/default.jpg'}
                   alt={pkg.title}
                   className="w-full h-40 object-cover rounded-lg mb-3"
                 />
