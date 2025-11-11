@@ -9,6 +9,7 @@ import { Loader2, ImagePlus, X } from 'lucide-react';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
 import { ImageCropperModal } from '../hotel/ImageCropperModal';
+import ConfirmModal from '@/components/common/ConfirmModal';
 
 interface ItineraryItem {
   day: number;
@@ -33,7 +34,10 @@ export default function EditPackageModal({
   const [images, setImages] = useState<string[]>([]);
   const [croppingImage, setCroppingImage] = useState<string | null>(null);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
   const [formData, setFormData] = useState({
+    id: '',
     title: '',
     duration: '',
     price: '',
@@ -47,6 +51,7 @@ export default function EditPackageModal({
   useEffect(() => {
     if (pkg) {
       setFormData({
+        id: pkg.id || '',
         title: pkg.title || '',
         duration: pkg.duration || '',
         price: String(pkg.price || ''),
@@ -98,10 +103,34 @@ export default function EditPackageModal({
     }
   };
 
-  // ✅ Remove image
-  const removeImage = (index: number) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
+  const removeImage = async (index: number) => {
+    try {
+      if (!formData.id) {
+        console.error("❌ No package ID found");
+        toast.error("Package Is missing!");
+        return;
+      }
+
+      const { data } = await api.patch(
+        `/agency/package/deleteImage/${formData.id}`,
+        { index },
+        { headers: { "Content-Type": "application/json" } }
+      );
+
+      console.log("🟢 Response:", data);
+
+      if (data.success) {
+        toast.success("Image deleted successfully!");
+        setImages((prev) => prev.filter((_, i) => i !== index));
+      } else {
+        toast.error(data.message || "Failed to delete image");
+      }
+    } catch (error: any) {
+      console.error("🔥 Delete image error:", error.response || error);
+      toast.error("Something went wrong while deleting image");
+    }
   };
+
 
   // ✅ Add / Edit Discoveries
   const handleAddDiscovery = () => {
@@ -176,7 +205,7 @@ export default function EditPackageModal({
           form.append('newImages', blob, 'package.jpg');
         }
       }
-      for(let i of form){
+      for (let i of form) {
         console.log(i)
       }
       const res = await api.patch(`/agency/package/update/${pkg.id}`, form, {
@@ -306,7 +335,10 @@ export default function EditPackageModal({
                       <img src={img} className="w-full h-full object-cover rounded-md border" />
                       <button
                         type="button"
-                        onClick={() => removeImage(index)}
+                        onClick={() => {
+                          setDeleteIndex(index);
+                          setShowConfirm(true);
+                        }}
                         className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
                       >
                         <X size={12} />
@@ -343,6 +375,22 @@ export default function EditPackageModal({
           imagePreview={croppingImage}
           onClose={() => setCroppingImage(null)}
           onSave={handleCropSave}
+        />
+      )}
+      {showConfirm && deleteIndex !== null && (
+        <ConfirmModal
+          show={showConfirm}
+          title="Delete Image?"
+          description="Are you sure you want to permanently delete this image from the package?"
+          onConfirm={async () => {
+            await removeImage(deleteIndex);
+            setShowConfirm(false);
+            setDeleteIndex(null);
+          }}
+          onCancel={() => {
+            setShowConfirm(false);
+            setDeleteIndex(null);
+          }}
         />
       )}
     </AnimatePresence>

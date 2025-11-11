@@ -4,4 +4,5 @@ export interface IAgencyPackageController {
   addPackage(req:Request,res:Response):Promise<void>;
   getAllPackages(req:Request,res:Response):Promise<void>;
   updatePackage(req:Request,res:Response):Promise<void>;
+  deleteSingleImage(req:Request,res:Response):Promise<void>;
 }

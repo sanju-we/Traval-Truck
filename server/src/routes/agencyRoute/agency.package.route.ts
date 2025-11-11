@@ -8,8 +8,9 @@ const agencyPackage = Router()
 const packageController = container.get<IAgencyPackageController>('IAgencyPackageController');
 
 agencyPackage
-  .get('/getAllPackages',asyncHandler(packageController.getAllPackages.bind(packageController)))
-  .post('/addPackage',upload.fields([{name:'images',maxCount:5}]), asyncHandler(packageController.addPackage.bind(packageController)))
-  .patch('/update/:id',upload.fields([{name:'newImages',maxCount:5}]),asyncHandler(packageController.updatePackage.bind(packageController)))
+  .get('/getAllPackages', asyncHandler(packageController.getAllPackages.bind(packageController)))
+  .post('/addPackage', upload.fields([{ name: 'images', maxCount: 5 }]), asyncHandler(packageController.addPackage.bind(packageController)))
+  .patch('/update/:id', upload.fields([{ name: 'newImages', maxCount: 5 }]), asyncHandler(packageController.updatePackage.bind(packageController)))
+  .patch('/deleteImage/:id', asyncHandler(packageController.deleteSingleImage.bind(packageController)))
 
 export default agencyPackage  

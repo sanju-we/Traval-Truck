@@ -38,4 +38,11 @@ export class agencyPackageController implements IAgencyPackageController {
       const updateData = await this._packageService.updatePackage(id,data,files)
     sendResponse(res,STATUS_CODE.OK,true,MESSAGES.UPDATED,updateData)
   }
+
+  async deleteSingleImage(req: Request, res: Response): Promise<void> {
+      const index = req.body.index;
+      const id = req.params.id;
+      const updated = await this._packageService.deleteImage(id,index);
+      sendResponse(res,STATUS_CODE.OK,true,MESSAGES.DELETED,updated);
+  }
 }

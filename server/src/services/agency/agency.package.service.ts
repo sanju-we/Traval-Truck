@@ -6,7 +6,7 @@ import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors
 import { PackageResDTO, toPackageResDTO } from "../../core/DTO/agency/response/agency.packageDTO.js";
 import { IAuthValidator } from '../../core/interface/validator/Iauth.validator.js'
 import { logger } from "../../utils/logger.js";
-import { singleUpload } from "../../utils/upload.cloudinary.js";
+import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.cloudinary.js";
 
 @injectable()
 export class AgencyPackageService implements IAgencyPackageService {
@@ -71,5 +71,17 @@ export class AgencyPackageService implements IAgencyPackageService {
     logger.info(packageData)
     await packageData.save()
     return toPackageResDTO(packageData)
+  }
+
+  async deleteImage(id: string, index: number): Promise<PackageResDTO> {
+    const packageData = await this._agencyPackeageRepository.findById(id)
+    if (!packageData) throw new DataNotFoundError()
+    const publicId = await extractPublicId(packageData.images[index])
+    const deletedInCloudinary = await deleteImage(publicId)
+    if (!deletedInCloudinary) throw new DataNotFoundError()
+    packageData.images.splice(index, 1)
+    const update = await packageData.save()
+    if (update) return toPackageResDTO(packageData)
+    throw new DataNotFoundError()
   }
 }

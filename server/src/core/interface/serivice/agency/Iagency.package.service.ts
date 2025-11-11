@@ -5,4 +5,5 @@ export interface IAgencyPackageService{
   addPackage(data:PackageDTO,files:{ [fieldname: string]: Express.Multer.File[] }):Promise<{ data: PackageResDTO[]; total: number; page: number; totalPages: number; }>;
   getAllPackage(page:number):Promise<{ data: PackageResDTO[]; total: number; page: number; totalPages: number; }>;
   updatePackage(id:string,data:PackageDTO,files:{ [fieldname: string]: Express.Multer.File[] }):Promise<PackageResDTO>;
+  deleteImage(id:string,index:number):Promise<PackageResDTO>;
 }
