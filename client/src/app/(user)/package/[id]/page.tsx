@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import api from '@/services/api';
+import { useRouter } from 'next/navigation';
 import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
 import {
@@ -43,6 +44,7 @@ export default function PackageDetailsPage() {
   const { id } = useParams();
   const [pack, setPack] = useState<PackageData | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter()
 
   useEffect(() => {
     if (id) fetchPackageDetails(id as string);
@@ -196,7 +198,8 @@ export default function PackageDetailsPage() {
                 </ul>
               </div>
             ))}
-            <button className="mt-3 w-full px-4 py-2 bg-emerald-500 text-white text-sm rounded-lg hover:bg-emerald-600">
+            <button className="mt-3 w-full px-4 py-2 bg-emerald-500 text-white text-sm rounded-lg hover:bg-emerald-600"
+            onClick={()=> router.push('/payment')}>
               Book Now
             </button>
           </div>
