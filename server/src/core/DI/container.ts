@@ -36,6 +36,10 @@ import { IUserHotelsController } from '../../core/interface/controllerInterface/
 import { UserHotelsController } from '../../controllers/userController/user.hotels.controller.js';
 import { IUserHotelsService } from '../../core/interface/serivice/user/IUser.hotels.service.js';
 import { UserHotelsService } from '../../services/user/user.hotels.service.js';
+import { IUserPaymentController } from '../../core/interface/controllerInterface/user/Iuser.payment.controller.js';
+import { UserPaymentController } from '../../controllers/payment.controller.js';
+import { IUserPaymentService } from '../../core/interface/serivice/user/Iuser.payment.service.js';
+import { UserPaymentService } from '../../services/payment.service.js';
 
 // ----------------------------------------------------admin--------------------------------------------------------------------
 import { IAdminAuthService } from '../interface/serivice/admin/IAdmin.auth.service.js';
@@ -137,7 +141,9 @@ container.bind<IUserProfileService>('IUserProfileService').to(UserProfileService
 container.bind<IUserPackageController>('IUserPackageController').to(UserPackageController);
 container.bind<IUserPackageService>('IUserPackageService').to(UserPackageSerivce);
 container.bind<IUserHotelsController>('IUserHotelsController').to(UserHotelsController);
-container.bind<IUserHotelsService>('IUserHotelsService').to(UserHotelsService)
+container.bind<IUserHotelsService>('IUserHotelsService').to(UserHotelsService);
+container.bind<IUserPaymentController>('IUserPaymentController').to(UserPaymentController);
+container.bind<IUserPaymentService>('IUserPaymentService').to(UserPaymentService)
 
 // -----------------------------------------------------admin containers----------------------------------------------------------------------
 container.bind<IAdminAuthController>('IAdminAuthController').to(AdminAuthController);

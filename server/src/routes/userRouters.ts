@@ -5,6 +5,7 @@ import authRouter from './userRoute/user.auth.js';
 import profileRouter from './userRoute/user.profile.js';
 import userPackageRouter from './userRoute/user.package.routes.js';
 import UserHotelsRouter from './userRoute/user.hotels.routes.js';
+import paymentRouter from './userRoute/user.payments.routes.js';
 
 const userRouter = Router();
 
@@ -14,5 +15,6 @@ userRouter.use('/auth', authRouter)
 .use('/profile', verifyToken, profileRouter)
 .use('/packages', userPackageRouter)
 .use('/hotels', UserHotelsRouter)
+.use('/payments', paymentRouter)
 
 export default userRouter;

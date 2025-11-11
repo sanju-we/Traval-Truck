@@ -30,6 +30,7 @@
     "@types/node": "^20.19.12",
     "@types/nodemailer": "^7.0.1",
     "@types/streamifier": "^0.1.2",
+    "@types/stripe": "^8.0.416",
     "@typescript-eslint/eslint-plugin": "^8.44.1",
     "@typescript-eslint/parser": "^8.44.1",
     "chai": "^5.3.1",

@@ -124,3 +124,9 @@ export class Files_Missing extends HttpError {
     super(STATUS_CODE.BAD_REQUEST, 'Images are missing');
   }
 }
+
+export class Transfer_Error extends HttpError {
+  constructor() {
+    super(STATUS_CODE.BAD_REQUEST, 'Transaction Failed');
+  }
+}

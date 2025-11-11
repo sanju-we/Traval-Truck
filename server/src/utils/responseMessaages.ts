@@ -66,4 +66,7 @@ export enum MESSAGES {
   OTP_RESENT = 'OTP resent successfully',
   OTP_SENT = 'OTP sent successfully',
   OTP_VERIFIED = 'OTP verified successfully',
+
+  // -------------------- Payment --------------------
+  PAYMENT_SUCCESS = 'Payment transacrion successfully conpleted'
 }
