@@ -15,5 +15,6 @@ roomsRouter
   .patch('/updateStatus', asyncHandler(RoomsController.updateRoomStatus.bind(RoomsController)))
   .patch('/updateBlock', asyncHandler(RoomsController.updateBlock.bind(RoomsController)))
   .patch('/update/:id', upload.array('Images',10), asyncHandler(RoomsController.updateRoom.bind(RoomsController)))
+  .patch('/deleteImage/:id',asyncHandler(RoomsController.deleteSingleImage.bind(RoomsController)))
 
 export default roomsRouter

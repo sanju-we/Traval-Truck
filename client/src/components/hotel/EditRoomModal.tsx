@@ -10,6 +10,7 @@ import { ImageCropperModal } from './ImageCropperModal';
 import { X, Crop } from 'lucide-react';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
+import ConfirmModal from '../common/ConfirmModal';
 
 interface EditRoomModalProps {
   room: IRoom;
@@ -39,6 +40,8 @@ export default function EditRoomModal({ room, isOpen, onClose, onSave }: EditRoo
   const [images, setImages] = useState<string[]>(room.Images || []);
   const [croppingImage, setCroppingImage] = useState<string | null>(null);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -56,8 +59,32 @@ export default function EditRoomModal({ room, isOpen, onClose, onSave }: EditRoo
     }
   };
 
-  const handleDeleteImage = (index: number) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
+  const removeImage = async (index: number) => {
+    try {
+      if (!formData.id) {
+        console.error("❌ No room ID found");
+        toast.error("Room Is missing!");
+        return;
+      }
+
+      const { data } = await api.patch(
+        `/hotel/rooms/deleteImage/${formData.id}`,
+        { index },
+        { headers: { "Content-Type": "application/json" } }
+      );
+
+      console.log("🟢 Response:", data);
+
+      if (data.success) {
+        toast.success("Image deleted successfully!");
+        setImages((prev) => prev.filter((_, i) => i !== index));
+      } else {
+        toast.error(data.message || "Failed to delete image");
+      }
+    } catch (error: any) {
+      console.error("🔥 Delete image error:", error.response || error);
+      toast.error("Something went wrong while deleting image");
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -185,11 +212,15 @@ export default function EditRoomModal({ room, isOpen, onClose, onSave }: EditRoo
                   <div key={index} className="relative w-32 h-32">
                     <img src={img} className="w-full h-full object-cover rounded" />
                     <button
-                      onClick={() => handleDeleteImage(index)}
-                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
-                    >
-                      <X size={14} />
-                    </button>
+                        type="button"
+                        onClick={() => {
+                          setDeleteIndex(index);
+                          setShowConfirm(true);
+                        }}
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
+                      >
+                        <X size={12} />
+                      </button>
                     <button
                       onClick={() => setCroppingImage(img)}
                       className="absolute bottom-1 right-1 bg-black/50 text-white rounded-full p-1"
@@ -219,6 +250,22 @@ export default function EditRoomModal({ room, isOpen, onClose, onSave }: EditRoo
           onSave={(cropped) => setImages((prev) => [...prev, cropped])}
         />
       )}
+      {showConfirm && deleteIndex !== null && (
+              <ConfirmModal
+                show={showConfirm}
+                title="Delete Image?"
+                description="Are you sure you want to permanently delete this image from the package?"
+                onConfirm={async () => {
+                  await removeImage(deleteIndex);
+                  setShowConfirm(false);
+                  setDeleteIndex(null);
+                }}
+                onCancel={() => {
+                  setShowConfirm(false);
+                  setDeleteIndex(null);
+                }}
+              />
+            )}
     </>
   );
 }

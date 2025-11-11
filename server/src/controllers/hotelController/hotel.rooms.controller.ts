@@ -68,4 +68,11 @@ export class HotelRoomsController implements IHotelRoomsController {
     const updatedRoom = await this._roomService.updateRoom(data,id,allFiles)
     sendResponse(res,STATUS_CODE.OK,true,MESSAGES.UPDATED,updatedRoom)
   }
+
+  async deleteSingleImage(req: Request, res: Response): Promise<void> {
+      const index = req.body.index;
+      const id = req.params.id;
+      const updated = await this._roomService.deleteSingleImage(id,index)
+      sendResponse(res,STATUS_CODE.OK,true,MESSAGES.DELETED,updated);
+  }
 }

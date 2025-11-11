@@ -21,7 +21,7 @@ const RoomsSchema: Schema = new Schema({
      Count: { type: Number },
   },
   AvailableCount: { type: Number },
-  Status: { type: String, enum: [ 'Available', 'Occupid', 'Maintenance' ] },
+  Status: { type: String, enum: [ 'Available', 'Occupid', 'Maintance' ] },
   CreatedAt: { type: Date },
   HotelId: { type: Schema.Types.ObjectId },
   isBlocked:{type:Boolean,default : false}

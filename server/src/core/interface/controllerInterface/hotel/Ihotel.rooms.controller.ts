@@ -8,4 +8,5 @@ export interface IHotelRoomsController{
   updateBlock(req:Request,res:Response):Promise<void>;
   getEditRoom(req:Request,res:Response):Promise<void>;
   updateRoom(req:Request,res:Response):Promise<void>;
+  deleteSingleImage(req:Request,res:Response):Promise<void>;
 }

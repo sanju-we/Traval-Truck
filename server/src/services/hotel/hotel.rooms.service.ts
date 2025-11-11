@@ -2,7 +2,7 @@ import z from "zod";
 import { RoomsDTO, toRoomsDTO } from "../../core/DTO/hotel/roomsDTO.js";
 import { IHotelRoomsService } from "../../core/interface/serivice/hotel/Ihotel.rooms.service.js";
 import { logger } from "../../utils/logger.js";
-import { singleUpload } from "../../utils/upload.cloudinary.js";
+import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.cloudinary.js";
 import { IHotelRoomsRepository } from "../../core/interface/repositorie/Hotel/Ihotel.rooms.repository.js";
 import { inject, injectable } from "inversify";
 import { DataNotFoundError } from "../../utils/resAndErrors.js";
@@ -12,7 +12,7 @@ import { IAuthValidator } from "../../core/interface/validator/Iauth.validator.j
 export class HotelRoomsService implements IHotelRoomsService {
   constructor(
     @inject('IHotelRoomsRepository') private readonly _roomsRepo: IHotelRoomsRepository,
-    @inject('IAuthValidator') private readonly _authValidator : IAuthValidator
+    @inject('IAuthValidator') private readonly _authValidator: IAuthValidator
   ) { }
 
   async getAllRooms(hotelID: string): Promise<RoomsDTO[]> {
@@ -41,8 +41,8 @@ export class HotelRoomsService implements IHotelRoomsService {
   }
 
   async updateStatus(data: { id: string, status: string }): Promise<RoomsDTO> {
-    
-    await this._authValidator.updateStatusValidator(data.id,data.status)
+
+    await this._authValidator.updateStatusValidator(data.id, data.status)
     const update = await this._roomsRepo.update(data.id, { ['Status']: data.status })
     if (update) return toRoomsDTO(update)
     throw new DataNotFoundError()
@@ -56,17 +56,17 @@ export class HotelRoomsService implements IHotelRoomsService {
     schema.parse(data)
     const update = await this._roomsRepo.update(data.id, { isBlocked: data.status })
     if (update) return toRoomsDTO(update)
-      throw new DataNotFoundError()
+    throw new DataNotFoundError()
   }
-  
+
   async getEditRoom(id: string): Promise<RoomsDTO> {
     const schema = z.string().min(10)
     schema.parse(id)
     const room = await this._roomsRepo.findById(id)
     if (room) return toRoomsDTO(room)
-      throw new DataNotFoundError()
+    throw new DataNotFoundError()
   }
-  
+
   async updateRoom(data: Partial<RoomsDTO>, id: string, files: Express.Multer.File[]): Promise<RoomsDTO> {
     const roomSchema = z.object({
       Capacity: z.string().regex(/^\d+$/, "Capacity must be a numeric string"),
@@ -74,7 +74,7 @@ export class HotelRoomsService implements IHotelRoomsService {
       Facilities: z.array(z.string().min(1, "Facility name cannot be empty")),
       PricePerNight: z.string().regex(/^\d+$/, "PricePerNight must be a numeric string"),
       RoomNumber: z.string().regex(/^\d+$/, "RoomNumber must be a numeric string"),
-      Status: z.enum(["Available", "Unavailable", "Occupid"]),
+      Status: z.enum(["Available", "Occupid","Maintance"]),
       isBlocked: z.enum(["true", "false"])
     })
     const schema = z.string().length(24, "id must be a valid MongoDB ObjectId");
@@ -86,8 +86,20 @@ export class HotelRoomsService implements IHotelRoomsService {
       let url = await singleUpload(img, 'Travel-Travel-Document')
       Image.push(url)
     }
-    const updatedRoom = await this._roomsRepo.update(id, {...data,Images:Image})
+    const updatedRoom = await this._roomsRepo.update(id, { ...data, Images: Image })
     if (updatedRoom) return toRoomsDTO(updatedRoom)
     throw new DataNotFoundError()
+  }
+
+  async deleteSingleImage(id: string, index: number): Promise<RoomsDTO> {
+    const room = await this._roomsRepo.findById(id);
+    if (!room) throw new DataNotFoundError()
+    const publicId = await extractPublicId(room.Images[index]);
+    logger.info(`publidId ${publicId}`)
+    const deleted = await deleteImage(publicId);
+    if(!deleted) throw new DataNotFoundError()
+    room.Images.splice(index,1);
+    await room.save()
+    return toRoomsDTO(room)
   }
 }

@@ -7,5 +7,6 @@ export interface IHotelRoomsService {
   updateStatus(data:{id:string,status:string}):Promise<RoomsDTO>;
   updateBlock(data:{id:string,status:boolean}):Promise<RoomsDTO>;
   getEditRoom(id:string):Promise<RoomsDTO>;
-  updateRoom(data:Partial<RoomsDTO>,id:string,files:Express.Multer.File[]) : Promise<RoomsDTO>
+  updateRoom(data:Partial<RoomsDTO>,id:string,files:Express.Multer.File[]) : Promise<RoomsDTO>;
+  deleteSingleImage(id:string,index:number):Promise<RoomsDTO>;
 }

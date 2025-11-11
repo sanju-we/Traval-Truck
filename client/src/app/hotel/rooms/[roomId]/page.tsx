@@ -206,7 +206,6 @@ export default function RoomDetails() {
       <div className="flex gap-4">
         <Button variant="secondary" onClick={() => tongleStatus(room.id)}>{room.Status == 'Available' ? 'Mark as Maintenance' : 'Mark as Available'}</Button>
         <Button variant={room.isBlocked ? 'default' : 'danger'} onClick={() => tongleBlock(room.id)}>{room.isBlocked ? 'Enable Room' : 'Disable Room'}</Button>
-        <Button variant="outline" >Edit Room</Button>
       </div>
       {openEdit && (
         <EditRoomModal

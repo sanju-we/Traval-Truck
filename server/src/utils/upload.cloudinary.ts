@@ -1,5 +1,7 @@
 import cloudinary from '../config/cloudinary.js';
 import streamifier from 'streamifier';
+import { logger } from './logger.js';
+import { Files_Missing } from './resAndErrors.js';
 
 export const singleUpload = (file: Express.Multer.File, folder: string): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -28,14 +30,14 @@ export const multipleUploads = async (
 export const deleteImage = async (publicId: string): Promise<string> => {
   try {
     const result = await cloudinary.uploader.destroy(publicId);
-    console.log(`result = ${JSON.stringify(result)}`);
+    logger.error(`result = ${JSON.stringify(result)}`);
 
     if (result.result !== 'ok') {
-      throw new Error('Failed to delete image from Cloudinary');
+      throw new Files_Missing()
     }
     return result;
   } catch (error) {
-    console.error('Error deleting image from Cloudinary:', error);
+    logger.error('Error deleting image from Cloudinary:', error);
     throw new Error('Error deleting image from Cloudinary');
   }
 };
