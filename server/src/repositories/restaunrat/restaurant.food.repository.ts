@@ -10,20 +10,23 @@ export class RestaurantFoodRepository extends BaseRepository<IFoods> implements 
     super(Foods)
   }
 
-  async findAllFoodsWithPartners(page: number, lim?: number): Promise<{ data: foodDTO[]; total: number; page: number; totalPages: number; }> {
+  async findAllFoodsWithPartners(page: number, lim?: number,search?:string): Promise<{ data: foodDTO[]; total: number; page: number; totalPages: number; }> {
       const limit = lim || 6;
     const skip = (page - 1) * limit;
+    const searchFilter = search
+    ? { Name: { $regex: search, $options: 'i' } }
+    : {};
 
     const [packages, total] = await Promise.all([
       // .populate('RestaurantId')
-      Foods.find()
+      Foods.find(searchFilter)
         .skip(skip)
         .limit(limit)
         .lean(),
       Foods.countDocuments()
     ]);
 
-    if (!packages.length) throw new Data_Creation_Error();
+    // if (!packages.length) throw new Data_Creation_Error();
 
     return {
       data: packages.map(toFoodDTO),

@@ -52,9 +52,9 @@ export default function ExplorePage() {
 
       if (!res?.data?.success) return toast.error('Failed to fetch data');
 
-      const { data, totalPages } = res.data.data;
+      const { data, totalPages } = res.data.data || [];
 
-      if (type === 'packages') setPackages(data || []);
+      if (type === 'packages') setPackages(data ? data : []);
       if (type === 'rooms') setRooms(data || []);
       if (type === 'foods') setFoods(data || []);
 

@@ -4,18 +4,22 @@ import { IHotelRoomsRepository } from "../../core/interface/repositorie/Hotel/Ih
 import { BaseRepository } from "../../repositories/baseRepository.js";
 import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors.js";
 import { toRoomsDTO, RoomsDTO } from "../../core/DTO/hotel/roomsDTO.js";
+import { logger } from "../../utils/logger.js";
 
 export class HotelRoomsRepository extends BaseRepository<IRooms> implements IHotelRoomsRepository {
   constructor() {
     super(Rooms)
   }
 
-  async findAllPackageWithPartners(page = 1, lim?: number): Promise<{ data: RoomsDTO[], total: number, page: number, totalPages: number }> {
+  async findAllPackageWithPartners(page = 1, lim?: number, search?:string): Promise<{ data: RoomsDTO[], total: number, page: number, totalPages: number }> {
     const limit = lim || 6;
     const skip = (page - 1) * limit;
-
+    const searchFilter = search
+    ? { RoomNumber: Number(search) }
+    : {};
+    logger.info(searchFilter)
     const [packages, total] = await Promise.all([
-      Rooms.find()
+      Rooms.find(searchFilter)
         .populate('HotelId')
         .skip(skip)
         .limit(limit)
@@ -23,7 +27,7 @@ export class HotelRoomsRepository extends BaseRepository<IRooms> implements IHot
       Rooms.countDocuments()
     ]);
 
-    if (!packages.length) throw new Data_Creation_Error();
+    // if (!packages.length) throw new Data_Creation_Error();
 
     return {
       data: packages.map(toRoomsDTO),

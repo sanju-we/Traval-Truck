@@ -9,8 +9,8 @@ export class userFoodsService implements IUserFoodsService{
   constructor(
     @inject('IRestaurantFoodRespository') private readonly _foodRepository : IRestaurantFoodRespository
   ){}
-  async getAllRooms(page: number, limit: number): Promise<{ data: foodDTO[]; total: number; page: number; totalPages: number; }> {
-      const data = await this._foodRepository.findAllFoodsWithPartners(page,limit)
+  async getAllRooms(page: number, limit: number,search?:string): Promise<{ data: foodDTO[]; total: number; page: number; totalPages: number; }> {
+      const data = await this._foodRepository.findAllFoodsWithPartners(page,limit,search)
       if(data) return data
       throw new DataNotFoundError()
   }

@@ -16,8 +16,8 @@ export class UserPackageSerivce implements IUserPackageService {
     throw new DataNotFoundError()
   }
 
-  async getAllPackage(page: number, limit: number): Promise<{ data: PackageResDTO[]; total: number; page: number; totalPages: number; }> {
-    const data = await this._packageRepo.findAllPackageWithPartners(page, limit)
+  async getAllPackage(page: number, limit: number,search?:string): Promise<{ data: PackageResDTO[]; total: number; page: number; totalPages: number; }> {
+    const data = await this._packageRepo.findAllPackageWithPartners(page, limit, search)
     if (data) return data
     throw new DataNotFoundError()
   }

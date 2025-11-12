@@ -11,19 +11,22 @@ export class AgencyPackageRepository extends BaseRepository<IPackage> implements
     super(Package)
   }
 
-  async findAllPackageWithPartners(page = 1, lim?: number): Promise<{ data: PackageResDTO[], total: number, page: number, totalPages: number }> {
+  async findAllPackageWithPartners(page = 1, lim?: number, search?:string): Promise<{ data: PackageResDTO[], total: number, page: number, totalPages: number }> {
     const limit = lim || 6; 
     const skip = (page - 1) * limit;
-
+    const searchFilter = search
+    ? { title: { $regex: search, $options: 'i' } } 
+    : {};
+    logger.info(searchFilter)
     const [packages, total] = await Promise.all([
-      Package.find()
+      Package.find(searchFilter)
         .skip(skip)
         .limit(limit)
         .lean(),
       Package.countDocuments()
     ]);
 
-    if (!packages.length) throw new DataNotFoundError();
+    // if (!packages.length) throw new DataNotFoundError();
     logger.debug('package', packages)
     return {
       data: packages.map(toPackageResDTO),

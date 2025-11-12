@@ -10,8 +10,8 @@ export class UserHotelsService implements IUserHotelsService{
     @inject('IHotelRoomsRepository') private readonly _hotelRoomRepo : IHotelRoomsRepository
   ){}
   
-  async getAllHotels(page: number, limit: number): Promise<{ data: RoomsDTO[]; total: number; page: number; totalPages: number; }> {
-      const data = await this._hotelRoomRepo.findAllPackageWithPartners(page,limit)
+  async getAllHotels(page: number, limit: number,search?:string): Promise<{ data: RoomsDTO[]; total: number; page: number; totalPages: number; }> {
+      const data = await this._hotelRoomRepo.findAllPackageWithPartners(page,limit,search)
       if(data) return data
       throw new DataNotFoundError()
   }
