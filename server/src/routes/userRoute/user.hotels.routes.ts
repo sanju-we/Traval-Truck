@@ -6,7 +6,7 @@ import { asyncHandler } from "../../middleware/asyncHandler.js";
 const UserHotelsRouter = Router()
 const userHotelsController = container.get<IUserHotelsController>('IUserHotelsController')
 
-UserHotelsRouter.get('/getAll',asyncHandler(userHotelsController.getAllHotels.bind(userHotelsController)))
-.get('/getRoom/:id',asyncHandler(userHotelsController.getRoom.bind(userHotelsController)))
+UserHotelsRouter.get('/getAll', asyncHandler(userHotelsController.getAllHotels.bind(userHotelsController)))
+  .get('/getRoom/:id', asyncHandler(userHotelsController.getRoom.bind(userHotelsController)))
 
 export default UserHotelsRouter

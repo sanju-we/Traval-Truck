@@ -29,7 +29,7 @@ export default function CheckoutForm({ amount }: { amount: number }) {
       if (result.error) {
         toast.error(result.error.message || 'Payment failed');
       } else if (result.paymentIntent?.status === 'succeeded') {
-        toast.success('🎉 Payment successful!');
+        toast.success('Payment successful!');
         router.push('/payment-success')
       }
     } catch (error) {

@@ -20,18 +20,27 @@ export class AdminVendorRepository implements IAdminVendorRepository {
     @inject('IHotelAuthRepository') private readonly _hotelRepository: IHotelAuthRepository,
     @inject('IAgencyRespository') private readonly _agencyRepository: IAgencyRespository,
     @inject('IAuthRepository') private readonly _userRepository: IAuthRepository,
-  ) {}
+  ) { }
   async findAllRequests(): Promise<vendorRequestDTO[]> {
-    const hotelDatas = await this._hotelRepository.findAllUser({ isApproved: false }, {});
-    const agencyDatas = await this._agencyRepository.findAllUser({ isApproved: false }, {});
-    const restaurantDatas = await this._restaurantRepository.findAllUser({ isApproved: false }, {});
-    logger.info(`hotelData : ${hotelDatas}`);
+    const [hotelDatas, agencyDatas, restaurantDatas] = await Promise.all([
+      this._hotelRepository.findAllUser({ isApproved: false }, {}),
+      this._agencyRepository.findAllUser({ isApproved: false }, {}),
+      this._restaurantRepository.findAllUser({ isApproved: false }, {}),
+    ]);
+
+    logger.info(`hotelData : ${JSON.stringify(hotelDatas)}`);
 
     const allData = [...hotelDatas, ...agencyDatas, ...restaurantDatas];
 
     const completeData = allData.filter((item) => {
       const bank = item.bankDetails;
-      return bank && bank.accountNumber && bank.ifscCode && bank.bankName && bank.accountHolder;
+      return (
+        bank &&
+        bank.accountNumber &&
+        bank.ifscCode &&
+        bank.bankName &&
+        bank.accountHolder
+      );
     });
 
     return completeData.map(toVendorRequestDTO);

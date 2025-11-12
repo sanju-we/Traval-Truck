@@ -83,13 +83,11 @@ export function Header() {
           </a>
         </nav>
 
-        {/* Right side */}
         <div className="flex items-center gap-4">
-          <button className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition">
+          <button className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition" onClick={() => router.push('/explore')}>
             Get Started
           </button>
 
-          {/* Notification Bell */}
           <div className="relative" ref={notifyRef}>
             <button
               onClick={() => setNotifyOpen(!notifyOpen)}
