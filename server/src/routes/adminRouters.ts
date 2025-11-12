@@ -11,7 +11,7 @@ const adminRouter = Router();
 adminRouter
   .use('/auth', adminAuthRoute)
   .use('/vendor', verifyAdminToken, adminVendorRoute)
-  .use('/subscription', adminSubscriptionRouter)
-  .use('/coupons', couponRouter);
+  .use('/subscription', verifyAdminToken, adminSubscriptionRouter)
+  .use('/coupons', verifyAdminToken, couponRouter);
 
 export default adminRouter;

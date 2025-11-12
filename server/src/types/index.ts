@@ -21,6 +21,7 @@ export interface userProfileDTO {
   profilePicture?: string;
   phoneNumber?: number;
   role: string;
+  isBlocked:boolean
 }
 
 export interface userEdit {

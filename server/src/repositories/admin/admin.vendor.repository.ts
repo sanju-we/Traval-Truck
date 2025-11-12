@@ -21,14 +21,23 @@ export class AdminVendorRepository implements IAdminVendorRepository {
     @inject('IAgencyRespository') private readonly _agencyRepository: IAgencyRespository,
     @inject('IAuthRepository') private readonly _userRepository: IAuthRepository,
   ) { }
-  async findAllRequests(): Promise<vendorRequestDTO[]> {
+  async findAllRequests(search?: string): Promise<vendorRequestDTO[]> {
+    const searchFilter = search
+      ? {
+        $or: [
+          { email: { $regex: search, $options: 'i' } },
+          { companyName: { $regex: search, $options: 'i' } },
+          { ownerName: { $regex: search, $options: 'i' } },
+        ],
+      }
+      : {};
     const [hotelDatas, agencyDatas, restaurantDatas] = await Promise.all([
-      this._hotelRepository.findAllUser({ isApproved: false }, {}),
-      this._agencyRepository.findAllUser({ isApproved: false }, {}),
-      this._restaurantRepository.findAllUser({ isApproved: false }, {}),
+      this._hotelRepository.findAllUser({ isApproved: false, ...searchFilter }, {}),
+      this._agencyRepository.findAllUser({ isApproved: false, ...searchFilter }, {}),
+      this._restaurantRepository.findAllUser({ isApproved: false, ...searchFilter }, {}),
     ]);
 
-    logger.info(`hotelData : ${JSON.stringify(hotelDatas)}`);
+    logger.info(`vendorData : ${JSON.stringify(hotelDatas)}`);
 
     const allData = [...hotelDatas, ...agencyDatas, ...restaurantDatas];
 
@@ -47,8 +56,11 @@ export class AdminVendorRepository implements IAdminVendorRepository {
   }
 
   async findAllUsers(
-    page: number = 1,
-    limit: number = 10,
+    page: number,
+    limit: number,
+    status: string,
+    role: string,
+    search: string
   ): Promise<{
     data: (vendorRequestDTO | userProfileDTO)[];
     total: number;
@@ -65,12 +77,51 @@ export class AdminVendorRepository implements IAdminVendorRepository {
       ...hotelData.map(toVendorRequestDTO),
       ...restaurantData.map(toVendorRequestDTO),
     ];
+
     const allUserDTO = [...userData.map(toUserProfileDTO)];
-    const allUsers = [...allUserDTO, ...vendorDTO];
+    let allUsers = [...allUserDTO, ...vendorDTO];
+
+    if (search && search.trim() !== '') {
+      const query = search.toLowerCase();
+      allUsers = allUsers.filter(
+        (user) =>
+          (user as userProfileDTO).name?.toLowerCase().includes(query) ||
+          user.email?.toLowerCase().includes(query) ||
+          (user as vendorRequestDTO).companyName?.toLowerCase().includes(query)
+      );
+    }
+
+    if (role && role !== '') {
+      const queryRole = role.toLowerCase();
+
+      allUsers = allUsers.filter((user) => {
+        const userRole =
+          (user as userProfileDTO).role?.toLowerCase() ||
+          (user as vendorRequestDTO).role.toLowerCase()
+
+        return userRole === queryRole;
+      });
+    }
+
+    if (status && status !== '') {
+      if (status === 'Active') {
+        allUsers = allUsers.filter(
+          (user) =>
+            (!('isBlocked' in user) || !user.isBlocked) &&
+            (!('isApproved' in user) || user.isApproved)
+        );
+      } else if (status === 'Blocked') {
+        allUsers = allUsers.filter(
+          (user) =>
+            (('isBlocked' in user) && user.isBlocked) ||
+            (('isApproved' in user) && !user.isApproved)
+        );
+      }
+    }
+
 
     const total = allUsers.length;
     const totalPages = Math.ceil(total / limit);
-
     const start = (page - 1) * limit;
     const end = start + limit;
     const paginated = allUsers.slice(start, end);
@@ -82,4 +133,5 @@ export class AdminVendorRepository implements IAdminVendorRepository {
       totalPages,
     };
   }
+
 }

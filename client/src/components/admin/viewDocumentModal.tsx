@@ -29,6 +29,8 @@ export default function ViewVendorDocumentsModal({
   const [checkedDocs, setCheckedDocs] = useState<string[]>([]);
   const [vendorId, setVendorId] = useState<string>('');
   const [role, setRole] = useState<string>('vendor');
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+
   const docEntries = Object.entries(documents || {});
 
   useEffect(() => {
@@ -39,7 +41,9 @@ export default function ViewVendorDocumentsModal({
 
   function toggleCheck(name: string) {
     setCheckedDocs((prev) =>
-      prev.includes(name) ? prev.filter((item) => item !== name) : [...prev, name],
+      prev.includes(name)
+        ? prev.filter((item) => item !== name)
+        : [...prev, name]
     );
   }
 
@@ -47,7 +51,7 @@ export default function ViewVendorDocumentsModal({
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          key="modal"
+          key="main-modal"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -81,25 +85,25 @@ export default function ViewVendorDocumentsModal({
                     </div>
 
                     <div className="flex items-center gap-3">
-                      {value!='undefined' ? (
-                        <a
-                          href={value}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 text-sm underline"
+                      {value && value !== 'undefined' ? (
+                        <button
+                          onClick={() => setPreviewImage(value)}
+                          className="text-blue-600 text-sm underline hover:text-blue-800 transition"
                         >
                           View
-                        </a>
+                        </button>
                       ) : (
                         <span className="text-gray-400 text-sm">Not Uploaded</span>
                       )}
 
-                      {value!='undefined' ? <input
-                        type="checkbox"
-                        checked={checkedDocs.includes(key)}
-                        onChange={() => toggleCheck(key)}
-                        className="w-4 h-4 accent-emerald-500"
-                      /> : ''}
+                      {value && value !== 'undefined' && (
+                        <input
+                          type="checkbox"
+                          checked={checkedDocs.includes(key)}
+                          onChange={() => toggleCheck(key)}
+                          className="w-4 h-4 accent-emerald-500"
+                        />
+                      )}
                     </div>
                   </div>
                 ))}
@@ -137,6 +141,40 @@ export default function ViewVendorDocumentsModal({
               </button>
             </div>
           </motion.div>
+
+          {/* ✅ Image Preview Modal */}
+          <AnimatePresence>
+            {previewImage && (
+              <motion.div
+                key="image-preview"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/70 z-[60] flex items-center justify-center"
+                onClick={() => setPreviewImage(null)}
+              >
+                <motion.div
+                  initial={{ scale: 0.9 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0.9 }}
+                  className="relative bg-white rounded-xl overflow-hidden max-w-2xl max-h-[80vh]"
+                  onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
+                >
+                  <img
+                    src={previewImage}
+                    alt="Document Preview"
+                    className="object-contain w-full h-full"
+                  />
+                  <button
+                    onClick={() => setPreviewImage(null)}
+                    className="absolute top-3 right-3 bg-white rounded-full p-1 shadow-md text-gray-600 hover:text-red-600"
+                  >
+                    <X size={20} />
+                  </button>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       )}
     </AnimatePresence>

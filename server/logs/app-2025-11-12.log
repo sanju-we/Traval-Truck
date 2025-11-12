@@ -13033,3 +13033,105 @@
 {"level":"info","message":"accessToken from JWT->generateToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjkzMDA4MCwiZXhwIjoxNzYyOTMwOTgwfQ.-aNnAV-fV5Wg8CMmX-CTiZUOfnGPfJjzuLcAUGFL-Lg","timestamp":"2025-11-12T06:48:00.916Z"}
 {"level":"info","message":"admin logged in success fully","timestamp":"2025-11-12T06:48:00.917Z"}
 {"level":"info","message":"admin logged in response sending successfully","timestamp":"2025-11-12T06:48:00.922Z"}
+{"level":"error","message":"Failed to verify token: jwt expired","timestamp":"2025-11-12T06:55:40.338Z"}
+{"level":"error","message":"Failed to verify token: jwt expired","timestamp":"2025-11-12T06:55:40.417Z"}
+{"level":"info","message":"from refresh token req.body : {\"accessToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZjNiNDFjYjE5MjRjYjRmN2Q1YzE4NCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzYyOTI4NDU3LCJleHAiOjE3NjI5MjkzNTd9.WplHEr4AAKRrA9SsffMMzQguNNfdYDAhFp4gagQhT6s\",\"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZjNiNDFjYjE5MjRjYjRmN2Q1YzE4NCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzYyOTI4NDU3LCJleHAiOjE3NjM1MzMyNTd9.apaea76toIKWKPjYTTkUC2IsmxN1gL1cFO9T8U6IlX0\",\"__next_hmr_refresh_hash__\":\"29180\"}","timestamp":"2025-11-12T06:55:40.440Z"}
+{"level":"info","message":"userId:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZjNiNDFjYjE5MjRjYjRmN2Q1YzE4NCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzYyOTI4NDU3LCJleHAiOjE3NjM1MzMyNTd9.apaea76toIKWKPjYTTkUC2IsmxN1gL1cFO9T8U6IlX0","timestamp":"2025-11-12T06:55:40.459Z"}
+{"level":"info","message":"decoded :[object Object]","timestamp":"2025-11-12T06:55:40.465Z"}
+{"level":"info","message":"accessToken from JWT->generateToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZjNiNDFjYjE5MjRjYjRmN2Q1YzE4NCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzYyOTMwNTQwLCJleHAiOjE3NjI5MzE0NDB9.vRYvoefBXu3SsWTkCGibP1bCEU792azKRkVekYX_BjY","timestamp":"2025-11-12T06:55:40.479Z"}
+{"level":"info","message":"User accessToken successfully recreated","timestamp":"2025-11-12T06:55:40.482Z"}
+{"level":"info","message":"from refresh token req.body : {\"accessToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZjNiNDFjYjE5MjRjYjRmN2Q1YzE4NCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzYyOTI4NDU3LCJleHAiOjE3NjI5MjkzNTd9.WplHEr4AAKRrA9SsffMMzQguNNfdYDAhFp4gagQhT6s\",\"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZjNiNDFjYjE5MjRjYjRmN2Q1YzE4NCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzYyOTI4NDU3LCJleHAiOjE3NjM1MzMyNTd9.apaea76toIKWKPjYTTkUC2IsmxN1gL1cFO9T8U6IlX0\",\"__next_hmr_refresh_hash__\":\"29180\"}","timestamp":"2025-11-12T06:55:40.489Z"}
+{"level":"info","message":"userId:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZjNiNDFjYjE5MjRjYjRmN2Q1YzE4NCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzYyOTI4NDU3LCJleHAiOjE3NjM1MzMyNTd9.apaea76toIKWKPjYTTkUC2IsmxN1gL1cFO9T8U6IlX0","timestamp":"2025-11-12T06:55:40.492Z"}
+{"level":"info","message":"decoded :[object Object]","timestamp":"2025-11-12T06:55:40.498Z"}
+{"level":"info","message":"accessToken from JWT->generateToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZjNiNDFjYjE5MjRjYjRmN2Q1YzE4NCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWF0IjoxNzYyOTMwNTQwLCJleHAiOjE3NjI5MzE0NDB9.vRYvoefBXu3SsWTkCGibP1bCEU792azKRkVekYX_BjY","timestamp":"2025-11-12T06:55:40.506Z"}
+{"level":"info","message":"User accessToken successfully recreated","timestamp":"2025-11-12T06:55:40.507Z"}
+{"level":"info","message":"from refresh token req.body : {\"__next_hmr_refresh_hash__\":\"29180\"}","timestamp":"2025-11-12T06:56:20.141Z"}
+{"level":"info","message":"Redis client connected","timestamp":"2025-11-12T07:10:08.772Z"}
+{"level":"info","message":"Database connected","timestamp":"2025-11-12T07:10:09.705Z"}
+{"level":"info","message":"Server running on http://localhost:5000","timestamp":"2025-11-12T07:10:09.712Z"}
+{"level":"info","message":"Redis client connected","timestamp":"2025-11-12T07:12:07.673Z"}
+{"level":"info","message":"Database connected","timestamp":"2025-11-12T07:12:08.849Z"}
+{"level":"info","message":"Server running on http://localhost:5000","timestamp":"2025-11-12T07:12:08.881Z"}
+{"level":"info","message":"Redis client connected","timestamp":"2025-11-12T07:19:43.000Z"}
+{"level":"info","message":"Database connected","timestamp":"2025-11-12T07:19:44.094Z"}
+{"level":"info","message":"Server running on http://localhost:5000","timestamp":"2025-11-12T07:19:44.098Z"}
+{"level":"error","message":"Failed to verify token: jwt expired","timestamp":"2025-11-12T07:20:04.974Z"}
+{"level":"info","message":"from refresh token req.body : {\"__next_hmr_refresh_hash__\":\"29180\",\"accessToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjkzMDA4MCwiZXhwIjoxNzYyOTMwOTgwfQ.-aNnAV-fV5Wg8CMmX-CTiZUOfnGPfJjzuLcAUGFL-Lg\",\"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjkzMDA4MCwiZXhwIjoxNzYzNTM0ODgwfQ.hWlUoB2Gz66H4UB_aCZ_FOM4pbfuGvBJHDizZDUW2ZA\"}","timestamp":"2025-11-12T07:20:05.095Z"}
+{"level":"info","message":"userId:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjkzMDA4MCwiZXhwIjoxNzYzNTM0ODgwfQ.hWlUoB2Gz66H4UB_aCZ_FOM4pbfuGvBJHDizZDUW2ZA","timestamp":"2025-11-12T07:20:05.104Z"}
+{"level":"info","message":"decoded :[object Object]","timestamp":"2025-11-12T07:20:05.107Z"}
+{"level":"info","message":"accessToken from JWT->generateToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjkzMjAwNSwiZXhwIjoxNzYyOTMyOTA1fQ.gPsfdEwGcIdmLdRoPpffbWIVYDm3NJ71jDs63jPvojQ","timestamp":"2025-11-12T07:20:05.114Z"}
+{"level":"info","message":"User accessToken successfully recreated","timestamp":"2025-11-12T07:20:05.117Z"}
+{"level":"info","message":"request got in here role:","timestamp":"2025-11-12T07:20:31.447Z"}
+{"level":"info","message":"data that got {\n  _id: new ObjectId('68d6f500634a89c53390addd'),\n  name: 'Sanju ',\n  email: 'sanju@gmail.com',\n  interest: [ 'Adventure', '1-2 weeks', 'Partner', 'Luxury', 'Food trips' ],\n  password: '$2b$10$jRoAeJveo2OIHazxOcW/vOfCt/RwH6eGrOdFfuAIKwK5PXs1mpQZy',\n  createdOn: 2025-09-26T18:51:49.609Z,\n  role: 'user',\n  isBlocked: false,\n  __v: 0,\n  profilePicture: 'https://res.cloudinary.com/djcbn6fkv/image/upload/v1760770964/Travel-Truck-Document/sz2wtl2sacspfufxmhvw.jpg',\n  userName: 'Saj',\n  phoneNumber: 9495806651\n}","timestamp":"2025-11-12T07:20:31.554Z"}
+{"level":"info","message":"Updated document in User with ID 68d6f500634a89c53390addd: success","timestamp":"2025-11-12T07:20:31.628Z"}
+{"level":"info","message":"Updated isBlocked for user ID 68d6f500634a89c53390addd","timestamp":"2025-11-12T07:20:31.629Z"}
+{"level":"info","message":"Redis client connected","timestamp":"2025-11-12T08:15:39.192Z"}
+{"level":"info","message":"Database connected","timestamp":"2025-11-12T08:15:40.009Z"}
+{"level":"info","message":"Server running on http://localhost:5000","timestamp":"2025-11-12T08:15:40.021Z"}
+{"level":"error","message":"Failed to verify token: jwt expired","timestamp":"2025-11-12T08:15:43.532Z"}
+{"level":"info","message":"from refresh token req.body : {\"__next_hmr_refresh_hash__\":\"29180\",\"accessToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjkzMjAwNSwiZXhwIjoxNzYyOTMyOTA1fQ.gPsfdEwGcIdmLdRoPpffbWIVYDm3NJ71jDs63jPvojQ\",\"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjkzMjAwNSwiZXhwIjoxNzYzNTM2ODA1fQ.2sY5xYHyzLIIMXYVlEmwa0w6Tnthfu5ZXi04y7B9VUQ\"}","timestamp":"2025-11-12T08:15:43.635Z"}
+{"level":"info","message":"userId:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjkzMjAwNSwiZXhwIjoxNzYzNTM2ODA1fQ.2sY5xYHyzLIIMXYVlEmwa0w6Tnthfu5ZXi04y7B9VUQ","timestamp":"2025-11-12T08:15:43.645Z"}
+{"level":"info","message":"decoded :[object Object]","timestamp":"2025-11-12T08:15:43.649Z"}
+{"level":"info","message":"accessToken from JWT->generateToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjkzNTM0MywiZXhwIjoxNzYyOTM2MjQzfQ.Dg90zSCflq50axBoVOspq1Pb-Zn1Yg41M46DattsA-o","timestamp":"2025-11-12T08:15:43.660Z"}
+{"level":"info","message":"User accessToken successfully recreated","timestamp":"2025-11-12T08:15:43.663Z"}
+{"level":"info","message":"Redis client connected","timestamp":"2025-11-12T08:21:47.997Z"}
+{"level":"info","message":"Database connected","timestamp":"2025-11-12T08:21:48.855Z"}
+{"level":"info","message":"Server running on http://localhost:5000","timestamp":"2025-11-12T08:21:48.864Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:25:29.722Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:25:29.981Z"}
+{"level":"error","message":"Failed to verify token: jwt expired","timestamp":"2025-11-12T08:32:21.322Z"}
+{"level":"info","message":"from refresh token req.body : {\"accessToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjkzNTM0MywiZXhwIjoxNzYyOTM2MjQzfQ.Dg90zSCflq50axBoVOspq1Pb-Zn1Yg41M46DattsA-o\",\"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjkzNTM0MywiZXhwIjoxNzYzNTQwMTQzfQ.Jr58Ovi_ZrXbWYoiGBGGbCWVVQ1eEx_D45wwbQcmmyM\",\"__next_hmr_refresh_hash__\":\"30228\"}","timestamp":"2025-11-12T08:32:21.704Z"}
+{"level":"info","message":"userId:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjkzNTM0MywiZXhwIjoxNzYzNTQwMTQzfQ.Jr58Ovi_ZrXbWYoiGBGGbCWVVQ1eEx_D45wwbQcmmyM","timestamp":"2025-11-12T08:32:21.770Z"}
+{"level":"info","message":"decoded :[object Object]","timestamp":"2025-11-12T08:32:21.778Z"}
+{"level":"info","message":"accessToken from JWT->generateToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjkzNjM0MSwiZXhwIjoxNzYyOTM3MjQxfQ.YRx2gDG_aojTxTymFqqP4f4jrxEOHmtUJo_s8y2FrXA","timestamp":"2025-11-12T08:32:21.812Z"}
+{"level":"info","message":"User accessToken successfully recreated","timestamp":"2025-11-12T08:32:21.824Z"}
+{"level":"error","message":"Failed to verify token: jwt expired","timestamp":"2025-11-12T08:32:21.867Z"}
+{"level":"info","message":"from refresh token req.body : {\"__next_hmr_refresh_hash__\":\"30228\",\"accessToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjkzNjM0MSwiZXhwIjoxNzYyOTM3MjQxfQ.YRx2gDG_aojTxTymFqqP4f4jrxEOHmtUJo_s8y2FrXA\",\"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjkzNjM0MSwiZXhwIjoxNzYzNTQxMTQxfQ.2N0E29EE9MPCq8Tc4ZZrWFiFympcR0Qo6Ztxz3W2UCo\"}","timestamp":"2025-11-12T08:32:21.988Z"}
+{"level":"info","message":"userId:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjkzNjM0MSwiZXhwIjoxNzYzNTQxMTQxfQ.2N0E29EE9MPCq8Tc4ZZrWFiFympcR0Qo6Ztxz3W2UCo","timestamp":"2025-11-12T08:32:21.999Z"}
+{"level":"info","message":"decoded :[object Object]","timestamp":"2025-11-12T08:32:22.002Z"}
+{"level":"info","message":"accessToken from JWT->generateToken : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ZlMjJhZjhkOWJjNDc5ZWQ2NDI1MCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjkzNjM0MiwiZXhwIjoxNzYyOTM3MjQyfQ.5in88yrBV2Oa6jcVhYS8WCHl5h9m8hRGxspluc_44is","timestamp":"2025-11-12T08:32:22.012Z"}
+{"level":"info","message":"User accessToken successfully recreated","timestamp":"2025-11-12T08:32:22.015Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:32:22.171Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:32:22.435Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:32:24.047Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:32:25.689Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:32:26.946Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:32:37.874Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:32:38.030Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:32:38.253Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:32:48.047Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:32:53.017Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:32:54.011Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:32:55.589Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:33:15.166Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:34:17.056Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:34:20.476Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:36:36.526Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:36:40.185Z"}
+{"level":"info","message":"Redis client connected","timestamp":"2025-11-12T08:38:00.734Z"}
+{"level":"info","message":"Database connected","timestamp":"2025-11-12T08:38:01.569Z"}
+{"level":"info","message":"Server running on http://localhost:5000","timestamp":"2025-11-12T08:38:01.575Z"}
+{"level":"info","message":"Redis client connected","timestamp":"2025-11-12T08:38:31.353Z"}
+{"level":"info","message":"Database connected","timestamp":"2025-11-12T08:38:32.188Z"}
+{"level":"info","message":"Server running on http://localhost:5000","timestamp":"2025-11-12T08:38:32.192Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:38:41.043Z"}
+{"level":"info","message":"Redis client connected","timestamp":"2025-11-12T08:39:14.678Z"}
+{"level":"info","message":"Database connected","timestamp":"2025-11-12T08:39:15.555Z"}
+{"level":"info","message":"Server running on http://localhost:5000","timestamp":"2025-11-12T08:39:15.567Z"}
+{"level":"info","timestamp":"2025-11-12T08:39:19.566Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:39:19.643Z"}
+{"level":"info","message":"Redis client connected","timestamp":"2025-11-12T08:39:52.418Z"}
+{"level":"info","message":"Database connected","timestamp":"2025-11-12T08:39:53.116Z"}
+{"level":"info","message":"Server running on http://localhost:5000","timestamp":"2025-11-12T08:39:53.120Z"}
+{"level":"info","message":{"search":"sanju"},"timestamp":"2025-11-12T08:40:07.094Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:40:07.164Z"}
+{"level":"info","message":"Redis client connected","timestamp":"2025-11-12T08:41:45.989Z"}
+{"level":"info","message":"Database connected","timestamp":"2025-11-12T08:41:46.873Z"}
+{"level":"info","message":"Server running on http://localhost:5000","timestamp":"2025-11-12T08:41:46.879Z"}
+{"level":"info","message":"Redis client connected","timestamp":"2025-11-12T08:42:12.755Z"}
+{"level":"info","message":"Database connected","timestamp":"2025-11-12T08:42:13.574Z"}
+{"level":"info","message":"Server running on http://localhost:5000","timestamp":"2025-11-12T08:42:13.581Z"}
+{"level":"info","message":"Redis client connected","timestamp":"2025-11-12T08:43:51.226Z"}
+{"level":"info","message":"Database connected","timestamp":"2025-11-12T08:43:52.516Z"}
+{"level":"info","message":"Server running on http://localhost:5000","timestamp":"2025-11-12T08:43:52.539Z"}
+{"level":"info","message":"hotelData : []","timestamp":"2025-11-12T08:44:37.817Z"}

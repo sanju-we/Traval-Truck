@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import api from '@/services/api';
-import { Eye } from 'lucide-react';
+import { Eye, Search, Loader2 } from 'lucide-react';
 import { SideNavbar } from '@/components/admin/SideNavbar';
 import toast from 'react-hot-toast';
 import ViewVendorDocumentsModal from '@/components/admin/viewDocumentModal';
@@ -16,6 +16,9 @@ export default function VendorRequestsPage() {
   const [selectedVendorRole, setSelectedVendorRole] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // 🔍 Search state
+  const [searchTerm, setSearchTerm] = useState('');
+
   // Dropdown state
   const [showRejectDropdown, setShowRejectDropdown] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
@@ -28,22 +31,35 @@ export default function VendorRequestsPage() {
     'Other reasons',
   ];
 
+  const fetchRequests = async (query?: string) => {
+    try {
+      setLoading(true);
+      console.log(query)
+      const res = await api.get('/admin/vendor/allRequests', {
+        params: query ? { search: query } : {},
+      });
+      setRequests(res.data.data);
+    } catch (err) {
+      console.error('Failed to fetch vendor requests:', err);
+      toast.error('Failed to fetch vendor requests');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchRequests = async () => {
-      try {
-        const res = await api.get('/admin/vendor/allRequests');
-        setRequests(res.data.data);
-      } catch (err) {
-        console.error('Failed to fetch vendor requests:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchRequests();
   }, []);
 
+  // 🟢 Debounced search effect
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      fetchRequests(searchTerm);
+    }, 800);
+    return () => clearTimeout(delay);
+  }, [searchTerm]);
+
   function handleViewDocuments(vendorDocs: any, vendorId: string, role: string) {
-    console.log(vendorDocs)
     setSelectedDocs(vendorDocs);
     setSelectedVendorId(vendorId);
     setSelectedVendorRole(role);
@@ -59,17 +75,14 @@ export default function VendorRequestsPage() {
     reason?: string,
   ) => {
     try {
-      console.log(id, action, role, reason)
       const payload = reason ? { reason } : { reason: '' };
       const res = await api.patch(`/admin/vendor/${id}/${action}/${role}`, payload);
 
       if (res.data.success) {
         toast.success(`Vendor ${action}ed successfully`);
-        const updated = await api.get('/admin/vendor/allRequests');
-        setRequests(updated.data.data);
+        fetchRequests(searchTerm);
         setIsModalOpen(false);
       } else {
-        console.log(res.data.message)
         toast.error(res.data.message);
       }
     } catch (err) {
@@ -80,20 +93,35 @@ export default function VendorRequestsPage() {
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen">
+      {/* Sidebar */}
       <div className="w-full md:w-64">
         <SideNavbar active="Requests" />
       </div>
 
       {/* Main Content */}
       <div className="flex-1 p-4 md:p-8 bg-gray-50">
-        <h1 className="text-2xl font-bold mb-6">Vendor Requests</h1>
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+          <h1 className="text-2xl font-bold">Vendor Requests</h1>
+
+          {/* 🔍 Search Bar */}
+          <div className="flex items-center bg-white shadow-sm border rounded-lg px-3 py-2 w-full sm:w-80">
+            <Search size={18} className="text-gray-500 mr-2" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by name, email, or company..."
+              className="w-full text-sm outline-none bg-transparent text-gray-700 placeholder-gray-400"
+            />
+          </div>
+        </div>
 
         {loading ? (
           <div className="flex justify-center items-center h-40">
-            <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin" />
+            <Loader2 className="animate-spin text-emerald-600" size={28} />
           </div>
         ) : requests.length === 0 ? (
-          <p className="text-gray-500">No vendor requests found.</p>
+          <p className="text-gray-500 text-center py-10">No vendor requests found.</p>
         ) : (
           <div className="overflow-x-auto bg-white shadow rounded-lg">
             <table className="w-full border-collapse min-w-[600px]">
@@ -103,9 +131,7 @@ export default function VendorRequestsPage() {
                     Vendor Name
                   </th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Email</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
-                    Company
-                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Company</th>
                   <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">Role</th>
                   <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">
                     Actions
@@ -120,16 +146,18 @@ export default function VendorRequestsPage() {
                     <td className="px-4 py-3 text-sm">{req.companyName}</td>
                     <td className="px-4 py-3 text-center text-sm">{req.role}</td>
                     <td className="px-4 py-3 flex justify-center gap-2">
-                      {(req.isApproved === false && !req.isRestricted) ? (
+                      {req.isApproved === false && !req.isRestricted ? (
                         <button
                           onClick={() =>
                             handleViewDocuments(
-                              req.documents ? {
-                                panCard: `${req.documents?.panCard}`,
-                                ownerIdProof: `${req.documents?.ownerIdProof}`,
-                                bankProof: `${req.documents?.bankProof}`,
-                                registrationCertificate: `${req.documents?.registrationCertificate}`,
-                              } : {},
+                              req.documents
+                                ? {
+                                    panCard: `${req.documents?.panCard}`,
+                                    ownerIdProof: `${req.documents?.ownerIdProof}`,
+                                    bankProof: `${req.documents?.bankProof}`,
+                                    registrationCertificate: `${req.documents?.registrationCertificate}`,
+                                  }
+                                : {},
                               req.id,
                               req.role,
                             )
@@ -140,10 +168,9 @@ export default function VendorRequestsPage() {
                         </button>
                       ) : req.isRestricted ? (
                         <span className="text-red-500 text-sm">Vendor Restricted</span>
-                      ) :
-                        (
-                          <span className="text-gray-500 text-sm">No action available</span>
-                        )}
+                      ) : (
+                        <span className="text-gray-500 text-sm">No action available</span>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -200,10 +227,11 @@ export default function VendorRequestsPage() {
                     setShowRejectDropdown(false);
                   }
                 }}
-                className={`px-4 py-2 rounded-md text-white ${rejectReason
+                className={`px-4 py-2 rounded-md text-white ${
+                  rejectReason
                     ? 'bg-red-600 hover:bg-red-700'
                     : 'bg-red-400 cursor-not-allowed'
-                  }`}
+                }`}
               >
                 Confirm Reject
               </button>

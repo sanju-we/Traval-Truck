@@ -16,25 +16,35 @@ export class AdminVendorController implements IAdminVendorController {
     @inject('IJWT') private readonly _ijwt: IJWT,
     @inject('IAdminVendorRepository') private readonly _adminVenderRepo: IAdminVendorRepository,
     @inject('IAdminVendorService') private readonly _adminVenderService: IAdminVendorService,
-  ) {}
+  ) { }
 
   async showAllRequsestes(req: Request, res: Response): Promise<void> {
-    const allReq = await this._adminVenderRepo.findAllRequests();
+    const search = req.query.search
+    const allReq = await this._adminVenderRepo.findAllRequests(search!=undefined ? String(search) : undefined);
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, allReq);
   }
 
   async showAllUsers(req: Request, res: Response): Promise<void> {
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 5;
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 5;
 
-    const { data, total, totalPages } = await this._adminVenderRepo.findAllUsers(page, limit);
+      const search = (req.query.search as string) || '';
+      const status = (req.query.status as string) || '';
+      const role = (req.query.role as string) || '';
 
-    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, {
-      data,
-      total,
-      page,
-      totalPages,
-    });
+      const { data, total, totalPages } = await this._adminVenderRepo.findAllUsers(page,limit,status,role,search);
+
+      sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, {
+        data,
+        total,
+        page,
+        totalPages,
+      });
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      sendResponse(res, STATUS_CODE.INTERNAL_SERVER_ERROR, false, 'Something went wrong.');
+    }
   }
 
   async updateStatus(req: Request, res: Response): Promise<void> {
