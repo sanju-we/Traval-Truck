@@ -18,14 +18,14 @@ export class AdminCouponService implements IAdminCouponService {
   }
 
   async addCoupon(data: CouponDTO): Promise<CouponDTO> {
-    await this._couponValidator.addCouponValidator(data)
-    const createdData = await this._couponRepository.create(data)
+    await this._couponValidator.addCouponValidator({...data,minPurchase:Number(data.minPurchase),discountValue:Number(data.discountValue)})
+    const createdData = await this._couponRepository.create({...data,minPurchase:Number(data.minPurchase),discountValue:Number(data.discountValue)})
     if (createdData) return toCouponDTO(createdData)
     throw new Data_Creation_Error()
   }
 
   async updateCoupon(id: string, data: CouponDTO): Promise<CouponDTO> {
-    await this._couponValidator.addCouponValidator(data);
+    await this._couponValidator.addCouponValidator({...data,discountValue:Number(data.discountValue)});
     await this._couponValidator.IdValidator(id);
     const update = await this._couponRepository.update(id, data);
     if (update) return toCouponDTO(update)

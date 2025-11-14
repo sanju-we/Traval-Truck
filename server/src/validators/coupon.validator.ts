@@ -31,7 +31,6 @@ export class CouponValidator implements ICouponValidator {
             return !isNaN(date.getTime()) && date > new Date();
           }, "Expiry date must be a valid future date"),
 
-        isActive: z.boolean(),
       })
       .refine(
         (data) =>
