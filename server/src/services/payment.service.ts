@@ -1,6 +1,7 @@
 import Stripe from 'stripe';
 import { IUserPaymentService } from '../core/interface/serivice/user/Iuser.payment.service.js';
-import { Transfer_Error } from '../utils/resAndErrors.js';
+import { BADREQUEST, Transfer_Error } from '../utils/resAndErrors.js';
+import { logger } from '../utils/logger.js';
 
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {

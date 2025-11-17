@@ -1,8 +1,10 @@
 import WalletSummary from '@/components/wallet/WalletSummary';
 import WalletTransactions from '@/components/wallet/WalletTransactions';
 import { getWalletData } from '@/lib/server/wallet';
+import AddMoneyButton from "@/components/wallet/AddMoneyButton";
+import AddMoneySection from '@/components/wallet/AddMoneySection';
 
-export const dynamic = 'force-dynamic'; 
+export const dynamic = 'force-dynamic';
 
 interface WalletPageProps {
   searchParams: { role?: string };
@@ -31,26 +33,26 @@ export default async function WalletPage({ searchParams }: WalletPageProps) {
           role={role}
         />
 
-        {safeWallet.notCreated && (
-          <div className="bg-white border border-gray-200 rounded-xl shadow p-6 text-center">
-            <p className="text-gray-600 mb-4">
-              Your wallet is not created yet. Add money to create your wallet.
-            </p>
+        {/* Add Money shows ALWAYS */}
+        <AddMoneySection />
 
-            <button
-              className="px-5 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition"
-            >
-              Add Money
-            </button>
+        {/* If wallet not created */}
+        {safeWallet.notCreated && (
+          <div className="bg-white rounded-xl shadow p-6 border text-center">
+            <p className="text-gray-600">Add money to create your wallet.</p>
           </div>
         )}
 
+        {/* Transactions */}
         {safeWallet.transactions.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-xl shadow p-6 text-center text-gray-500">
+          <div className="bg-white rounded-xl shadow p-6 border text-center text-gray-500">
             No transactions yet.
           </div>
         ) : (
-          <WalletTransactions transactions={safeWallet.transactions} role={role} />
+          <WalletTransactions
+            transactions={safeWallet.transactions}
+            role={role}
+          />
         )}
       </div>
     </div>

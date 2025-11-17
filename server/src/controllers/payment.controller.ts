@@ -5,6 +5,7 @@ import { sendResponse } from '../utils/resAndErrors.js';
 import { STATUS_CODE } from '../utils/HTTPStatusCode.js';
 import { MESSAGES } from '../utils/responseMessaages.js';
 import { inject, injectable } from 'inversify';
+import { logger } from '../utils/logger.js';
 
 @injectable()
 export class UserPaymentController implements IUserPaymentController {
@@ -13,7 +14,7 @@ export class UserPaymentController implements IUserPaymentController {
   ){}
   async createPayment(req: Request, res: Response): Promise<void> {
     const { amount } = req.body;
-    const clientSecret = await this._paymentService.createPaymentIntent(amount,'inr');
+    const clientSecret = await this._paymentService.createPaymentIntent(amount,'INR');
     sendResponse(res,STATUS_CODE.OK,true,MESSAGES.PAYMENT_SUCCESS,clientSecret);
   }
 }
