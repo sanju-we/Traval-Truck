@@ -10,8 +10,8 @@ import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from '@/components/utils/UserCropImage';
-import { Darumadrop_One } from 'next/font/google';
-import {UserProfile} from '@/types/user/profile';
+import { UserProfile } from '@/types/user/profile';
+import ProfileSidebar from '@/components/user/profile/ProfileSidebar';
 
 export default function UserProfilePage() {
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -24,25 +24,29 @@ export default function UserProfilePage() {
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
   const [isCropping, setIsCropping] = useState(false);
-  const [profileLoad, setProfileLoad] = useState(false)
+  const [profileLoad, setProfileLoad] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
 
   const router = useRouter();
 
+  
   useEffect(() => {
     async function fetchUser() {
       try {
         const { data } = await api.get('/user/profile/profile');
-        console.log(data.data);
         if (!data.success) {
           toast.error(data.message);
           if (data.message === 'This user is Restricted by the admin') {
             router.push('/');
           }
+          return;
         }
-
+        
         const result: UserProfile = data.data;
         setUser(result);
         setFormData(result);
+        // const res = await api.get(`/shared/wallet/user`)
+        // console.log(res)
       } catch (error) {
         console.error(error);
       } finally {
@@ -93,7 +97,7 @@ export default function UserProfilePage() {
 
   async function handleCropComplete() {
     try {
-      setProfileLoad(true)
+      setProfileLoad(true);
       const croppedImage = await getCroppedImg(imagePreview!, croppedAreaPixels);
       const ress = await fetch(croppedImage);
       const blob = await ress.blob();
@@ -102,19 +106,17 @@ export default function UserProfilePage() {
 
       const formDataImg = new FormData();
       formDataImg.append('profile', file);
-      for (const [key, value] of formDataImg.entries()) {
-        console.log("FormData =>", key, value);
-      }
       const res = await api.post('/user/profile/upload-profile', formDataImg, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       if (res.data.success) {
         if (res.data.data != null) {
-          setFormData(res.data.data)
+          setFormData(res.data.data);
+          setUser(res.data.data);
         }
         toast.success('Profile picture updated successfully!');
       }
-      setProfileLoad(false)
+      setProfileLoad(false);
       setIsCropping(false);
       setImagePreview(null);
     } catch (err) {
@@ -122,7 +124,6 @@ export default function UserProfilePage() {
       toast.error('Failed to crop image.');
     }
   }
-
 
   if (loading) {
     return (
@@ -144,63 +145,144 @@ export default function UserProfilePage() {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gray-50 py-10 px-4">
-        <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-8">
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-            <div className="relative">
+      <div className="min-h-screen bg-gray-50 py-10">
+        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow p-10">
+
+          <div className="flex flex-col items-center text-center">
+            <div className="relative group">
               <img
-                src={user.profilePicture || '/images/profile.jpg'}
-                alt="Profile"
-                className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-emerald-500 object-cover"
+                src={user.profilePicture || "/images/profile.jpg"}
+                className="w-32 h-32 rounded-full border-4 border-emerald-500 object-cover shadow-sm transition duration-300 group-hover:opacity-80"
               />
+              <label
+                htmlFor="profile-upload-hero"
+                className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 rounded-full cursor-pointer transition duration-300"
+              >
+                <Camera size={22} className="text-white drop-shadow-lg" />
+                <input
+                  id="profile-upload-hero"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </label>
             </div>
 
-            <div className="flex-1 text-center md:text-left">
-              <h2 className="text-2xl font-bold text-gray-800">{user.name}</h2>
-              <p className="text-gray-500">
-                {user.interest
-                  ? user.interest.map((val) => ` ${val} | `)
-                  : 'Traveler | Adventure Seeker'}
-              </p>
-              <div className="flex justify-center md:justify-start gap-4 mt-4">
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 flex items-center gap-2"
-                >
-                  <Edit size={16} /> Edit Profile
-                </button>
-                <button className="px-4 py-2 border border-emerald-500 text-emerald-500 rounded-lg hover:bg-emerald-50">
-                  Settings
-                </button>
-              </div>
-            </div>
+            <h2 className="mt-4 text-2xl font-bold text-gray-800">{user.name}</h2>
+            <p className="text-gray-500">@{user.userName || "traveler"}</p>
+
+            <button 
+              onClick={() => setIsEditing(true)}
+              className="mt-4 px-5 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 flex items-center gap-2 transition"
+            >
+              <Edit size={16} /> Edit Profile
+            </button>
           </div>
 
-          <div className="mt-8 grid gap-6 sm:grid-cols-2">
-            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg shadow-sm">
-              <Mail className="text-emerald-500" size={20} />
-              <div>
-                <p className="text-sm text-gray-500">Email</p>
-                <p className="font-medium text-gray-800">{user.email}</p>
+          <div className="grid grid-cols-4 gap-4 mt-10">
+            {[
+              { label: "Total Trips", value: 12 },
+              { label: "Ongoing", value: 3 },
+              { label: "Completed", value: 9 },
+              { label: "Wishlist", value: 5 },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className="border rounded-xl p-4 text-center bg-gray-50 hover:bg-gray-100 transition"
+              >
+                <p className="text-xl font-bold text-gray-700">{item.value}</p>
+                <p className="text-sm text-gray-500">{item.label}</p>
               </div>
-            </div>
-            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg shadow-sm">
-              <Phone className="text-emerald-500" size={20} />
-              <div>
-                <p className="text-sm text-gray-500">Phone</p>
-                <p className="font-medium text-gray-800">
-                  {formData.phoneNumber === 0 ? '' : formData.phoneNumber}
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
+
+          <div className="flex gap-6 mt-10 border-b pb-2 text-sm">
+            {['overview', 'history', 'wishlist', 'settings'].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`font-semibold transition ${
+                  activeTab === tab
+                    ? 'text-emerald-600'
+                    : 'text-gray-600 hover:text-gray-800'
+                }`}
+              >
+                {tab === 'overview' && 'Profile Overview'}
+                {tab === 'history' && 'Trip History'}
+                {tab === 'wishlist' && 'Wishlist'}
+                {tab === 'settings' && 'Settings'}
+              </button>
+            ))}
+          </div>
+
+          {activeTab === 'overview' && (
+            <>
+              <div className="mt-8">
+                <h3 className="font-semibold text-gray-700 mb-4">Personal Info</h3>
+
+                <div className="grid sm:grid-cols-2 gap-6 text-sm">
+                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg shadow-sm">
+                    <Mail className="text-emerald-500" size={20} />
+                    <div>
+                      <p className="text-gray-500">Email</p>
+                      <p className="font-medium text-gray-800">{user.email}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg shadow-sm">
+                    <Phone className="text-emerald-500" size={20} />
+                    <div>
+                      <p className="text-gray-500">Phone</p>
+                      <p className="font-medium text-gray-800">
+                        {formData.phoneNumber === 0 ? 'Not provided' : formData.phoneNumber}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-10">
+                <h3 className="font-semibold text-gray-700 mb-3">Your Interests</h3>
+
+                <div className="flex flex-wrap gap-2">
+                  {(user.interest || ["Beach", "Mountains", "Food"]).map((val, i) => (
+                    <span
+                      key={i}
+                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded-md text-xs"
+                    >
+                      {val}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-10">
+                <h3 className="font-semibold text-gray-700 mb-2">Achievements</h3>
+
+                <div className="flex items-center justify-between bg-emerald-50 p-4 rounded-xl">
+                  <div>
+                    <p className="font-semibold text-emerald-600 text-sm">10% off your next trip</p>
+                    <p className="text-xs text-gray-600 mt-1">
+                      Valid until December 31, 2025
+                    </p>
+                  </div>
+
+                  <img
+                    src="/images/coupon-card.png"
+                    className="w-32 rounded-lg shadow"
+                    alt="Coupon"
+                  />
+                </div>
+              </div>
+            </>
+          )}
+
         </div>
       </div>
 
       <Footer />
 
-      {/* 🆕 Edit Modal */}
-      {/* 🆕 Edit Modal with Profile Picture Cropper */}
       <AnimatePresence>
         {isEditing && (
           <motion.div
@@ -236,7 +318,7 @@ export default function UserProfilePage() {
                 Update your personal information
               </p>
 
-              {/* 🖼️ Profile Picture Upload Section */}
+              {/* Profile Picture Upload Section */}
               <div className="flex flex-col items-center mb-5">
                 <div className="relative group">
                   <img
@@ -244,12 +326,11 @@ export default function UserProfilePage() {
                       formData.profilePicture ||
                       user.profilePicture ||
                       '/images/profile.jpg'
-                    }
+                     || "/placeholder.svg"}
                     alt="Profile Preview"
                     className="w-28 h-28 rounded-full object-cover border-4 border-emerald-500 transition duration-300 group-hover:opacity-80"
                   />
 
-                  {/* Camera Overlay */}
                   <label
                     htmlFor="profile-upload"
                     className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 rounded-full cursor-pointer transition duration-300"
@@ -267,7 +348,7 @@ export default function UserProfilePage() {
                 <p className="text-sm text-gray-500 mt-2">Click the camera to change photo</p>
               </div>
 
-              {/* 🧾 Form Fields */}
+              {/* Form Fields */}
               <form onSubmit={handleFormSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
@@ -332,6 +413,8 @@ export default function UserProfilePage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Image Cropper Modal */}
       {isCropping && (
         <div className="fixed inset-0 bg-black/60 flex flex-col items-center justify-center z-50">
           <div className="relative bg-white rounded-2xl w-[90%] max-w-lg h-[500px] overflow-hidden">
@@ -347,7 +430,6 @@ export default function UserProfilePage() {
               onCropComplete={(_, croppedAreaPixels) => setCroppedAreaPixels(croppedAreaPixels)}
             />
 
-            {/* Zoom Slider */}
             <div className="absolute bottom-20 left-0 right-0 flex justify-center">
               <input
                 type="range"
@@ -360,7 +442,6 @@ export default function UserProfilePage() {
               />
             </div>
 
-            {/* Buttons */}
             <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4">
               <button
                 onClick={() => setIsCropping(false)}
@@ -378,7 +459,6 @@ export default function UserProfilePage() {
           </div>
         </div>
       )}
-
     </>
   );
 }

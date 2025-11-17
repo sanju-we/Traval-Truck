@@ -17,6 +17,14 @@ import { SubscriptionValidator } from '../../validators/subscription.validator.j
 import { ICouponValidator } from '../../core/interface/validator/Icoupon.validator.js';
 import { CouponValidator } from '../../validators/coupon.validator.js';
 
+// ------------------------------------------------------shares-------------------------------------------------------------
+import { IWalletService } from '../interface/serivice/shared/IWaller.service.js';
+import { WalletService } from '../../services/shared/wallet.service.js';
+import { ISharedWalletController } from '../../core/interface/controllerInterface/shared/Ishared.wallet.controller.js';
+import { SharedWalletController } from '../../controllers/sharedController/shared.wallet.controller.js';
+import { IWalletRespository } from '../../core/interface/repositorie/shared/IWallet.repository.js';
+import { WalletRespository } from '../../repositories/shared/wallet.repository.js';
+
 // ----------------------------------------------------user-------------------------------------------------------------
 import { IAuthService } from '../../core/interface/serivice/user/auth.interface.js';
 import { IAuthRepository } from '../interface/repositorie/IAuth.Repository.js';
@@ -134,7 +142,12 @@ container.bind<IEmailService>('IEmailService').to(EmailService).inSingletonScope
 container.bind<IGeneralService>('IGeneralService').to(GeneralService).inSingletonScope();
 container.bind<IAuthValidator>('IAuthValidator').to(authValidator);
 container.bind<ISubscriptionValidator>('ISubscriptionValidator').to(SubscriptionValidator);
-container.bind<ICouponValidator>('ICouponValidator').to(CouponValidator)
+container.bind<ICouponValidator>('ICouponValidator').to(CouponValidator);
+
+// -------------------------------------------------------Shared container-----------------------------------------------------------
+container.bind<IWalletService>('IWalletService').to(WalletService);
+container.bind<ISharedWalletController>('ISharedWalletController').to(SharedWalletController);
+container.bind<IWalletRespository>('IWalletRespository').to(WalletRespository)
 
 // ---------------------------------------------------user container-------------------------------------------------------------------------
 container.bind<IAuthRepository>('IAuthRepository').to(AuthRepository);
@@ -149,7 +162,7 @@ container.bind<IUserHotelsService>('IUserHotelsService').to(UserHotelsService);
 container.bind<IUserPaymentController>('IUserPaymentController').to(UserPaymentController);
 container.bind<IUserPaymentService>('IUserPaymentService').to(UserPaymentService);
 container.bind<IUserFoodsController>('IUserFoodsController').to(userFoodsController);
-container.bind<IUserFoodsService>('IUserFoodsService').to(userFoodsService)
+container.bind<IUserFoodsService>('IUserFoodsService').to(userFoodsService);
 
 // -----------------------------------------------------admin containers----------------------------------------------------------------------
 container.bind<IAdminAuthController>('IAdminAuthController').to(AdminAuthController);

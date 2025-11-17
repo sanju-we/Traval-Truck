@@ -26,14 +26,14 @@ export async function verifyToken(req: Request, res: Response, next: NextFunctio
       authHeader && authHeader.startsWith('Bearer ')
         ? authHeader.split(' ')[1]
         : req.cookies?.accessToken;
-
     if (!token) {
       return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
     }
-
+    logger.info(token)
     const payload = jwt.verify(token, secret) as { id: string; role: string };
+    logger.info('sanju')
     if (!payload) return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
-
+    
     const user = await User.findById(payload.id);
     if (!user) {
       ijwt.blacklistRefreshToken(res);
@@ -44,7 +44,7 @@ export async function verifyToken(req: Request, res: Response, next: NextFunctio
       return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
     }
 
-    if (user.isBlocked) {
+    if (user.isBlocked) { 
       res.clearCookie('accessToken', { httpOnly: true, secure: false, sameSite: 'lax' });
       throw new RESTRICTED_USER();
     }
@@ -220,3 +220,16 @@ export async function verifyAdminToken(req: Request, res: Response, next: NextFu
     sendResponse(res, status, false, message);
   }
 }
+
+export async function checkRole(req: Request, res: Response, next: NextFunction) {
+  const role = req.params.role;
+  if (role === 'user') {
+    logger.info(role)
+    return verifyToken(req, res, next)
+  }
+  else if (role === 'admin') return verifyAdminToken(req, res, next);
+  else if (role === 'agency') return verifyAgencyToken(req, res, next);
+  else if (role === 'hotel') return verifyHotelToken(req, res, next);
+  else if (role === 'restaurant') return verifyRestaurantToken(req, res, next);
+  else throw new UNAUTHORIZEDUserFounf()
+} 

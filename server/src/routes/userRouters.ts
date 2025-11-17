@@ -14,9 +14,9 @@ const userRouter = Router();
 userRouter.use('/auth', authRouter)
 .use('/refresh', authRouter)
 .use('/profile', verifyToken, profileRouter)
-.use('/packages', userPackageRouter)
-.use('/hotels', UserHotelsRouter)
-.use('/payments', paymentRouter)
-.use('/foods', userFoodsRouter)
+.use('/packages', verifyToken, userPackageRouter)
+.use('/hotels', verifyToken, UserHotelsRouter)
+.use('/payments', verifyToken, paymentRouter)
+.use('/foods', verifyToken, userFoodsRouter)
 
 export default userRouter;

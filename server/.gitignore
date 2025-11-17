@@ -2,3 +2,4 @@ node_modules
 .env
 server/logs/app.log
 logs
+logs/.045562a53331a53893af5f29ffa7a6caf2efd76c-audit.json
