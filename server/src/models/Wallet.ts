@@ -3,11 +3,12 @@ import { IWallet } from "../core/interface/modelInterface/IWaller.js";
 
 const WalletSchema: Schema = new Schema({
   UserId: { type: Schema.Types.ObjectId },
-  Transacion: [{
+  Transaction: [{
     Type: { type: String, enum: ['credit', 'debit'] },
     Amount: { type: Number },
     Description: { type: String },
     Date: { type: Date },
+    paymentIntentId: { type: String }
   }],
   Balance: { type: Number },
 });

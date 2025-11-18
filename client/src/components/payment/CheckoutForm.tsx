@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '@/services/api';
 
-export default function CheckoutForm({ amount }: { amount: number }) {
+export default function CheckoutForm({ amount, role, onClose }: { amount: number, role: string, onClose: () => void }) {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -21,16 +21,24 @@ export default function CheckoutForm({ amount }: { amount: number }) {
 
     try {
       const { data } = await api.post('/user/payments/create-payment', { amount });
+      console.log('data',data)
 
-      const result = await stripe.confirmCardPayment(data.data, {
+      const result = await stripe.confirmCardPayment(data.data[0], {
         payment_method: { card: elements.getElement(CardElement)! },
       });
-
+      
       if (result.error) {
         toast.error(result.error.message || 'Payment failed');
       } else if (result.paymentIntent?.status === 'succeeded') {
-        toast.success('Payment successful!');
-        router.push('/payment-success')
+        const body = {paymentIntentId: data.data[1], amount: amount}
+        const res = await api.post(`/shared/wallet/${role}/add-money`, body)
+        if (res.data.success) {
+          toast.success('Payment successful!');
+          onClose();
+          router.push('/wallet?role=user');
+        }else{
+          toast.error(res.data.message)
+        }
       }
     } catch (error) {
       toast.error('Something went wrong!');

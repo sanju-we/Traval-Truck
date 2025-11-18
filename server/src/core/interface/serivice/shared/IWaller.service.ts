@@ -1,5 +1,7 @@
+import { IWallet } from "../../../../core/interface/modelInterface/IWaller.js";
 import { WallterDTO } from "../../../../core/DTO/shared/wallet.dto.js";
 
 export interface IWalletService{
   getWallet(id:string):Promise<WallterDTO>;
+  addMoney(paymentIntentId:string,amount:number,id:string):Promise<IWallet | {valid:boolean,message:string}>;
 }

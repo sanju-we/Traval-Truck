@@ -29,9 +29,7 @@ export async function verifyToken(req: Request, res: Response, next: NextFunctio
     if (!token) {
       return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
     }
-    logger.info(token)
     const payload = jwt.verify(token, secret) as { id: string; role: string };
-    logger.info('sanju')
     if (!payload) return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
     
     const user = await User.findById(payload.id);
@@ -39,17 +37,18 @@ export async function verifyToken(req: Request, res: Response, next: NextFunctio
       ijwt.blacklistRefreshToken(res);
       return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'User not found');
     }
-
+    
     if (payload.role !== 'user') {
       return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
     }
-
+    
     if (user.isBlocked) { 
       res.clearCookie('accessToken', { httpOnly: true, secure: false, sameSite: 'lax' });
       throw new RESTRICTED_USER();
     }
-
+    
     req.user = userSignupDTO(user);
+    logger.info('duck')
 
     next();
   } catch (error) {
@@ -224,7 +223,7 @@ export async function verifyAdminToken(req: Request, res: Response, next: NextFu
 export async function checkRole(req: Request, res: Response, next: NextFunction) {
   const role = req.params.role;
   if (role === 'user') {
-    logger.info(role)
+    logger.debug(`fuck you ${role}`)
     return verifyToken(req, res, next)
   }
   else if (role === 'admin') return verifyAdminToken(req, res, next);

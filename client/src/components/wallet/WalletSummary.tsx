@@ -1,12 +1,12 @@
 interface WalletSummaryProps {
-  balance: number;
+  Balance: number;
   totalTransactions: number;
   lastUpdated: string;
   role: string;
 }
 
 export default function WalletSummary({
-  balance,
+  Balance,
   totalTransactions,
   lastUpdated,
   role,
@@ -15,7 +15,7 @@ export default function WalletSummary({
     <div className="bg-white rounded-2xl shadow-md p-6 grid sm:grid-cols-3 gap-6 border border-gray-100">
       <div>
         <p className="text-sm text-gray-500">Available Balance</p>
-        <h2 className="text-2xl font-semibold text-emerald-600">₹{balance.toFixed(2)}</h2>
+        <h2 className="text-2xl font-semibold text-emerald-600">₹{Balance ? Balance.toFixed(2) : 0}</h2>
       </div>
 
       <div>

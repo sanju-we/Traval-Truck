@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { IUserPaymentService } from '../core/interface/serivice/user/Iuser.payment.service.js';
+import { IPaymentUtils } from '../core/interface/PaymentInterface/Ipayment.utils.js';
 import { IUserPaymentController } from '../core/interface/controllerInterface/user/Iuser.payment.controller.js';
 import { sendResponse } from '../utils/resAndErrors.js';
 import { STATUS_CODE } from '../utils/HTTPStatusCode.js';
@@ -10,7 +10,7 @@ import { logger } from '../utils/logger.js';
 @injectable()
 export class UserPaymentController implements IUserPaymentController {
   constructor(
-    @inject('IUserPaymentService') private readonly _paymentService : IUserPaymentService
+    @inject('IPaymentUtils') private readonly _paymentService : IPaymentUtils
   ){}
   async createPayment(req: Request, res: Response): Promise<void> {
     const { amount } = req.body;

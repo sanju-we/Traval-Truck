@@ -27,30 +27,27 @@ export default async function WalletPage({ searchParams }: WalletPageProps) {
         <h1 className="text-2xl font-bold text-gray-800">Wallet</h1>
 
         <WalletSummary
-          balance={safeWallet.balance}
-          totalTransactions={safeWallet.transactions.length}
+          Balance={safeWallet.Balance}
+          totalTransactions={safeWallet.Transaction ? safeWallet.Transaction.length : 0}
           lastUpdated={safeWallet.lastUpdated || 'Not Created'}
           role={role}
         />
 
-        {/* Add Money shows ALWAYS */}
         <AddMoneySection />
 
-        {/* If wallet not created */}
         {safeWallet.notCreated && (
           <div className="bg-white rounded-xl shadow p-6 border text-center">
             <p className="text-gray-600">Add money to create your wallet.</p>
           </div>
         )}
 
-        {/* Transactions */}
-        {safeWallet.transactions.length === 0 ? (
+        {safeWallet.Transaction?.length === 0 ? (
           <div className="bg-white rounded-xl shadow p-6 border text-center text-gray-500">
             No transactions yet.
           </div>
         ) : (
           <WalletTransactions
-            transactions={safeWallet.transactions}
+            transactions={safeWallet.Transaction}
             role={role}
           />
         )}

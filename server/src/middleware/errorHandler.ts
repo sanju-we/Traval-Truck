@@ -15,10 +15,10 @@ export function errorHandler(err: any, req: Request, res: Response, next: NextFu
 
 
   logger.error('--- Error Handler ---');
-  logger.error('Name:', err.name);
-  logger.info(err);
-  logger.error('Message:', err.message);
-  if (err.stack) logger.error('Stack:', err.stack);
+  logger.error(`Name: ${err.name}`);
+  logger.error(err);
+  logger.error(`Message: ${err.message}`);
+  if (err.stack) logger.error(`Stack: ${err.stack}`);
   logger.error('----------------------');
 
   if (err instanceof ZodError) {

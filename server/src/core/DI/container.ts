@@ -16,6 +16,8 @@ import { ISubscriptionValidator } from '../../core/interface/validator/Isubscrip
 import { SubscriptionValidator } from '../../validators/subscription.validator.js';
 import { ICouponValidator } from '../../core/interface/validator/Icoupon.validator.js';
 import { CouponValidator } from '../../validators/coupon.validator.js';
+import { IPaymentValidator } from '../../core/interface/validator/Ipayment.validator.js';
+import { PaymentValidator } from '../../validators/payment.validator.js';
 
 // ------------------------------------------------------shares-------------------------------------------------------------
 import { IWalletService } from '../interface/serivice/shared/IWaller.service.js';
@@ -46,8 +48,8 @@ import { IUserHotelsService } from '../../core/interface/serivice/user/IUser.hot
 import { UserHotelsService } from '../../services/user/user.hotels.service.js';
 import { IUserPaymentController } from '../../core/interface/controllerInterface/user/Iuser.payment.controller.js';
 import { UserPaymentController } from '../../controllers/payment.controller.js';
-import { IUserPaymentService } from '../../core/interface/serivice/user/Iuser.payment.service.js';
-import { UserPaymentService } from '../../services/payment.service.js';
+import { IPaymentUtils } from '../interface/PaymentInterface/Ipayment.utils.js';
+import { PaymentUtils } from '../../utils/payment.utils.js';
 import { IUserFoodsController } from '../../core/interface/controllerInterface/user/IUser.foods.controller.js';
 import { userFoodsController } from '../../controllers/userController/user.foods.controller.js';
 import { IUserFoodsService } from '../../core/interface/serivice/user/IUser.foods.service.js';
@@ -143,6 +145,7 @@ container.bind<IGeneralService>('IGeneralService').to(GeneralService).inSingleto
 container.bind<IAuthValidator>('IAuthValidator').to(authValidator);
 container.bind<ISubscriptionValidator>('ISubscriptionValidator').to(SubscriptionValidator);
 container.bind<ICouponValidator>('ICouponValidator').to(CouponValidator);
+container.bind<IPaymentValidator>('IPaymentValidator').to(PaymentValidator)
 
 // -------------------------------------------------------Shared container-----------------------------------------------------------
 container.bind<IWalletService>('IWalletService').to(WalletService);
@@ -160,7 +163,7 @@ container.bind<IUserPackageService>('IUserPackageService').to(UserPackageSerivce
 container.bind<IUserHotelsController>('IUserHotelsController').to(UserHotelsController);
 container.bind<IUserHotelsService>('IUserHotelsService').to(UserHotelsService);
 container.bind<IUserPaymentController>('IUserPaymentController').to(UserPaymentController);
-container.bind<IUserPaymentService>('IUserPaymentService').to(UserPaymentService);
+container.bind<IPaymentUtils>('IPaymentUtils').to(PaymentUtils);
 container.bind<IUserFoodsController>('IUserFoodsController').to(userFoodsController);
 container.bind<IUserFoodsService>('IUserFoodsService').to(userFoodsService);
 

@@ -36,10 +36,9 @@ export default function AddMoneyButton({ amount }: { amount: number }) {
               Add Money to Wallet
             </h2>
 
-            {/* Stripe Elements Checkout */}
-            <StripeProvider>
+            {/* <StripeProvider>
               <CheckoutForm amount={amount} />
-            </StripeProvider>
+            </StripeProvider> */}
           </div>
         </div>
       )}

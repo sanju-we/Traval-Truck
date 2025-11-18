@@ -68,5 +68,9 @@ export enum MESSAGES {
   OTP_VERIFIED = 'OTP verified successfully',
 
   // -------------------- Payment --------------------
-  PAYMENT_SUCCESS = 'Payment transacrion successfully conpleted'
+  PAYMENT_SUCCESS = 'Payment transacrion successfully completed',
+  PAYMENT_NOT_FOUND = 'PaymentIntent not found',
+  PAYMENT_NOT_COMPLETED = "Payment not completed",
+  PAYMENT_AMOUNT_MISMATCH = "Amount mismatch detected",
+  PAYMENT_VERIFY_SUCCESS = "Payment verifycation completed"
 }

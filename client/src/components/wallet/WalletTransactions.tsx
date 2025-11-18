@@ -1,9 +1,9 @@
 interface Transaction {
   _id: string;
-  amount: number;
-  type: 'credit' | 'debit';
-  description: string;
-  createdAt: string;
+  Amount: number;
+  Type: 'credit' | 'debit';
+  Description: string;
+  Date: string;
 }
 
 interface WalletTransactionsProps {
@@ -29,17 +29,17 @@ export default function WalletTransactions({ transactions }: WalletTransactionsP
         {transactions.map((txn) => (
           <div key={txn._id} className="flex justify-between px-6 py-3 text-sm">
             <div>
-              <p className="font-medium text-gray-800">{txn.description}</p>
+              <p className="font-medium text-gray-800">{txn.Description}</p>
               <p className="text-gray-500 text-xs">
-                {new Date(txn.createdAt).toLocaleString()}
+                {new Date(txn.Date).toLocaleString()}
               </p>
             </div>
             <p
               className={`font-semibold ${
-                txn.type === 'credit' ? 'text-emerald-600' : 'text-red-500'
+                txn.Type === 'credit' ? 'text-emerald-600' : 'text-red-500'
               }`}
             >
-              {txn.type === 'credit' ? '+' : '-'}₹{txn.amount.toFixed(2)}
+              {txn.Type === 'credit' ? '+' : '-'}₹{txn.Amount.toFixed(2)}
             </p>
           </div>
         ))}
