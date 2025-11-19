@@ -10,7 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 });
 
 export class PaymentUtils implements IPaymentUtils {
-  async createPaymentIntent(amount: number, currency: string): Promise<string> {
+  async createPaymentIntent(amount: number, currency: string): Promise<string[]> {
     if (amount < 50) throw new BADREQUEST()
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount * 100,
@@ -18,7 +18,7 @@ export class PaymentUtils implements IPaymentUtils {
       payment_method_types: ['card'],
     });
 
-    if (paymentIntent.client_secret) return paymentIntent?.client_secret;
+    if (paymentIntent.client_secret) return [paymentIntent.client_secret,paymentIntent.id];
     throw new Transfer_Error()
   }
 

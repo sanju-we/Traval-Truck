@@ -12,7 +12,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { inject, injectable } from 'inversify';
 import { logger } from '../../utils/logger.js';
-import z from 'zod';
 import { sendResponse } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
@@ -22,19 +21,7 @@ let AdminSubscriptionController = class AdminSubscriptionController {
         this._adminSubcriptionService = _adminSubcriptionService;
     }
     async addSubscription(req, res) {
-        const schema = z.object({
-            Name: z.string().min(3),
-            Amount: z.number().gt(0),
-            Category: z.string(),
-            Description: z.string().min(10),
-            Duration: z.object({
-                startingDate: z.string(),
-                endingDate: z.string(),
-            }),
-            Features: z.array(z.string().min(3)),
-            Valid: z.number().gt(0),
-        });
-        const formData = schema.parse(req.body);
+        const formData = req.body;
         const data = await this._adminSubcriptionService.addSub(formData);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.CREATED, data);
     }
@@ -44,19 +31,7 @@ let AdminSubscriptionController = class AdminSubscriptionController {
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, data);
     }
     async updateSubscription(req, res) {
-        const schema = z.object({
-            Name: z.string().min(3),
-            Amount: z.number().gt(0),
-            Category: z.string(),
-            Description: z.string().min(10),
-            Duration: z.object({
-                startingDate: z.string(),
-                endingDate: z.string(),
-            }),
-            Features: z.array(z.string().min(3)),
-            Valid: z.number().gt(0),
-        });
-        const formData = schema.parse(req.body);
+        const formData = req.body;
         const id = req.params.id;
         const data = await this._adminSubcriptionService.editSubscription(formData, id);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.CREATED, data);

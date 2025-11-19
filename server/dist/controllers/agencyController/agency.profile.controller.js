@@ -14,7 +14,6 @@ import { inject, injectable } from 'inversify';
 import { BADREQUEST, sendResponse, UserNotFoundError } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
-import z from 'zod';
 import { logger } from '../../utils/logger.js';
 import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
 let AgencyProfileController = class AgencyProfileController {
@@ -35,18 +34,7 @@ let AgencyProfileController = class AgencyProfileController {
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS);
     }
     async update(req, res) {
-        const schema = z.object({
-            ownerName: z.string(),
-            companyName: z.string(),
-            phone: z.string(),
-            bankDetails: z.object({
-                accountHolder: z.string(),
-                accountNumber: z.string(),
-                bankName: z.string(),
-                ifscCode: z.string(),
-            }),
-        });
-        const { ownerName, companyName, phone, bankDetails } = schema.parse(req.body);
+        const { ownerName, companyName, phone, bankDetails } = req.body;
         const agencyId = req.user.id;
         const updatedAgency = await this._agencyProfileService.updateProfile(agencyId, {
             ownerName,

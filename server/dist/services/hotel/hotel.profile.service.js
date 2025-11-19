@@ -16,10 +16,13 @@ import { toVendorRequestDTO, } from '../../core/DTO/admin/vendor.response.dto/ve
 import { deleteImage, extractPublicId, singleUpload } from '../../utils/upload.cloudinary.js';
 let HotelProfileService = class HotelProfileService {
     _hotelAuthRepo;
-    constructor(_hotelAuthRepo) {
+    _authValidator;
+    constructor(_hotelAuthRepo, _authValidator) {
         this._hotelAuthRepo = _hotelAuthRepo;
+        this._authValidator = _authValidator;
     }
     async updateProfile(id, data) {
+        await this._authValidator.profileUpdateValidator(data.ownerName, data.companyName, data.phone, data.bankDetails);
         const hotel = await this._hotelAuthRepo.findById(id);
         if (!hotel)
             throw new UserNotFoundError();
@@ -62,6 +65,7 @@ let HotelProfileService = class HotelProfileService {
 HotelProfileService = __decorate([
     injectable(),
     __param(0, inject('IHotelAuthRepository')),
-    __metadata("design:paramtypes", [Object])
+    __param(1, inject('IAuthValidator')),
+    __metadata("design:paramtypes", [Object, Object])
 ], HotelProfileService);
 export { HotelProfileService };

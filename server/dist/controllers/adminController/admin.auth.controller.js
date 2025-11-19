@@ -11,26 +11,19 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from 'inversify';
-import z from 'zod';
 import { HttpError } from '../../utils/resAndErrors.js';
 import { sendResponse } from '../../utils/resAndErrors.js';
 import { logger } from '../../utils/logger.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 let AdminAuthController = class AdminAuthController {
     _IJWT;
-    _authRepository;
     _adminauthService;
-    constructor(_IJWT, _authRepository, _adminauthService) {
+    constructor(_IJWT, _adminauthService) {
         this._IJWT = _IJWT;
-        this._authRepository = _authRepository;
         this._adminauthService = _adminauthService;
     }
     async login(req, res) {
-        const schema = z.object({
-            email: z.string(),
-            password: z.string().min(8),
-        });
-        const { email, password } = schema.parse(req.body);
+        const { email, password } = req.body;
         const data = await this._adminauthService.verifyAdminEmail(email, password);
         await this._IJWT.setTokenInCookies(res, data.accessToken, data.refreshToken);
         logger.info(`admin logged in response sending successfully`);
@@ -57,8 +50,7 @@ let AdminAuthController = class AdminAuthController {
 AdminAuthController = __decorate([
     injectable(),
     __param(0, inject('IJWT')),
-    __param(1, inject('IAuthRepository')),
-    __param(2, inject('IAdminAuthService')),
-    __metadata("design:paramtypes", [Object, Object, Object])
+    __param(1, inject('IAdminAuthService')),
+    __metadata("design:paramtypes", [Object, Object])
 ], AdminAuthController);
 export { AdminAuthController };

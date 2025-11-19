@@ -13,49 +13,23 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 import z from "zod";
 import { toRoomsDTO } from "../../core/DTO/hotel/roomsDTO.js";
 import { logger } from "../../utils/logger.js";
-import { singleUpload } from "../../utils/upload.cloudinary.js";
+import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.cloudinary.js";
 import { inject, injectable } from "inversify";
 import { DataNotFoundError } from "../../utils/resAndErrors.js";
 let HotelRoomsService = class HotelRoomsService {
     _roomsRepo;
-    constructor(_roomsRepo) {
+    _authValidator;
+    constructor(_roomsRepo, _authValidator) {
         this._roomsRepo = _roomsRepo;
+        this._authValidator = _authValidator;
     }
     async getAllRooms(hotelID) {
         const allData = await this._roomsRepo.findAllUser({ HotelId: hotelID }, {});
         return allData.map(toRoomsDTO);
     }
     async addRoom(data, file) {
-        const roomSchema = z.object({
-            Facilities: z
-                .string(),
-            Capacity: z
-                .union([z.string(), z.number()])
-                .transform((val) => Number(val))
-                .refine((val) => !isNaN(val) && val > 0, {
-                message: "Capacity must be a valid positive number",
-            }),
-            Description: z
-                .string()
-                .min(3, { message: "Description must be at least 3 characters long" }),
-            PricePerNight: z
-                .union([z.string(), z.number()])
-                .transform((val) => Number(val))
-                .refine((val) => !isNaN(val) && val >= 0, {
-                message: "Price must be a valid non-negative number",
-            }),
-            RoomNumber: z
-                .union([z.string(), z.number()])
-                .transform((val) => Number(val))
-                .refine((val) => !isNaN(val), {
-                message: "Room number must be a valid number",
-            }),
-            roomType: z
-                .string()
-                .min(2, { message: "Room type must be at least 2 characters long" }),
-        });
+        await this._authValidator.RoomValidator(data);
         logger.info(data.Images);
-        roomSchema.parse(data);
         let Image = [];
         for (let img of file) {
             let url = await singleUpload(img, 'Travel-Travel-Document');
@@ -73,11 +47,7 @@ let HotelRoomsService = class HotelRoomsService {
         throw new DataNotFoundError();
     }
     async updateStatus(data) {
-        const schema = z.object({
-            id: z.string().min(10),
-            status: z.enum(['Available', 'Maintance'])
-        });
-        schema.parse(data);
+        await this._authValidator.updateStatusValidator(data.id, data.status);
         const update = await this._roomsRepo.update(data.id, { ['Status']: data.status });
         if (update)
             return toRoomsDTO(update);
@@ -109,7 +79,7 @@ let HotelRoomsService = class HotelRoomsService {
             Facilities: z.array(z.string().min(1, "Facility name cannot be empty")),
             PricePerNight: z.string().regex(/^\d+$/, "PricePerNight must be a numeric string"),
             RoomNumber: z.string().regex(/^\d+$/, "RoomNumber must be a numeric string"),
-            Status: z.enum(["Available", "Unavailable", "Occupid"]),
+            Status: z.enum(["Available", "Occupid", "Maintance"]),
             isBlocked: z.enum(["true", "false"])
         });
         const schema = z.string().length(24, "id must be a valid MongoDB ObjectId");
@@ -126,10 +96,24 @@ let HotelRoomsService = class HotelRoomsService {
             return toRoomsDTO(updatedRoom);
         throw new DataNotFoundError();
     }
+    async deleteSingleImage(id, index) {
+        const room = await this._roomsRepo.findById(id);
+        if (!room)
+            throw new DataNotFoundError();
+        const publicId = await extractPublicId(room.Images[index]);
+        logger.info(`publidId ${publicId}`);
+        const deleted = await deleteImage(publicId);
+        if (!deleted)
+            throw new DataNotFoundError();
+        room.Images.splice(index, 1);
+        await room.save();
+        return toRoomsDTO(room);
+    }
 };
 HotelRoomsService = __decorate([
     injectable(),
     __param(0, inject('IHotelRoomsRepository')),
-    __metadata("design:paramtypes", [Object])
+    __param(1, inject('IAuthValidator')),
+    __metadata("design:paramtypes", [Object, Object])
 ], HotelRoomsService);
 export { HotelRoomsService };

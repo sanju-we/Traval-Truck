@@ -1,24 +1,28 @@
 import Rooms from "../../models/Rooms.js";
 import { BaseRepository } from "../../repositories/baseRepository.js";
-import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors.js";
+import { DataNotFoundError } from "../../utils/resAndErrors.js";
 import { toRoomsDTO } from "../../core/DTO/hotel/roomsDTO.js";
+import { logger } from "../../utils/logger.js";
 export class HotelRoomsRepository extends BaseRepository {
     constructor() {
         super(Rooms);
     }
-    async findAllPackageWithPartners(page = 1, lim) {
+    async findAllPackageWithPartners(page = 1, lim, search) {
         const limit = lim || 6;
         const skip = (page - 1) * limit;
+        const searchFilter = search
+            ? { RoomNumber: Number(search) }
+            : {};
+        logger.info(searchFilter);
         const [packages, total] = await Promise.all([
-            Rooms.find()
+            Rooms.find(searchFilter)
                 .populate('HotelId')
                 .skip(skip)
                 .limit(limit)
                 .lean(),
             Rooms.countDocuments()
         ]);
-        if (!packages.length)
-            throw new Data_Creation_Error();
+        // if (!packages.length) throw new Data_Creation_Error();
         return {
             data: packages.map(toRoomsDTO),
             total,

@@ -20,7 +20,7 @@ export default function CheckoutForm({ amount, role, onClose }: { amount: number
     setLoading(true);
 
     try {
-      const { data } = await api.post('/user/payments/create-payment', { amount });
+      const { data } = await api.post(`/shared/payments/${role}/create-payment`, { amount });
       console.log('data',data)
 
       const result = await stripe.confirmCardPayment(data.data[0], {
@@ -35,7 +35,7 @@ export default function CheckoutForm({ amount, role, onClose }: { amount: number
         if (res.data.success) {
           toast.success('Payment successful!');
           onClose();
-          router.push('/wallet?role=user');
+          router.push(`/wallet?role=${role}`);
         }else{
           toast.error(res.data.message)
         }

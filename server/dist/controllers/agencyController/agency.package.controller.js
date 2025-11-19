@@ -12,7 +12,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { logger } from "../../utils/logger.js";
 import { inject, injectable } from "inversify";
-import { sendResponse } from "../../utils/resAndErrors.js";
+import { BADREQUEST, sendResponse } from "../../utils/resAndErrors.js";
 import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
 import { MESSAGES } from "../../utils/responseMessaages.js";
 let agencyPackageController = class agencyPackageController {
@@ -28,8 +28,28 @@ let agencyPackageController = class agencyPackageController {
     }
     async addPackage(req, res) {
         const data = req.body;
-        const createdData = await this._packageService.addPackage(data);
+        const files = req.files;
+        if (!files)
+            throw new BADREQUEST();
+        logger.info('onn vada');
+        const createdData = await this._packageService.addPackage(data, files);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.CREATED, createdData);
+    }
+    async updatePackage(req, res) {
+        logger.info('yup');
+        const data = req.body;
+        const id = req.params.id;
+        const files = req.files;
+        if (!files)
+            throw new BADREQUEST();
+        const updateData = await this._packageService.updatePackage(id, data, files);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updateData);
+    }
+    async deleteSingleImage(req, res) {
+        const index = req.body.index;
+        const id = req.params.id;
+        const updated = await this._packageService.deleteImage(id, index);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DELETED, updated);
     }
 };
 agencyPackageController = __decorate([

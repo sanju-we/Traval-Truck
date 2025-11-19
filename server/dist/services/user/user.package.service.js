@@ -23,8 +23,8 @@ let UserPackageSerivce = class UserPackageSerivce {
             return data.data;
         throw new DataNotFoundError();
     }
-    async getAllPackage(page, limit) {
-        const data = await this._packageRepo.findAllPackageWithPartners(page, limit);
+    async getAllPackage(page, limit, search) {
+        const data = await this._packageRepo.findAllPackageWithPartners(page, limit, search);
         if (data)
             return data;
         throw new DataNotFoundError();

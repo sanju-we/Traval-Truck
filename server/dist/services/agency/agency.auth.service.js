@@ -14,32 +14,22 @@ import { logger } from '../../utils/logger.js';
 import { inject, injectable } from 'inversify';
 import { toAgencyProfileDTO, } from '../../core/DTO/agency/response/agency.profile.js';
 import { OtpExpiredError, InvalidOtpError, EmailAlreadyRegisteredError, UserNotFoundError, InvalidCredentialsError, } from '../../utils/resAndErrors.js';
-import z from 'zod';
 import bcrypt from 'bcryptjs';
 let agencyAuthService = class agencyAuthService {
     _redisClient;
     _agencyRepository;
     _ijwt;
     _emailService;
-    constructor(_redisClient, _agencyRepository, _ijwt, _emailService) {
+    _authValidator;
+    constructor(_redisClient, _agencyRepository, _ijwt, _emailService, _authValidator) {
         this._redisClient = _redisClient;
         this._agencyRepository = _agencyRepository;
         this._ijwt = _ijwt;
         this._emailService = _emailService;
+        this._authValidator = _authValidator;
     }
     async verifyAgencySignup(enteredEmail, enteredOtp, agencyData) {
-        const schema = z.object({
-            email: z.string(),
-            otp: z.string(),
-            agencyData: z.object({
-                ownerName: z.string(),
-                companyName: z.string(),
-                email: z.string(),
-                password: z.string(),
-                phone: z.number(),
-            }),
-        });
-        schema.parse({ email: enteredEmail, otp: enteredOtp, agencyData: agencyData });
+        await this._authValidator.signUpValidator(enteredEmail, enteredOtp, agencyData);
         const pending = await this._redisClient.get(`pending:${enteredEmail}`);
         if (!pending)
             throw new OtpExpiredError();
@@ -68,11 +58,7 @@ let agencyAuthService = class agencyAuthService {
         return { agencyData: toAgencyProfileDTO(agencyDoc), accessToken, refreshToken };
     }
     async verifyAgencyLogin(email, password) {
-        const schema = z.object({
-            email: z.string(),
-            password: z.string(),
-        });
-        schema.parse({ email, password });
+        await this._authValidator.loginValidator(email, password);
         const agency = await this._agencyRepository.findByEmail(email);
         if (!agency)
             throw new UserNotFoundError();
@@ -86,10 +72,7 @@ let agencyAuthService = class agencyAuthService {
         return { agencyData: toAgencyProfileDTO(agency), accessToken, refreshToken };
     }
     async sendAgencyResetLink(email) {
-        const schema = z.object({
-            email: z.string().email(),
-        });
-        schema.parse({ email });
+        await this._authValidator.emailValidator(email);
         const agencyData = await this._agencyRepository.findByEmail(email);
         if (!agencyData)
             throw new UserNotFoundError();
@@ -99,6 +82,7 @@ let agencyAuthService = class agencyAuthService {
         logger.info(`From agencyAuth->sendLink:- Password reset link sent to ${email}`);
     }
     async resetPassword(token, newPassword) {
+        await this._authValidator.resetPasswordValidator(token, newPassword);
         const payload = await this._ijwt.verifyResetToken(token);
         const agency = await this._agencyRepository.findById(payload.id);
         if (!agency)
@@ -126,6 +110,7 @@ agencyAuthService = __decorate([
     __param(1, inject('IAgencyRespository')),
     __param(2, inject('IJWT')),
     __param(3, inject('IEmailService')),
-    __metadata("design:paramtypes", [Object, Object, Object, Object])
+    __param(4, inject('IAuthValidator')),
+    __metadata("design:paramtypes", [Object, Object, Object, Object, Object])
 ], agencyAuthService);
 export { agencyAuthService };

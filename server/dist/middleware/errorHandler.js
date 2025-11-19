@@ -10,11 +10,11 @@ export function errorHandler(err, req, res, next) {
         message = err.message;
     }
     logger.error('--- Error Handler ---');
-    logger.error('Name:', err.name);
-    logger.info(err);
-    logger.error('Message:', err.message);
+    logger.error(`Name: ${err.name}`);
+    logger.error(err);
+    logger.error(`Message: ${err.message}`);
     if (err.stack)
-        logger.error('Stack:', err.stack);
+        logger.error(`Stack: ${err.stack}`);
     logger.error('----------------------');
     if (err instanceof ZodError) {
         status = 400;

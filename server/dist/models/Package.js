@@ -1,9 +1,4 @@
-import mongoose, { Schema, model } from 'mongoose';
-export const dining = {
-    Cuisines: String,
-    Image: String,
-    Name: String,
-};
+import { Schema, model } from 'mongoose';
 export const itinerary = {
     activities: [String],
     day: Number,
@@ -31,14 +26,10 @@ const packageSchema = new Schema({
     description: {
         type: String,
     },
-    hotels: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Partner' }],
-    discoveries: {
-        type: [String],
-    },
-    dining: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Partner' }],
     availableFoods: { type: [String] },
     itinerary: { type: [itinerary] },
     reviews: { type: [reviews] },
     CreatedBy: { type: Date, default: new Date() },
+    images: { type: [String], required: true }
 });
 export const Package = model('Package', packageSchema);

@@ -27,9 +27,10 @@ let UserPackageController = class UserPackageController {
     }
     async getAllPackage(req, res) {
         const { page, limit } = req.query;
+        const search = req.query.search;
         if (!page || !limit)
             throw new BADREQUEST();
-        const data = await this._userPackageService.getAllPackage(Number(page), Number(limit));
+        const data = await this._userPackageService.getAllPackage(Number(page), Number(limit), search != undefined ? String(search) : '');
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, data);
     }
     async getPackage(req, res) {

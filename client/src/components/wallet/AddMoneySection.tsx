@@ -4,11 +4,25 @@ import { useState } from "react";
 import StripeProvider from "@/components/payment/StripeProvider";
 import CheckoutForm from "@/components/payment/CheckoutForm";
 import { X } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 export default function AddMoneySection() {
   const [amount, setAmount] = useState<number | "">("");
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
+
+  const searchParams = useSearchParams();
+  const rawRole = searchParams.get("role");
+
+  // ⭐ Validate role safely
+  const role =
+    rawRole === "user" ||
+    rawRole === "admin" ||
+    rawRole === "hotel" ||
+    rawRole === "agency" ||
+    rawRole === "restaurant"
+      ? rawRole
+      : "user";
 
   const handleAmountChange = (value: string) => {
     const num = Number(value);
@@ -21,11 +35,7 @@ export default function AddMoneySection() {
 
     setAmount(num);
 
-    if (num < 50) {
-      setError("Minimum amount is ₹50");
-    } else {
-      setError("");
-    }
+    setError(num < 50 ? "Minimum amount is ₹50" : "");
   };
 
   const handleOpen = () => {
@@ -38,7 +48,6 @@ export default function AddMoneySection() {
 
   return (
     <>
-      {/* Add Money Card */}
       <div className="bg-white rounded-xl shadow p-6 border border-gray-200">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">
           Add Money to Wallet
@@ -78,11 +87,10 @@ export default function AddMoneySection() {
         </div>
       </div>
 
-      {/* Stripe Modal */}
       {open && (
         <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
           <div className="bg-white rounded-xl p-6 w-[95%] max-w-md relative shadow-2xl">
-            {/* Close button */}
+
             <button
               className="absolute top-3 right-3 text-gray-600 hover:text-red-500"
               onClick={() => setOpen(false)}
@@ -94,10 +102,14 @@ export default function AddMoneySection() {
               Add ₹{amount}
             </h2>
 
-            {/* Stripe Checkout */}
             <StripeProvider>
-              <CheckoutForm amount={Number(amount)} role="user" onClose={() => setOpen(false)}/>
+              <CheckoutForm
+                amount={Number(amount)}
+                role={role}              
+                onClose={() => setOpen(false)}
+              />
             </StripeProvider>
+
           </div>
         </div>
       )}

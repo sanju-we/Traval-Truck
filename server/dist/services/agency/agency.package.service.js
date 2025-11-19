@@ -11,32 +11,93 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from "inversify";
-import { Data_Creation_Error } from "../../utils/resAndErrors.js";
+import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors.js";
+import { toPackageResDTO } from "../../core/DTO/agency/response/agency.packageDTO.js";
 import { logger } from "../../utils/logger.js";
+import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.cloudinary.js";
 let AgencyPackageService = class AgencyPackageService {
     _agencyPackeageRepository;
-    _agencyValidator;
-    constructor(_agencyPackeageRepository, _agencyValidator) {
+    _authValidator;
+    constructor(_agencyPackeageRepository, _authValidator) {
         this._agencyPackeageRepository = _agencyPackeageRepository;
-        this._agencyValidator = _agencyValidator;
+        this._authValidator = _authValidator;
     }
     async getAllPackage(page) {
         const allPackage = await this._agencyPackeageRepository.findAllPackageWithPartners(page);
         return allPackage;
     }
-    async addPackage(data) {
-        const validateData = await this._agencyValidator.addPackageValidator(data);
-        logger.info('data:', data);
-        const packageData = await this._agencyPackeageRepository.create(validateData);
+    async addPackage(data, files) {
+        logger.info('enththio?');
+        if (typeof data.discoveries === 'string') {
+            data.discoveries = JSON.parse(data.discoveries);
+        }
+        if (typeof data.availableFoods === 'string') {
+            data.availableFoods = JSON.parse(data.availableFoods);
+        }
+        if (typeof data.itinerary === 'string') {
+            data.itinerary = JSON.parse(data.itinerary);
+        }
+        await this._authValidator.addPackageValidator(data);
+        let images = [];
+        for (const fieldname in files) {
+            const fileArray = files[fieldname];
+            for (const file of fileArray) {
+                const result = await singleUpload(file, "Travel-Truck-Vendor-Document");
+                images.push(result);
+            }
+        }
+        const packageData = await this._agencyPackeageRepository.create({ ...data, images: images });
         if (packageData)
             return await this.getAllPackage(1);
         throw new Data_Creation_Error();
+    }
+    async updatePackage(id, data, files) {
+        if (typeof data.discoveries === 'string') {
+            data.discoveries = JSON.parse(data.discoveries);
+        }
+        if (typeof data.availableFoods === 'string') {
+            data.availableFoods = JSON.parse(data.availableFoods);
+        }
+        if (typeof data.itinerary === 'string') {
+            data.itinerary = JSON.parse(data.itinerary);
+        }
+        await this._authValidator.addPackageValidator(data);
+        let images = [];
+        logger.info(files);
+        for (const fieldname in files) {
+            const fileArray = files[fieldname];
+            for (const file of fileArray) {
+                const result = await singleUpload(file, "Travel-Truck-Vendor-Document");
+                images.push(result);
+            }
+        }
+        const packageData = await this._agencyPackeageRepository.update(id, data);
+        if (!packageData)
+            throw new DataNotFoundError();
+        packageData.images.push(...images);
+        logger.info(packageData);
+        await packageData.save();
+        return toPackageResDTO(packageData);
+    }
+    async deleteImage(id, index) {
+        const packageData = await this._agencyPackeageRepository.findById(id);
+        if (!packageData)
+            throw new DataNotFoundError();
+        const publicId = await extractPublicId(packageData.images[index]);
+        const deletedInCloudinary = await deleteImage(publicId);
+        if (!deletedInCloudinary)
+            throw new DataNotFoundError();
+        packageData.images.splice(index, 1);
+        const update = await packageData.save();
+        if (update)
+            return toPackageResDTO(packageData);
+        throw new DataNotFoundError();
     }
 };
 AgencyPackageService = __decorate([
     injectable(),
     __param(0, inject('IAgencyPackageRepository')),
-    __param(1, inject('IAgencyValidator')),
+    __param(1, inject('IAuthValidator')),
     __metadata("design:paramtypes", [Object, Object])
 ], AgencyPackageService);
 export { AgencyPackageService };

@@ -16,10 +16,13 @@ import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors.js';
 import { logger } from '../../utils/logger.js';
 let AdminSubscriptionService = class AdminSubscriptionService {
     _adminSubscriptionRepo;
-    constructor(_adminSubscriptionRepo) {
+    _subscriptionValidator;
+    constructor(_adminSubscriptionRepo, _subscriptionValidator) {
         this._adminSubscriptionRepo = _adminSubscriptionRepo;
+        this._subscriptionValidator = _subscriptionValidator;
     }
     async addSub(data) {
+        await this._subscriptionValidator.addSubscriptionValidator(data.Name, data.Amount, data.Category, data.Description, data.Duration, data.Features, data.Valid);
         const value = {
             Name: data.Name,
             Duration: {
@@ -46,6 +49,7 @@ let AdminSubscriptionService = class AdminSubscriptionService {
         throw new UserNotFoundError();
     }
     async editSubscription(data, id) {
+        await this._subscriptionValidator.addSubscriptionValidator(data.Name, data.Amount, data.Category, data.Description, data.Duration, data.Features, data.Valid);
         const value = {
             Name: data.Name,
             Duration: {
@@ -58,7 +62,6 @@ let AdminSubscriptionService = class AdminSubscriptionService {
             Category: data.Category,
             Valid: data.Valid,
         };
-        logger.info('value that just before sending to the repo', value);
         const update = await this._adminSubscriptionRepo.update(id, value);
         if (update)
             return toSubdcriptionDTO(update);
@@ -77,6 +80,7 @@ let AdminSubscriptionService = class AdminSubscriptionService {
 AdminSubscriptionService = __decorate([
     injectable(),
     __param(0, inject('ISubscriptionRepository')),
-    __metadata("design:paramtypes", [Object])
+    __param(1, inject('ISubscriptionValidator')),
+    __metadata("design:paramtypes", [Object, Object])
 ], AdminSubscriptionService);
 export { AdminSubscriptionService };

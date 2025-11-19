@@ -17,8 +17,8 @@ let UserHotelsService = class UserHotelsService {
     constructor(_hotelRoomRepo) {
         this._hotelRoomRepo = _hotelRoomRepo;
     }
-    async getAllHotels(page, limit) {
-        const data = await this._hotelRoomRepo.findAllPackageWithPartners(page, limit);
+    async getAllHotels(page, limit, search) {
+        const data = await this._hotelRoomRepo.findAllPackageWithPartners(page, limit, search);
         if (data)
             return data;
         throw new DataNotFoundError();

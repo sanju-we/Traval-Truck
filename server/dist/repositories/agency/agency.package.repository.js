@@ -2,26 +2,26 @@ import { BaseRepository } from "../../repositories/baseRepository.js";
 import { Package } from "../../models/Package.js";
 import { logger } from "../../utils/logger.js";
 import { toPackageResDTO } from "../../core/DTO/agency/response/agency.packageDTO.js";
-import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors.js";
+import { DataNotFoundError } from "../../utils/resAndErrors.js";
 export class AgencyPackageRepository extends BaseRepository {
     constructor() {
         super(Package);
     }
-    async findAllPackageWithPartners(page = 1, lim) {
-        const limit = lim || 6; // ✅ 6 packages per page
+    async findAllPackageWithPartners(page = 1, lim, search) {
+        const limit = lim || 6;
         const skip = (page - 1) * limit;
-        // ✅ Fetch paginated data
+        const searchFilter = search
+            ? { title: { $regex: search, $options: 'i' } }
+            : {};
+        logger.info(searchFilter);
         const [packages, total] = await Promise.all([
-            Package.find()
-                .populate('hotels')
-                .populate('dining')
+            Package.find(searchFilter)
                 .skip(skip)
                 .limit(limit)
                 .lean(),
             Package.countDocuments()
         ]);
-        if (!packages.length)
-            throw new Data_Creation_Error();
+        // if (!packages.length) throw new DataNotFoundError();
         logger.debug('package', packages);
         return {
             data: packages.map(toPackageResDTO),
@@ -31,10 +31,7 @@ export class AgencyPackageRepository extends BaseRepository {
         };
     }
     async findPackageWithPartner(id) {
-        const data = await Package.findById(id)
-            .populate('hotels')
-            .populate('dining')
-            .lean();
+        const data = await Package.findById(id);
         if (data)
             return toPackageResDTO(data);
         throw new DataNotFoundError();

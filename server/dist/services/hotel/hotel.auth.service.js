@@ -11,7 +11,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from 'inversify';
-import z from 'zod';
 import bcrypt from 'bcryptjs';
 import { OtpExpiredError, InvalidCredentialsError, EmailAlreadyRegisteredError, UserNotFoundError, InvalidResetTokenError, } from '../../utils/resAndErrors.js';
 import { toHotelProfile } from '../../core/DTO/hotel/hotel.dto.js';
@@ -21,29 +20,16 @@ let HotelAuthService = class HotelAuthService {
     _redisClient;
     _hotelRepo;
     _emailService;
-    constructor(_ijwt, _redisClient, _hotelRepo, _emailService) {
+    _authValidator;
+    constructor(_ijwt, _redisClient, _hotelRepo, _emailService, _authValidator) {
         this._ijwt = _ijwt;
         this._redisClient = _redisClient;
         this._hotelRepo = _hotelRepo;
         this._emailService = _emailService;
+        this._authValidator = _authValidator;
     }
     async verifyHotel(enteredEmail, enteredOtp, hotelData) {
-        const schema = z.object({
-            email: z
-                .string()
-                .regex(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/),
-            otp: z.string().length(6),
-            hotelData: z.object({
-                companyName: z.string(),
-                ownerName: z.string(),
-                email: z
-                    .string()
-                    .regex(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/),
-                password: z.string().min(8),
-                phone: z.number(),
-            }),
-        });
-        schema.parse({ otp: enteredOtp, email: enteredEmail, hotelData });
+        await this._authValidator.signUpValidator(enteredOtp, enteredEmail, hotelData);
         const pending = await this._redisClient.get(`pending:${enteredEmail}`);
         if (!pending)
             throw new OtpExpiredError();
@@ -73,13 +59,7 @@ let HotelAuthService = class HotelAuthService {
         return { hotel: toHotelProfile(hotelDoc), accessToken, refreshToken };
     }
     async verifyHotelLogin(email, password) {
-        const schema = z.object({
-            email: z
-                .string()
-                .regex(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/),
-            password: z.string().min(8),
-        });
-        schema.parse({ email, password });
+        await this._authValidator.loginValidator(email, password);
         const existingHotel = await this._hotelRepo.findByEmail(email);
         if (!existingHotel)
             throw new UserNotFoundError();
@@ -103,11 +83,7 @@ let HotelAuthService = class HotelAuthService {
         await this._emailService.sendEmail(email, `Password Rest Link`, `Reset your password in here : ${resetLink}`);
     }
     async resetHotelPassword(newPassword, token) {
-        const schema = z.object({
-            newPassword: z.string().min(8),
-            token: z.string(),
-        });
-        schema.parse({ newPassword, token });
+        await this._authValidator.resetPasswordValidator(token, newPassword);
         const payload = await this._ijwt.verifyResetToken(token);
         if (!payload)
             throw new InvalidResetTokenError();
@@ -124,6 +100,7 @@ HotelAuthService = __decorate([
     __param(1, inject('IRedisClient')),
     __param(2, inject('IHotelAuthRepository')),
     __param(3, inject('IEmailService')),
-    __metadata("design:paramtypes", [Object, Object, Object, Object])
+    __param(4, inject('IAuthValidator')),
+    __metadata("design:paramtypes", [Object, Object, Object, Object, Object])
 ], HotelAuthService);
 export { HotelAuthService };

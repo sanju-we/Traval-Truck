@@ -2,7 +2,7 @@ import {
   LogOut,
   Home,
   FlagTriangleRightIcon,
-  Hotel,
+  Rss,
   PersonStanding,
   Paperclip,
   IndianRupee,
@@ -48,10 +48,10 @@ function SideNavbar() {
               Packages
             </button>
             </div>
-            <div className='hover:bg-gray-200 rounded-md' onClick={() => router.push('/agency/partner')}>
-              <button className="flex items-center space-x-2 p-2 text-black-600  rounded">
-              <Hotel className="material-icons">hotel</Hotel>
-              <span>Partners</span>
+            <div className='hover:bg-gray-200 rounded-md' onClick={() => router.push('/agency/subscription')}>
+              <button className="flex items-center space-x-2 p-2 text-black-600 rounded">
+              <Rss className="material-icons">person</Rss>
+              <span>Subscriptions</span>
             </button>
             </div>
             <div className='hover:bg-gray-200 rounded-md'>
@@ -60,10 +60,10 @@ function SideNavbar() {
               <span>Guests</span>
             </button>
             </div>
-            <div className='hover:bg-gray-200 rounded-md'>
-              <button className="flex items-center space-x-2 p-2 text-black-600  rounded">
+            <div className='hover:bg-gray-200 rounded-md' onClick={() => router.push('/wallet?role=agency')}>
+              <button className="flex items-center space-x-2 p-2 text-black-600  rounded" >
               <IndianRupee className="material-icons">payment</IndianRupee>
-              <span>Payments</span>
+              <span>Wallet</span>
             </button>
             </div>
             <div className='hover:bg-gray-200 rounded-md'>

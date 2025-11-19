@@ -25,19 +25,34 @@ let AdminVendorRepository = class AdminVendorRepository {
         this._agencyRepository = _agencyRepository;
         this._userRepository = _userRepository;
     }
-    async findAllRequests() {
-        const hotelDatas = await this._hotelRepository.findAllUser({ isApproved: false }, {});
-        const agencyDatas = await this._agencyRepository.findAllUser({ isApproved: false }, {});
-        const restaurantDatas = await this._restaurantRepository.findAllUser({ isApproved: false }, {});
-        logger.info(`hotelData : ${hotelDatas}`);
+    async findAllRequests(search) {
+        const searchFilter = search
+            ? {
+                $or: [
+                    { email: { $regex: search, $options: 'i' } },
+                    { companyName: { $regex: search, $options: 'i' } },
+                    { ownerName: { $regex: search, $options: 'i' } },
+                ],
+            }
+            : {};
+        const [hotelDatas, agencyDatas, restaurantDatas] = await Promise.all([
+            this._hotelRepository.findAllUser({ isApproved: false, ...searchFilter }, {}),
+            this._agencyRepository.findAllUser({ isApproved: false, ...searchFilter }, {}),
+            this._restaurantRepository.findAllUser({ isApproved: false, ...searchFilter }, {}),
+        ]);
+        logger.info(`vendorData : ${JSON.stringify(hotelDatas)}`);
         const allData = [...hotelDatas, ...agencyDatas, ...restaurantDatas];
         const completeData = allData.filter((item) => {
             const bank = item.bankDetails;
-            return bank && bank.accountNumber && bank.ifscCode && bank.bankName && bank.accountHolder;
+            return (bank &&
+                bank.accountNumber &&
+                bank.ifscCode &&
+                bank.bankName &&
+                bank.accountHolder);
         });
         return completeData.map(toVendorRequestDTO);
     }
-    async findAllUsers(page = 1, limit = 10) {
+    async findAllUsers(page, limit, status, role, search) {
         const userData = await this._userRepository.findAllUser({}, {});
         const agencyData = await this._agencyRepository.findAllUser({ isApproved: true }, {});
         const hotelData = await this._hotelRepository.findAllUser({ isApproved: true }, {});
@@ -48,7 +63,31 @@ let AdminVendorRepository = class AdminVendorRepository {
             ...restaurantData.map(toVendorRequestDTO),
         ];
         const allUserDTO = [...userData.map(toUserProfileDTO)];
-        const allUsers = [...allUserDTO, ...vendorDTO];
+        let allUsers = [...allUserDTO, ...vendorDTO];
+        if (search && search.trim() !== '') {
+            const query = search.toLowerCase();
+            allUsers = allUsers.filter((user) => user.name?.toLowerCase().includes(query) ||
+                user.email?.toLowerCase().includes(query) ||
+                user.companyName?.toLowerCase().includes(query));
+        }
+        if (role && role !== '') {
+            const queryRole = role.toLowerCase();
+            allUsers = allUsers.filter((user) => {
+                const userRole = user.role?.toLowerCase() ||
+                    user.role.toLowerCase();
+                return userRole === queryRole;
+            });
+        }
+        if (status && status !== '') {
+            if (status === 'Active') {
+                allUsers = allUsers.filter((user) => (!('isBlocked' in user) || !user.isBlocked) &&
+                    (!('isApproved' in user) || user.isApproved));
+            }
+            else if (status === 'Blocked') {
+                allUsers = allUsers.filter((user) => (('isBlocked' in user) && user.isBlocked) ||
+                    (('isApproved' in user) && !user.isApproved));
+            }
+        }
         const total = allUsers.length;
         const totalPages = Math.ceil(total / limit);
         const start = (page - 1) * limit;

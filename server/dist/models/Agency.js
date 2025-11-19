@@ -84,7 +84,6 @@ const agencySchema = new Schema({
     },
     role: {
         type: String,
-        unique: true,
     },
     isRestricted: {
         type: Boolean,

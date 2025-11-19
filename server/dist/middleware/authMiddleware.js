@@ -36,6 +36,7 @@ export async function verifyToken(req, res, next) {
             throw new RESTRICTED_USER();
         }
         req.user = userSignupDTO(user);
+        logger.info('duck');
         next();
     }
     catch (error) {
@@ -180,4 +181,21 @@ export async function verifyAdminToken(req, res, next) {
         logger.error(`Failed to verify token: ${message}`);
         sendResponse(res, status, false, message);
     }
+}
+export async function checkRole(req, res, next) {
+    const role = req.params.role;
+    if (role === 'user') {
+        logger.debug(`fuck you ${role}`);
+        return verifyToken(req, res, next);
+    }
+    else if (role === 'admin')
+        return verifyAdminToken(req, res, next);
+    else if (role === 'agency')
+        return verifyAgencyToken(req, res, next);
+    else if (role === 'hotel')
+        return verifyHotelToken(req, res, next);
+    else if (role === 'restaurant')
+        return verifyRestaurantToken(req, res, next);
+    else
+        throw new UNAUTHORIZEDUserFounf();
 }

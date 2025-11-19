@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import z from 'zod';
 import { logger } from '../../utils/logger.js';
 import { sendResponse } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
@@ -26,51 +25,44 @@ let AdminVendorController = class AdminVendorController {
         this._adminVenderService = _adminVenderService;
     }
     async showAllRequsestes(req, res) {
-        const allReq = await this._adminVenderRepo.findAllRequests();
+        const search = req.query.search;
+        const allReq = await this._adminVenderRepo.findAllRequests(search != undefined ? String(search) : undefined);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, allReq);
     }
     async showAllUsers(req, res) {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 5;
-        const { data, total, totalPages } = await this._adminVenderRepo.findAllUsers(page, limit);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, {
-            data,
-            total,
-            page,
-            totalPages,
-        });
+        try {
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 5;
+            const search = req.query.search || '';
+            const status = req.query.status || '';
+            const role = req.query.role || '';
+            const { data, total, totalPages } = await this._adminVenderRepo.findAllUsers(page, limit, status, role, search);
+            sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, {
+                data,
+                total,
+                page,
+                totalPages,
+            });
+        }
+        catch (error) {
+            console.error('Error fetching users:', error);
+            sendResponse(res, STATUS_CODE.INTERNAL_SERVER_ERROR, false, 'Something went wrong.');
+        }
     }
     async updateStatus(req, res) {
-        const schema = z.object({
-            id: z.string(),
-            action: z.enum(['approve', 'reject']),
-            role: z.enum(['agency', 'hotel', 'restaurant']),
-        });
-        const bosySchema = z.object({
-            reason: z.string().nullable(),
-        });
-        const { reason } = bosySchema.parse(req.body);
-        const { id, action, role } = schema.parse(req.params);
-        logger.info('*****************');
+        const { reason } = req.body;
+        const { id, action, role } = req.params;
         await this._adminVenderService.updateStatus(id, action, role, reason);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.APPROVED);
     }
     async blockTongle(req, res) {
         logger.info(`request got in here role:`);
-        const schema = z.object({
-            id: z.string(),
-            role: z.string(),
-        });
-        const { id, role } = schema.parse(req.params);
+        const { id, role } = req.params;
         await this._adminVenderService.updateBlock(id, role);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED);
     }
     async sortUsers(req, res) {
-        const schema = z.object({
-            sort: z.string(),
-            status: z.string(),
-        });
-        const { sort, status } = schema.parse(req.query);
+        const { sort, status } = req.query;
         const data = await this._adminVenderService;
     }
 };

@@ -64,4 +64,10 @@ export var MESSAGES;
     MESSAGES["OTP_RESENT"] = "OTP resent successfully";
     MESSAGES["OTP_SENT"] = "OTP sent successfully";
     MESSAGES["OTP_VERIFIED"] = "OTP verified successfully";
+    // -------------------- Payment --------------------
+    MESSAGES["PAYMENT_SUCCESS"] = "Payment transacrion successfully completed";
+    MESSAGES["PAYMENT_NOT_FOUND"] = "PaymentIntent not found";
+    MESSAGES["PAYMENT_NOT_COMPLETED"] = "Payment not completed";
+    MESSAGES["PAYMENT_AMOUNT_MISMATCH"] = "Amount mismatch detected";
+    MESSAGES["PAYMENT_VERIFY_SUCCESS"] = "Payment verifycation completed";
 })(MESSAGES || (MESSAGES = {}));

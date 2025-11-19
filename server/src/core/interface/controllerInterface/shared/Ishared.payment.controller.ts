@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
 
-export interface IUserPaymentController {
+export interface IPaymentController {
   createPayment(req:Request,res:Response):Promise<void>;
 }

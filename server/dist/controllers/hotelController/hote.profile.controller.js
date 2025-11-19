@@ -14,7 +14,6 @@ import { BADREQUEST, sendResponse, UserNotFoundError } from '../../utils/resAndE
 import { inject, injectable } from 'inversify';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
-import z from 'zod';
 import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
 let HotelProfileCotroller = class HotelProfileCotroller {
     _hotelAuthRepository;
@@ -31,18 +30,7 @@ let HotelProfileCotroller = class HotelProfileCotroller {
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS, toVendorRequestDTO(hotel));
     }
     async updateProfile(req, res) {
-        const schema = z.object({
-            ownerName: z.string(),
-            companyName: z.string(),
-            phone: z.string(),
-            bankDetails: z.object({
-                accountHolder: z.string(),
-                accountNumber: z.string(),
-                bankName: z.string(),
-                ifscCode: z.string(),
-            }),
-        });
-        const { ownerName, phone, companyName, bankDetails } = schema.parse(req.body);
+        const { ownerName, phone, companyName, bankDetails } = req.body;
         const user = req.user;
         const updatedHotel = await this._hoteService.updateProfile(user.id, {
             ownerName,

@@ -11,27 +11,24 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { injectable, inject } from 'inversify';
-import z from 'zod';
 import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors.js';
 let AdminVendorService = class AdminVendorService {
     _userRepository;
     _agencyrepository;
     _hotelRepository;
     _restaurantRepository;
-    constructor(_userRepository, _agencyrepository, _hotelRepository, _restaurantRepository) {
+    _subscriptionValidator;
+    constructor(_userRepository, _agencyrepository, _hotelRepository, _restaurantRepository, _subscriptionValidator) {
         this._userRepository = _userRepository;
         this._agencyrepository = _agencyrepository;
         this._hotelRepository = _hotelRepository;
         this._restaurantRepository = _restaurantRepository;
+        this._subscriptionValidator = _subscriptionValidator;
     }
     async updateStatus(id, action, role, reason) {
-        const schema = z.object({
-            id: z.string(),
-            action: z.enum(['approve', 'reject']),
-            role: z.enum(['agency', 'hotel', 'restaurant']),
-            reason: z.string().nullable(),
-        });
-        schema.parse({ id, action, role, reason });
+        await this._subscriptionValidator.updateStatusValidator(id, action, role);
+        if (reason)
+            await this._subscriptionValidator.reasonValidation(reason);
         let vendor;
         if (role === 'agency') {
             vendor = await this._agencyrepository.findById(id);
@@ -61,11 +58,7 @@ let AdminVendorService = class AdminVendorService {
             await repo.update(id, { reason: '' });
     }
     async updateBlock(id, role) {
-        const schema = z.object({
-            id: z.string(),
-            role: z.string(),
-        });
-        schema.parse({ id, role });
+        await this._subscriptionValidator.updateBlockValidator(id, role);
         let user;
         if (role === 'user') {
             user = await this._userRepository.findById(id);
@@ -99,6 +92,7 @@ AdminVendorService = __decorate([
     __param(1, inject('IAgencyRespository')),
     __param(2, inject('IHotelAuthRepository')),
     __param(3, inject('IRestaurantAuthRepository')),
-    __metadata("design:paramtypes", [Object, Object, Object, Object])
+    __param(4, inject('ISubscriptionValidator')),
+    __metadata("design:paramtypes", [Object, Object, Object, Object, Object])
 ], AdminVendorService);
 export { AdminVendorService };

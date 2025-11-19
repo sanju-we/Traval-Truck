@@ -16,10 +16,13 @@ import { toVendorRequestDTO, } from '../../core/DTO/admin/vendor.response.dto/ve
 import { deleteImage, extractPublicId, singleUpload } from '../../utils/upload.cloudinary.js';
 let AgencyProfileService = class AgencyProfileService {
     _agencyAuthRepo;
-    constructor(_agencyAuthRepo) {
+    _authValidator;
+    constructor(_agencyAuthRepo, _authValidator) {
         this._agencyAuthRepo = _agencyAuthRepo;
+        this._authValidator = _authValidator;
     }
     async updateProfile(id, data) {
+        await this._authValidator.profileUpdateValidator(data.ownerName, data.companyName, data.phone, data.bankDetails);
         const agency = await this._agencyAuthRepo.findById(id);
         if (!agency)
             throw new UserNotFoundError();
@@ -62,6 +65,7 @@ let AgencyProfileService = class AgencyProfileService {
 AgencyProfileService = __decorate([
     injectable(),
     __param(0, inject('IAgencyRespository')),
-    __metadata("design:paramtypes", [Object])
+    __param(1, inject('IAuthValidator')),
+    __metadata("design:paramtypes", [Object, Object])
 ], AgencyProfileService);
 export { AgencyProfileService };
