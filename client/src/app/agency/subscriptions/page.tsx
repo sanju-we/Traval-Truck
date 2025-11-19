@@ -1,5 +1,6 @@
 import api from "@/services/api";
 import Link from "next/link";
+import SideNavbar from "@/components/agency/SideNavbar";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +16,7 @@ export default async function SubscriptionsPage() {
 
   return (
     <div className="p-6 md:p-10 bg-gray-50 min-h-screen">
+      <SideNavbar />
       <div className="max-w-5xl mx-auto space-y-8">
         <h1 className="text-2xl font-bold text-gray-800">Available Subscriptions</h1>
 
