@@ -11,10 +11,12 @@ export default function SubscriptionPurchaseForm({
   amount,
   role,
   onClose,
+  id
 }: {
   amount: number;
   role: string;
   onClose?: () => void;
+  id:string;
 }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -29,7 +31,7 @@ export default function SubscriptionPurchaseForm({
 
     try {
       // Create payment intent
-      const { data } = await api.post("/user/payments/create-payment", {
+      const { data } = await api.post(`/shared/payments/${role}/create-payment`, {
         amount,
       });
 
@@ -44,21 +46,21 @@ export default function SubscriptionPurchaseForm({
       }
 
       if (result.paymentIntent?.status === "succeeded") {
-        // Add to wallet or subscription
         const body = {
           paymentIntentId: data.data[1],
           amount,
+          id,
         };
-
+        console.log(body)
         const response = await api.post(
-          `/vendor/subscriptions/${role}/purchase`,
+          `/shared/subscriptions/${role}/purchase`,
           body
         );
 
         if (response.data.success) {
           toast.success("Subscription activated!");
           if (onClose) onClose();
-          router.push(`/vendor/subscriptions`);
+          router.push(`/${role}/subscriptions`);
         } else {
           toast.error(response.data.message);
         }

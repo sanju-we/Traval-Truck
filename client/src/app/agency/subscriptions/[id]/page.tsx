@@ -1,15 +1,14 @@
+import { createServerAxios } from "@/services/serverApi";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
 async function getSubscriptionById(id: string) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/vendor/subscriptions/${id}`,
-    { cache: "no-store" }
-  );
+  const serverApi = await createServerAxios()
+  const res = await serverApi.get(`/shared/subscriptions/agency/${id}`);
 
-  if (!res.ok) return null;
-  return res.json();
+  if (!res.data.success) return null;
+  return res.data.data;
 }
 
 export default async function SubscriptionDetailsPage({ params }: any) {
@@ -30,10 +29,10 @@ export default async function SubscriptionDetailsPage({ params }: any) {
         <h1 className="text-2xl font-bold text-gray-800">{subscription.name}</h1>
 
         <p className="text-emerald-600 font-semibold text-2xl mt-3">
-          ₹{subscription.price}
+          ₹{subscription.amount}
         </p>
         <p className="text-gray-500 text-sm mt-1">
-          Duration: {subscription.duration} days
+          Duration: {subscription.valid} days
         </p>
 
         <h3 className="text-lg font-semibold mt-6">Features</h3>
@@ -45,14 +44,14 @@ export default async function SubscriptionDetailsPage({ params }: any) {
 
         <div className="mt-8 flex gap-3">
           <Link
-            href="/vendor/subscriptions"
+            href="/agency/subscriptions"
             className="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100"
           >
             Back
           </Link>
 
           <Link
-            href={`/vendor/subscriptions/${id}/checkout?amount=${subscription.price}`}
+            href={`/agency/subscriptions/${id}/checkout?amount=${subscription.amount}`}
             className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700"
           >
             Buy Now

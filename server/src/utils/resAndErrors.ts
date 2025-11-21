@@ -130,3 +130,9 @@ export class Transfer_Error extends HttpError {
     super(STATUS_CODE.BAD_REQUEST, 'Transaction Failed');
   }
 }
+
+export class PAYMENT_VERIFICATOIN_FAILED extends HttpError {
+  constructor() {
+    super(STATUS_CODE.BAD_REQUEST, 'Invalid transaction request');
+  }
+}

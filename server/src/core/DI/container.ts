@@ -26,6 +26,12 @@ import { ISharedWalletController } from '../../core/interface/controllerInterfac
 import { SharedWalletController } from '../../controllers/sharedController/shared.wallet.controller.js';
 import { IWalletRespository } from '../../core/interface/repositorie/shared/IWallet.repository.js';
 import { WalletRespository } from '../../repositories/shared/wallet.repository.js';
+import { ISharedSubscriptionController } from '../../core/interface/controllerInterface/shared/Ishared.subscription.controller.js';
+import { SharedSubscriptionController } from '../../controllers/sharedController/subscription.controller.js';
+import { ISharedSubscriptionService } from '../../core/interface/serivice/shared/Ishared.subscription.service.js';
+import { SharedSubscriptionService } from '../../services/shared/shared.subscrtiption.service.js';
+import { ISubscriptionHistoryRepository } from '../../core/interface/repositorie/shared/ISubscription.hisroty.repository.js';
+import { subscriptionHistoryRepository } from '../../repositories/shared/subscription.history.repository.js';
 
 // ----------------------------------------------------user-------------------------------------------------------------
 import { IAuthService } from '../../core/interface/serivice/user/auth.interface.js';
@@ -150,7 +156,10 @@ container.bind<IPaymentValidator>('IPaymentValidator').to(PaymentValidator)
 // -------------------------------------------------------Shared container-----------------------------------------------------------
 container.bind<IWalletService>('IWalletService').to(WalletService);
 container.bind<ISharedWalletController>('ISharedWalletController').to(SharedWalletController);
-container.bind<IWalletRespository>('IWalletRespository').to(WalletRespository)
+container.bind<IWalletRespository>('IWalletRespository').to(WalletRespository);
+container.bind<ISharedSubscriptionController>('ISharedSubscriptionController').to(SharedSubscriptionController);
+container.bind<ISharedSubscriptionService>('ISharedSubscriptionService').to(SharedSubscriptionService);
+container.bind<ISubscriptionHistoryRepository>('ISubscriptionHistoryRepository').to(subscriptionHistoryRepository)
 
 // ---------------------------------------------------user container-------------------------------------------------------------------------
 container.bind<IAuthRepository>('IAuthRepository').to(AuthRepository);

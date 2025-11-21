@@ -2,15 +2,20 @@
 
 import SubscriptionPurchaseForm from "@/components/payment/SubscriptionPurchaseForm";
 import StripeProvider from "@/components/payment/StripeProvider";
-import { useSearchParams, usePathname } from "next/navigation";
+import { useSearchParams, usePathname, useParams } from "next/navigation";
 
 export default function SubscriptionCheckoutPage() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
+  const params = useParams();
 
+  // ⭐ GET AMOUNT FROM QUERY PARAM
   const amount = Number(searchParams.get("amount"));
 
-  // ⭐ Detect vendor role from URL prefix
+  // ⭐ GET SUBSCRIPTION ID FROM URL PATH
+  const subscriptionId = params.id; // This is now correct!
+
+  // ⭐ DETECT VENDOR ROLE BASED ON URL PREFIX
   let role: string = "vendor";
 
   if (pathname.startsWith("/hotel")) role = "hotel";
@@ -25,7 +30,11 @@ export default function SubscriptionCheckoutPage() {
         </h2>
 
         <StripeProvider>
-          <SubscriptionPurchaseForm amount={amount} role={role} />
+          <SubscriptionPurchaseForm 
+            amount={amount} 
+            role={role} 
+            id={params.id?.toString() ? params.id?.toString() : ''}      // ⭐ Now correctly passed
+          />
         </StripeProvider>
       </div>
     </div>

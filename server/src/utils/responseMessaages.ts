@@ -72,5 +72,8 @@ export enum MESSAGES {
   PAYMENT_NOT_FOUND = 'PaymentIntent not found',
   PAYMENT_NOT_COMPLETED = "Payment not completed",
   PAYMENT_AMOUNT_MISMATCH = "Amount mismatch detected",
-  PAYMENT_VERIFY_SUCCESS = "Payment verifycation completed"
+  PAYMENT_VERIFY_SUCCESS = "Payment verifycation completed",
+
+  // -------------------- Subscription------------------
+  SUBSCRIPTION_PURCHASED = 'Subscrtiption purchased successfully'
 }
