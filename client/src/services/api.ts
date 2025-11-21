@@ -32,7 +32,6 @@ api.interceptors.response.use(
   },
   async (err) => {
     const originalRequest = err.config;
-    console.log('Api interceptor triggered');
 
     if (err.response?.status === 401) {
       toast.error(err.response.data.message);
