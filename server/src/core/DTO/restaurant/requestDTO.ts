@@ -9,6 +9,7 @@ export interface foodDTO{
   category:string,
   images:string[],
   status:string
+  restaurant:string
 }
 
 export const toFoodDTO = (food:IFoods):foodDTO => ({
@@ -19,5 +20,6 @@ export const toFoodDTO = (food:IFoods):foodDTO => ({
   availableQuantity:food.AvailableQuantity,
   category:food.Category,
   images:food.Image,
-  status:food.Status
+  status:food.Status,
+  restaurant:food.Restaurant
 })

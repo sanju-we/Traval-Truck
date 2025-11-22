@@ -21,4 +21,5 @@ export interface IPackage extends Document {
   }[];
   CreatedBy: Date;
   images:string[];
+  ownedBy:string;
 }

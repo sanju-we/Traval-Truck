@@ -3,8 +3,9 @@ import { ZodError } from 'zod';
 import mongoose from 'mongoose';
 import { HttpError } from '../utils/resAndErrors.js';
 import { logger } from '../utils/logger.js';
+import { $ZodIssue } from 'zod/v4/core';
 
-export function errorHandler(err: any, req: Request, res: Response, next: NextFunction) {
+export function errorHandler(err: { statusCode: number; message: string ; name: string; stack: any; issues: $ZodIssue[]; errors: { [s: string]: mongoose.Error.ValidatorError | mongoose.Error.CastError; } | ArrayLike<mongoose.Error.ValidatorError | mongoose.Error.CastError>; code: number; keyValue: {}; path: any; value: any; }, req: Request, res: Response, next: NextFunction) {
   let status = err.statusCode || 500;
   let message = 'Something went wrong. Please try again later.';
 

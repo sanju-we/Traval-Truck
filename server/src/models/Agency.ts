@@ -27,7 +27,7 @@ const agencySchema = new Schema<IAgency>({
   },
   packages: [
     {
-      type: Schema.Types.ObjectId,
+      type: String,
       required: false,
     },
   ],

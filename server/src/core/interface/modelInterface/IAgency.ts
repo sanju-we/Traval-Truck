@@ -20,7 +20,7 @@ export interface IAgency extends Document {
     bankProof: string;
     ownerIdProof: string;
   };
-  packages: Schema.Types.ObjectId[];
+  packages: string[];
   reviews: Schema.Types.ObjectId[];
   images: string[];
   logo: string;

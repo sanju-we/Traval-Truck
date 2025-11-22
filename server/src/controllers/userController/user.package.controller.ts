@@ -6,7 +6,6 @@ import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
 import { BADREQUEST, sendResponse } from "../../utils/resAndErrors.js";
 import { MESSAGES } from "../../utils/responseMessaages.js";
 import { Request, Response } from "express";
-import { logger } from "../../utils/logger.js";
 
 @injectable()
 export class UserPackageController implements IUserPackageController {
@@ -15,7 +14,6 @@ export class UserPackageController implements IUserPackageController {
   ) { }
   async getLatestPackage(req: Request, res: Response): Promise<void> {
     const data = await this._userPackageService.getLatestPackage()
-    logger.info(data)
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, data)
   }
 

@@ -34,7 +34,8 @@ const packageSchema = new Schema<IPackage>({
   itinerary: { type: [itinerary] },
   reviews: { type: [reviews] },
   CreatedBy: { type: Date, default: new Date() },
-  images: { type: [String], required: true }
+  images: { type: [String], required: true },
+  ownedBy:{type:String,ref:'Agency'}
 });
 
 export const Package = model<IPackage>('Package', packageSchema);

@@ -32,7 +32,6 @@ export class ProfileController implements IUserProfileController {
     }
 
     const user = toUserProfileDTO(userData);
-    logger.info(`User profile retrieved for ID ${JSON.stringify(userData)}`);
     sendResponse(res, STATUS_CODE.OK, true, 'User profile found', user);
   }
 
@@ -47,7 +46,6 @@ export class ProfileController implements IUserProfileController {
     }
 
     await this._profileService.setInterest(interests, req.user.id);
-    logger.info(`Interests updated for user ID ${req.user.id}`);
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED);
   }
   async updateUser(req: Request, res: Response): Promise<void> {
@@ -57,11 +55,9 @@ export class ProfileController implements IUserProfileController {
       phoneNumber: z.preprocess((val) => Number(val), z.number()),
     });
     const formData = req.body;
-    logger.info(`Validated user data: ${JSON.stringify(formData)}`);
     const user = req.user;
 
     const userData = await this._profileService.updateProfile(formData, user);
-    logger.info(`userData : ${userData}`);
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, userData);
   }
 
@@ -69,7 +65,6 @@ export class ProfileController implements IUserProfileController {
     const profile = req.file;
     if (!profile) throw new BADREQUEST();
     const userId = req.user.id;
-    logger.info(`formData = ${JSON.stringify(req.file)}`);
     const updated = await this._profileService.uploadProfileImage(userId, profile);
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updated);
   }

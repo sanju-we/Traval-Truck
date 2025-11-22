@@ -9,5 +9,5 @@ export interface IFoods extends Document {
   Category:  string ;
   Description:  string ;
   Image:  string[];
-  Status:string
+  Status:string;
 }

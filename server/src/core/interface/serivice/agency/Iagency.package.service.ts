@@ -2,7 +2,7 @@ import { PackageResDTO } from "../../../../core/DTO/agency/response/agency.packa
 import { PackageDTO } from "../../../../core/DTO/agency/request/packageDTO.js";
 
 export interface IAgencyPackageService{
-  addPackage(data:PackageDTO,files:{ [fieldname: string]: Express.Multer.File[] }):Promise<{ data: PackageResDTO[]; total: number; page: number; totalPages: number; }>;
+  addPackage(data:PackageDTO,files:{ [fieldname: string]: Express.Multer.File[] }, id:string):Promise<{ data: PackageResDTO[]; total: number; page: number; totalPages: number; }>;
   getAllPackage(page:number):Promise<{ data: PackageResDTO[]; total: number; page: number; totalPages: number; }>;
   updatePackage(id:string,data:PackageDTO,files:{ [fieldname: string]: Express.Multer.File[] }):Promise<PackageResDTO>;
   deleteImage(id:string,index:number):Promise<PackageResDTO>;

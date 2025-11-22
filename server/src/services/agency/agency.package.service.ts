@@ -7,12 +7,14 @@ import { PackageResDTO, toPackageResDTO } from "../../core/DTO/agency/response/a
 import { IAuthValidator } from '../../core/interface/validator/Iauth.validator.js'
 import { logger } from "../../utils/logger.js";
 import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.cloudinary.js";
+import { IAgencyRespository } from "../../core/interface/repositorie/agency/Iagency.auth.repository.js";
 
 @injectable()
 export class AgencyPackageService implements IAgencyPackageService {
   constructor(
     @inject('IAgencyPackageRepository') private readonly _agencyPackeageRepository: IAgencyPackageRepository,
-    @inject('IAuthValidator') private readonly _authValidator: IAuthValidator
+    @inject('IAuthValidator') private readonly _authValidator: IAuthValidator,
+    @inject('IAgencyRespository') private readonly _agencyRepo : IAgencyRespository
   ) { }
 
   async getAllPackage(page: number): Promise<{ data: PackageResDTO[]; total: number; page: number; totalPages: number; }> {
@@ -20,8 +22,7 @@ export class AgencyPackageService implements IAgencyPackageService {
     return allPackage
   }
 
-  async addPackage(data: PackageDTO, files: { [fieldname: string]: Express.Multer.File[] }): Promise<{ data: PackageResDTO[]; total: number; page: number; totalPages: number; }> {
-    logger.info('enththio?')
+  async addPackage(data: PackageDTO, files: { [fieldname: string]: Express.Multer.File[] }, id:string): Promise<{ data: PackageResDTO[]; total: number; page: number; totalPages: number; }> {
     if (typeof data.discoveries === 'string') {
       data.discoveries = JSON.parse(data.discoveries);
     }
@@ -32,6 +33,7 @@ export class AgencyPackageService implements IAgencyPackageService {
       data.itinerary = JSON.parse(data.itinerary);
     }
     await this._authValidator.addPackageValidator(data)
+    const agency = await this._agencyRepo.findById(id)
     let images: string[] = []
     for (const fieldname in files) {
       const fileArray = files[fieldname];
@@ -40,8 +42,12 @@ export class AgencyPackageService implements IAgencyPackageService {
         images.push(result);
       }
     }
-    const packageData = await this._agencyPackeageRepository.create({ ...data, images: images })
-    if (packageData) return await this.getAllPackage(1)
+    const packageData = await this._agencyPackeageRepository.create({ ...data, images: images, ownedBy:id })
+    if (packageData) {
+      agency?.packages.push(packageData._id.toString())
+      await agency?.save()
+      return await this.getAllPackage(1)
+    }
     throw new Data_Creation_Error()
   }
 
