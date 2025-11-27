@@ -1,18 +1,17 @@
 import { createServerAxios } from "@/services/serverApi";
 import Link from "next/link";
+import BuyNowButton from "@/components/subscription/BuyNowButton";
 
 export const dynamic = "force-dynamic";
 
 async function getSubscriptionById(id: string) {
-  const serverApi = await createServerAxios()
+  const serverApi = await createServerAxios();
   const res = await serverApi.get(`/shared/subscriptions/agency/${id}`);
-
-  if (!res.data.success) return null;
-  return res.data.data;
+  return res.data.success ? res.data.data : null;
 }
 
-export default async function SubscriptionDetailsPage({ params }: any) {
-  const { id } = params;
+export default async function SubscriptionDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const subscription = await getSubscriptionById(id);
 
   if (!subscription) {
@@ -50,12 +49,12 @@ export default async function SubscriptionDetailsPage({ params }: any) {
             Back
           </Link>
 
-          <Link
-            href={`/agency/subscriptions/${id}/checkout?amount=${subscription.amount}`}
-            className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700"
-          >
-            Buy Now
-          </Link>
+          {/* ⭐ BUY NOW (Stripe Checkout Session) */}
+          <BuyNowButton
+            subscriptionId={id}
+            amount={subscription.amount}
+            role="agency"
+          />
         </div>
       </div>
     </div>

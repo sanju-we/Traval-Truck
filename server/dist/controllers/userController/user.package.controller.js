@@ -14,7 +14,6 @@ import { inject, injectable } from "inversify";
 import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
 import { BADREQUEST, sendResponse } from "../../utils/resAndErrors.js";
 import { MESSAGES } from "../../utils/responseMessaages.js";
-import { logger } from "../../utils/logger.js";
 let UserPackageController = class UserPackageController {
     _userPackageService;
     constructor(_userPackageService) {
@@ -22,7 +21,6 @@ let UserPackageController = class UserPackageController {
     }
     async getLatestPackage(req, res) {
         const data = await this._userPackageService.getLatestPackage();
-        logger.info(data);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, data);
     }
     async getAllPackage(req, res) {

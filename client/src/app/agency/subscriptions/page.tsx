@@ -55,7 +55,7 @@ export default async function SubscriptionsPage() {
                 </p>
 
                 <p className="text-gray-700">
-                  Expiry Date: {new Date(activeSubscription.duration.endingDate).toLocaleDateString()}
+                  Expiry Date: {new Date(activeSubscription.endDate).toLocaleDateString()}
                 </p>
 
                 <p className="text-green-800 font-semibold mt-2">
@@ -63,7 +63,7 @@ export default async function SubscriptionsPage() {
                 </p>
 
                 <ul className="mt-4 text-gray-700 space-y-1">
-                  {activeSubscription.features.map((f: string, i: number) => (
+                  {activeSubscription.features?.map((f: string, i: number) => (
                     <li key={i}>• {f}</li>
                   ))}
                 </ul>

@@ -7,11 +7,12 @@ import AddMoneySection from '@/components/wallet/AddMoneySection';
 export const dynamic = 'force-dynamic';
 
 interface WalletPageProps {
-  searchParams: { role?: string };
+  searchParams: Promise<{ role?: string }>;
 }
 
 export default async function WalletPage({ searchParams }: WalletPageProps) {
-  const role = searchParams?.role || 'user';
+  const { role: rawRole } = await searchParams;
+  const role = rawRole || 'user';
   const walletData = await getWalletData(role);
 
   const safeWallet = walletData || {

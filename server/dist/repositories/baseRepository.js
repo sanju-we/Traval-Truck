@@ -27,8 +27,6 @@ export class BaseRepository {
     async findById(id) {
         try {
             const item = await this.#model.findById(id).exec();
-            logger.debug(`Queried ${this.#model.modelName} by ID ${id}: ${item ? 'found' : 'not found'}`);
-            logger.info(`data that got ${item}`);
             return item;
         }
         catch (err) {

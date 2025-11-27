@@ -28,11 +28,12 @@ let agencyPackageController = class agencyPackageController {
     }
     async addPackage(req, res) {
         const data = req.body;
+        const id = req.user.id;
         const files = req.files;
         if (!files)
             throw new BADREQUEST();
         logger.info('onn vada');
-        const createdData = await this._packageService.addPackage(data, files);
+        const createdData = await this._packageService.addPackage(data, files, id);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.CREATED, createdData);
     }
     async updatePackage(req, res) {

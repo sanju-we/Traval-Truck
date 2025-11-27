@@ -14,11 +14,21 @@ import { inject, injectable } from "inversify";
 import { DataNotFoundError } from "../../utils/resAndErrors.js";
 let userFoodsService = class userFoodsService {
     _foodRepository;
-    constructor(_foodRepository) {
+    _subscriptionHistoryRepo;
+    constructor(_foodRepository, _subscriptionHistoryRepo) {
         this._foodRepository = _foodRepository;
+        this._subscriptionHistoryRepo = _subscriptionHistoryRepo;
     }
     async getAllRooms(page, limit, search) {
         const data = await this._foodRepository.findAllFoodsWithPartners(page, limit, search);
+        const checks = await Promise.all(data.data.map(async (food) => {
+            const subscription = await this._subscriptionHistoryRepo.findOne({
+                userId: food.restaurant,
+            });
+            return subscription ? food : null;
+        }));
+        const result = checks.filter((food) => food !== null);
+        data.data = result;
         if (data)
             return data;
         throw new DataNotFoundError();
@@ -27,6 +37,7 @@ let userFoodsService = class userFoodsService {
 userFoodsService = __decorate([
     injectable(),
     __param(0, inject('IRestaurantFoodRespository')),
-    __metadata("design:paramtypes", [Object])
+    __param(1, inject('ISubscriptionHistoryRepository')),
+    __metadata("design:paramtypes", [Object, Object])
 ], userFoodsService);
 export { userFoodsService };

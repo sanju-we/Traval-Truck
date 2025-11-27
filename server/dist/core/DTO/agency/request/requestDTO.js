@@ -3,7 +3,7 @@ export const toVendorAuth = (vendor) => ({
     companyName: vendor.companyName,
     email: vendor.email,
     ownerName: vendor.ownerName,
-    role: vendor.ownerName,
+    role: vendor.role,
     isBlocked: vendor.isApproved,
     isRestricted: vendor.isRestricted,
 });

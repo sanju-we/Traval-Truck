@@ -47,7 +47,7 @@ export default function PaymentPage() {
         </div>
 
         <StripeProvider>
-          <CheckoutForm amount={999} role='user'/>
+          <CheckoutForm amount={999} role='user' onClose={sanju()}/>
         </StripeProvider>
 
         <div className="flex items-center justify-center gap-2 text-gray-500 text-xs mt-5">

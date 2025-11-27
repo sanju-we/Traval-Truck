@@ -7,5 +7,6 @@ export const toPackageResDTO = (pkg) => ({
     itinerary: pkg.itinerary || [],
     price: pkg.price || 0,
     title: pkg.title || "",
-    images: pkg.images || []
+    images: pkg.images || [],
+    ownedBy: pkg.ownedBy
 });

@@ -36,7 +36,6 @@ export async function verifyToken(req, res, next) {
             throw new RESTRICTED_USER();
         }
         req.user = userSignupDTO(user);
-        logger.info('duck');
         next();
     }
     catch (error) {
@@ -102,8 +101,8 @@ export async function verifyAgencyToken(req, res, next) {
         if (agency.role !== 'agency') {
             return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
         }
-        if (agency.isRestricted) {
-            if (req.url !== '/profile' && req.url !== '/update-documents') {
+        if (agency.isRestricted || !agency.isApproved) {
+            if (req.url !== '/profile' && req.url !== '/update-documents' && req.url !== '/logout' && req.url !== '/update') {
                 if (!agency.isApproved)
                     throw new UNAUTHORIZEDUserFounf();
             }

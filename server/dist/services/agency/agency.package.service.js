@@ -18,16 +18,17 @@ import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.c
 let AgencyPackageService = class AgencyPackageService {
     _agencyPackeageRepository;
     _authValidator;
-    constructor(_agencyPackeageRepository, _authValidator) {
+    _agencyRepo;
+    constructor(_agencyPackeageRepository, _authValidator, _agencyRepo) {
         this._agencyPackeageRepository = _agencyPackeageRepository;
         this._authValidator = _authValidator;
+        this._agencyRepo = _agencyRepo;
     }
     async getAllPackage(page) {
         const allPackage = await this._agencyPackeageRepository.findAllPackageWithPartners(page);
         return allPackage;
     }
-    async addPackage(data, files) {
-        logger.info('enththio?');
+    async addPackage(data, files, id) {
         if (typeof data.discoveries === 'string') {
             data.discoveries = JSON.parse(data.discoveries);
         }
@@ -38,6 +39,7 @@ let AgencyPackageService = class AgencyPackageService {
             data.itinerary = JSON.parse(data.itinerary);
         }
         await this._authValidator.addPackageValidator(data);
+        const agency = await this._agencyRepo.findById(id);
         let images = [];
         for (const fieldname in files) {
             const fileArray = files[fieldname];
@@ -46,9 +48,12 @@ let AgencyPackageService = class AgencyPackageService {
                 images.push(result);
             }
         }
-        const packageData = await this._agencyPackeageRepository.create({ ...data, images: images });
-        if (packageData)
+        const packageData = await this._agencyPackeageRepository.create({ ...data, images: images, ownedBy: id });
+        if (packageData) {
+            agency?.packages.push(packageData._id.toString());
+            await agency?.save();
             return await this.getAllPackage(1);
+        }
         throw new Data_Creation_Error();
     }
     async updatePackage(id, data, files) {
@@ -98,6 +103,7 @@ AgencyPackageService = __decorate([
     injectable(),
     __param(0, inject('IAgencyPackageRepository')),
     __param(1, inject('IAuthValidator')),
-    __metadata("design:paramtypes", [Object, Object])
+    __param(2, inject('IAgencyRespository')),
+    __metadata("design:paramtypes", [Object, Object, Object])
 ], AgencyPackageService);
 export { AgencyPackageService };

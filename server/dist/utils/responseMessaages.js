@@ -70,4 +70,6 @@ export var MESSAGES;
     MESSAGES["PAYMENT_NOT_COMPLETED"] = "Payment not completed";
     MESSAGES["PAYMENT_AMOUNT_MISMATCH"] = "Amount mismatch detected";
     MESSAGES["PAYMENT_VERIFY_SUCCESS"] = "Payment verifycation completed";
+    // -------------------- Subscription------------------
+    MESSAGES["SUBSCRIPTION_PURCHASED"] = "Subscrtiption purchased successfully";
 })(MESSAGES || (MESSAGES = {}));

@@ -1,42 +1,89 @@
 import Stripe from 'stripe';
 import { IPaymentUtils } from '../core/interface/PaymentInterface/Ipayment.utils.js';
-import { BADREQUEST, Transfer_Error } from '../utils/resAndErrors.js';
-import { logger } from '../utils/logger.js';
-import { MESSAGES } from '../utils/responseMessaages.js';
-
+import { BADREQUEST, Transfer_Error } from './resAndErrors.js';
+import { logger } from './logger.js';
+import { MESSAGES } from './responseMessaages.js';
+import { IPaymentRepository } from '../core/interface/repositorie/shared/Ishared.payment.repository.js';
+import { inject, injectable } from 'inversify';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2025-10-29.clover',
 });
 
+@injectable()
 export class PaymentUtils implements IPaymentUtils {
-  async createPaymentIntent(amount: number, currency: string): Promise<string[]> {
-    if (amount < 50) throw new BADREQUEST()
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount * 100,
-      currency,
-      payment_method_types: ['card'],
-    });
+  constructor(
+    @inject("IPaymentRepository") private readonly _paymentRepo: IPaymentRepository
+  ) { }
+  async createCheckoutSession(data: {
+  amount: number;
+  currency: string;
+  description: string;
+  successUrl: string;
+  cancelUrl: string;
+  metadata: Record<string, any>;
+  mode?: "payment" | "subscription";
+  priceId?: string;
+}): Promise<{ url: string; sessionId: string; paymentRecordId: string }> {
 
-    if (paymentIntent.client_secret) return [paymentIntent.client_secret,paymentIntent.id];
-    throw new Transfer_Error()
-  }
+  const {
+    amount,
+    currency,
+    description,
+    successUrl,
+    cancelUrl,
+    metadata,
+    mode = "payment",
+    priceId
+  } = data;
 
-  async verifyPaymentIntent(paymentIntentId: string, expectedAmount: number): Promise<{ valid: boolean; message: string; }> {
-    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+  // Create Stripe Session
+  const session = await stripe.checkout.sessions.create({
+    mode,
+    payment_method_types: ["card"],
 
-    if (!paymentIntent) {
-      return { valid: false, message: MESSAGES.PAYMENT_NOT_FOUND };
-    }
+    line_items: mode === "subscription"
+      ? [
+          {
+            price: priceId!,
+            quantity: 1
+          }
+        ]
+      : [
+          {
+            price_data: {
+              currency,
+              product_data: { name: description },
+              unit_amount: amount * 100,
+            },
+            quantity: 1
+          }
+        ],
 
-    if (paymentIntent.status !== "succeeded") {
-      return { valid: false, message: MESSAGES.PAYMENT_NOT_COMPLETED };
-    }
+    success_url: successUrl,
+    cancel_url: cancelUrl,
+    metadata
+  });
 
-    if (paymentIntent.amount_received !== expectedAmount * 100) {
-      return { valid: false, message: MESSAGES.PAYMENT_AMOUNT_MISMATCH };
-    }
+  // Optional: store session record in DB
+  const paymentRecord = await this._paymentRepo.create({
+    sessionId: session.id,
+    amount,
+    currency,
+    status: "pending",
+    metadata
+  });
 
-    return {valid:true,message:MESSAGES.PAYMENT_VERIFY_SUCCESS}
+  return {
+    url: session.url!,
+    sessionId: session.id,
+    paymentRecordId: paymentRecord.id.toString()
+  };
+}
+
+
+
+  async retrieveSession(sessionId: string) {
+    return stripe.checkout.sessions.retrieve(sessionId, { expand: ["payment_intent"] });
   }
 }

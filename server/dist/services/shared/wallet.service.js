@@ -11,8 +11,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from "inversify";
-import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors.js";
-import { logger } from "../../utils/logger.js";
+import { DataNotFoundError } from "../../utils/resAndErrors.js";
 let WalletService = class WalletService {
     _walletRepo;
     _paymentValidator;
@@ -24,38 +23,47 @@ let WalletService = class WalletService {
     }
     async getWallet(id) {
         const wallet = await this._walletRepo.FindByUserId(id);
-        logger.info(`wallet that found ${JSON.stringify(wallet)}`);
-        if (wallet)
-            return wallet;
-        throw new DataNotFoundError();
+        if (!wallet)
+            throw new DataNotFoundError();
+        return wallet;
     }
-    async addMoney(paymentIntentId, amount, id) {
-        await this._paymentValidator.addMoneyValidator(paymentIntentId, amount);
-        logger.info('sneha');
-        const verification = await this._paymentUtils.verifyPaymentIntent(paymentIntentId, amount);
-        if (!verification.valid)
-            return verification;
-        const wallet = await this._walletRepo.FindByUserId(id);
-        let saved;
+    async initiateAddMoney(amount, userId) {
+        // await this._paymentValidator.addMoneyValidator(amount);
+        return this._paymentUtils.createCheckoutSession({
+            amount,
+            currency: "inr",
+            description: `Add money to wallet`,
+            successUrl: `${process.env.FRONTEND_URL}/wallet/success`,
+            cancelUrl: `${process.env.FRONTEND_URL}/wallet/cancel`,
+            metadata: {
+                type: "wallet_topup",
+                userId,
+                amount: amount.toString(),
+            },
+        });
+    }
+    // ⚠️ This function is called ONLY from the Stripe webhook
+    async addMoney(userId, amount, paymentId) {
+        const wallet = await this._walletRepo.FindByUserId(userId);
         const transaction = {
             Type: 'credit',
             Amount: amount,
-            Description: `${amount} Added by the user`,
-            paymentIntentId: paymentIntentId,
+            Description: `${amount} added via Stripe`,
+            paymentIntentId: paymentId,
             Date: new Date()
         };
         if (wallet) {
             wallet.Balance += amount;
             wallet.Transaction.push(transaction);
-            logger.info(`wallet that updating ${wallet}`);
-            saved = await this._walletRepo.update(wallet.id, wallet);
+            const isSaved = await this._walletRepo.update(wallet.id, wallet);
+            if (isSaved)
+                return isSaved;
         }
-        else {
-            saved = await this._walletRepo.create({ UserId: id, Balance: amount, Transaction: [transaction] });
-        }
-        if (saved)
-            return saved;
-        throw new Data_Creation_Error();
+        return await this._walletRepo.create({
+            UserId: userId,
+            Balance: amount,
+            Transaction: [transaction],
+        });
     }
 };
 WalletService = __decorate([

@@ -14,17 +14,34 @@ import { inject, injectable } from "inversify";
 import { DataNotFoundError } from "../../utils/resAndErrors.js";
 let UserPackageSerivce = class UserPackageSerivce {
     _packageRepo;
-    constructor(_packageRepo) {
+    _subscriptionHistoryRepo;
+    constructor(_packageRepo, _subscriptionHistoryRepo) {
         this._packageRepo = _packageRepo;
+        this._subscriptionHistoryRepo = _subscriptionHistoryRepo;
     }
     async getLatestPackage() {
         const data = await this._packageRepo.findAllPackageWithPartners(1);
+        const checks = await Promise.all(data.data.map(async (pkg) => {
+            const agency = await this._subscriptionHistoryRepo.findOne({
+                userId: pkg.ownedBy,
+            });
+            return agency ? pkg : null;
+        }));
+        const result = checks.filter((pkg) => pkg !== null);
         if (data)
-            return data.data;
+            return result;
         throw new DataNotFoundError();
     }
     async getAllPackage(page, limit, search) {
         const data = await this._packageRepo.findAllPackageWithPartners(page, limit, search);
+        const checks = await Promise.all(data.data.map(async (pkg) => {
+            const agency = await this._subscriptionHistoryRepo.findOne({
+                userId: pkg.ownedBy,
+            });
+            return agency ? pkg : null;
+        }));
+        const result = checks.filter((pkg) => pkg !== null);
+        data.data = result;
         if (data)
             return data;
         throw new DataNotFoundError();
@@ -39,6 +56,7 @@ let UserPackageSerivce = class UserPackageSerivce {
 UserPackageSerivce = __decorate([
     injectable(),
     __param(0, inject('IAgencyPackageRepository')),
-    __metadata("design:paramtypes", [Object])
+    __param(1, inject('ISubscriptionHistoryRepository')),
+    __metadata("design:paramtypes", [Object, Object])
 ], UserPackageSerivce);
 export { UserPackageSerivce };

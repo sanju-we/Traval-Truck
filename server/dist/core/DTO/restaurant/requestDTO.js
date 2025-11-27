@@ -6,5 +6,6 @@ export const toFoodDTO = (food) => ({
     availableQuantity: food.AvailableQuantity,
     category: food.Category,
     images: food.Image,
-    status: food.Status
+    status: food.Status,
+    restaurant: food.Restaurant
 });

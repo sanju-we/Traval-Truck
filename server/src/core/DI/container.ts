@@ -32,6 +32,12 @@ import { ISharedSubscriptionService } from '../../core/interface/serivice/shared
 import { SharedSubscriptionService } from '../../services/shared/shared.subscrtiption.service.js';
 import { ISubscriptionHistoryRepository } from '../../core/interface/repositorie/shared/ISubscription.hisroty.repository.js';
 import { subscriptionHistoryRepository } from '../../repositories/shared/subscription.history.repository.js';
+import { IPaymentRepository } from '../../core/interface/repositorie/shared/Ishared.payment.repository.js';
+import { PaymentRepository } from '../../repositories/shared/payments.repository.js';
+import { IWebhookController } from '../../core/interface/controllerInterface/shared/Iwebhook.controller.js';
+import webHook from '../../controllers/sharedController/stripe.webhook.controller.js';
+import { IWebhookService } from '../../core/interface/serivice/shared/IWebhook.service.js';
+import { WebhookService } from '../../services/shared/webhook.service.js';
 
 // ----------------------------------------------------user-------------------------------------------------------------
 import { IAuthService } from '../../core/interface/serivice/user/auth.interface.js';
@@ -159,7 +165,10 @@ container.bind<ISharedWalletController>('ISharedWalletController').to(SharedWall
 container.bind<IWalletRespository>('IWalletRespository').to(WalletRespository);
 container.bind<ISharedSubscriptionController>('ISharedSubscriptionController').to(SharedSubscriptionController);
 container.bind<ISharedSubscriptionService>('ISharedSubscriptionService').to(SharedSubscriptionService);
-container.bind<ISubscriptionHistoryRepository>('ISubscriptionHistoryRepository').to(subscriptionHistoryRepository)
+container.bind<ISubscriptionHistoryRepository>('ISubscriptionHistoryRepository').to(subscriptionHistoryRepository);
+container.bind<IPaymentRepository>('IPaymentRepository').to(PaymentRepository);
+container.bind<IWebhookService>('IWebhookService').to(WebhookService);
+container.bind<IWebhookController>('IWebhookController').to(webHook);
 
 // ---------------------------------------------------user container-------------------------------------------------------------------------
 container.bind<IAuthRepository>('IAuthRepository').to(AuthRepository);

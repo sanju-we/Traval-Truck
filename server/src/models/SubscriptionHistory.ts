@@ -4,6 +4,7 @@ import { ISubscriptionHistory } from "../core/interface/modelInterface/ISubscrip
 const subscriptionHistorySchema = new Schema({
   userId: { type: String, required: true },
   role: { type: String, enum:['agency','hotel','restaurant'] , required: true },
+  amount:{type:Number,},
   paymentId: { type: String, required: true },
   subscriptionId: { type: String },
   status: { type: String, default: "active" },

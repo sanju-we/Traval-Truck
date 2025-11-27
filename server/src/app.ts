@@ -9,6 +9,8 @@ import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import { errorHandler } from './middleware/errorHandler.js';
+import { IWebhookController } from './core/interface/controllerInterface/shared/Iwebhook.controller.js';
+import { container } from './core/DI/container.js';
 
 const app = express();
 
@@ -23,6 +25,12 @@ app.use(
   }),
 );
 // app.options('*', cors());
+const webhook = container.get<IWebhookController>('IWebhookController')
+app.post(
+  "/api/webhook/stripe",
+  express.raw({ type: "application/json" }),
+  webhook.webHookHandler
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -33,6 +41,8 @@ app.use('/api/agency', agencyRouter);
 app.use('/api/hotel', hotelRouter);
 app.use('/api/restaurant', restaurantRouter);
 app.use('/api/shared', sharedRouter);
+
+
 // error handling middleware
 app.use(errorHandler);
 

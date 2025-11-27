@@ -14,23 +14,39 @@ import { inject, injectable } from "inversify";
 import { DataNotFoundError } from "../../utils/resAndErrors.js";
 let UserHotelsService = class UserHotelsService {
     _hotelRoomRepo;
-    constructor(_hotelRoomRepo) {
+    _subscriptionHistoryRepo;
+    constructor(_hotelRoomRepo, _subscriptionHistoryRepo) {
         this._hotelRoomRepo = _hotelRoomRepo;
+        this._subscriptionHistoryRepo = _subscriptionHistoryRepo;
     }
     async getAllHotels(page, limit, search) {
         const data = await this._hotelRoomRepo.findAllPackageWithPartners(page, limit, search);
+        const checks = await Promise.all(data.data.map(async (pkg) => {
+            const room = await this._subscriptionHistoryRepo.findOne({
+                userId: pkg.HotelId,
+            });
+            return room ? pkg : null;
+        }));
+        const result = checks.filter((pkg) => pkg !== null);
+        data.data = result;
         if (data)
             return data;
         throw new DataNotFoundError();
     }
     async getRoom(id) {
         const data = await this._hotelRoomRepo.findPackageWithPartner(id);
-        return data;
+        const room = await this._subscriptionHistoryRepo.findOne({
+            userId: data.HotelId,
+        });
+        if (room)
+            return data;
+        throw new DataNotFoundError();
     }
 };
 UserHotelsService = __decorate([
     injectable(),
     __param(0, inject('IHotelRoomsRepository')),
-    __metadata("design:paramtypes", [Object])
+    __param(1, inject('ISubscriptionHistoryRepository')),
+    __metadata("design:paramtypes", [Object, Object])
 ], UserHotelsService);
 export { UserHotelsService };

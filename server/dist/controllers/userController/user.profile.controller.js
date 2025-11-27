@@ -14,7 +14,6 @@ import { inject, injectable } from 'inversify';
 import { BADREQUEST, sendResponse } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import z from 'zod';
-import { logger } from '../../utils/logger.js';
 import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
 let ProfileController = class ProfileController {
@@ -36,7 +35,6 @@ let ProfileController = class ProfileController {
             return sendResponse(res, STATUS_CODE.NOT_FOUND, false, 'User not found');
         }
         const user = toUserProfileDTO(userData);
-        logger.info(`User profile retrieved for ID ${JSON.stringify(userData)}`);
         sendResponse(res, STATUS_CODE.OK, true, 'User profile found', user);
     }
     async intrest(req, res) {
@@ -48,7 +46,6 @@ let ProfileController = class ProfileController {
             return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'User not authenticated');
         }
         await this._profileService.setInterest(interests, req.user.id);
-        logger.info(`Interests updated for user ID ${req.user.id}`);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED);
     }
     async updateUser(req, res) {
@@ -58,10 +55,8 @@ let ProfileController = class ProfileController {
             phoneNumber: z.preprocess((val) => Number(val), z.number()),
         });
         const formData = req.body;
-        logger.info(`Validated user data: ${JSON.stringify(formData)}`);
         const user = req.user;
         const userData = await this._profileService.updateProfile(formData, user);
-        logger.info(`userData : ${userData}`);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, userData);
     }
     async uploadProfile(req, res) {
@@ -69,7 +64,6 @@ let ProfileController = class ProfileController {
         if (!profile)
             throw new BADREQUEST();
         const userId = req.user.id;
-        logger.info(`formData = ${JSON.stringify(req.file)}`);
         const updated = await this._profileService.uploadProfileImage(userId, profile);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updated);
     }
