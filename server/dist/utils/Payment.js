@@ -50,6 +50,9 @@ let PaymentUtils = class PaymentUtils {
         // Optional: store session record in DB
         const paymentRecord = await this._paymentRepo.create({
             sessionId: session.id,
+            type: metadata.type,
+            userId: metadata.userId,
+            role: metadata.role,
             amount,
             currency,
             status: "pending",

@@ -20,7 +20,7 @@ app.use(
   cors({
     origin: originAllowed,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization' ],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   }),
 );
@@ -29,7 +29,7 @@ const webhook = container.get<IWebhookController>('IWebhookController')
 app.post(
   "/api/webhook/stripe",
   express.raw({ type: "application/json" }),
-  webhook.webHookHandler
+  webhook.webHookHandler.bind(webhook)
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

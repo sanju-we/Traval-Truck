@@ -238,7 +238,7 @@ export function Header() {
                         <span>My Profile</span>
                       </a>
                       <a
-                        href="/wallet?role=user"
+                        href="/wallet"
                         className="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                       >
                         <Wallet className="w-4 h-4 text-gray-500" />

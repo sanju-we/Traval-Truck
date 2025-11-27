@@ -20,9 +20,12 @@ let UserPaymentController = class UserPaymentController {
         this._paymentService = _paymentService;
     }
     async initiate(req, res) {
-        const { type, amount, currency = "inr", userId, role, targetId, priceId, } = req.body;
+        const { type, amount, currency = "inr", targetId, priceId, } = req.body;
+        // Extract userId and role from authenticated user
+        const userId = req.user.id;
+        const role = req.user.role;
         // Generate a description
-        const description = type === "wallet_topup"
+        const description = type === "wallet"
             ? `Wallet Top-Up of ₹${amount}`
             : type === "subscription"
                 ? `Subscription Purchase`
@@ -37,13 +40,16 @@ let UserPaymentController = class UserPaymentController {
         };
         // Determine Stripe mode
         const mode = type === "subscription" ? "subscription" : "payment";
+        // Generate role-specific success/cancel URLs
+        const successUrl = `${process.env.FRONTEND_URL}/${role}/payment/success?session_id={CHECKOUT_SESSION_ID}`;
+        const cancelUrl = `${process.env.FRONTEND_URL}/${role}/payment/cancel`;
         // Call Stripe Helper
         const session = await this._paymentService.createCheckoutSession({
             amount: Number(amount),
             currency: String(currency),
             description,
-            successUrl: `${process.env.FRONTEND_URL}/payment/success`,
-            cancelUrl: `${process.env.FRONTEND_URL}/payment/cancel`,
+            successUrl,
+            cancelUrl,
             metadata,
             mode,
             priceId,

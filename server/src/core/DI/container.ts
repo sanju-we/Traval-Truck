@@ -61,7 +61,7 @@ import { UserHotelsService } from '../../services/user/user.hotels.service.js';
 import { IPaymentController } from '../interface/controllerInterface/shared/Ishared.payment.controller.js';
 import { UserPaymentController } from '../../controllers/sharedController/payment.controller.js';
 import { IPaymentUtils } from '../interface/PaymentInterface/Ipayment.utils.js';
-import { PaymentUtils } from '../../utils/payment.utils.js';
+import { PaymentUtils } from '../../utils/Payment.js';
 import { IUserFoodsController } from '../../core/interface/controllerInterface/user/IUser.foods.controller.js';
 import { userFoodsController } from '../../controllers/userController/user.foods.controller.js';
 import { IUserFoodsService } from '../../core/interface/serivice/user/IUser.foods.service.js';

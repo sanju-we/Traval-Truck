@@ -22,7 +22,7 @@ export class SharedWalletController implements ISharedWalletController {
   async addMoney(req: Request, res: Response): Promise<void> {
     const { paymentIntentId, amount } = req.body;
     const id = req.user.id
-    const wallet = await this._walletService.addMoney(paymentIntentId, amount, id)
+    const wallet = await this._walletService.addMoney(id, amount, paymentIntentId)
     logger.info(wallet)
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.PAYMENT_SUCCESS, wallet)
   }

@@ -62,9 +62,9 @@ function SideNavbar() {
               <Inbox className="material-icons">chat</Inbox>
               <span>Chat</span>
             </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
-              <BarChart className="material-icons">bar_chart</BarChart>
-              <span>Reports</span>
+            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded" onClick={()=>router.push('/hotel/wallet')}>
+              <IndianRupee className="material-icons">bar_chart</IndianRupee>
+              <span>Wallet</span>
             </button>
             <button
               className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded"

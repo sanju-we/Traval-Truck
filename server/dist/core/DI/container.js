@@ -17,6 +17,7 @@ import { SharedSubscriptionService } from '../../services/shared/shared.subscrti
 import { subscriptionHistoryRepository } from '../../repositories/shared/subscription.history.repository.js';
 import { PaymentRepository } from '../../repositories/shared/payments.repository.js';
 import webHook from '../../controllers/sharedController/stripe.webhook.controller.js';
+import { WebhookService } from '../../services/shared/webhook.service.js';
 import { AuthService } from '../../services/user/auth.service.js';
 import { AuthRepository } from '../../repositories/user/auth.repository.js';
 import { AuthController } from '../../controllers/userController/user.auth.controller.js';
@@ -27,7 +28,6 @@ import { UserPackageSerivce } from '../../services/user/user.package.service.js'
 import { UserHotelsController } from '../../controllers/userController/user.hotels.controller.js';
 import { UserHotelsService } from '../../services/user/user.hotels.service.js';
 import { UserPaymentController } from '../../controllers/sharedController/payment.controller.js';
-import { PaymentUtils } from '../../utils/payment.utils.js';
 import { userFoodsController } from '../../controllers/userController/user.foods.controller.js';
 import { userFoodsService } from '../../services/user/user.foods.service.js';
 import { AdminAuthService } from '../../services/admin/admin.auth.service.js';
@@ -84,6 +84,7 @@ container.bind('ISharedSubscriptionController').to(SharedSubscriptionController)
 container.bind('ISharedSubscriptionService').to(SharedSubscriptionService);
 container.bind('ISubscriptionHistoryRepository').to(subscriptionHistoryRepository);
 container.bind('IPaymentRepository').to(PaymentRepository);
+container.bind('IWebhookService').to(WebhookService);
 container.bind('IWebhookController').to(webHook);
 // ---------------------------------------------------user container-------------------------------------------------------------------------
 container.bind('IAuthRepository').to(AuthRepository);
@@ -96,7 +97,7 @@ container.bind('IUserPackageService').to(UserPackageSerivce);
 container.bind('IUserHotelsController').to(UserHotelsController);
 container.bind('IUserHotelsService').to(UserHotelsService);
 container.bind('IPaymentController').to(UserPaymentController);
-container.bind('IPaymentUtils').to(PaymentUtils);
+// container.bind<IPaymentUtils>('IPaymentUtils').to(PaymentUtils);
 container.bind('IUserFoodsController').to(userFoodsController);
 container.bind('IUserFoodsService').to(userFoodsService);
 // -----------------------------------------------------admin containers----------------------------------------------------------------------

@@ -13,127 +13,60 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 import Stripe from "stripe";
 import { logger } from "../../utils/logger.js";
 import { inject, injectable } from "inversify";
-import { DataNotFoundError, sendResponse } from "../../utils/resAndErrors.js";
+import { sendResponse } from "../../utils/resAndErrors.js";
 import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
 import { MESSAGES } from "../../utils/responseMessaages.js";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: "2025-10-29.clover" });
-let webHook = class webHook {
-    _paymentRepo;
-    _walletRepo;
-    _subscriptionHistoryRepo;
-    _subscriptionRepo;
-    constructor(_paymentRepo, _walletRepo, _subscriptionHistoryRepo, _subscriptionRepo) {
-        this._paymentRepo = _paymentRepo;
-        this._walletRepo = _walletRepo;
-        this._subscriptionHistoryRepo = _subscriptionHistoryRepo;
-        this._subscriptionRepo = _subscriptionRepo;
+let WebhookController = class WebhookController {
+    _webhookService;
+    constructor(_webhookService) {
+        this._webhookService = _webhookService;
     }
     async webHookHandler(req, res) {
         const sig = req.headers["stripe-signature"];
-        const event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-        switch (event.type) {
-            case "checkout.session.completed": {
-                const session = event.data.object;
-                const sessionid = session.id;
-                const paymentIntentId = session.payment_intent || session.payment_intent?.id;
-                const metadata = session.metadata || {};
-                const paymentDoc = await this._paymentRepo.findOne({ sessionid });
-                if (paymentDoc) {
-                    paymentDoc.status = "paid";
-                    paymentDoc.paymentIntentId = typeof paymentIntentId === 'string' ? paymentIntentId : paymentIntentId?.id;
-                    await this._paymentRepo.update(paymentDoc.id, paymentDoc);
-                }
-                const type = metadata.type;
-                switch (type) {
-                    case 'wallet': {
-                        const userId = metadata.userId;
-                        const amount = (session.amount_total || 0) / 100;
-                        const wallet = await this._walletRepo.findOne({ UserId: userId });
-                        const transaction = {
-                            Type: 'Credit',
-                            Amount: amount,
-                            Description: `Wallet top-up via stripe amount ${amount}`,
-                            paymentIntentId,
-                            Date: new Date()
-                        };
-                        if (wallet) {
-                            wallet.Balance += amount;
-                            wallet.Transaction.push(transaction);
-                            await this._walletRepo.update(wallet.id, wallet);
-                        }
-                        else {
-                            await this._walletRepo.create({ UserId: userId, Balance: amount, Transaction: [transaction] });
-                        }
-                        logger.info(`wallet creadited for ${userId} : ${amount}`);
-                        break;
-                    }
-                    case 'subscription': {
-                        const userId = metadata.userId;
-                        const planId = metadata.targetId;
-                        const Plan = await this._subscriptionRepo.findById(planId);
-                        if (!Plan)
-                            throw new DataNotFoundError();
-                        const day = Plan.Valid * (24 * 60 * 60 * 1000);
-                        const endDate = new Date(Date.now() + day);
-                        await this._subscriptionHistoryRepo.create({ userId: userId, role: metadata.role, paymentId: paymentIntentId, subscriptionId: planId, startDate: new Date(Date.now()), status: 'active', endDate: endDate });
-                        logger.info(`Subscription purchase recorded for ${userId}, plan ${planId}`);
-                        break;
-                    }
-                    // case "package": {
-                    //   // mark package order paid (metadata.targetId = orderId or packageId)
-                    //   const orderId = metadata.targetId;
-                    //   // await Order.updateOne({ _id: orderId }, { paid: true, paymentReference: sessionId })
-                    //   logger.info(`Package/order ${orderId} marked paid`);
-                    //   break;
-                    // }
-                    // case "booking": {
-                    //   const bookingId = metadata.targetId;
-                    //   // await Booking.findByIdAndUpdate(bookingId, { paid: true, paymentRef: sessionId })
-                    //   logger.info(`Booking ${bookingId} marked paid`);
-                    //   break;
-                    // }
-                    default:
-                        logger.warn("Unknown payment metadata.type: " + metadata.type);
-                }
-                break;
-            }
-            case "payment_intent.payment_failed":
-            case "checkout.session.async_payment_failed":
-            case "invoice.payment_failed": {
-                const obj = event.data.object;
-                const sessionid = obj.id || obj.session;
-                const paymentDoc = await this._paymentRepo.findOne({ sessionid });
-                if (paymentDoc) {
-                    paymentDoc.status = 'failed';
-                    await this._paymentRepo.update(paymentDoc.id, paymentDoc);
-                }
-                logger.error("Payment failed event received: " + event.type);
-                break;
-            }
-            case "invoice.payment_succeeded": {
-                const invoice = event.data.object;
-                const subscriptionId = invoice.subscription;
-                const Plan = await this._subscriptionRepo.findById(subscriptionId);
-                if (!Plan)
-                    throw new DataNotFoundError();
-                const day = Plan.Valid * (24 * 60 * 60 * 1000);
-                const endDate = new Date(Date.now() + day);
-                await this._subscriptionHistoryRepo.update(subscriptionId, { endDate: endDate });
-                logger.info("Invoice paid for subscription: " + subscriptionId);
-                break;
-            }
-            default:
-                logger.info("Unhandled stripe event: " + event.type);
+        let event;
+        try {
+            event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
         }
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.PAYMENT_SUCCESS);
+        catch (err) {
+            logger.error(`Webhook signature verification failed: ${err.message}`);
+            res.status(400).send(`Webhook Error: ${err.message}`);
+            return;
+        }
+        try {
+            switch (event.type) {
+                case "checkout.session.completed": {
+                    const session = event.data.object;
+                    await this._webhookService.handleCheckoutSessionCompleted(session);
+                    break;
+                }
+                case "payment_intent.payment_failed":
+                case "checkout.session.async_payment_failed":
+                case "invoice.payment_failed": {
+                    const obj = event.data.object;
+                    const sessionId = obj.id || obj.session;
+                    await this._webhookService.handlePaymentFailed(sessionId);
+                    break;
+                }
+                case "invoice.payment_succeeded": {
+                    const invoice = event.data.object;
+                    await this._webhookService.handleInvoicePaymentSucceeded(invoice);
+                    break;
+                }
+                default:
+                    logger.info("Unhandled stripe event: " + event.type);
+            }
+            sendResponse(res, STATUS_CODE.OK, true, MESSAGES.PAYMENT_SUCCESS);
+        }
+        catch (error) {
+            logger.error(`Webhook handler error: ${error.message}`);
+            res.status(500).send(`Webhook processing failed: ${error.message}`);
+        }
     }
 };
-webHook = __decorate([
+WebhookController = __decorate([
     injectable(),
-    __param(0, inject('IPaymentRepository')),
-    __param(1, inject('IWalletRespository')),
-    __param(2, inject('ISubscriptionHistoryRepository')),
-    __param(3, inject('ISubscriptionRepository')),
-    __metadata("design:paramtypes", [Object, Object, Object, Object])
-], webHook);
-export default webHook;
+    __param(0, inject('IWebhookService')),
+    __metadata("design:paramtypes", [Object])
+], WebhookController);
+export default WebhookController;

@@ -9,6 +9,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import { errorHandler } from './middleware/errorHandler.js';
+import { container } from './core/DI/container.js';
 const app = express();
 // middle wares
 const originAllowed = ['http://localhost:3000', 'http://localhost:3001'];
@@ -19,6 +20,8 @@ app.use(cors({
     credentials: true,
 }));
 // app.options('*', cors());
+const webhook = container.get('IWebhookController');
+app.post("/api/webhook/stripe", express.raw({ type: "application/json" }), webhook.webHookHandler);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

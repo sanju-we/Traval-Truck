@@ -26,7 +26,7 @@ let SharedSubscriptionController = class SharedSubscriptionController {
     }
     async getCurrent(req, res) {
         const id = req.user.id;
-        const current = await this._subscriptionService.getSubscription(id);
+        const current = await this._subscriptionService.getCurrentSubscription(id);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, current);
     }
     async getCoupon(req, res) {
@@ -34,16 +34,29 @@ let SharedSubscriptionController = class SharedSubscriptionController {
         const subscription = await this._subscriptionService.getSubscription(id);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, subscription);
     }
-    /**
-     * NEW — Create Stripe Checkout Session for subscription
-     */
     async initiateSubscription(req, res) {
-        const { planId } = req.body;
+        const planId = req.body.subscriptionId;
         const userId = req.user.id;
         const role = req.user.role;
-        logger.info(`Initiating subscription for user: ${userId}`);
         const session = await this._subscriptionService.initiateSubscriptionPurchase(planId, userId, role);
+        logger.info(`Initiating subscription for user: ${userId}`);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.PAYMENT_SUCCESS, session);
+    }
+    async activate(req, res) {
+        const { subscriptionId } = req.body; // In frontend we send sessionId as subscriptionId
+        const userId = req.user.id;
+        const role = req.user.role;
+        if (!subscriptionId) {
+            sendResponse(res, STATUS_CODE.BAD_REQUEST, false, "Session ID is required");
+            return;
+        }
+        const success = await this._subscriptionService.activateSubscription(subscriptionId, userId, role);
+        if (success) {
+            sendResponse(res, STATUS_CODE.OK, true, "Subscription activated successfully");
+        }
+        else {
+            sendResponse(res, STATUS_CODE.BAD_REQUEST, false, "Activation failed");
+        }
     }
 };
 SharedSubscriptionController = __decorate([

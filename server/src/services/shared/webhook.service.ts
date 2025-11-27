@@ -23,7 +23,7 @@ export class WebhookService implements IWebhookService {
         const metadata = session.metadata || {};
 
         // Update payment document
-        const paymentDoc = await this._paymentRepo.findOne({ sessionid: sessionId });
+        const paymentDoc = await this._paymentRepo.findOne({ sessionId: sessionId });
         if (paymentDoc) {
             paymentDoc.status = "paid";
             paymentDoc.paymentIntentId = typeof paymentIntentId === 'string' ? paymentIntentId : (paymentIntentId as any)?.id;
@@ -31,9 +31,10 @@ export class WebhookService implements IWebhookService {
         }
 
         const type = metadata.type;
+        logger.info(`dasappan ${type}`)
 
         switch (type) {
-            case 'wallet':
+            case 'wallet_topup':
                 await this._handleWalletTopup(session, metadata, paymentIntentId);
                 break;
 
@@ -55,7 +56,7 @@ export class WebhookService implements IWebhookService {
     }
 
     async handlePaymentFailed(sessionId: string): Promise<void> {
-        const paymentDoc = await this._paymentRepo.findOne({ sessionid: sessionId });
+        const paymentDoc = await this._paymentRepo.findOne({ sessionId: sessionId });
         if (paymentDoc) {
             paymentDoc.status = 'failed';
             await this._paymentRepo.update(paymentDoc.id, paymentDoc);
@@ -85,6 +86,7 @@ export class WebhookService implements IWebhookService {
         metadata: Record<string, any>,
         paymentIntentId: string
     ): Promise<void> {
+        logger.info('dasappan')
         const userId = metadata.userId;
         const amount = (session.amount_total || 0) / 100;
 

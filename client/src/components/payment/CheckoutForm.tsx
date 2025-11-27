@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '@/services/api';
 
-export default function CheckoutForm({ amount, role, onClose }: { amount: number, role: string, onClose: () => void }) {
+export default function CheckoutForm({ amount, role }: { amount: number, role: string }) {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -20,29 +20,23 @@ export default function CheckoutForm({ amount, role, onClose }: { amount: number
     setLoading(true);
 
     try {
-      const { data } = await api.post(`/shared/payments/${role}/create-payment`, { amount });
-      console.log('data',data)
+      const { data } = await api.post(`/shared/payments/${role}/create-payment`, { amount, type: 'wallet_topup' });
+      console.log('data', data)
 
       const result = await stripe.confirmCardPayment(data.data[0], {
         payment_method: { card: elements.getElement(CardElement)! },
       });
-      
+
       if (result.error) {
         toast.error(result.error.message || 'Payment failed');
       } else if (result.paymentIntent?.status === 'succeeded') {
-        const body = {paymentIntentId: data.data[1], amount: amount}
-        const res = await api.post(`/shared/wallet/${role}/add-money`, body)
-        if (res.data.success) {
-          toast.success('Payment successful!');
-          onClose();
-          router.push(`/wallet?role=${role}`);
-        }else{
-          toast.error(res.data.message)
-        }
+        toast.success('Payment successful!');
+        router.push(`/wallet?role=${role}`);
       }
     } catch (error) {
       toast.error('Something went wrong!');
       console.error(error);
+    } finally {
       setLoading(false);
     }
   };

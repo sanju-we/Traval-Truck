@@ -32,9 +32,7 @@ export class SharedSubscriptionController implements ISharedSubscriptionControll
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, subscription);
   }
 
-  /**
-   * NEW — Create Stripe Checkout Session for subscription
-   */
+
   async initiateSubscription(req: Request, res: Response): Promise<void> {
     const planId = req.body.subscriptionId;
     const userId = req.user.id;
