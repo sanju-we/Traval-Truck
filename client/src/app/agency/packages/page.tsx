@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import AddPackageModal from "@/components/agency/AddPackageModal";
 import { Plus, Edit3, ChevronLeft, ChevronRight } from "lucide-react";
-import api from "@/services/api";
+import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
 import SideNavbar from "@/components/agency/SideNavbar";
 import toast from "react-hot-toast";
 import EditPackageModal from "@/components/agency/editPackageModal";
@@ -48,9 +48,7 @@ export default function PackageListingPage() {
 
   const fetchPackages = async (pageNumber = 1) => {
     try {
-      const { data } = await api.get(
-        `/agency/package/getAllPackages?page=${pageNumber}&limit=${limit}`
-      );
+      const { data } = await AGENCY_API_METHODS.getAll({ page: pageNumber, limit });
 
       console.log(data.data)
       if (!data.success) return toast.error(data.message);

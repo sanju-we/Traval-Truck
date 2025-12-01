@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import api from '@/services/api';
+import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import { Loader2, MapPin, Star } from 'lucide-react';
 import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
@@ -33,7 +33,7 @@ export default function HotelsPage() {
   const fetchHotels = async (page: number) => {
     setLoading(true);
     try {
-      const res = await api.get(`/user/hotels/getAll?page=${page}&limit=${itemsPerPage}`);
+      const res = await USER_API_METHODS.showAllFoods(page);
       console.log(res.data)
       setHotels(res.data.data.data || []);
       setTotalPages(res.data.data.totalPages || 1);

@@ -1,17 +1,35 @@
 "use client";
 
-import api from "@/services/api";
+import { AGENCY_API_METHODS } from "@/services/APIs/agency.api.service";
+import { HOTEL_API_METHODS } from "@/services/APIs/hotel.api.service";
+import { RESTAURANT_API_METHODS } from "@/services/APIs/restaurant.api.service";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function BuyNowButton({ subscriptionId, role }: any) {
   const [loading, setLoading] = useState(false);
 
+  const getService = (role: string) => {
+    switch (role) {
+      case 'agency': return AGENCY_API_METHODS;
+      case 'hotel': return HOTEL_API_METHODS;
+      case 'restaurant': return RESTAURANT_API_METHODS;
+      default: return null;
+    }
+  };
+
   const handleBuy = async () => {
+    const service = getService(role);
+    if (!service) {
+      console.error("Invalid role");
+      return;
+    }
+
     try {
       setLoading(true);
 
-      const { data } = await api.post(`/shared/subscriptions/${role}/purchase`, {
+      const { data } = await service.purchaseSubscription({
         subscriptionId,
         role
       });

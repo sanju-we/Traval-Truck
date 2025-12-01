@@ -10,7 +10,7 @@ export class RestaurantSubscriptionService implements IRestaurantSubscriptionSer
     @inject('ISubscriptionRepository') private readonly _subscriptionRepo: ISubscriptionRepository
   ) { }
   async getAll(): Promise<subscriptionDTO[]> {
-    const data = await this._subscriptionRepo.findAllUser({ IsActive: true }, {})
+    const data = await this._subscriptionRepo.findAll({ IsActive: true }, {})
     if (data) return data.map(toSubdcriptionDTO)
     throw new DataNotFoundError()
   }

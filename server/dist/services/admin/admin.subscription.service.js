@@ -42,7 +42,7 @@ let AdminSubscriptionService = class AdminSubscriptionService {
         throw new UserNotFoundError();
     }
     async getAllSubscriptions() {
-        const datas = await this._adminSubscriptionRepo.findAllUser({}, {});
+        const datas = await this._adminSubscriptionRepo.findAll({}, {});
         logger.info('data comming from the repository is ', datas);
         if (datas)
             return datas.map(toSubdcriptionDTO);

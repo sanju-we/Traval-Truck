@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import api from '@/services/api';
+import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('');
@@ -27,7 +27,7 @@ export default function ResetPasswordPage() {
 
     setIsLoading(true);
     try {
-      const res = await api.post('/user/auth/reset-password', {
+      const res = await USER_API_METHODS.resetPassword({
         token,
         newPassword: password,
       });

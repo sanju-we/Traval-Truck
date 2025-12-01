@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import api from '@/services/api';
+import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import toast from 'react-hot-toast';
 import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
@@ -46,9 +46,9 @@ export default function ExplorePage() {
         searchTerm ? `&search=${encodeURIComponent(searchTerm)}` : ''
       }`;
 
-      if (type === 'packages') res = await api.get(`/user/packages/getAll${query}`);
-      if (type === 'rooms') res = await api.get(`/user/hotels/getAll${query}`);
-      if (type === 'foods') res = await api.get(`/user/foods/getAll${query}`);
+      if (type === 'packages') res = await USER_API_METHODS.getAllPackages(query);
+      if (type === 'rooms') res = await USER_API_METHODS.getAllHotel(query);
+      if (type === 'foods') res = await USER_API_METHODS.showAllFoods(query);
 
       if (!res?.data?.success) return toast.error('Failed to fetch data');
 

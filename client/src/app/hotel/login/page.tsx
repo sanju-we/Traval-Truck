@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import api from '@/services/api';
+import { HOTEL_API_METHODS } from '@/services/APIs/hotel.api.service';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,7 +24,7 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const res = await api.post('/hotel/auth/login', formData);
+      const res = await HOTEL_API_METHODS.login(formData);
       const data = res.data;
       console.log('data:', data);
 
@@ -39,7 +39,7 @@ export default function LoginPage() {
       toast.error('Login failed');
       console.error('Login error:', err);
       setIsLoading(false);
-    } 
+    }
   };
 
   return (

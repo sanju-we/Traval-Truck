@@ -36,8 +36,9 @@ let WebhookService = class WebhookService {
             await this._paymentRepo.update(paymentDoc.id, paymentDoc);
         }
         const type = metadata.type;
+        logger.info(`dasappan ${type}`);
         switch (type) {
-            case 'wallet':
+            case 'wallet_topup':
                 await this._handleWalletTopup(session, metadata, paymentIntentId);
                 break;
             case 'subscription':
@@ -75,6 +76,7 @@ let WebhookService = class WebhookService {
     }
     // Private helper methods
     async _handleWalletTopup(session, metadata, paymentIntentId) {
+        logger.info('dasappan');
         const userId = metadata.userId;
         const amount = (session.amount_total || 0) / 100;
         const wallet = await this._walletRepo.findOne({ UserId: userId });

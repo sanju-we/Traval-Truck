@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2, ImagePlus, X } from 'lucide-react';
-import api from '@/services/api';
+import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
 import toast from 'react-hot-toast';
 import { ImageCropperModal } from '../hotel/ImageCropperModal';
 import ConfirmModal from '@/components/common/ConfirmModal';
@@ -111,11 +111,7 @@ export default function EditPackageModal({
         return;
       }
 
-      const { data } = await api.patch(
-        `/agency/package/deleteImage/${formData.id}`,
-        { index },
-        { headers: { "Content-Type": "application/json" } }
-      );
+      const { data } = await AGENCY_API_METHODS.deletePackageImage(formData.id, { index });
 
       console.log("🟢 Response:", data);
 
@@ -208,9 +204,7 @@ export default function EditPackageModal({
       for (let i of form) {
         console.log(i)
       }
-      const res = await api.patch(`/agency/package/update/${pkg.id}`, form, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const res = await AGENCY_API_METHODS.editPackage(pkg.id, form);
 
       if (res.data.success) {
         toast.success('Package updated successfully!');

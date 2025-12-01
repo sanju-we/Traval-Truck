@@ -1,19 +1,20 @@
 'use client';
 
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Camera, Edit, Mail, Phone, X, Check } from 'lucide-react';
 import SideNavbar from '@/components/hotel/SideNavbar';
 import api from '@/services/api';
-import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from '@/components/utils/UserCropImage';
 import VendorProfile from '@/types/vendor/profile';
 import DocumentUploadWithPreview from '@/components/utils/DocumentUploadWithPreview';
 import RestrictionBanner from '@/components/vendor/RestrictionBanner';
+import { HOTEL_API_METHODS } from '@/services/APIs/hotel.api.service';
 
 export default function VendorProfilePage() {
   const [vendor, setVendor] = useState<VendorProfile | null>(null);
@@ -36,7 +37,7 @@ export default function VendorProfilePage() {
   useEffect(() => {
     async function fetchVendor() {
       try {
-        const { data } = await api.get('/hotel/profile/profile');
+        const { data } = await HOTEL_API_METHODS.getProfile();
         if (!data.success) {
           toast.error(data.message);
           if (data.message === 'This user is Restricted by the admin') {

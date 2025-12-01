@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { SideNavbar } from "@/components/admin/SideNavbar";
-import api from "@/services/api";
+import { ADMIN_API_METHODS } from "@/services/APIs/admin.api.service";
 import { toast } from "react-hot-toast";
 import { subscriptionData } from "@/types/subscription.type";
 
@@ -54,7 +54,7 @@ export default function SubscriptionPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const { data } = await api.get("/admin/subscription/getAll");
+        const { data } = await ADMIN_API_METHODS.fetchAllSubscriptions();
         if (data.success) {
           console.log(data.data)
           setSubscriptions(data.data);
@@ -169,7 +169,7 @@ export default function SubscriptionPage() {
     };
 
     try {
-      const res = await api.post("/admin/subscription/add", payload);
+      const res = await ADMIN_API_METHODS.createSubscription(payload);
 
       if (res.data.success) {
         toast.success("Subscription added successfully!");
@@ -185,7 +185,7 @@ export default function SubscriptionPage() {
           IsActive: true,
         });
         // Refresh subscriptions
-        const { data } = await api.get("/admin/subscription/getAll");
+        const { data } = await ADMIN_API_METHODS.fetchAllSubscriptions();
         setSubscriptions(data.data);
       } else {
         toast.error(res.data.message || "Failed to add subscription.");
@@ -224,7 +224,7 @@ export default function SubscriptionPage() {
     };
 
     try {
-      const res = await api.put(`/admin/subscription/update/${selectedSubscription.id}`, payload);
+      const res = await ADMIN_API_METHODS.editSubscription( payload,selectedSubscription.id);
 
       if (res.data.success) {
         toast.success("Subscription updated successfully!");
@@ -240,7 +240,7 @@ export default function SubscriptionPage() {
           Features: "",
           IsActive: true,
         });
-        const { data } = await api.get("/admin/subscription/getAll");
+        const { data } = await ADMIN_API_METHODS.fetchAllSubscriptions();
         setSubscriptions(data.data);
       } else {
         toast.error(res.data.message || "Failed to update subscription.");
@@ -264,7 +264,7 @@ export default function SubscriptionPage() {
     setShowConfirmModal(false);
 
     try {
-      const res = await api.put(`/admin/subscription/toggle/${toggleTarget.id}`);
+      const res = await ADMIN_API_METHODS.editSubscriptionStatus(toggleTarget.id);
       if (res.data.success) {
         toast.success("Subscription status updated!");
         setSubscriptions((prev) =>

@@ -49,7 +49,7 @@ export class RestaurantAuthRepository
 
   async findByStatus(status: boolean): Promise<vendorRequestDTO[]> {
     try {
-      const restaurants = await this.findAllUser({ isApproved: status });
+      const restaurants = await this.findAll({ isApproved: status });
       logger.debug(`Found ${restaurants.length} restaurants with isApproved=${status}`);
       return restaurants.map(toVendorRequestDTO);
     } catch (err: any) {

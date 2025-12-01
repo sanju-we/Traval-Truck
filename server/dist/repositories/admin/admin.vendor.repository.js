@@ -36,9 +36,9 @@ let AdminVendorRepository = class AdminVendorRepository {
             }
             : {};
         const [hotelDatas, agencyDatas, restaurantDatas] = await Promise.all([
-            this._hotelRepository.findAllUser({ isApproved: false, ...searchFilter }, {}),
-            this._agencyRepository.findAllUser({ isApproved: false, ...searchFilter }, {}),
-            this._restaurantRepository.findAllUser({ isApproved: false, ...searchFilter }, {}),
+            this._hotelRepository.findAll({ isApproved: false, ...searchFilter }, {}),
+            this._agencyRepository.findAll({ isApproved: false, ...searchFilter }, {}),
+            this._restaurantRepository.findAll({ isApproved: false, ...searchFilter }, {}),
         ]);
         logger.info(`vendorData : ${JSON.stringify(hotelDatas)}`);
         const allData = [...hotelDatas, ...agencyDatas, ...restaurantDatas];
@@ -52,11 +52,11 @@ let AdminVendorRepository = class AdminVendorRepository {
         });
         return completeData.map(toVendorRequestDTO);
     }
-    async findAllUsers(page, limit, status, role, search) {
-        const userData = await this._userRepository.findAllUser({}, {});
-        const agencyData = await this._agencyRepository.findAllUser({ isApproved: true }, {});
-        const hotelData = await this._hotelRepository.findAllUser({ isApproved: true }, {});
-        const restaurantData = await this._restaurantRepository.findAllUser({ isApproved: true }, {});
+    async findAlls(page, limit, status, role, search) {
+        const userData = await this._userRepository.findAll({}, {});
+        const agencyData = await this._agencyRepository.findAll({ isApproved: true }, {});
+        const hotelData = await this._hotelRepository.findAll({ isApproved: true }, {});
+        const restaurantData = await this._restaurantRepository.findAll({ isApproved: true }, {});
         const vendorDTO = [
             ...agencyData.map(toVendorRequestDTO),
             ...hotelData.map(toVendorRequestDTO),

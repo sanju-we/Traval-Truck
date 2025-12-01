@@ -40,7 +40,7 @@ let RestaurantAuthRepository = class RestaurantAuthRepository extends BaseReposi
     }
     async findByStatus(status) {
         try {
-            const restaurants = await this.findAllUser({ isApproved: status });
+            const restaurants = await this.findAll({ isApproved: status });
             logger.debug(`Found ${restaurants.length} restaurants with isApproved=${status}`);
             return restaurants.map(toVendorRequestDTO);
         }

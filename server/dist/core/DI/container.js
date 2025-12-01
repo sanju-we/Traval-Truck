@@ -28,6 +28,7 @@ import { UserPackageSerivce } from '../../services/user/user.package.service.js'
 import { UserHotelsController } from '../../controllers/userController/user.hotels.controller.js';
 import { UserHotelsService } from '../../services/user/user.hotels.service.js';
 import { UserPaymentController } from '../../controllers/sharedController/payment.controller.js';
+import { PaymentUtils } from '../../utils/Payment.js';
 import { userFoodsController } from '../../controllers/userController/user.foods.controller.js';
 import { userFoodsService } from '../../services/user/user.foods.service.js';
 import { AdminAuthService } from '../../services/admin/admin.auth.service.js';
@@ -97,7 +98,7 @@ container.bind('IUserPackageService').to(UserPackageSerivce);
 container.bind('IUserHotelsController').to(UserHotelsController);
 container.bind('IUserHotelsService').to(UserHotelsService);
 container.bind('IPaymentController').to(UserPaymentController);
-// container.bind<IPaymentUtils>('IPaymentUtils').to(PaymentUtils);
+container.bind('IPaymentUtils').to(PaymentUtils);
 container.bind('IUserFoodsController').to(userFoodsController);
 container.bind('IUserFoodsService').to(userFoodsService);
 // -----------------------------------------------------admin containers----------------------------------------------------------------------

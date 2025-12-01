@@ -24,7 +24,7 @@ let HotelRoomsService = class HotelRoomsService {
         this._authValidator = _authValidator;
     }
     async getAllRooms(hotelID) {
-        const allData = await this._roomsRepo.findAllUser({ HotelId: hotelID }, {});
+        const allData = await this._roomsRepo.findAll({ HotelId: hotelID }, {});
         return allData.map(toRoomsDTO);
     }
     async addRoom(data, file) {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import api from '@/services/api';
+import { ADMIN_API_METHODS } from '@/services/APIs/admin.api.service';
 import { Eye, Search, Loader2 } from 'lucide-react';
 import { SideNavbar } from '@/components/admin/SideNavbar';
 import toast from 'react-hot-toast';
@@ -35,9 +35,7 @@ export default function VendorRequestsPage() {
     try {
       setLoading(true);
       console.log(query)
-      const res = await api.get('/admin/vendor/allRequests', {
-        params: query ? { search: query } : {},
-      });
+      const res = await ADMIN_API_METHODS.fetchAllRequest(query ? { search: query } : {},);
       setRequests(res.data.data);
     } catch (err) {
       console.error('Failed to fetch vendor requests:', err);
@@ -76,7 +74,7 @@ export default function VendorRequestsPage() {
   ) => {
     try {
       const payload = reason ? { reason } : { reason: '' };
-      const res = await api.patch(`/admin/vendor/${id}/${action}/${role}`, payload);
+      const res = await ADMIN_API_METHODS.updateStatus(id,action,role,reason);
 
       if (res.data.success) {
         toast.success(`Vendor ${action}ed successfully`);

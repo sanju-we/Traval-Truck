@@ -5,12 +5,12 @@ import { RootState } from '@/redux/store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useState } from 'react';
-import api from '@/services/api';
 import { toast } from 'react-hot-toast';
 import Image from 'next/image';
 import { SideNavbar } from '@/components/admin/SideNavbar';
 import { motion, AnimatePresence } from 'framer-motion';
 import { XCircle, CheckCircle } from 'lucide-react';
+import { ADMIN_API_METHODS } from '@/services/APIs/admin.api.service';
 
 export default function UserDetailsPage() {
   const user = useSelector((state: RootState) => state.details.selectedUser);
@@ -29,7 +29,7 @@ export default function UserDetailsPage() {
   const handleToggleBlock = async () => {
     try {
       setLoading(true);
-      const { data } = await api.patch(`/admin/vendor/block-toggle/${user.id}/${user.role}`);
+      const { data } = await ADMIN_API_METHODS.blockUser(user.id,user.role);
 
       if (data.success) {
         setIsBlocked(!isBlocked);

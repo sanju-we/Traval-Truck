@@ -4,7 +4,7 @@ import type React from 'react';
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import api from '@/services/api';
+import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 
@@ -99,7 +99,7 @@ export default function SignUpPage() {
 
     setIsOtpLoading(true);
     try {
-      const res = await api.post('/user/auth/sendOtp', { email: formData.email });
+      const res = await USER_API_METHODS.sendOtp({ email: formData.email });
       const data = res.data;
 
       if (data.success) {
@@ -122,7 +122,7 @@ export default function SignUpPage() {
     setIsResendingOtp(true);
 
     try {
-      const res = await api.post('/user/auth/sendOtp', {
+      const res = await USER_API_METHODS.sendOtp({
         email: formData.email,
       });
 
@@ -152,7 +152,7 @@ export default function SignUpPage() {
 
     setIsVerifyingOtp(true);
     try {
-      const res = await api.post('/user/auth/verify', {
+      const res = await USER_API_METHODS.verifySignup({
         email: formData.email,
         otp: otpCode,
         userData: {

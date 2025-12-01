@@ -5,7 +5,9 @@ import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
-import api from "@/services/api";
+import { AGENCY_API_METHODS } from "@/services/APIs/agency.api.service";
+import { HOTEL_API_METHODS } from "@/services/APIs/hotel.api.service";
+import { RESTAURANT_API_METHODS } from "@/services/APIs/restaurant.api.service";
 
 export default function SubscriptionPurchaseForm({
   amount,
@@ -16,24 +18,37 @@ export default function SubscriptionPurchaseForm({
   amount: number;
   role: string;
   onClose?: () => void;
-  id:string;
+  id: string;
 }) {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
+  const getService = (role: string) => {
+    switch (role) {
+      case 'agency': return AGENCY_API_METHODS;
+      case 'hotel': return HOTEL_API_METHODS;
+      case 'restaurant': return RESTAURANT_API_METHODS;
+      default: return null;
+    }
+  };
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (!stripe || !elements) return;
+
+    const service = getService(role);
+    if (!service) {
+      toast.error("Invalid role");
+      return;
+    }
 
     setLoading(true);
 
     try {
       // Create payment intent
-      const { data } = await api.post(`/shared/payments/${role}/create-payment`, {
-        amount,
-      });
+      const { data } = await service.createPayment({ amount });
 
       const result = await stripe.confirmCardPayment(data.data[0], {
         payment_method: { card: elements.getElement(CardElement)! },
@@ -52,10 +67,7 @@ export default function SubscriptionPurchaseForm({
           id,
         };
         console.log(body)
-        const response = await api.post(
-          `/shared/subscriptions/${role}/purchase`,
-          body
-        );
+        const response = await service.purchaseSubscription(body);
 
         if (response.data.success) {
           toast.success("Subscription activated!");

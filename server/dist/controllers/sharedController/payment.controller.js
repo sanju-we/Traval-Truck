@@ -25,7 +25,7 @@ let UserPaymentController = class UserPaymentController {
         const userId = req.user.id;
         const role = req.user.role;
         // Generate a description
-        const description = type === "wallet"
+        const description = (type === "wallet" || type === "wallet_topup")
             ? `Wallet Top-Up of ₹${amount}`
             : type === "subscription"
                 ? `Subscription Purchase`

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import api from '@/services/api';
+import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,7 +25,7 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const res = await api.post('/agency/auth/login', formData);
+      const res = await AGENCY_API_METHODS.login(formData);
       const data = res.data;
       console.log('data:', data);
 

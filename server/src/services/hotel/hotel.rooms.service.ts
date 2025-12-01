@@ -16,7 +16,7 @@ export class HotelRoomsService implements IHotelRoomsService {
   ) { }
 
   async getAllRooms(hotelID: string): Promise<RoomsDTO[]> {
-    const allData = await this._roomsRepo.findAllUser({ HotelId: hotelID }, {})
+    const allData = await this._roomsRepo.findAll({ HotelId: hotelID }, {})
     return allData.map(toRoomsDTO)
   }
 

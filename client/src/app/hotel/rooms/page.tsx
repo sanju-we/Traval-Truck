@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/table";
 import { LayoutGrid, List } from "lucide-react";
 import { toast } from "react-hot-toast";
-import api from "@/services/api";
+import { HOTEL_API_METHODS } from '@/services/APIs/hotel.api.service';
 import SideNavbar from "@/components/hotel/SideNavbar";
 import AddRoomModal from "@/components/hotel/addRoomsModal";
 
@@ -31,7 +31,7 @@ interface Room {
   Capacity: number;
   Description: string;
   PricePerNight: number;
-  Status:string
+  Status: string
 }
 
 export default function RoomsPage() {
@@ -48,9 +48,7 @@ export default function RoomsPage() {
   const fetchRooms = async () => {
     setLoading(true);
     try {
-      const res = await api.get(
-        `/hotel/rooms/getAllRooms?page=${page}&search=${search}&Description=${Description}`
-      );
+      const res = await HOTEL_API_METHODS.getAllRooms(page, search, Description);
       console.log(res.data)
       setRooms(res.data.data);
       setTotalPages(res.data.totalPages);
@@ -173,12 +171,12 @@ export default function RoomsPage() {
                       <TableCell>
                         <span
                           className={`px-3 py-1 rounded-full text-sm font-medium ${room.Status === "Available"
-                              ? "bg-green-100 text-green-700"
-                              : room.Status === "Occupied"
-                                ? "bg-red-100 text-red-700"
-                                : room.Status === "Cleaning"
-                                  ? "bg-yellow-100 text-yellow-700"
-                                  : "bg-gray-100 text-gray-700"
+                            ? "bg-green-100 text-green-700"
+                            : room.Status === "Occupied"
+                              ? "bg-red-100 text-red-700"
+                              : room.Status === "Cleaning"
+                                ? "bg-yellow-100 text-yellow-700"
+                                : "bg-gray-100 text-gray-700"
                             }`}
                         >
                           {room.Status}
@@ -187,7 +185,7 @@ export default function RoomsPage() {
                       <TableCell>₹{room.PricePerNight}</TableCell>
                       <TableCell>
                         <div className="space-x-3 text-sm font-medium text-blue-600">
-                          <button onClick={()=> router.push(`/hotel/rooms/${room.id}`)}>View</button>
+                          <button onClick={() => router.push(`/hotel/rooms/${room.id}`)}>View</button>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -205,12 +203,12 @@ export default function RoomsPage() {
                   <div className="flex justify-between items-start mb-3">
                     <span
                       className={`px-3 py-1 text-xs rounded-full font-medium ${room.Status === "Available"
-                          ? "bg-green-100 text-green-700"
-                          : room.Status === "Occupied"
-                            ? "bg-red-100 text-red-700"
-                            : room.Status === "Cleaning"
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-gray-100 text-gray-700"
+                        ? "bg-green-100 text-green-700"
+                        : room.Status === "Occupied"
+                          ? "bg-red-100 text-red-700"
+                          : room.Status === "Cleaning"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-gray-100 text-gray-700"
                         }`}
                     >
                       {room.Status}
@@ -224,7 +222,7 @@ export default function RoomsPage() {
                     ₹{room.PricePerNight.toLocaleString()}
                   </p>
                   <div className="flex justify-between text-sm text-blue-600 mt-4">
-                    <button onClick={()=> router.push(`/hotel/rooms/${room.id}`)}>View</button>
+                    <button onClick={() => router.push(`/hotel/rooms/${room.id}`)}>View</button>
                   </div>
                 </div>
               ))}
@@ -263,7 +261,7 @@ export default function RoomsPage() {
           open={showAddModal}
           onClose={() => setShowAddModal(false)}
           onAdd={fetchRooms}
-          rooms= {setRooms}
+          rooms={setRooms}
         />
       )}
     </div>

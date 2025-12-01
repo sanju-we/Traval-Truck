@@ -18,7 +18,7 @@ export class SharedSubscriptionService implements ISharedSubscriptionService {
   ) { }
 
   async getAllSubscription(): Promise<subscriptionDTO[]> {
-    const subscriptions = await this._subscriptionRepo.findAllUser({ IsActive: true }, {});
+    const subscriptions = await this._subscriptionRepo.findAll({ IsActive: true }, {});
     if (!subscriptions) throw new DataNotFoundError();
 
     return subscriptions.map(toSubdcriptionDTO);

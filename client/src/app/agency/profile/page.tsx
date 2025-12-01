@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Camera, Edit, Mail, Phone, X, Check } from 'lucide-react';
 import SideNavbar from '@/components/agency/SideNavbar';
-import api from '@/services/api';
+import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -36,7 +36,7 @@ export default function VendorProfilePage() {
   useEffect(() => {
     async function fetchVendor() {
       try {
-        const { data } = await api.get('/agency/profile/profile');
+        const { data } = await AGENCY_API_METHODS.getProfile();
         if (!data.success) {
           toast.error(data.message);
           if (data.message === 'This user is Restricted by the admin') {
@@ -101,14 +101,8 @@ export default function VendorProfilePage() {
     }
     setDeleteLoad(key);
     try {
-      const response = await api.delete('/agency/profile/delete-image', {
-        data: { documentUrl, key },
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const { data } = await AGENCY_API_METHODS.deleteImage({ documentUrl, key });
 
-      const data = response.data;
       if (data.success) {
         setFormData(data.data);
         setVendor(data.data);
@@ -168,7 +162,7 @@ export default function VendorProfilePage() {
         });
       }
 
-      const { data } = await api.patch('/agency/profile/update', formPayload);
+      const { data } = await AGENCY_API_METHODS.edit(formPayload);
 
       if (!data.success) {
         toast.error(data.message || 'Update failed');
@@ -209,20 +203,15 @@ export default function VendorProfilePage() {
         });
       }
 
-      console.log('FormData entries:');
-      for (const [key, value] of formPayload.entries()) {
-        console.log(key, value);
-      }
-
-      const { data } = await api.put('/agency/profile/update-documents', formPayload, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const { data } = await AGENCY_API_METHODS.updateDocument(formPayload);
 
       if (!data.success) {
         toast.error(data.message || 'Upload failed');
+        setIsSaving(false);
         return;
       }
-      if (data.message === 'Re-submission request send') setIsResubmitting(true)
+
+      if (data.message === 'Re-submission request send') setIsResubmitting(true);
       toast.success(data.message);
       if (data.data !== null) {
         setVendor(data.data);
@@ -250,27 +239,28 @@ export default function VendorProfilePage() {
     try {
       setProfileLoad(true);
       const croppedImage = await getCroppedImg(imagePreview!, croppedAreaPixels);
-      const ress = await fetch(croppedImage);
-      const blob = await ress.blob();
+      const res = await fetch(croppedImage);
+      const blob = await res.blob();
 
-      const file = new File([blob], 'profile.jpg', { type: 'image/jpeg' });
+      const formPayload = new FormData();
+      formPayload.append('logo', blob, 'profile.jpg');
 
-      const formDataImg = new FormData();
-      formDataImg.append('profile', file);
-      const res = await api.post('/agency/profile/upload-profile', formDataImg, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      if (res.data.success) {
-        if (res.data.data != null) {
-          setFormData(res.data.data);
-        }
-        toast.success('Profile picture updated successfully!');
+      const { data } = await AGENCY_API_METHODS.uploadProfile(formPayload);
+
+      if (data.success) {
+        toast.success('Profile picture updated successfully');
+        setVendor(data.data);
+        setFormData(data.data);
+      } else {
+        toast.error(data.message || 'Failed to update profile picture');
       }
+
       setProfileLoad(false);
       setIsCropping(false);
       setImagePreview(null);
     } catch (err) {
       console.error(err);
+      setProfileLoad(false);
       toast.error('Failed to crop image.');
     }
   }
@@ -326,7 +316,7 @@ export default function VendorProfilePage() {
                 disabled={isResubmitting ? true : false}
               >
                 {!vendor.isRestricted ? "Attach Documents" : "Resubmit Documents"}
-              </button> }
+              </button>}
             </div>
           </div>
         </div>

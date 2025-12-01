@@ -2,7 +2,7 @@
 
 import type React from 'react';
 import { useState, useRef, useLayoutEffect } from 'react';
-import api from '@/services/api';
+import { RESTAURANT_API_METHODS } from '@/services/APIs/restaurant.api.service';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
@@ -104,9 +104,7 @@ export default function SignUpPage() {
     setIsResendingOtp(true);
 
     try {
-      const res = await api.post('/restaurant/auth/sendOtp', {
-        email: formData.email,
-      });
+      const res = await RESTAURANT_API_METHODS.sendOtp(formData.email);
 
       const data = res.data;
 
@@ -129,9 +127,7 @@ export default function SignUpPage() {
 
     setIsOtpLoading(true);
     try {
-      const res = await api.post('/restaurant/auth/sendOtp', {
-        email: formData.email,
-      });
+      const res = await RESTAURANT_API_METHODS.sendOtp( formData.email);
       const data = res.data;
 
       if (data.success) {
@@ -160,7 +156,7 @@ export default function SignUpPage() {
 
     setIsVerifyingOtp(true);
     try {
-      const res = await api.post('/restaurant/auth/verify', {
+      const res = await RESTAURANT_API_METHODS.verifyOtp( {
         email: formData.email,
         otp: otpCode,
         restaurantData: {

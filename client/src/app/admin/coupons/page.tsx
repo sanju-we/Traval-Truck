@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import api from "@/services/api";
+import { ADMIN_API_METHODS } from "@/services/APIs/admin.api.service";
 import { Button } from "@/components/ui/button";
 import { Pencil, Plus, Loader2, Tag } from "lucide-react";
 import AddCouponModal from "@/components/admin/addCouponModal";
@@ -24,7 +24,7 @@ export default function CouponsPage() {
   const fetchCoupons = async () => {
     try {
       setLoading(true);
-      const { data } = await api.get("/admin/coupons/all");
+      const { data } = await ADMIN_API_METHODS.fetchAllCoupons();
       setCoupons(data?.data?.data || []);
     } catch {
       toast.error("Failed to load coupons");
@@ -48,7 +48,7 @@ export default function CouponsPage() {
     setShowConfirmModal(false);
 
     try {
-      const res = await api.put(`/admin/coupons/toggle/${toggleTarget.id}`);
+      const res = await ADMIN_API_METHODS.editStatus(toggleTarget.id);
       if (res.data.success) {
         toast.success(
           `Coupon ${toggleTarget.isActive ? "deactivated" : "activated"} successfully!`

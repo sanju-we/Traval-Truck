@@ -55,7 +55,7 @@ export class BaseRepository {
             throw new RepositoryError(`Failed to find document: ${err.message}`);
         }
     }
-    async findAllUser(filter = {}, options = {}) {
+    async findAll(filter = {}, options = {}) {
         try {
             const items = await this.#model.find(filter, null, options).exec();
             logger.debug(`Found ${items.length} documents in ${this.#model.modelName} with filter ${JSON.stringify(filter)}`);

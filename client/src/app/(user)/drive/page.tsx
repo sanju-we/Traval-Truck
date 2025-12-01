@@ -3,7 +3,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { setAnswer, nextStep, prevStep, resetDrive } from '@/redux/userDriveSlice';
-import api from '@/services/api';
+import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -47,7 +47,7 @@ export default function UserDrivePage() {
       dispatch(nextStep());
     } else {
       try {
-        const { data } = await api.post('/user/profile/intrest', { interests: answers });
+        const { data } = await USER_API_METHODS.intrest({ interests: answers });
         console.log(data);
         if (data.success) {
           dispatch(resetDrive());

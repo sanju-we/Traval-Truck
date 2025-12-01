@@ -19,7 +19,7 @@ let RestaurantSubscriptionService = class RestaurantSubscriptionService {
         this._subscriptionRepo = _subscriptionRepo;
     }
     async getAll() {
-        const data = await this._subscriptionRepo.findAllUser({ IsActive: true }, {});
+        const data = await this._subscriptionRepo.findAll({ IsActive: true }, {});
         if (data)
             return data.map(toSubdcriptionDTO);
         throw new DataNotFoundError();

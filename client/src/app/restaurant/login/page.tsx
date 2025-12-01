@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import api from '@/services/api';
+import { RESTAURANT_API_METHODS } from '@/services/APIs/restaurant.api.service';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,7 +24,7 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const res = await api.post('/restaurant/auth/login', formData);
+      const res = await RESTAURANT_API_METHODS.login(formData);
       const data = res.data;
       console.log('data:', data);
 

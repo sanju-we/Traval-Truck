@@ -6,9 +6,9 @@ import { setTokens } from '@/redux/authSlice';
 import { useRouter } from 'next/navigation';
 import { ShowerHeadIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
-import api from '@/services/api';
-import {FcGoogle } from 'react-icons/fc'
-import {FaEye, FaEyeSlash } from 'react-icons/fa'
+import { USER_API_METHODS } from '@/services/APIs/user.api.service';
+import { FcGoogle } from 'react-icons/fc'
+import { FaEye, FaEyeSlash } from 'react-icons/fa'
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,7 +30,7 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const res = await api.post('/user/auth/login', formData);
+      const res = await USER_API_METHODS.login(formData);
       const data = res.data;
 
       if (data.success) {
@@ -96,7 +96,7 @@ export default function LoginPage() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-2 text-gray-500 text-sm"
               >
-                {showPassword ? <FaEyeSlash/> : <FaEye/>}
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
           </div>

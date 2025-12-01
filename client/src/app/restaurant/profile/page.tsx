@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Camera, Edit, Mail, Phone, X, Check } from 'lucide-react';
 import SideNavbar from '@/components/restaurant/SideNavbar';
-import api from '@/services/api';
+import { RESTAURANT_API_METHODS } from '@/services/APIs/restaurant.api.service';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -36,7 +36,7 @@ export default function VendorProfilePage() {
   useEffect(() => {
     async function fetchVendor() {
       try {
-        const { data } = await api.get('/restaurant/profile/profile');
+        const { data } = await RESTAURANT_API_METHODS.getProfile();
         if (!data.success) {
           toast.error(data.message);
           if (data.message === 'This user is Restricted by the admin') {
@@ -101,7 +101,7 @@ export default function VendorProfilePage() {
     }
     setDeleteLoad(key);
     try {
-      const response = await api.delete('/restaurant/profile/delete-image', {
+      const response = await RESTAURANT_API_METHODS.deleteImage({
         data: { documentUrl, key },
         headers: {
           'Content-Type': 'application/json',
@@ -168,7 +168,7 @@ export default function VendorProfilePage() {
         });
       }
 
-      const { data } = await api.patch('/restaurant/profile/update', formPayload);
+      const { data } = await RESTAURANT_API_METHODS.edit(formPayload);
 
       if (!data.success) {
         toast.error(data.message || 'Update failed');
@@ -214,9 +214,7 @@ export default function VendorProfilePage() {
         console.log(key, value);
       }
 
-      const { data } = await api.put('/restaurant/profile/update-documents', formPayload, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const { data } = await RESTAURANT_API_METHODS.updateDocument(formPayload);
 
       if (!data.success) {
         toast.error(data.message || 'Upload failed');
@@ -257,9 +255,7 @@ export default function VendorProfilePage() {
 
       const formDataImg = new FormData();
       formDataImg.append('profile', file);
-      const res = await api.post('/restaurant/profile/upload-profile', formDataImg, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const res = await RESTAURANT_API_METHODS.uploadProfile(formDataImg);
       if (res.data.success) {
         if (res.data.data != null) {
           setFormData(res.data.data);

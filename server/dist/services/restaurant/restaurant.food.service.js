@@ -43,7 +43,7 @@ let RestaurantFoodService = class RestaurantFoodService {
     }
     async getAllData(id) {
         logger.info('nthuvaade');
-        const allData = await this._foodRepo.findAllUser({ Restaurant: id }, {});
+        const allData = await this._foodRepo.findAll({ Restaurant: id }, {});
         if (allData)
             return allData.map(toFoodDTO);
         throw new DataNotFoundError();

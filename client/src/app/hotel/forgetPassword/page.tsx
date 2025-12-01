@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import api from '@/services/api';
+import { HOTEL_API_METHODS } from '@/services/APIs/hotel.api.service';
 import toast from 'react-hot-toast';
 
 export default function ForgotPasswordPage() {
@@ -18,7 +18,7 @@ export default function ForgotPasswordPage() {
 
     setIsLoading(true);
     try {
-      const res = await api.post('/hotel/auth/forgot-password', { email });
+      const res = await HOTEL_API_METHODS.forgotPassword({ email });
       const data = res.data;
 
       if (data.success) {

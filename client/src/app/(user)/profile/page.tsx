@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Camera, Edit, Mail, Phone, Pencil } from 'lucide-react';
 import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
-import api from '@/services/api';
+import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -29,11 +29,11 @@ export default function UserProfilePage() {
 
   const router = useRouter();
 
-  
+
   useEffect(() => {
     async function fetchUser() {
       try {
-        const { data } = await api.get('/user/profile/profile');
+        const { data } = await USER_API_METHODS.getProfile();
         if (!data.success) {
           toast.error(data.message);
           if (data.message === 'This user is Restricted by the admin') {
@@ -41,7 +41,7 @@ export default function UserProfilePage() {
           }
           return;
         }
-        
+
         const result: UserProfile = data.data;
         setUser(result);
         setFormData(result);
@@ -69,7 +69,7 @@ export default function UserProfilePage() {
     e.preventDefault();
     setIsSaving(true);
     try {
-      const res = await api.patch('/user/profile/update', formData);
+      const res = await USER_API_METHODS.editProfile(formData);
       if (!res.data.success) {
         toast.error(res.data.message || 'Update failed');
         setIsSaving(false);
@@ -106,9 +106,7 @@ export default function UserProfilePage() {
 
       const formDataImg = new FormData();
       formDataImg.append('profile', file);
-      const res = await api.post('/user/profile/upload-profile', formDataImg, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const res = await USER_API_METHODS.uploadImage(formDataImg);
       if (res.data.success) {
         if (res.data.data != null) {
           setFormData(res.data.data);
@@ -172,7 +170,7 @@ export default function UserProfilePage() {
             <h2 className="mt-4 text-2xl font-bold text-gray-800">{user.name}</h2>
             <p className="text-gray-500">@{user.userName || "traveler"}</p>
 
-            <button 
+            <button
               onClick={() => setIsEditing(true)}
               className="mt-4 px-5 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 flex items-center gap-2 transition"
             >
@@ -202,11 +200,10 @@ export default function UserProfilePage() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`font-semibold transition ${
-                  activeTab === tab
-                    ? 'text-emerald-600'
-                    : 'text-gray-600 hover:text-gray-800'
-                }`}
+                className={`font-semibold transition ${activeTab === tab
+                  ? 'text-emerald-600'
+                  : 'text-gray-600 hover:text-gray-800'
+                  }`}
               >
                 {tab === 'overview' && 'Profile Overview'}
                 {tab === 'history' && 'Trip History'}
@@ -326,7 +323,7 @@ export default function UserProfilePage() {
                       formData.profilePicture ||
                       user.profilePicture ||
                       '/images/profile.jpg'
-                     || "/placeholder.svg"}
+                      || "/placeholder.svg"}
                     alt="Profile Preview"
                     className="w-28 h-28 rounded-full object-cover border-4 border-emerald-500 transition duration-300 group-hover:opacity-80"
                   />

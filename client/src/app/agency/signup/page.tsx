@@ -2,7 +2,7 @@
 
 import type React from 'react';
 import { useState, useRef, useLayoutEffect } from 'react';
-import api from '@/services/api';
+import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
@@ -104,7 +104,7 @@ export default function SignUpPage() {
     setIsResendingOtp(true);
 
     try {
-      const res = await api.post('/agency/auth/sendOtp', {
+      const res = await AGENCY_API_METHODS.sendOtp({
         email: formData.email,
       });
 
@@ -129,7 +129,7 @@ export default function SignUpPage() {
 
     setIsOtpLoading(true);
     try {
-      const res = await api.post('/agency/auth/sendOtp', {
+      const res = await AGENCY_API_METHODS.sendOtp({
         email: formData.email,
       });
       const data = res.data;
@@ -160,7 +160,7 @@ export default function SignUpPage() {
 
     setIsVerifyingOtp(true);
     try {
-      const res = await api.post('/agency/auth/verify', {
+      const res = await AGENCY_API_METHODS.verifyOtp({
         email: formData.email,
         otp: otpCode,
         restaurantData: {
@@ -307,9 +307,8 @@ export default function SignUpPage() {
           </div>
 
           <div
-            className={`transition-all duration-500 ease-in-out overflow-hidden ${
-              showOtpInput ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
-            }`}
+            className={`transition-all duration-500 ease-in-out overflow-hidden ${showOtpInput ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
+              }`}
           >
             <div className="space-y-4 pt-4">
               <label className="block text-sm font-medium">Enter OTP</label>

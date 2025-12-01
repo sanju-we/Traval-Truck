@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Plus, Edit, Trash } from "lucide-react";
 import SideNavbar from "@/components/restaurant/SideNavbar";
 import FoodModal from "@/components/restaurant/addFoodModal";
-import api from "@/services/api";
+import { RESTAURANT_API_METHODS } from "@/services/APIs/restaurant.api.service";
 import toast from "react-hot-toast";
 import { FoodData } from "@/components/restaurant/addFoodModal";
 
@@ -35,7 +35,7 @@ export default function FoodList() {
 
   useEffect(() => {
     async function fetchData() {
-      const { data } = await api.get('/restaurant/food/getFoods')
+      const { data } = await RESTAURANT_API_METHODS.getFood('/restaurant/food/getFoods')
       if (data.success) {
         toast.success(data.message)
         console.log(data.data.image)

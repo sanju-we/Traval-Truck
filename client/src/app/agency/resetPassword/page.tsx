@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import api from '@/services/api';
+import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
 import toast from 'react-hot-toast';
 
 export default function ResetPasswordPage() {
@@ -27,7 +27,7 @@ export default function ResetPasswordPage() {
 
     setIsLoading(true);
     try {
-      const res = await api.post('/agency/auth/reset-password', {
+      const res = await AGENCY_API_METHODS.resetPassword({
         token,
         newPassword: password,
       });

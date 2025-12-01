@@ -24,7 +24,7 @@ let AgencyPartnerService = class AgencyPartnerService {
         this._agencyValidator = _agencyValidator;
     }
     async getAllThePartner(agencyId) {
-        const allPartners = await this._agencyPartnerRepo.findAllUser({ partner: agencyId }, {});
+        const allPartners = await this._agencyPartnerRepo.findAll({ partner: agencyId }, {});
         if (allPartners)
             return allPartners.map(toPartnerDTO);
         throw new UserNotFoundError();

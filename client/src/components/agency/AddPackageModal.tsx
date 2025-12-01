@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, X, ImagePlus } from "lucide-react";
-import api from "@/services/api";
+import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
 import toast from "react-hot-toast";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "@/components/utils/UserCropImage";
@@ -153,12 +153,10 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
         form.append("images", blob, "package.jpg");
       }
 
-      for(let i of form){
+      for (let i of form) {
         console.log(i)
       }
-      const res = await api.post("/agency/package/addPackage", form, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const res = await AGENCY_API_METHODS.create(form);
 
       if (res.data.success) {
         toast.success("Package added successfully!");

@@ -15,7 +15,7 @@ import { container } from './core/DI/container.js';
 const app = express();
 
 // middle wares
-const originAllowed = ['http://localhost:3000', 'http://localhost:3001'];
+const originAllowed = ['http://localhost:3000', 'http://localhost:3001', 'https://ba6c408cccf9.ngrok-free.app'];
 app.use(
   cors({
     origin: originAllowed,

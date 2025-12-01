@@ -66,7 +66,7 @@ export class BaseRepository<T extends Document> implements IBaserepository<T> {
     }
   }
 
-  async findAllUser(filter: FilterQuery<T> = {}, options: QueryOptions = {}): Promise<T[]> {
+  async findAll(filter: FilterQuery<T> = {}, options: QueryOptions = {}): Promise<T[]> {
     try {
       const items = await this.#model.find(filter, null, options).exec();
       logger.debug(

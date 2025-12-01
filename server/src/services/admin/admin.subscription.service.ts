@@ -34,7 +34,7 @@ export class AdminSubscriptionService implements IAdminSubscriptionService {
   }
   
   async getAllSubscriptions(): Promise<subscriptionDTO[]> {
-    const datas = await this._adminSubscriptionRepo.findAllUser({}, {});
+    const datas = await this._adminSubscriptionRepo.findAll({}, {});
     logger.info('data comming from the repository is ', datas);
     if (datas) return datas.map(toSubdcriptionDTO);
     throw new UserNotFoundError();

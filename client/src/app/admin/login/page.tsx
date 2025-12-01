@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { setTokens } from '@/redux/authSlice';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import api from '@/services/api';
+import { ADMIN_API_METHODS } from '@/services/APIs/admin.api.service';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -28,7 +28,7 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const res = await api.post('/admin/auth/login', formData);
+      const res = await ADMIN_API_METHODS.login(formData);
       const data = res.data;
       console.log('data:', data);
 

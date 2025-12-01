@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import api from '@/services/api';
+import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
@@ -52,7 +52,7 @@ export default function PackageDetailsPage() {
 
   const fetchPackageDetails = async (packageId: string) => {
     try {
-      const res = await api.get(`/user/packages/getPackage/${packageId}`);
+      const res = await USER_API_METHODS.packageDetails(packageId);
       setPack(res.data.data);
     } catch (error) {
       console.error('Error fetching package details:', error);
