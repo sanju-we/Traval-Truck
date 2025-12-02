@@ -81,7 +81,7 @@ let WebhookService = class WebhookService {
         const amount = (session.amount_total || 0) / 100;
         const wallet = await this._walletRepo.findOne({ UserId: userId });
         const transaction = {
-            Type: 'Credit',
+            Type: 'credit',
             Amount: amount,
             Description: `Wallet top-up via Stripe amount ${amount}`,
             paymentIntentId,

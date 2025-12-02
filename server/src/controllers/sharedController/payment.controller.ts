@@ -22,11 +22,9 @@ export class UserPaymentController implements IPaymentController {
       priceId,
     } = req.body;
 
-    // Extract userId and role from authenticated user
     const userId = req.user.id;
     const role = req.user.role;
 
-    // Generate a description
     const description =
       (type === "wallet" || type === "wallet_topup")
         ? `Wallet Top-Up of ₹${amount}`
@@ -43,14 +41,11 @@ export class UserPaymentController implements IPaymentController {
       targetId,
     };
 
-    // Determine Stripe mode
     const mode = type === "subscription" ? "subscription" : "payment";
 
-    // Generate role-specific success/cancel URLs
     const successUrl = `${process.env.FRONTEND_URL}/${role}/payment/success?session_id={CHECKOUT_SESSION_ID}`;
     const cancelUrl = `${process.env.FRONTEND_URL}/${role}/payment/cancel`;
 
-    // Call Stripe Helper
     const session = await this._paymentService.createCheckoutSession({
       amount: Number(amount),
       currency: String(currency),

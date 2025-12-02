@@ -3,7 +3,7 @@ import { injectable } from 'inversify';
 import { BaseRepository, RepositoryError } from '../../repositories/baseRepository.js';
 import { User } from '../../models/SUser.js';
 import { IUser } from '../../core/interface/modelInterface/IUser.js';
-import { IAuthRepository } from '../../core/interface/repositorie/IAuth.Repository.js';
+import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository.js';
 import { userEdit } from '../../types/index.js';
 import { logger } from '../../utils/logger.js';
 import z from 'zod';

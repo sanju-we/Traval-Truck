@@ -41,7 +41,7 @@ import { WebhookService } from '../../services/shared/webhook.service.js';
 
 // ----------------------------------------------------user-------------------------------------------------------------
 import { IAuthService } from '../../core/interface/serivice/user/auth.interface.js';
-import { IAuthRepository } from '../interface/repositorie/IAuth.Repository.js';
+import { IAuthRepository } from '../interface/repositorie/User/IAuth.Repository.js';
 import { AuthService } from '../../services/user/auth.service.js';
 import { AuthRepository } from '../../repositories/user/auth.repository.js';
 import { AuthController } from '../../controllers/userController/user.auth.controller.js';
@@ -66,6 +66,8 @@ import { IUserFoodsController } from '../../core/interface/controllerInterface/u
 import { userFoodsController } from '../../controllers/userController/user.foods.controller.js';
 import { IUserFoodsService } from '../../core/interface/serivice/user/IUser.foods.service.js';
 import { userFoodsService } from '../../services/user/user.foods.service.js';
+import { IOrdersRepository } from '../../core/interface/repositorie/User/Iorders.repository.js';
+import { OrderRepository } from '../../repositories/user/orders.repository.js';
 
 // ----------------------------------------------------admin--------------------------------------------------------------------
 import { IAdminAuthService } from '../interface/serivice/admin/IAdmin.auth.service.js';
@@ -184,6 +186,7 @@ container.bind<IPaymentController>('IPaymentController').to(UserPaymentControlle
 container.bind<IPaymentUtils>('IPaymentUtils').to(PaymentUtils);
 container.bind<IUserFoodsController>('IUserFoodsController').to(userFoodsController);
 container.bind<IUserFoodsService>('IUserFoodsService').to(userFoodsService);
+container.bind<IOrdersRepository>('IOrdersRepository').to(OrderRepository);
 
 // -----------------------------------------------------admin containers----------------------------------------------------------------------
 container.bind<IAdminAuthController>('IAdminAuthController').to(AdminAuthController);

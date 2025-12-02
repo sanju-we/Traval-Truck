@@ -1,6 +1,6 @@
 import { IAdminVendorService } from '../../core/interface/serivice/admin/IAdmin.vendor.service.js';
 import { injectable, inject } from 'inversify';
-import { IAuthRepository } from '../../core/interface/repositorie/IAuth.Repository.js';
+import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository.js';
 import { IAgencyRespository } from '../../core/interface/repositorie/agency/Iagency.auth.repository.js';
 import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Ihotel.auth.repository.js';
 import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository.js';

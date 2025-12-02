@@ -28,9 +28,9 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const res = await ADMIN_API_METHODS.login(formData);
-      const data = res.data;
-      console.log('data:', data);
+      const data = await ADMIN_API_METHODS.login(formData);
+      console.log('duck ass')
+      console.log(data)
 
       if (data.success) {
         toast.success('Login successful!');
@@ -38,8 +38,8 @@ export default function LoginPage() {
           setTokens({ accessToken: data.data.accessToken, refreshToken: data.data.refreshToken }),
         );
         router.push('/admin');
+        return 
       } else {
-        toast.error(`${data.message}`);
         setIsLoading(false);
       }
     } catch (err) {

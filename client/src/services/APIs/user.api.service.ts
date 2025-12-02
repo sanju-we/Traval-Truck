@@ -29,6 +29,7 @@ export const USER_API_METHODS = {
     getLatestPackages: () => get(USER_ROUTES.packages.getLatestPackages),
     getAllPackages: (params?: any) => get(USER_ROUTES.packages.getAllPackages, params),
     packageDetails: (id: string) => get(USER_ROUTES.packages.packageDetails(id)),
+    PurchasePackage : (data:any) => post(USER_ROUTES.packages.Purchasepackage,data),
 
     // hotel api requests
     getAllHotel: (params?: any) => get(USER_ROUTES.hotel.getAllHotel, params),
@@ -36,4 +37,7 @@ export const USER_API_METHODS = {
 
     // foods api requests
     showAllFoods: (params?: any) => get(USER_ROUTES.foods.showAllFoods, params),
+
+    // booking api request
+    // BookPackage : (id:string) => post(USER_ROUTES)
 };

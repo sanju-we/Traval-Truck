@@ -3,7 +3,7 @@ import { inject, injectable } from 'inversify';
 import { IJWT } from '../../core/interface/JWT/JWTInterface.js';
 import { BADREQUEST, sendResponse } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
-import { IAuthRepository } from '../../core/interface/repositorie/IAuth.Repository.js';
+import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository.js';
 import z from 'zod';
 import { logger } from '../../utils/logger.js';
 import { IUserProfileController } from '../../core/interface/controllerInterface/user/userProfile.js';

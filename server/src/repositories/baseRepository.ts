@@ -93,4 +93,16 @@ export class BaseRepository<T extends Document> implements IBaserepository<T> {
       throw new RepositoryError(`Failed to update document: ${err.message}`);
     }
   }
+
+  async countDocuments(): Promise<number> {
+      try {
+        const count = await this.#model.countDocuments()
+        return count
+      } catch (error:any) {
+         logger.error(
+        `count the documents: ${error.message}`,
+      );
+      throw new RepositoryError(`Failed to count document: ${error.message}`);
+      }
+  }
 }

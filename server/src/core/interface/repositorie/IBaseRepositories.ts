@@ -7,4 +7,5 @@ export interface IBaserepository<T extends Document> {
   findByEmail(email: string): Promise<T | null>;
   findAll(filter: FilterQuery<T>, options: QueryOptions): Promise<T[]>;
   update(id: string, data: Partial<T>): Promise<T | null>;
+  countDocuments():Promise<number>;
 }

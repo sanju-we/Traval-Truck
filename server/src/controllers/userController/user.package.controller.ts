@@ -31,4 +31,12 @@ export class UserPackageController implements IUserPackageController {
       const data = await this._userPackageService.getPackage(String(id))
       sendResponse(res,STATUS_CODE.OK,true,MESSAGES.DATA_FOUND,data)
   }
+
+  async puchasePackage(req: Request, res: Response): Promise<void> {
+      const {packageId} = req.body
+      const userId = req.user.id
+      const role = req.user.role
+      const session = await this._userPackageService.initiativePurchase(packageId,userId,role)
+      sendResponse(res,STATUS_CODE.OK,true,MESSAGES.ACTIVATED,session)
+  }
 }

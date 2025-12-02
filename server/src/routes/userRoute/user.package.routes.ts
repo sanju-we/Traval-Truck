@@ -9,5 +9,6 @@ const packageController = container.get<IUserPackageController>('IUserPackageCon
 userPackageRouter.get('/', asyncHandler(packageController.getLatestPackage.bind(packageController)))
   .get('/getAll', asyncHandler(packageController.getAllPackage.bind(packageController)))
   .get('/getPackage/:id', asyncHandler(packageController.getPackage.bind(packageController)))
+  .post('/purchase',asyncHandler(packageController.puchasePackage.bind(packageController)))
 
 export default userPackageRouter

@@ -6,7 +6,9 @@ import { IWalletRespository } from "../../core/interface/repositorie/shared/IWal
 import { ISubscriptionHistoryRepository } from "../../core/interface/repositorie/shared/ISubscription.hisroty.repository.js";
 import { ISubscriptionRepository } from "../../core/interface/repositorie/ISubscription.respository.js";
 import { logger } from "../../utils/logger.js";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
+import { DataNotFoundError, PAYMENT_VERIFICATOIN_FAILED } from "../../utils/resAndErrors.js";
+import { IAgencyPackageRepository } from "../../core/interface/repositorie/agency/Iagency.package.repository.js";
+import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository.js";
 
 @injectable()
 export class WebhookService implements IWebhookService {
@@ -14,7 +16,9 @@ export class WebhookService implements IWebhookService {
         @inject('IPaymentRepository') private readonly _paymentRepo: IPaymentRepository,
         @inject('IWalletRespository') private readonly _walletRepo: IWalletRespository,
         @inject('ISubscriptionHistoryRepository') private readonly _subscriptionHistoryRepo: ISubscriptionHistoryRepository,
-        @inject('ISubscriptionRepository') private readonly _subscriptionRepo: ISubscriptionRepository
+        @inject('ISubscriptionRepository') private readonly _subscriptionRepo: ISubscriptionRepository,
+        @inject('IAgencyPackageRepository') private readonly _packageRepo: IAgencyPackageRepository,
+        @inject('IOrdersRepository') private readonly _orderRepo: IOrdersRepository
     ) { }
 
     async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session): Promise<void> {
@@ -22,7 +26,6 @@ export class WebhookService implements IWebhookService {
         const paymentIntentId = (session.payment_intent as string) || (session.payment_intent as any)?.id;
         const metadata = session.metadata || {};
 
-        // Update payment document
         const paymentDoc = await this._paymentRepo.findOne({ sessionId: sessionId });
         if (paymentDoc) {
             paymentDoc.status = "paid";
@@ -34,7 +37,7 @@ export class WebhookService implements IWebhookService {
         logger.info(`dasappan ${type}`)
 
         switch (type) {
-            case 'wallet_topup':
+            case 'wallet':
                 await this._handleWalletTopup(session, metadata, paymentIntentId);
                 break;
 
@@ -42,9 +45,9 @@ export class WebhookService implements IWebhookService {
                 await this._handleSubscriptionPurchase(session, metadata, paymentIntentId);
                 break;
 
-            // case 'package':
-            //   await this._handlePackagePurchase(metadata);
-            //   break;
+            case 'package':
+                await this._handlePackagePurchase(metadata, paymentIntentId);
+                break;
 
             // case 'booking':
             //   await this._handleBookingPurchase(metadata);
@@ -86,13 +89,12 @@ export class WebhookService implements IWebhookService {
         metadata: Record<string, any>,
         paymentIntentId: string
     ): Promise<void> {
-        logger.info('dasappan')
         const userId = metadata.userId;
         const amount = (session.amount_total || 0) / 100;
 
         const wallet = await this._walletRepo.findOne({ UserId: userId });
         const transaction = {
-            Type: 'Credit',
+            Type: 'credit',
             Amount: amount,
             Description: `Wallet top-up via Stripe amount ${amount}`,
             paymentIntentId,
@@ -120,7 +122,7 @@ export class WebhookService implements IWebhookService {
         paymentIntentId: string
     ): Promise<void> {
         const userId = metadata.userId;
-        const planId = metadata.planId; // Fixed: was metadata.targetId
+        const planId = metadata.planId;
         const role = metadata.role;
 
         const plan = await this._subscriptionRepo.findById(planId);
@@ -146,11 +148,33 @@ export class WebhookService implements IWebhookService {
     }
 
     // Uncomment and implement when needed
-    // private async _handlePackagePurchase(metadata: Record<string, any>): Promise<void> {
-    //   const orderId = metadata.targetId;
-    //   // await Order.updateOne({ _id: orderId }, { paid: true, paymentReference: sessionId })
-    //   logger.info(`Package/order ${orderId} marked paid`);
-    // }
+    private async _handlePackagePurchase(metadata: Record<string, any>, paymentIntentId: string): Promise<void> {
+        const packageId = metadata.packageId;
+        const userId = metadata.userId
+        const role = metadata.role
+
+        const pack = await this._packageRepo.findById(packageId)
+        if (!pack) throw new DataNotFoundError()
+
+        const transaction = await this._paymentRepo.findOne({ paymentIntentId: paymentIntentId })
+        if (!transaction) throw new PAYMENT_VERIFICATOIN_FAILED()
+        const pad = (n: number) => n.toString().padStart(2, '0');
+        const count = (await this._orderRepo.countDocuments()+1).toString().padStart(6, '0')
+        const date = new Date()
+        const orderId = `ORD-${pad(date.getDate())}${pad(date.getMonth() + 1)}${date.getFullYear()}-${count}`
+
+        await this._orderRepo.create({
+            userId: userId,
+            orderId: orderId,
+            role: 'Agency',
+            product: packageId,
+            amount: pack.price,
+            paymentId: transaction.id
+        })
+
+        logger.info(`metadata da kunja ${JSON.stringify(metadata)}`)
+        //   logger.info(`Package/order ${orderId} marked paid`);
+    }
 
     // private async _handleBookingPurchase(metadata: Record<string, any>): Promise<void> {
     //   const bookingId = metadata.targetId;

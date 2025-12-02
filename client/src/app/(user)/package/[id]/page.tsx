@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import BookNowButton from '@/components/user/booking/bookNowButton';
 import { useParams } from 'next/navigation';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import { useRouter } from 'next/navigation';
@@ -53,7 +54,8 @@ export default function PackageDetailsPage() {
   const fetchPackageDetails = async (packageId: string) => {
     try {
       const res = await USER_API_METHODS.packageDetails(packageId);
-      setPack(res.data.data);
+      console.log(res.data)
+      setPack(res.data);
     } catch (error) {
       console.error('Error fetching package details:', error);
     } finally {
@@ -198,10 +200,11 @@ export default function PackageDetailsPage() {
                 </ul>
               </div>
             ))}
-            <button className="mt-3 w-full px-4 py-2 bg-emerald-500 text-white text-sm rounded-lg hover:bg-emerald-600"
-            onClick={()=> router.push('/payment')}>
-              Book Now
-            </button>
+            <BookNowButton
+              packageId={id}
+              amount={pack.price}
+              role='user'
+            />
           </div>
         </section>
       )}

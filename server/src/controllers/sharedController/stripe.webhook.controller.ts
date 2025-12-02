@@ -37,7 +37,6 @@ export default class WebhookController implements IWebhookController {
       switch (event.type) {
         case "checkout.session.completed": {
           const session = event.data.object as Stripe.Checkout.Session;
-          logger.info('kunjappan')
           await this._webhookService.handleCheckoutSessionCompleted(session);
           break;
         }
@@ -47,20 +46,17 @@ export default class WebhookController implements IWebhookController {
             case "invoice.payment_failed": {
               const obj = event.data.object as any;
               const sessionId = obj.id || obj.session;
-              logger.info('kunjappan2')
               await this._webhookService.handlePaymentFailed(sessionId);
               break;
             }
             
             case "invoice.payment_succeeded": {
               const invoice = event.data.object as any;
-              logger.info('kunjappan3')
               await this._webhookService.handleInvoicePaymentSucceeded(invoice);
               break;
             }
             
             default:
-          logger.info('kunjappan4')
           logger.info("Unhandled stripe event: " + event.type);
       }
 

@@ -1,7 +1,7 @@
 import { injectable, inject } from 'inversify';
 import bcrypt from 'bcryptjs';
 import { IAuthService } from '../../core/interface/serivice/user/auth.interface.js';
-import { IAuthRepository } from '../../core/interface/repositorie/IAuth.Repository.js';
+import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository.js';
 import { IRedisClient } from '../../core/interface/redis/IRedisClinet.js';
 import { IJWT } from '../../core/interface/JWT/JWTInterface.js';
 import { UserData, userProfileDTO } from '../../types/index.js';

@@ -1,12 +1,11 @@
-import { createServerAxios } from "@/services/serverApi";
+import { SHARED_API_METHODS } from "@/services/APIs/shared.api.service";
 import Link from "next/link";
 import BuyNowButton from "@/components/subscription/BuyNowButton";
 
 export const dynamic = "force-dynamic";
 
 async function getSubscriptionById(id: string) {
-  const serverApi = await createServerAxios();
-  const res = await serverApi.get(`/shared/subscriptions/agency/${id}`);
+  const res = await SHARED_API_METHODS.subscriptionDetails('agency',id);
   return res.data.success ? res.data.data : null;
 }
 

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { injectable, inject } from 'inversify';
 import { IController } from '../../core/interface/controllerInterface/user/user.Interface.js';
 import { IAuthService } from '../../core/interface/serivice/user/auth.interface.js';
-import { IAuthRepository } from '../../core/interface/repositorie/IAuth.Repository.js';
+import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository.js';
 import { IJWT } from '../../core/interface/JWT/JWTInterface.js';
 import { IEmailService } from '../../core/interface/emailInterface/emailInterface.js';
 import { sendResponse } from '../../utils/resAndErrors.js';

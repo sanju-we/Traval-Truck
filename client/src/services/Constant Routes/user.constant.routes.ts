@@ -3,7 +3,7 @@
 const BASE = `/user`
 const USER_AUTH = `${BASE}/auth`
 const USER_PROFILE = `${BASE}/profile`
-const USER_PACKAGE =  `${BASE}/package`
+const USER_PACKAGE =  `${BASE}/packages`
 const USER_HOTELS = `${BASE}/hotels`
 const USER_FOODS = `${BASE}/foods`
 
@@ -28,7 +28,8 @@ export const USER_ROUTES = {
   packages : {
     getLatestPackages : `${USER_PACKAGE}`,
     getAllPackages : `${USER_PACKAGE}/getAll`,
-    packageDetails :(id:string) => `${USER_PACKAGE}/getPackage/${id}`
+    packageDetails :(id:string) => `${USER_PACKAGE}/getPackage/${id}`,
+    Purchasepackage : `${USER_PACKAGE}/purchase`
   },
 
   hotel : {

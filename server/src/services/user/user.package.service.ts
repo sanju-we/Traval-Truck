@@ -6,12 +6,14 @@ import { PackageResDTO, toPackageResDTO } from "../../core/DTO/agency/response/a
 import { DataNotFoundError } from "../../utils/resAndErrors.js";
 import { logger } from "../../utils/logger.js";
 import { ISubscriptionHistoryRepository } from "../../core/interface/repositorie/shared/ISubscription.hisroty.repository.js";
+import { IPaymentUtils } from "../../core/interface/PaymentInterface/Ipayment.utils.js";
 
 @injectable()
 export class UserPackageSerivce implements IUserPackageService {
   constructor(
     @inject('IAgencyPackageRepository') private readonly _packageRepo: IAgencyPackageRepository,
-    @inject('ISubscriptionHistoryRepository') private readonly _subscriptionHistoryRepo: ISubscriptionHistoryRepository
+    @inject('ISubscriptionHistoryRepository') private readonly _subscriptionHistoryRepo: ISubscriptionHistoryRepository,
+    @inject('IPaymentUtils') private readonly _paymentUtils: IPaymentUtils
   ) { }
   async getLatestPackage(): Promise<PackageResDTO[]> {
     const data = await this._packageRepo.findAllPackageWithPartners(1)
@@ -48,5 +50,24 @@ export class UserPackageSerivce implements IUserPackageService {
     const data = await this._packageRepo.findPackageWithPartner(id)
     if (data) return data
     throw new DataNotFoundError()
+  }
+
+  async initiativePurchase(packageId: string, userId: string, role: string): Promise<{ url: string; sessionId: string }> {
+    const data = await this._packageRepo.findById(packageId)
+    if (!data) throw new DataNotFoundError()
+
+    return this._paymentUtils.createCheckoutSession({
+      amount: data.price,
+      currency: 'inr',
+      description: `Package Plan: ${data.title}`,
+      successUrl: `${process.env.FRONTEND_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancelUrl: `${process.env.FRONTEND_URL}/cancel`,
+      metadata: {
+        type: 'package',
+        userId,
+        role,
+        packageId
+      }
+    })
   }
 }

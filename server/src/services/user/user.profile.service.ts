@@ -1,6 +1,6 @@
 import { IUserProfileService } from '../../core/interface/serivice/user/Iuser.profile.service.js';
 import { inject, injectable } from 'inversify';
-import { IAuthRepository } from '../../core/interface/repositorie/IAuth.Repository.js';
+import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository.js';
 import z from 'zod';
 import { userEdit, Userauth } from 'types/index.js';
 import { UserNotFoundError } from '../../utils/resAndErrors.js';

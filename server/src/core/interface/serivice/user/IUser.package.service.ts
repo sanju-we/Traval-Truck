@@ -9,5 +9,6 @@ export interface IUserPackageService {
     page: number;
     totalPages: number;
   }>
-  getPackage(id: string): Promise<PackageResDTO>
+  getPackage(id: string): Promise<PackageResDTO>;
+  initiativePurchase(packageId:string,userId:string,role:string):Promise<{ url: string; sessionId: string }>
 }

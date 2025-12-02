@@ -1,7 +1,7 @@
-import { UserData, userProfileDTO } from '../../../types/index.js';
-import { IUser } from '../modelInterface/IUser.js';
-import { userEdit } from '../../../types/index.js';
-import { IBaserepository } from './IBaseRepositories.js';
+import { UserData, userProfileDTO } from '../../../../types/index.js';
+import { IUser } from '../../modelInterface/IUser.js';
+import { userEdit } from '../../../../types/index.js';
+import { IBaserepository } from '../IBaseRepositories.js';
 
 export interface IAuthRepository extends IBaserepository<IUser> {
   updatePasswordById(id: string, password: string): Promise<void>;
