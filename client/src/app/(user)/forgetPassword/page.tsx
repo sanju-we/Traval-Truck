@@ -18,8 +18,7 @@ export default function ForgotPasswordPage() {
 
     setIsLoading(true);
     try {
-      const res = await USER_API_METHODS.forgetPasswordRequest({ email });
-      const data = res.data;
+      const data = await USER_API_METHODS.forgetPasswordRequest({ email });
 
       if (data.success) {
         setMessage(`success`);

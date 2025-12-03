@@ -36,7 +36,7 @@ export default function VendorProfilePage() {
   useEffect(() => {
     async function fetchVendor() {
       try {
-        const { data } = await AGENCY_API_METHODS.getProfile();
+        const  data  = await AGENCY_API_METHODS.getProfile();
         if (!data.success) {
           toast.error(data.message);
           if (data.message === 'This user is Restricted by the admin') {

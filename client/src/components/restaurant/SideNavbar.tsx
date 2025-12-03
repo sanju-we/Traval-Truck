@@ -3,7 +3,7 @@ import {
   Home,
   UserPlus,
   Utensils,
-  Subscript,
+  ListOrdered,
   Paperclip,
   IndianRupee,
   Inbox,

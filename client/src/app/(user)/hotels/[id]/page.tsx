@@ -36,9 +36,9 @@ export default function RoomDetailsPage() {
 
   const fetchRoomDetails = async (roomId: string) => {
     try {
-      const res = await api.get(`/user/hotels/getRoom/${roomId}`);
-      console.log(res.data.data)
-      setRoom(res.data.data);
+      const data = await api.get(`/user/hotels/getRoom/${roomId}`);
+      console.log(data)
+      setRoom(data.data);
     } catch (error) {
       console.error('Error fetching room details:', error);
     } finally {

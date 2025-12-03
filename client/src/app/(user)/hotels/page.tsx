@@ -33,10 +33,9 @@ export default function HotelsPage() {
   const fetchHotels = async (page: number) => {
     setLoading(true);
     try {
-      const res = await USER_API_METHODS.showAllFoods(page);
-      console.log(res.data)
-      setHotels(res.data.data.data || []);
-      setTotalPages(res.data.data.totalPages || 1);
+      const data = await USER_API_METHODS.showAllFoods(page);
+      setHotels(data.data || []);
+      setTotalPages(data.totalPages || 1);
     } catch (error) {
       console.error('Error fetching hotels:', error);
     } finally {

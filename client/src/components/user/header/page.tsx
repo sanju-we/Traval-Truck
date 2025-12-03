@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Bell, Menu, X, User, Wallet, LogOut, Plane, ChevronDown } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '@/services/api';
+import { useRouter } from 'next/navigation';
 
 export function Header() {
   const [profileOpen, setProfileOpen] = useState(false);
@@ -21,9 +22,7 @@ export function Header() {
   const notifyRef = useRef<HTMLDivElement>(null);
 
   // Mock router - replace with actual useRouter from next/navigation
-  const router = {
-    push: (path: string) => console.log('Navigate to:', path)
-  };
+  const router = useRouter()
 
   // Mock API - replace with actual api import
   useEffect(() => {
@@ -58,6 +57,7 @@ export function Header() {
       const data = res.data;
       if (!data.success) throw new Error('Logout failed');
       toast.success('Logged out successfully');
+      console.log('logged out')
       router.push('/login');
     } catch (error) {
       console.error(error);

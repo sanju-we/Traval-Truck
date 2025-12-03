@@ -48,7 +48,7 @@ export default function PackageListingPage() {
 
   const fetchPackages = async (pageNumber = 1) => {
     try {
-      const { data } = await AGENCY_API_METHODS.getAll({ page: pageNumber, limit });
+      const  data  = await AGENCY_API_METHODS.getAll({ page: pageNumber, limit });
 
       console.log(data.data)
       if (!data.success) return toast.error(data.message);

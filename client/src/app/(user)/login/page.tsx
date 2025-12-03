@@ -30,10 +30,8 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const res = await USER_API_METHODS.login(formData);
-      const data = res.data;
-
-      if (data.success) {
+      const data = await USER_API_METHODS.login(formData);
+console.log(data)
         toast.success('Login successful!');
         dispatch(
           setTokens({
@@ -42,10 +40,6 @@ export default function LoginPage() {
           }),
         );
         router.push('/');
-      } else {
-        toast.error(data.message || 'Login failed');
-        setIsLoading(false);
-      }
     } catch (err) {
       setIsLoading(false);
       toast.error('Something went wrong. Try again.');

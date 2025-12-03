@@ -7,6 +7,8 @@ const OrdersSchema = new Schema<IOrders>({
   role:{type: String,required: true,enum: ["Package", "Rooms", "Foods"]},
   product: {type: Schema.Types.ObjectId,refPath: "role"},
   amount:{type:Number,required:true},
+  startDate:{type:Date},
+  endDate:{type:Date},
   status :{type:String,enum : ['Upcoming','Ongoing','Completed'],default:'Upcoming'},
   paymentId:{type:Schema.Types.ObjectId,ref:'Payments',required:true}
 },{ timestamps: true })

@@ -40,19 +40,17 @@ export default function ExplorePage() {
   const fetchData = async (type: Tab, currentPage: number, searchTerm = '') => {
     try {
       setLoading(true);
-      let res;
+      let datas;
 
       const query = `?page=${currentPage}&limit=${limit}${
         searchTerm ? `&search=${encodeURIComponent(searchTerm)}` : ''
       }`;
 
-      if (type === 'packages') res = await USER_API_METHODS.getAllPackages(query);
-      if (type === 'rooms') res = await USER_API_METHODS.getAllHotel(query);
-      if (type === 'foods') res = await USER_API_METHODS.showAllFoods(query);
+      if (type === 'packages') datas = await USER_API_METHODS.getAllPackages(query);
+      if (type === 'rooms') datas = await USER_API_METHODS.getAllHotel(query);
+      if (type === 'foods') datas = await USER_API_METHODS.showAllFoods(query);
 
-      if (!res?.data?.success) return toast.error('Failed to fetch data');
-
-      const { data, totalPages } = res.data.data || [];
+      const { data, totalPages } = datas || [];
 
       if (type === 'packages') setPackages(data ? data : []);
       if (type === 'rooms') setRooms(data || []);

@@ -25,8 +25,7 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const res = await AGENCY_API_METHODS.login(formData);
-      const data = res.data;
+      const data = await AGENCY_API_METHODS.login(formData);
       console.log('data:', data);
 
       if (data.success) {

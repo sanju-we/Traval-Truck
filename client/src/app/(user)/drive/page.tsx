@@ -47,7 +47,7 @@ export default function UserDrivePage() {
       dispatch(nextStep());
     } else {
       try {
-        const { data } = await USER_API_METHODS.intrest({ interests: answers });
+        const  data  = await USER_API_METHODS.intrest({ interests: answers });
         console.log(data);
         if (data.success) {
           dispatch(resetDrive());
