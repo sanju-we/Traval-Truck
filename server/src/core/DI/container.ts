@@ -68,6 +68,10 @@ import { IUserFoodsService } from '../../core/interface/serivice/user/IUser.food
 import { userFoodsService } from '../../services/user/user.foods.service.js';
 import { IOrdersRepository } from '../../core/interface/repositorie/User/Iorders.repository.js';
 import { OrderRepository } from '../../repositories/user/orders.repository.js';
+import { IUserTripController } from '../../core/interface/controllerInterface/user/IUser.trip.controller.js';
+import { UserTripController } from '../../controllers/userController/user.trip.controller.js';
+import { IUserTripService } from '../../core/interface/serivice/user/IUser.trips.service.js';
+import { UserTripService } from '../../services/user/user.trip.service.js';
 
 // ----------------------------------------------------admin--------------------------------------------------------------------
 import { IAdminAuthService } from '../interface/serivice/admin/IAdmin.auth.service.js';
@@ -187,6 +191,8 @@ container.bind<IPaymentUtils>('IPaymentUtils').to(PaymentUtils);
 container.bind<IUserFoodsController>('IUserFoodsController').to(userFoodsController);
 container.bind<IUserFoodsService>('IUserFoodsService').to(userFoodsService);
 container.bind<IOrdersRepository>('IOrdersRepository').to(OrderRepository);
+container.bind<IUserTripController>('IUserTripController').to(UserTripController);
+container.bind<IUserTripService>('IUserTripService').to(UserTripService);
 
 // -----------------------------------------------------admin containers----------------------------------------------------------------------
 container.bind<IAdminAuthController>('IAdminAuthController').to(AdminAuthController);

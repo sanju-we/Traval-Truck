@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Loader2, MapPin, Calendar, DollarSign, Star, ArrowRight, Plane, Mail, Phone, Instagram, Facebook, Twitter } from 'lucide-react';
+import { Loader2, MapPin, Calendar, DollarSign, Star, ArrowRight, Plane, Mail, Phone, IndianRupee, Facebook, Twitter } from 'lucide-react';
 import api from '@/services/api';
 import { Header } from '@/components/user/header/page';
 
@@ -206,7 +206,7 @@ export default function HomePage() {
                       <span className="font-medium">{pkg.duration}</span>
                     </div>
                     <div className="flex items-center space-x-3">
-                      <DollarSign className="w-5 h-5 text-emerald-500" />
+                      <IndianRupee className="w-5 h-5 text-emerald-500" />
                       <span className="text-2xl font-bold text-gray-900">{pkg.price}</span>
                       <span className="text-gray-500">per person</span>
                     </div>
@@ -317,7 +317,6 @@ export default function HomePage() {
                   <Facebook className="w-5 h-5" />
                 </a>
                 <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-emerald-500 transition">
-                  <Instagram className="w-5 h-5" />
                 </a>
                 <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-emerald-500 transition">
                   <Twitter className="w-5 h-5" />

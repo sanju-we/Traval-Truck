@@ -10,17 +10,19 @@ export interface PackageDTO{
   description:string,
   discoveries:string[],
   duration:string,
+  images:string[],
   itinerary:irineray[],
   price:number,
   title:string
 }
 
-export const toPackageDTO = (packages:IPackage) =>({
+export const toPackageDTO = (packages:IPackage):PackageDTO =>({
   availableFoods:packages.availableFoods,
   description:packages.description,
   discoveries:packages.discoveries,
   duration:packages.duration,
   itinerary:packages.itinerary,
   price:packages.price,
-  title:packages.title
+  title:packages.title,
+  images:packages.images
 })

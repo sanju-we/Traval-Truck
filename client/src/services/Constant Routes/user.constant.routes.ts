@@ -6,6 +6,7 @@ const USER_PROFILE = `${BASE}/profile`
 const USER_PACKAGE =  `${BASE}/packages`
 const USER_HOTELS = `${BASE}/hotels`
 const USER_FOODS = `${BASE}/foods`
+const USER_TRIP = `${BASE}/trip`
 
 export const USER_ROUTES = {
   auth : {
@@ -29,7 +30,7 @@ export const USER_ROUTES = {
     getLatestPackages : `${USER_PACKAGE}`,
     getAllPackages : `${USER_PACKAGE}/getAll`,
     packageDetails :(id:string) => `${USER_PACKAGE}/getPackage/${id}`,
-    Purchasepackage : `${USER_PACKAGE}/purchase`
+    Purchasepackage : `${USER_PACKAGE}/purchase`,
   },
 
   hotel : {
@@ -39,5 +40,9 @@ export const USER_ROUTES = {
 
   foods : {
     showAllFoods : `${USER_FOODS}/getAll`
+  },
+
+  Trip : {
+    History : `${USER_TRIP}/tripHistory`
   }
 } 

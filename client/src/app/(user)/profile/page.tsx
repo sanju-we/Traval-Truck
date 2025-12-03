@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Camera, Edit, Mail, Phone, Pencil } from 'lucide-react';
+import { Camera, Edit, Pencil } from 'lucide-react';
 import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
@@ -11,7 +11,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from '@/components/utils/UserCropImage';
 import { UserProfile } from '@/types/user/profile';
-import ProfileSidebar from '@/components/user/profile/ProfileSidebar';
+import ProfileOverview from '@/components/user/profile/ProfileOverview';
+import TripHistory from '@/components/user/profile/TripHistory';
 
 export default function UserProfilePage() {
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -29,24 +30,22 @@ export default function UserProfilePage() {
 
   const router = useRouter();
 
-
   useEffect(() => {
     async function fetchUser() {
       try {
-        const { data } = await USER_API_METHODS.getProfile();
-        if (!data.success) {
-          toast.error(data.message);
-          if (data.message === 'This user is Restricted by the admin') {
+        const res = await USER_API_METHODS.getProfile();
+        console.log(res);
+        if (!res.success) {
+          toast.error(res.message);
+          if (res.message === 'This user is Restricted by the admin') {
             router.push('/');
           }
           return;
         }
 
-        const result: UserProfile = data.data;
+        const result: UserProfile = res.data;
         setUser(result);
         setFormData(result);
-        // const res = await api.get(`/shared/wallet/user`)
-        // console.log(res)
       } catch (error) {
         console.error(error);
       } finally {
@@ -145,12 +144,12 @@ export default function UserProfilePage() {
       <Header />
       <div className="min-h-screen bg-gray-50 py-10">
         <div className="max-w-4xl mx-auto bg-white rounded-xl shadow p-10">
-
           <div className="flex flex-col items-center text-center">
             <div className="relative group">
               <img
                 src={user.profilePicture || "/images/profile.jpg"}
                 className="w-32 h-32 rounded-full border-4 border-emerald-500 object-cover shadow-sm transition duration-300 group-hover:opacity-80"
+                alt="Profile"
               />
               <label
                 htmlFor="profile-upload-hero"
@@ -196,90 +195,35 @@ export default function UserProfilePage() {
           </div>
 
           <div className="flex gap-6 mt-10 border-b pb-2 text-sm">
-            {['overview', 'history', 'wishlist', 'settings'].map((tab) => (
+            {['overview', 'history'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`font-semibold transition ${activeTab === tab
-                  ? 'text-emerald-600'
-                  : 'text-gray-600 hover:text-gray-800'
-                  }`}
+                className={`font-semibold transition ${
+                  activeTab === tab
+                    ? 'text-emerald-600 border-b-2 border-emerald-600'
+                    : 'text-gray-600 hover:text-gray-800'
+                }`}
               >
                 {tab === 'overview' && 'Profile Overview'}
                 {tab === 'history' && 'Trip History'}
-                {tab === 'wishlist' && 'Wishlist'}
-                {tab === 'settings' && 'Settings'}
               </button>
             ))}
           </div>
 
           {activeTab === 'overview' && (
-            <>
-              <div className="mt-8">
-                <h3 className="font-semibold text-gray-700 mb-4">Personal Info</h3>
-
-                <div className="grid sm:grid-cols-2 gap-6 text-sm">
-                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg shadow-sm">
-                    <Mail className="text-emerald-500" size={20} />
-                    <div>
-                      <p className="text-gray-500">Email</p>
-                      <p className="font-medium text-gray-800">{user.email}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg shadow-sm">
-                    <Phone className="text-emerald-500" size={20} />
-                    <div>
-                      <p className="text-gray-500">Phone</p>
-                      <p className="font-medium text-gray-800">
-                        {formData.phoneNumber === 0 ? 'Not provided' : formData.phoneNumber}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-10">
-                <h3 className="font-semibold text-gray-700 mb-3">Your Interests</h3>
-
-                <div className="flex flex-wrap gap-2">
-                  {(user.interest || ["Beach", "Mountains", "Food"]).map((val, i) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded-md text-xs"
-                    >
-                      {val}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-10">
-                <h3 className="font-semibold text-gray-700 mb-2">Achievements</h3>
-
-                <div className="flex items-center justify-between bg-emerald-50 p-4 rounded-xl">
-                  <div>
-                    <p className="font-semibold text-emerald-600 text-sm">10% off your next trip</p>
-                    <p className="text-xs text-gray-600 mt-1">
-                      Valid until December 31, 2025
-                    </p>
-                  </div>
-
-                  <img
-                    src="/images/coupon-card.png"
-                    className="w-32 rounded-lg shadow"
-                    alt="Coupon"
-                  />
-                </div>
-              </div>
-            </>
+            <ProfileOverview user={user} formData={formData} />
           )}
 
+          {activeTab === 'history' && (
+            <TripHistory userId={user.id || user.id} />
+          )}
         </div>
       </div>
 
       <Footer />
 
+      {/* Edit Profile Modal */}
       <AnimatePresence>
         {isEditing && (
           <motion.div
@@ -315,7 +259,6 @@ export default function UserProfilePage() {
                 Update your personal information
               </p>
 
-              {/* Profile Picture Upload Section */}
               <div className="flex flex-col items-center mb-5">
                 <div className="relative group">
                   <img
@@ -323,7 +266,7 @@ export default function UserProfilePage() {
                       formData.profilePicture ||
                       user.profilePicture ||
                       '/images/profile.jpg'
-                      || "/placeholder.svg"}
+                    }
                     alt="Profile Preview"
                     className="w-28 h-28 rounded-full object-cover border-4 border-emerald-500 transition duration-300 group-hover:opacity-80"
                   />
@@ -345,8 +288,7 @@ export default function UserProfilePage() {
                 <p className="text-sm text-gray-500 mt-2">Click the camera to change photo</p>
               </div>
 
-              {/* Form Fields */}
-              <form onSubmit={handleFormSubmit} className="space-y-4">
+              <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Full Name
@@ -385,27 +327,29 @@ export default function UserProfilePage() {
                   />
                 </div>
 
-                {/* Buttons */}
                 <div className="flex justify-end gap-3 pt-4">
                   <button
-                    type="button"
                     onClick={() => setIsEditing(false)}
                     className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition"
                   >
                     Cancel
                   </button>
                   <button
-                    type="submit"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleFormSubmit(e);
+                    }}
                     disabled={isSaving}
-                    className={`px-4 py-2 rounded-md transition ${isSaving
-                      ? 'bg-gray-400 cursor-not-allowed text-white'
-                      : 'bg-emerald-500 text-white hover:bg-emerald-600'
-                      }`}
+                    className={`px-4 py-2 rounded-md transition ${
+                      isSaving
+                        ? 'bg-gray-400 cursor-not-allowed text-white'
+                        : 'bg-emerald-500 text-white hover:bg-emerald-600'
+                    }`}
                   >
                     {isSaving ? 'Saving...' : 'Save Changes'}
                   </button>
                 </div>
-              </form>
+              </div>
             </motion.div>
           </motion.div>
         )}
@@ -448,9 +392,13 @@ export default function UserProfilePage() {
               </button>
               <button
                 onClick={handleCropComplete}
-                className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600"
+                className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 flex items-center gap-2"
               >
-                {profileLoad ? <div className="w-4 h-4 border-2 border-purple-600 border-t-transparent rounded-full animate-spin"></div> : 'Save Crop'}
+                {profileLoad ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  'Save Crop'
+                )}
               </button>
             </div>
           </div>

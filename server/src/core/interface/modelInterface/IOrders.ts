@@ -7,6 +7,6 @@ export interface IOrders extends Document {
   role : string;
   product : Types.ObjectId;
   amount : number;
-  createdOn : Date;
+  status : string;
   paymentId : Types.ObjectId;
 }

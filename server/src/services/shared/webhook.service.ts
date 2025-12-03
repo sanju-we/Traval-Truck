@@ -166,7 +166,7 @@ export class WebhookService implements IWebhookService {
         await this._orderRepo.create({
             userId: userId,
             orderId: orderId,
-            role: 'Agency',
+            role: 'Package',
             product: packageId,
             amount: pack.price,
             paymentId: transaction.id
