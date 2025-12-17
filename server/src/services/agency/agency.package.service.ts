@@ -1,4 +1,4 @@
-import { PackageDTO, toPackageDTO } from "../../core/DTO/agency/request/packageDTO.js";
+import { PackageDTO } from "../../core/DTO/agency/request/packageDTO.js";
 import { IAgencyPackageService } from "../../core/interface/serivice/agency/Iagency.package.service.js";
 import { IAgencyPackageRepository } from "../../core/interface/repositorie/agency/Iagency.package.repository.js";
 import { inject, injectable } from "inversify";
@@ -34,7 +34,7 @@ export class AgencyPackageService implements IAgencyPackageService {
     }
     await this._authValidator.addPackageValidator(data)
     const agency = await this._agencyRepo.findById(id)
-    let images: string[] = []
+    const images: string[] = []
     for (const fieldname in files) {
       const fileArray = files[fieldname];
       for (const file of fileArray) {
@@ -62,7 +62,7 @@ export class AgencyPackageService implements IAgencyPackageService {
       data.itinerary = JSON.parse(data.itinerary);
     }
     await this._authValidator.addPackageValidator(data)
-    let images: string[] = []
+    const images: string[] = []
     logger.info(files)
     for (const fieldname in files) {
       const fileArray = files[fieldname];

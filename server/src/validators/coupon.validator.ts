@@ -11,7 +11,7 @@ export class CouponValidator implements ICouponValidator {
           .trim()
           .min(4, "Coupon code must be at least 4 characters long")
           .max(20, "Coupon code cannot exceed 20 characters")
-          .regex(/^[A-Z0-9\-]+$/, "Coupon code must contain only Capital Letters, Positive Numbers, and '-' characters Only"),
+          .regex(/^[A-Z0-9-]+$/, "Coupon code must contain only Capital Letters, Positive Numbers, and '-' characters Only"),
 
         discountType: z.enum(["percentage", "flat"]),
 

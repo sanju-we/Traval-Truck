@@ -50,7 +50,7 @@ interface PackageData {
 }
 
 export default function PackageDetailsPage() {
-  const { id } = useParams();
+  const params = useParams();
   const router = useRouter();
   const [pack, setPack] = useState<PackageData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -61,9 +61,11 @@ export default function PackageDetailsPage() {
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
   const [discountedPrice, setDiscountedPrice] = useState(pack?.price || 0);
-
-  // Mock coupons data - replace with actual API call
-  const availableCoupons = fetchCoupon()
+  const [availableCoupons, setAvailableCoupons] = useState<any[]>([]);
+  const [couponId , setCouponId] = useState('')
+  const [couponLoading, setCouponLoading] = useState(true);
+  
+  const id = typeof params.id === "string" ? params.id : params.id?.[0];
 
   useEffect(() => {
     if (id) fetchPackageDetails(id as string);
@@ -72,33 +74,46 @@ export default function PackageDetailsPage() {
   useEffect(() => {
     if (pack) {
       setDiscountedPrice(pack.price);
+      fetchCoupon()
     }
   }, [pack]);
 
-  if(!id) return (
+  if (!id) return (
     <div>
       <h1>Provided id is not valid</h1>
     </div>
   )
 
-  async function fetchCoupon (){
-    const coupons =  await USER_API_METHODS.GetAllCoupon()
-    if( coupons ) return coupons
-    return []
+  async function fetchCoupon() {
+    try {
+      const coupons = await USER_API_METHODS.GetAllCoupon();
+      if (coupons?.success) {
+        setAvailableCoupons(coupons.data);
+      } else {
+        setAvailableCoupons([]);
+      }
+    } catch (err) {
+      console.error("Coupon fetch error:", err);
+      setAvailableCoupons([]);
+    } finally {
+      setCouponLoading(false);
+    }
   }
 
   const applyCoupon = () => {
-    const coupon = availableCoupons.find(c => c.code.toLowerCase() === couponCode.toLowerCase());
+    console.log('couponCode:',couponCode)
+    const coupon = availableCoupons.find(c => c.couponCode === couponCode);
     if (coupon) {
       setAppliedCoupon(coupon);
       let newPrice = pack!.price;
-      if (coupon.type === 'percentage') {
-        newPrice = pack!.price - (pack!.price * coupon.discount / 100);
+      if (coupon.discountType === 'percentage') {
+        newPrice = pack!.price - (pack!.price * coupon.discountValue / 100);
       } else {
-        newPrice = pack!.price - coupon.discount;
+        newPrice = pack!.price - coupon.discountValue;
       }
       setDiscountedPrice(Math.max(0, newPrice));
-      toast.success(`Coupon "${coupon.code}" applied successfully!`);
+      setCouponId(coupon.id)
+      toast.success(`Coupon "${coupon.couponCode}" applied successfully!`);
     } else {
       toast.error('Invalid coupon code');
     }
@@ -199,11 +214,10 @@ export default function PackageDetailsPage() {
                   <button
                     key={idx}
                     onClick={() => setSelectedImage(idx)}
-                    className={`relative h-24 rounded-lg overflow-hidden border-2 transition ${
-                      selectedImage === idx
-                        ? 'border-emerald-500'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
+                    className={`relative h-24 rounded-lg overflow-hidden border-2 transition ${selectedImage === idx
+                      ? 'border-emerald-500'
+                      : 'border-gray-200 hover:border-gray-300'
+                      }`}
                   >
                     <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-cover" />
                   </button>
@@ -434,7 +448,7 @@ export default function PackageDetailsPage() {
         {/* Booking Section at Bottom */}
         <div className="mt-12 bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">Complete Your Booking</h2>
-          
+
           {/* Coupon Section */}
           <div className="mb-6">
             <div className="flex items-center justify-between mb-4">
@@ -462,17 +476,16 @@ export default function PackageDetailsPage() {
                   >
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="font-mono font-bold text-blue-600">{coupon.code}</span>
+                        <span className="font-mono font-bold text-blue-600">{coupon.couponCode}</span>
                         <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">
-                          {coupon.type === 'percentage' ? `${coupon.discount}% OFF` : `₹${coupon.discount} OFF`}
+                          {coupon.discountType === 'percentage' ? `${coupon.discountValue}% OFF` : `₹${coupon.discountValue} OFF`}
                         </span>
                       </div>
                       <p className="text-sm text-gray-600">{coupon.description}</p>
                     </div>
                     <button
                       onClick={() => {
-                        setCouponCode(coupon.code);
-                        applyCoupon();
+                        setCouponCode(coupon.couponCode);
                       }}
                       className="ml-4 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition font-medium"
                     >
@@ -518,7 +531,7 @@ export default function PackageDetailsPage() {
             {appliedCoupon && (
               <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
                 <p className="text-sm text-green-700 font-medium">
-                  🎉 Coupon "{appliedCoupon.code}" applied! You saved ₹{Math.round(pack.price - discountedPrice).toLocaleString()}
+                  🎉 Coupon "{appliedCoupon.couponCode}" applied! You saved ₹{Math.round(pack.price - discountedPrice).toLocaleString()}
                 </p>
               </div>
             )}
@@ -533,7 +546,7 @@ export default function PackageDetailsPage() {
               </div>
               {appliedCoupon && (
                 <div className="flex justify-between text-green-600">
-                  <span>Discount ({appliedCoupon.code})</span>
+                  <span>Discount ({appliedCoupon.couponCode})</span>
                   <span className="font-semibold">- ₹{Math.round(pack.price - discountedPrice).toLocaleString()}</span>
                 </div>
               )}
@@ -569,7 +582,7 @@ export default function PackageDetailsPage() {
           {/* Book Now Button */}
           <div className="flex justify-end">
             {acceptedTerms ? (
-              <BookNowButton packageId={id} amount={Math.round(discountedPrice)} role="user" />
+              <BookNowButton packageId={id} amount={Math.round(discountedPrice)} role="user" couponCode={couponId}/>
             ) : (
               <button
                 disabled

@@ -23,9 +23,9 @@ export class HotelRoomsService implements IHotelRoomsService {
   async addRoom(data: RoomsDTO, file: Express.Multer.File[]): Promise<RoomsDTO> {
     await this._authValidator.RoomValidator(data)
     logger.info(data.Images)
-    let Image: string[] = []
-    for (let img of file) {
-      let url = await singleUpload(img, 'Travel-Travel-Document')
+    const Image: string[] = []
+    for (const img of file) {
+      const url = await singleUpload(img, 'Travel-Travel-Document')
       Image.push(url)
     }
     const createdData = await this._roomsRepo.create({ ...data, Images: Image, Status: 'Available' })
@@ -81,9 +81,9 @@ export class HotelRoomsService implements IHotelRoomsService {
     schema.parse(id)
     logger.info(data)
     roomSchema.parse(data)
-    let Image: string[] = []
-    for (let img of files) {
-      let url = await singleUpload(img, 'Travel-Travel-Document')
+    const Image: string[] = []
+    for (const img of files) {
+      const url = await singleUpload(img, 'Travel-Travel-Document')
       Image.push(url)
     }
     const updatedRoom = await this._roomsRepo.update(id, { ...data, Images: Image })

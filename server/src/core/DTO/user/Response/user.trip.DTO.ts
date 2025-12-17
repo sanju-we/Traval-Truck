@@ -8,7 +8,8 @@ export interface TripDTO {
   id: string
   orderId: string
   product: PackageDTO
-  status: string
+  status: string,
+  amount:number
 }
 
 export interface Trip {
@@ -29,5 +30,6 @@ export const toTripDTO = (order: IOrders): TripDTO => ({
   id: order._id.toString(),
   orderId: order.orderId,
   product: toPackageDTO(order.product as any),
+  amount:order.amount,
   status: order.status,
 })

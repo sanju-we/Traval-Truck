@@ -3,7 +3,6 @@ import { BaseRepository } from "../../repositories/baseRepository.js";
 import Foods from "../../models/Foods.js";
 import { IFoods } from "../../core/interface/modelInterface/IFoods";
 import { foodDTO, toFoodDTO } from "../../core/DTO/restaurant/requestDTO.js";
-import { Data_Creation_Error } from "../../utils/resAndErrors.js";
 
 export class RestaurantFoodRepository extends BaseRepository<IFoods> implements IRestaurantFoodRespository{
   constructor(){

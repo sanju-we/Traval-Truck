@@ -2,7 +2,6 @@ import { IAuthValidator } from "../core/interface/validator/Iauth.validator.js";
 import z from "zod";
 import { PackageDTO } from "../core/DTO/agency/request/packageDTO.js";
 import { vendorData } from "../types/index.js";
-import { logger } from "../utils/logger.js";
 import { RoomsDTO } from "@core/DTO/hotel/roomsDTO.js";
 
 export class authValidator implements IAuthValidator {

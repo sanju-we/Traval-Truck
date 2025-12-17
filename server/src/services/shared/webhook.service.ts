@@ -6,9 +6,10 @@ import { IWalletRespository } from "../../core/interface/repositorie/shared/IWal
 import { ISubscriptionHistoryRepository } from "../../core/interface/repositorie/shared/ISubscription.hisroty.repository.js";
 import { ISubscriptionRepository } from "../../core/interface/repositorie/ISubscription.respository.js";
 import { logger } from "../../utils/logger.js";
-import { DataNotFoundError, PAYMENT_VERIFICATOIN_FAILED } from "../../utils/resAndErrors.js";
+import { Data_Creation_Error, DataNotFoundError, PAYMENT_VALIDATION_FAILED, PAYMENT_VERIFICATOIN_FAILED } from "../../utils/resAndErrors.js";
 import { IAgencyPackageRepository } from "../../core/interface/repositorie/agency/Iagency.package.repository.js";
 import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository.js";
+import { IAdminCouponRepository } from "../../core/interface/repositorie/admin/Iadmin.coupon.repository.js";
 
 @injectable()
 export class WebhookService implements IWebhookService {
@@ -18,7 +19,8 @@ export class WebhookService implements IWebhookService {
         @inject('ISubscriptionHistoryRepository') private readonly _subscriptionHistoryRepo: ISubscriptionHistoryRepository,
         @inject('ISubscriptionRepository') private readonly _subscriptionRepo: ISubscriptionRepository,
         @inject('IAgencyPackageRepository') private readonly _packageRepo: IAgencyPackageRepository,
-        @inject('IOrdersRepository') private readonly _orderRepo: IOrdersRepository
+        @inject('IOrdersRepository') private readonly _orderRepo: IOrdersRepository,
+        @inject('IAdminCouponRepository') private readonly _couponRepo: IAdminCouponRepository
     ) { }
 
     async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session): Promise<void> {
@@ -90,6 +92,7 @@ export class WebhookService implements IWebhookService {
         paymentIntentId: string
     ): Promise<void> {
         const userId = metadata.userId;
+        logger.info(`meta`)
         const amount = (session.amount_total || 0) / 100;
 
         const wallet = await this._walletRepo.findOne({ UserId: userId });
@@ -103,6 +106,7 @@ export class WebhookService implements IWebhookService {
 
         if (wallet) {
             wallet.Balance += amount;
+            wallet.role = metadata.role
             wallet.Transaction.push(transaction);
             await this._walletRepo.update(wallet.id, wallet);
         } else {
@@ -147,30 +151,67 @@ export class WebhookService implements IWebhookService {
         logger.info(`Subscription purchase recorded for ${userId}, plan ${planId}`);
     }
 
-    // Uncomment and implement when needed
     private async _handlePackagePurchase(metadata: Record<string, any>, paymentIntentId: string): Promise<void> {
         const packageId = metadata.packageId;
         const userId = metadata.userId
-        const role = metadata.role
+        const couponId = metadata.couponId
+        const role: string = metadata.role
 
         const pack = await this._packageRepo.findById(packageId)
         if (!pack) throw new DataNotFoundError()
 
+        let discountAmount: number = 0;
+        let coupon:string = 'none';
+        logger.info(`fucking ${couponId}`)
+        let totalAmount: number = pack.price;
+        if (couponId != '') {
+            const couponData = await this._couponRepo.findById(couponId)
+            if (couponData && !couponData.usedBy.includes(userId)) {
+
+                if (couponData.discountType === 'percentage') discountAmount = pack.price * (couponData.discountValue / 100)
+                else discountAmount = couponData.discountValue
+
+                totalAmount = pack.price - discountAmount
+                coupon = couponData.couponCode
+                couponData.usedBy.push(userId)
+                await couponData.save()
+            }
+        }
+
         const transaction = await this._paymentRepo.findOne({ paymentIntentId: paymentIntentId })
         if (!transaction) throw new PAYMENT_VERIFICATOIN_FAILED()
         const pad = (n: number) => n.toString().padStart(2, '0');
-        const count = (await this._orderRepo.countDocuments()+1).toString().padStart(6, '0')
+        const count = (await this._orderRepo.countDocuments() + 1).toString().padStart(6, '0')
         const date = new Date()
         const orderId = `ORD-${pad(date.getDate())}${pad(date.getMonth() + 1)}${date.getFullYear()}-${count}`
 
-        await this._orderRepo.create({
+        const orderData = await this._orderRepo.create({
             userId: userId,
             orderId: orderId,
-            role: 'Package',
+            productType: 'Package',
+            role: 'Agency',
             product: packageId,
-            amount: pack.price,
+            ownedBy: pack.ownedBy,
+            amount: totalAmount,
+            couponApplied:coupon,
+            offer:discountAmount,
             paymentId: transaction.id
         })
+
+        const adminWallet = await this._walletRepo.findOne({ role: 'admin' })
+        if (!adminWallet) throw new PAYMENT_VALIDATION_FAILED()
+        logger.info(`adminWallet : ${adminWallet}`)
+        const adminTransaction = {
+            Type: 'credit',
+            Amount: orderData.amount,
+            Description: `Package purchase amount ${orderData.amount} of ${orderData.orderId}.`,
+            paymentIntentId,
+            Date: new Date(),
+            orderId: orderData._id.toString()
+        }
+        adminWallet.Transaction.push(adminTransaction)
+        adminWallet.Balance += orderData.amount
+        await this._walletRepo.update(adminWallet.id, { Transaction: adminWallet.Transaction, Balance: adminWallet.Balance })
 
         logger.info(`metadata da kunja ${JSON.stringify(metadata)}`)
         //   logger.info(`Package/order ${orderId} marked paid`);

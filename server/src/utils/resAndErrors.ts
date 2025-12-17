@@ -136,3 +136,9 @@ export class PAYMENT_VERIFICATOIN_FAILED extends HttpError {
     super(STATUS_CODE.BAD_REQUEST, 'Invalid transaction request');
   }
 }
+
+export class PAYMENT_VALIDATION_FAILED extends HttpError {
+  constructor() {
+    super(STATUS_CODE.BAD_REQUEST, 'Payment validation failed, Please contact with out support team.');
+  }
+}

@@ -20,6 +20,7 @@ interface Trip {
   product: product;
   status: 'Upcoming' | 'Ongoing' | 'Completed';
   agencyId?: string;
+  amount:number;
 }
 
 interface TripHistoryProps {
@@ -190,7 +191,7 @@ export default function TripHistory({ userId }: TripHistoryProps) {
 
                 <div className="flex items-center justify-between mt-4 gap-3">
                   <p className="text-lg font-bold text-emerald-600">
-                    ₹{trip.product.price.toLocaleString()}
+                    ₹{trip.amount}
                   </p>
                   
                   <div className="flex gap-2">

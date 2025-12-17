@@ -2,7 +2,6 @@ import { inject, injectable } from 'inversify';
 import { IJWT } from '../../core/interface/JWT/JWTInterface.js';
 import { IEmailService } from '../../core/interface/emailInterface/emailInterface.js';
 import { IRedisClient } from '../../core/interface/redis/IRedisClinet.js';
-import z from 'zod';
 import bcrypt from 'bcryptjs';
 import { IHotelAuthService } from '../../core/interface/serivice/hotel/Ihotel.auth.service.js';
 import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Ihotel.auth.repository.js';

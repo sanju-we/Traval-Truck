@@ -4,7 +4,7 @@ import { ISubscriptionValidator } from "../core/interface/validator/Isubscriptio
 export class SubscriptionValidator implements ISubscriptionValidator {
   async addSubscriptionValidator(Name: string, Amount: number, Category: string, Description: string, Duration: { startingDate: string; endingDate: string; }, Features: string[], Valid: number): Promise<void> {
     const schema = z.object({
-      Name: z.string().trim().min(3, "Name must be at least 3 characters long.").max(100, "Name cannot exceed 100 characters.").regex(/^[A-Za-z0-9\s&.,'()\-]+$/, "Name contains invalid characters."),
+      Name: z.string().trim().min(3, "Name must be at least 3 characters long.").max(100, "Name cannot exceed 100 characters.").regex(/^[A-Za-z0-9\s&.,'()-]+$/, "Name contains invalid characters."),
       Amount: z.number("Amount is required.").positive("Amount must be greater than 0.").max(10000000, "Amount cannot exceed 10 million."),
       Category: z.string().trim().min(3, "Category must be at least 3 characters long.").max(50, "Category cannot exceed 50 characters.").regex(/^[A-Za-z\s&]+$/, "Category must contain only letters and spaces."),
       Description: z.string().trim().min(10, "Description must be at least 10 characters long.").max(1000, "Description cannot exceed 1000 characters."),

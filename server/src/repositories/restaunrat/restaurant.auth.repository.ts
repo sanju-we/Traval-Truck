@@ -9,7 +9,6 @@ import {
   vendorRequestDTO,
 } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
 import { logger } from '../../utils/logger.js';
-import z from 'zod';
 
 @injectable()
 export class RestaurantAuthRepository

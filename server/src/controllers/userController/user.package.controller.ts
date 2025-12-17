@@ -33,10 +33,16 @@ export class UserPackageController implements IUserPackageController {
   }
 
   async puchasePackage(req: Request, res: Response): Promise<void> {
-      const {packageId} = req.body
+      const {packageId,amount,couponId} = req.body
       const userId = req.user.id
       const role = req.user.role
-      const session = await this._userPackageService.initiativePurchase(packageId,userId,role)
+      const session = await this._userPackageService.initiativePurchase(packageId,userId,role,amount,couponId)
       sendResponse(res,STATUS_CODE.OK,true,MESSAGES.ACTIVATED,session)
+  }
+
+  async getCoupons(req: Request, res: Response): Promise<void> {
+    const userId = req.user.id
+    const coupons = await this._userPackageService.getAllCoupons(userId)
+    sendResponse(res,STATUS_CODE.OK,true,MESSAGES.ALL_DATA_FOUND,coupons)
   }
 }

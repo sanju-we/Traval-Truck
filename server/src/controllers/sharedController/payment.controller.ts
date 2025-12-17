@@ -20,7 +20,10 @@ export class UserPaymentController implements IPaymentController {
       currency = "inr",
       targetId,
       priceId,
+      couponId
     } = req.body;
+
+    logger.info(`funcking bitch ${JSON.stringify(req.body)}`)
 
     const userId = req.user.id;
     const role = req.user.role;
@@ -39,6 +42,7 @@ export class UserPaymentController implements IPaymentController {
       userId,
       role,
       targetId,
+      couponId
     };
 
     const mode = type === "subscription" ? "subscription" : "payment";

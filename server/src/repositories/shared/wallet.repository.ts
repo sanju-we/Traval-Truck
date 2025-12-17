@@ -3,7 +3,6 @@ import { BaseRepository } from "../../repositories/baseRepository.js";
 import { IWallet } from "../../core/interface/modelInterface/IWaller";
 import { Wallet } from "../../models/Wallet.js";
 import { toWalletDTO, WallterDTO } from "../../core/DTO/shared/wallet.dto.js";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
 import { logger } from "../../utils/logger.js";
 
 export class WalletRespository extends BaseRepository<IWallet> implements IWalletRespository {

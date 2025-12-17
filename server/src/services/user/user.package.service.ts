@@ -1,19 +1,21 @@
-import { PackageDTO, toPackageDTO } from "@core/DTO/agency/request/packageDTO.js";
 import { IUserPackageService } from "../../core/interface/serivice/user/IUser.package.service.js";
 import { IAgencyPackageRepository } from "../../core/interface/repositorie/agency/Iagency.package.repository.js";
 import { inject, injectable } from "inversify";
-import { PackageResDTO, toPackageResDTO } from "../../core/DTO/agency/response/agency.packageDTO.js";
+import { PackageResDTO } from "../../core/DTO/agency/response/agency.packageDTO.js";
 import { DataNotFoundError } from "../../utils/resAndErrors.js";
 import { logger } from "../../utils/logger.js";
 import { ISubscriptionHistoryRepository } from "../../core/interface/repositorie/shared/ISubscription.hisroty.repository.js";
 import { IPaymentUtils } from "../../core/interface/PaymentInterface/Ipayment.utils.js";
+import { IAdminCouponRepository } from "../../core/interface/repositorie/admin/Iadmin.coupon.repository.js";
+import { CouponDTO, toCouponDTO } from "../../core/DTO/admin/coupon/admin.coupon.response.js";
 
 @injectable()
 export class UserPackageSerivce implements IUserPackageService {
   constructor(
     @inject('IAgencyPackageRepository') private readonly _packageRepo: IAgencyPackageRepository,
     @inject('ISubscriptionHistoryRepository') private readonly _subscriptionHistoryRepo: ISubscriptionHistoryRepository,
-    @inject('IPaymentUtils') private readonly _paymentUtils: IPaymentUtils
+    @inject('IPaymentUtils') private readonly _paymentUtils: IPaymentUtils,
+    @inject('IAdminCouponRepository') private readonly _couponRepo : IAdminCouponRepository
   ) { }
   async getLatestPackage(): Promise<PackageResDTO[]> {
     const data = await this._packageRepo.findAllPackageWithPartners(1)
@@ -52,12 +54,12 @@ export class UserPackageSerivce implements IUserPackageService {
     throw new DataNotFoundError()
   }
 
-  async initiativePurchase(packageId: string, userId: string, role: string): Promise<{ url: string; sessionId: string }> {
+  async initiativePurchase(packageId: string, userId: string, role: string, amount:number, couponId:string): Promise<{ url: string; sessionId: string }> {
     const data = await this._packageRepo.findById(packageId)
     if (!data) throw new DataNotFoundError()
 
     return this._paymentUtils.createCheckoutSession({
-      amount: data.price,
+      amount: amount,
       currency: 'inr',
       description: `Package Plan: ${data.title}`,
       successUrl: `${process.env.FRONTEND_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
@@ -66,8 +68,15 @@ export class UserPackageSerivce implements IUserPackageService {
         type: 'package',
         userId,
         role,
-        packageId
+        packageId,
+        couponId
       }
     })
+  }
+
+  async getAllCoupons(userId:string): Promise<CouponDTO[]> {
+    const coupons = await this._couponRepo.findAll({usedBy:{$ne:userId}},{})
+    if(!coupons) throw new DataNotFoundError()
+      return coupons.map(toCouponDTO)
   }
 }

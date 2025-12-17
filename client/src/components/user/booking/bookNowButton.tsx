@@ -25,7 +25,7 @@ export default function BuyNowButton({ packageId, amount, role, couponCode }: pr
     try {
       setLoading(true);
 
-      const res = await service.PurchasePackage({ packageId, role, amount, couponCode});
+      const res = await service.PurchasePackage({ packageId, role, amount, couponId:couponCode});
       console.log(res)
       if (res.success && res.data.url) {
         window.location.href = res.data.url;

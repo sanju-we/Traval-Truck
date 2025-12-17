@@ -2,7 +2,7 @@ import { IUserTripService } from "../../core/interface/serivice/user/IUser.trips
 import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository.js";
 import { inject, injectable } from "inversify";
 import { DataNotFoundError } from "../../utils/resAndErrors.js";
-import { toTripDTO, TripDTO } from "../../core/DTO/user/Response/user.trip.DTO.js";
+import { TripDTO } from "../../core/DTO/user/Response/user.trip.DTO.js";
 import { logger } from "../../utils/logger.js";
 
 @injectable()

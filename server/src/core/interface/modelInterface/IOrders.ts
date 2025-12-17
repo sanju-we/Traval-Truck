@@ -5,10 +5,15 @@ export interface IOrders extends Document {
   userId : Types.ObjectId;
   orderId : string;
   role : string;
+  productType : string;
   product : Types.ObjectId;
+  ownedBy : string;
   amount : number;
-  startDate:Date;
+  startDate:string;
   endDate:Date;
   status : string;
   paymentId : Types.ObjectId;
+  couponApplied ?: string;
+  offer?:number;
+  createdAt:Date
 }

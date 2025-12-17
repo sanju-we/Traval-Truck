@@ -1,5 +1,6 @@
 // --------------------------------------------------general----------------------------------------------------------------
 import { Container } from 'inversify';
+
 import { IJWT } from '../../core/interface/JWT/JWTInterface.js';
 import { JWT } from '../../utils/JWTtoken.js';
 import { IRedisClient } from '../../core/interface/redis/IRedisClinet.js';
@@ -112,6 +113,10 @@ import { IAgencyPackageService } from '../../core/interface/serivice/agency/Iage
 import { AgencyPackageService } from '../../services/agency/agency.package.service.js';
 import { IAgencyPackageRepository } from '../../core/interface/repositorie/agency/Iagency.package.repository.js';
 import { AgencyPackageRepository } from '../../repositories/agency/agency.package.repository.js';
+import { IAgencyOrdersController } from '../../core/interface/controllerInterface/agency/Iagency.orders.controller.js';
+import { AgencyOrdersController } from '../../controllers/agencyController/agency.orders.controller.js';
+import { IAgencyOrderService } from '../../core/interface/serivice/agency/Iagency.orders.service.js';
+import { AgencyOrderService } from '../../services/agency/agency.order.service.js';
 
 // ------------------------------------------------------Hotel------------------------------------------------------------------------
 import { IHotelAuthController } from '../../core/interface/controllerInterface/hotel/Ihotel.auth.controller.js';
@@ -216,6 +221,8 @@ container.bind<IAgencyProfileService>('IAgencyProfileService').to(AgencyProfileS
 container.bind<IAgencyPackageController>('IAgencyPackageController').to(agencyPackageController);
 container.bind<IAgencyPackageService>('IAgencyPackageService').to(AgencyPackageService);
 container.bind<IAgencyPackageRepository>('IAgencyPackageRepository').to(AgencyPackageRepository);
+container.bind<IAgencyOrdersController>('IAgencyOrdersController').to(AgencyOrdersController);
+container.bind<IAgencyOrderService>('IAgencyOrderService').to(AgencyOrderService);
 
 // --------------------------------------------------------Hotel containers---------------------------------------------------------------
 container.bind<IHotelAuthController>('IHotelAuthController').to(HotelAuthController);

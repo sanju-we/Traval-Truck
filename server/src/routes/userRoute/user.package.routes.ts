@@ -10,5 +10,6 @@ userPackageRouter.get('/', asyncHandler(packageController.getLatestPackage.bind(
   .get('/getAll', asyncHandler(packageController.getAllPackage.bind(packageController)))
   .get('/getPackage/:id', asyncHandler(packageController.getPackage.bind(packageController)))
   .post('/purchase',asyncHandler(packageController.puchasePackage.bind(packageController)))
+  .get('/coupon',asyncHandler(packageController.getCoupons.bind(packageController)))
 
 export default userPackageRouter
