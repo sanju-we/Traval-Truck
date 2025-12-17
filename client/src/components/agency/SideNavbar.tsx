@@ -55,7 +55,7 @@ function SideNavbar() {
               <span>Subscriptions</span>
             </button>
             </div>
-            <div className='hover:bg-gray-200 rounded-md'>
+            <div className='hover:bg-gray-200 rounded-md' onClick={() => router.push('/agency/orders')}>
               <button className="flex items-center space-x-2 p-2 text-black-600 rounded">
               <List  className="material-icons">Order</List >
               <span>Orders</span>

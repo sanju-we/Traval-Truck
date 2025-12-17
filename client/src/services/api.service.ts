@@ -50,6 +50,7 @@ export const getRequest = async <T = any>(
   options: ApiOption = defaultOptions
 ): Promise<T | null> => {
   try {
+    console.log('sending request to ',url)
     const res = await api.get(url, params ? { params , validateStatus:(status)=> status != 401 && status !== 403 } : {validateStatus:(status)=> status != 401 && status !== 403});
     if (!res.data.success) {
       handleAPIerror(res,options)

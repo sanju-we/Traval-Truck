@@ -4,6 +4,7 @@ const AGENCY = `/agency`
 const AGENCY_AUTH = `${AGENCY}/auth`
 const AGENCY_PROFILE = `${AGENCY}/profile`
 const AGENCY_PACKAGE = `${AGENCY}/package`
+const AGENCY_ORDERS =  `${AGENCY}/orders`
 
 export const AGENCY_ROUTES = {
   auth: {
@@ -38,4 +39,10 @@ export const AGENCY_ROUTES = {
   subscription: {
     purchase: `/shared/subscriptions/agency/purchase`
   },
+
+  orders:{
+    getAll:`${AGENCY_ORDERS}/getAll`,
+    setStartDate : `${AGENCY_ORDERS}/setDate`,
+    getOrder :(orderId:string)=> `${AGENCY_ORDERS}/getOrder/${orderId}`
+  }
 }

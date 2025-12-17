@@ -5,7 +5,14 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-export default function BuyNowButton({ packageId, role }: any) {
+interface props {
+  packageId: string,
+  amount: number,
+  role: string,
+  couponCode?: string
+}
+
+export default function BuyNowButton({ packageId, amount, role, couponCode }: props) {
   const [loading, setLoading] = useState(false);
 
   const handleBuy = async () => {
@@ -18,10 +25,10 @@ export default function BuyNowButton({ packageId, role }: any) {
     try {
       setLoading(true);
 
-      const  res  = await service.PurchasePackage({packageId,role});
+      const res = await service.PurchasePackage({ packageId, role, amount, couponCode});
       console.log(res)
       if (res.success && res.data.url) {
-        window.location.href = res.data.url; // redirect to Stripe checkout
+        window.location.href = res.data.url;
       }
     } catch (err) {
       console.error("Buy error:", err);

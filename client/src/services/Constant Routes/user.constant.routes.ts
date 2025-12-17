@@ -31,6 +31,7 @@ export const USER_ROUTES = {
     getAllPackages : `${USER_PACKAGE}/getAll`,
     packageDetails :(id:string) => `${USER_PACKAGE}/getPackage/${id}`,
     Purchasepackage : `${USER_PACKAGE}/purchase`,
+    GetAllCoupon : `${USER_PACKAGE}/coupon`
   },
 
   hotel : {

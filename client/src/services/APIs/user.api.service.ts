@@ -30,6 +30,7 @@ export const USER_API_METHODS = {
     getAllPackages: (params?: any) => get(USER_ROUTES.packages.getAllPackages, params),
     packageDetails: (id: string) => get(USER_ROUTES.packages.packageDetails(id)),
     PurchasePackage : (data:any) => post(USER_ROUTES.packages.Purchasepackage,data),
+    GetAllCoupon : () => get(USER_ROUTES.packages.GetAllCoupon),
 
     // hotel api requests
     getAllHotel: (params?: any) => get(USER_ROUTES.hotel.getAllHotel, params),

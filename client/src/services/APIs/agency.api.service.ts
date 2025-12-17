@@ -37,4 +37,9 @@ export const AGENCY_API_METHODS = {
 
     // subscription api requests
     purchaseSubscription: (data: any) => post(AGENCY_ROUTES.subscription.purchase, data),
+
+    // orders api
+    getAllOrders : () => get(AGENCY_ROUTES.orders.getAll),
+    setOrderStartDate : (orderId:string,date:string) => post(AGENCY_ROUTES.orders.setStartDate,{orderId,date}),
+    getOrder : (orderId:string) => get(AGENCY_ROUTES.orders.getOrder(orderId))
 };

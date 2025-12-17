@@ -34,8 +34,10 @@ export default function BuyNowButton({ subscriptionId, role }: any) {
         role
       });
 
-      if (data.success && data.data.url) {
-        window.location.href = data.data.url; // redirect to Stripe checkout
+      console.log('data:',data)
+
+      if (data.url) {
+        window.location.href = data.url; // redirect to Stripe checkout
       }
     } catch (err) {
       console.error("Buy error:", err);
