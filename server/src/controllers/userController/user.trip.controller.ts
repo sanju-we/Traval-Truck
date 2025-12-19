@@ -17,4 +17,10 @@ export class UserTripController implements IUserTripController{
       const history = await this._tripService.history(userId)
       sendResponse(res,STATUS_CODE.OK,true,MESSAGES.DATA_FOUND,history)
   }
+
+  async getOrder(req: Request, res: Response): Promise<void> {
+    const orderId = req.params.orderId
+    const orderDetails = await this._tripService.getOrder(orderId)
+    sendResponse(res,STATUS_CODE.OK,true,MESSAGES.DATA_FOUND,orderDetails);
+  }
 }

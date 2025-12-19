@@ -177,12 +177,11 @@ export default function UserProfilePage() {
             </button>
           </div>
 
-          <div className="grid grid-cols-4 gap-4 mt-10">
+          <div className="grid grid-cols-3 gap-4 mt-10">
             {[
               { label: "Total Trips", value: 12 },
               { label: "Ongoing", value: 3 },
               { label: "Completed", value: 9 },
-              { label: "Wishlist", value: 5 },
             ].map((item, i) => (
               <div
                 key={i}

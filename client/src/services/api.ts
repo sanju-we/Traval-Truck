@@ -2,7 +2,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 
 const  api = axios.create({
-  baseURL:  'http://localhost:5000/api' ,
+  baseURL:  process.env.NEXT_PUBLIC_BACKEND_URL ,
   withCredentials: true,
   validateStatus: (status) => {
     return status !== 401 && status !== 403;

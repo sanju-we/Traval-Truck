@@ -50,7 +50,7 @@ export default function RoomsPage() {
     try {
       const res = await HOTEL_API_METHODS.getAllRooms(page, search, Description);
       console.log(res.data)
-      setRooms(res.data.data);
+      setRooms(res.data);
       setTotalPages(res.data.totalPages);
     } catch {
       toast.error("Failed to fetch rooms");

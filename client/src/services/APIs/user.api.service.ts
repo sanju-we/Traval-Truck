@@ -40,5 +40,6 @@ export const USER_API_METHODS = {
     showAllFoods: (params?: any) => get(USER_ROUTES.foods.showAllFoods, params),
 
     // booking api request
-    orderHistory : () => get(USER_ROUTES.Trip.History)
+    orderHistory : () => get(USER_ROUTES.Trip.History),
+    getOrderDetails : (orderId:string)=>get(USER_ROUTES.Trip.OrderDetail(orderId))
 };

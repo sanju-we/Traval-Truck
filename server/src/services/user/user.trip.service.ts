@@ -4,6 +4,7 @@ import { inject, injectable } from "inversify";
 import { DataNotFoundError } from "../../utils/resAndErrors.js";
 import { TripDTO } from "../../core/DTO/user/Response/user.trip.DTO.js";
 import { logger } from "../../utils/logger.js";
+import { orderDTO, toOrderDTO } from "../../core/DTO/agency/response/agency.order.DTO.js";
 
 @injectable()
 export class UserTripService implements IUserTripService {
@@ -16,5 +17,11 @@ export class UserTripService implements IUserTripService {
     logger.info(`charle ${history}`)
     if (!history) throw new DataNotFoundError()
     return history
+  }
+
+  async getOrder(orderId: string): Promise<orderDTO> {
+    const order = await this._ordersRepo.findOrderWithProduct(orderId);
+    if(!order) throw new DataNotFoundError()
+    return toOrderDTO(order)
   }
 }

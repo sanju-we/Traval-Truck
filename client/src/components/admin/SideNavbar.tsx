@@ -40,7 +40,7 @@ export function SideNavbar({ active }: SideNavbarProps) {
     { label: 'Subscriptions', icon: <IndianRupee className="w-5 h-5 mr-3" />, path: '/admin/subscription' },
     { label: 'Orders', icon: <ShoppingBag className="w-5 h-5 mr-3" />, path: '#' },
     { label: 'Coupon', icon: <Ticket className="w-5 h-5 mr-3" />, path: '/admin/coupons' },
-    { label: 'Reports', icon: <BarChart3 className="w-5 h-5 mr-3" />, path: '#' },
+    { label: 'Wallet', icon: <BarChart3 className="w-5 h-5 mr-3" />, path: '/admin/wallet' },
     { label: 'Settings', icon: <Settings className="w-5 h-5 mr-3" />, path: '#' },
   ];
 

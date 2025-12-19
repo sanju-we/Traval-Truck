@@ -20,7 +20,6 @@ interface Trip {
   product: product;
   status: 'Upcoming' | 'Ongoing' | 'Completed';
   agencyId?: string;
-  amount:number;
 }
 
 interface TripHistoryProps {
@@ -104,36 +103,59 @@ export default function TripHistory({ userId }: TripHistoryProps) {
 
   return (
     <div className="mt-8">
-      <div className="flex gap-3 mb-6">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex gap-3">
+          <button
+            onClick={() => setFilter('all')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+              filter === 'all'
+                ? 'bg-emerald-500 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            All Trips ({trips.length})
+          </button>
+          <button
+            onClick={() => setFilter('upcoming')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+              filter === 'upcoming'
+                ? 'bg-emerald-500 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            Upcoming ({upcomingTrips.length})
+          </button>
+          <button
+            onClick={() => setFilter('completed')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+              filter === 'completed'
+                ? 'bg-emerald-500 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            Completed ({completedTrips.length})
+          </button>
+        </div>
+
+        {/* View All Link */}
         <button
-          onClick={() => setFilter('all')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-            filter === 'all'
-              ? 'bg-emerald-500 text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
+          onClick={() => router.push('/profile/orders')}
+          className="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 font-medium text-sm transition"
         >
-          All Trips ({trips.length})
-        </button>
-        <button
-          onClick={() => setFilter('upcoming')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-            filter === 'upcoming'
-              ? 'bg-emerald-500 text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
-        >
-          Upcoming ({upcomingTrips.length})
-        </button>
-        <button
-          onClick={() => setFilter('completed')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-            filter === 'completed'
-              ? 'bg-emerald-500 text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
-        >
-          Completed ({completedTrips.length})
+          View All
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
         </button>
       </div>
 
@@ -191,7 +213,7 @@ export default function TripHistory({ userId }: TripHistoryProps) {
 
                 <div className="flex items-center justify-between mt-4 gap-3">
                   <p className="text-lg font-bold text-emerald-600">
-                    ₹{trip.amount}
+                    ₹{trip.product.price.toLocaleString()}
                   </p>
                   
                   <div className="flex gap-2">

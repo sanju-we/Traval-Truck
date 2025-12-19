@@ -44,6 +44,7 @@ export const USER_ROUTES = {
   },
 
   Trip : {
-    History : `${USER_TRIP}/tripHistory`
+    History : `${USER_TRIP}/tripHistory`,
+    OrderDetail : (orderId:string)=>`${USER_TRIP}/orderDetails/${orderId}`
   }
 } 

@@ -7,5 +7,6 @@ const tripRouter = Router()
 const tripController = container.get<IUserTripController>('IUserTripController')
 
 tripRouter.get('/tripHistory',asyncHandler(tripController.getHistory.bind(tripController)))
+.get('/orderDetails/:orderId',asyncHandler(tripController.getOrder.bind(tripController)))
 
 export default tripRouter
