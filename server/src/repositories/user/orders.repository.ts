@@ -4,7 +4,6 @@ import { Order } from "../../models/Orders.js";
 import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository.js";
 import { logger } from "../../utils/logger.js";
 import { toTripDTO, TripDTO } from "../../core/DTO/user/Response/user.trip.DTO.js";
-import { orderDTO } from "@core/DTO/agency/response/agency.order.DTO.js";
 
 export class OrderRepository extends BaseRepository<IOrders> implements IOrdersRepository{
   constructor(){
@@ -18,7 +17,7 @@ export class OrderRepository extends BaseRepository<IOrders> implements IOrdersR
   }
 
   async findOrderWithProduct(orderId: string): Promise<IOrders | null> {
-    const data = await Order.findById(orderId).populate('product')
+    const data = await Order.findById(orderId).populate('product').populate('ownedBy')
     return data
   }
 }

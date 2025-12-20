@@ -36,7 +36,7 @@ let RestaurantProfileService = class RestaurantProfileService {
             update = await this._restaurantAuthRepo.update(id, { [`documents.${fileName}`]: result });
         }
         if (update) {
-            update.isRestricted ? await this._restaurantAuthRepo.update(id, { isRestricted: false }) : '';
+            update.isRestricted && await this._restaurantAuthRepo.update(id, { isRestricted: false });
             return toVendorRequestDTO(update);
         }
         return null;

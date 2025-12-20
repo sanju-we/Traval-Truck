@@ -8,5 +8,6 @@ const tripController = container.get<IUserTripController>('IUserTripController')
 
 tripRouter.get('/tripHistory',asyncHandler(tripController.getHistory.bind(tripController)))
 .get('/orderDetails/:orderId',asyncHandler(tripController.getOrder.bind(tripController)))
+.patch('/cancelOrder',asyncHandler(tripController.orderCalcellation.bind(tripController)))
 
 export default tripRouter

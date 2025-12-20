@@ -39,7 +39,7 @@ let AgencyProfileService = class AgencyProfileService {
             update = await this._agencyAuthRepo.update(id, { [`documents.${fieldname}`]: result });
         }
         if (update) {
-            update.isRestricted ? await this._agencyAuthRepo.update(id, { isRestricted: false }) : '';
+            update.isRestricted && await this._agencyAuthRepo.update(id, { isRestricted: false });
             return toVendorRequestDTO(update);
         }
         return null;

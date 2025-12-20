@@ -52,7 +52,7 @@ let AdminVendorRepository = class AdminVendorRepository {
         });
         return completeData.map(toVendorRequestDTO);
     }
-    async findAlls(page, limit, status, role, search) {
+    async findAllUsers(page, limit, status, role, search) {
         const userData = await this._userRepository.findAll({}, {});
         const agencyData = await this._agencyRepository.findAll({ isApproved: true }, {});
         const hotelData = await this._hotelRepository.findAll({ isApproved: true }, {});

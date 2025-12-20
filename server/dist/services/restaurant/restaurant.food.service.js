@@ -32,8 +32,8 @@ let RestaurantFoodService = class RestaurantFoodService {
         });
         foodTypeSchema.parse(data);
         const image = [];
-        for (let data of files) {
-            let url = await singleUpload(data, 'Travel-Truck-Document');
+        for (const data of files) {
+            const url = await singleUpload(data, 'Travel-Truck-Document');
             image.push(url);
         }
         const created = await this._foodRepo.create({ ...data, Image: image, Restaurant: id });
@@ -59,8 +59,8 @@ let RestaurantFoodService = class RestaurantFoodService {
         });
         foodTypeSchema.parse(data);
         const image = [];
-        for (let data of files) {
-            let url = await singleUpload(data, 'Travel-Truck-Document');
+        for (const data of files) {
+            const url = await singleUpload(data, 'Travel-Truck-Document');
             image.push(url);
         }
         logger.info(data);

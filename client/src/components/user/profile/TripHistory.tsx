@@ -17,6 +17,7 @@ interface product {
 interface Trip {
   id: string;
   orderId: string;
+  amount: number;
   product: product;
   status: 'Upcoming' | 'Ongoing' | 'Completed';
   agencyId?: string;
@@ -58,12 +59,11 @@ export default function TripHistory({ userId }: TripHistoryProps) {
 
   function handleChatWithAgency(trip: Trip) {
     // Navigate to chat page with agency
-    router.push(`/chat/${trip.agencyId || 'agency'}?orderId=${trip.orderId}`);
+    router.push(`/chat/${trip.agencyId || 'agency'}?orderId=${trip.id}`);
   }
 
   function handleViewDetails(trip: Trip) {
-    // Navigate to order details page
-    router.push(`/orders/${trip.orderId}`);
+    router.push(`/profile/orders/${trip.id}`);
   }
 
   const filteredTrips = trips.filter(trip => {
@@ -213,7 +213,7 @@ export default function TripHistory({ userId }: TripHistoryProps) {
 
                 <div className="flex items-center justify-between mt-4 gap-3">
                   <p className="text-lg font-bold text-emerald-600">
-                    ₹{trip.product.price.toLocaleString()}
+                    ₹{trip.amount.toLocaleString()}
                   </p>
                   
                   <div className="flex gap-2">

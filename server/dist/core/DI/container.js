@@ -9,6 +9,7 @@ import { authValidator } from '../../validators/auth.validator.js';
 import { SubscriptionValidator } from '../../validators/subscription.validator.js';
 import { CouponValidator } from '../../validators/coupon.validator.js';
 import { PaymentValidator } from '../../validators/payment.validator.js';
+import { BaseValidator } from '../../validators/base.validator.js';
 import { WalletService } from '../../services/shared/wallet.service.js';
 import { SharedWalletController } from '../../controllers/sharedController/shared.wallet.controller.js';
 import { WalletRespository } from '../../repositories/shared/wallet.repository.js';
@@ -31,6 +32,9 @@ import { UserPaymentController } from '../../controllers/sharedController/paymen
 import { PaymentUtils } from '../../utils/Payment.js';
 import { userFoodsController } from '../../controllers/userController/user.foods.controller.js';
 import { userFoodsService } from '../../services/user/user.foods.service.js';
+import { OrderRepository } from '../../repositories/user/orders.repository.js';
+import { UserTripController } from '../../controllers/userController/user.trip.controller.js';
+import { UserTripService } from '../../services/user/user.trip.service.js';
 import { AdminAuthService } from '../../services/admin/admin.auth.service.js';
 import { AdminAuthController } from '../../controllers/adminController/admin.auth.controller.js';
 import { AdminVendorController } from '../../controllers/adminController/admin.vendor.controller.js';
@@ -49,6 +53,8 @@ import { AgencyProfileService } from '../../services/agency/agency.profile.servi
 import { agencyPackageController } from '../../controllers/agencyController/agency.package.controller.js';
 import { AgencyPackageService } from '../../services/agency/agency.package.service.js';
 import { AgencyPackageRepository } from '../../repositories/agency/agency.package.repository.js';
+import { AgencyOrdersController } from '../../controllers/agencyController/agency.orders.controller.js';
+import { AgencyOrderService } from '../../services/agency/agency.order.service.js';
 import { HotelAuthController } from '../../controllers/hotelController/hotel.auth.controller.js';
 import { HotelAuthRepository } from '../../repositories/hotel/hotel.auth.repository.js';
 import { HotelAuthService } from '../../services/hotel/hotel.auth.service.js';
@@ -77,6 +83,7 @@ container.bind('IAuthValidator').to(authValidator);
 container.bind('ISubscriptionValidator').to(SubscriptionValidator);
 container.bind('ICouponValidator').to(CouponValidator);
 container.bind('IPaymentValidator').to(PaymentValidator);
+container.bind('IBaseValidator').to(BaseValidator);
 // -------------------------------------------------------Shared container-----------------------------------------------------------
 container.bind('IWalletService').to(WalletService);
 container.bind('ISharedWalletController').to(SharedWalletController);
@@ -101,6 +108,9 @@ container.bind('IPaymentController').to(UserPaymentController);
 container.bind('IPaymentUtils').to(PaymentUtils);
 container.bind('IUserFoodsController').to(userFoodsController);
 container.bind('IUserFoodsService').to(userFoodsService);
+container.bind('IOrdersRepository').to(OrderRepository);
+container.bind('IUserTripController').to(UserTripController);
+container.bind('IUserTripService').to(UserTripService);
 // -----------------------------------------------------admin containers----------------------------------------------------------------------
 container.bind('IAdminAuthController').to(AdminAuthController);
 container.bind('IAdminAuthService').to(AdminAuthService);
@@ -122,6 +132,8 @@ container.bind('IAgencyProfileService').to(AgencyProfileService);
 container.bind('IAgencyPackageController').to(agencyPackageController);
 container.bind('IAgencyPackageService').to(AgencyPackageService);
 container.bind('IAgencyPackageRepository').to(AgencyPackageRepository);
+container.bind('IAgencyOrdersController').to(AgencyOrdersController);
+container.bind('IAgencyOrderService').to(AgencyOrderService);
 // --------------------------------------------------------Hotel containers---------------------------------------------------------------
 container.bind('IHotelAuthController').to(HotelAuthController);
 container.bind('IHotelAuthRepository').to(HotelAuthRepository);

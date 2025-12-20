@@ -41,5 +41,6 @@ export const USER_API_METHODS = {
 
     // booking api request
     orderHistory : () => get(USER_ROUTES.Trip.History),
-    getOrderDetails : (orderId:string)=>get(USER_ROUTES.Trip.OrderDetail(orderId))
+    getOrderDetails : (orderId:string)=>get(USER_ROUTES.Trip.OrderDetail(orderId)),
+    cancelOrder : (orderId:string,reason:string)=> patch(USER_ROUTES.Trip.orderCancel,{orderId,reason})
 };

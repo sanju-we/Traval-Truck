@@ -38,6 +38,18 @@ let UserPackageController = class UserPackageController {
         const data = await this._userPackageService.getPackage(String(id));
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, data);
     }
+    async puchasePackage(req, res) {
+        const { packageId, amount, couponId } = req.body;
+        const userId = req.user.id;
+        const role = req.user.role;
+        const session = await this._userPackageService.initiativePurchase(packageId, userId, role, amount, couponId);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ACTIVATED, session);
+    }
+    async getCoupons(req, res) {
+        const userId = req.user.id;
+        const coupons = await this._userPackageService.getAllCoupons(userId);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, coupons);
+    }
 };
 UserPackageController = __decorate([
     injectable(),

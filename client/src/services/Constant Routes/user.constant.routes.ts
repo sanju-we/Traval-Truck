@@ -45,6 +45,7 @@ export const USER_ROUTES = {
 
   Trip : {
     History : `${USER_TRIP}/tripHistory`,
-    OrderDetail : (orderId:string)=>`${USER_TRIP}/orderDetails/${orderId}`
+    OrderDetail : (orderId:string)=>`${USER_TRIP}/orderDetails/${orderId}`,
+    orderCancel : `${USER_TRIP}/cancelOrder`
   }
 } 

@@ -77,4 +77,14 @@ export class BaseRepository {
             throw new RepositoryError(`Failed to update document: ${err.message}`);
         }
     }
+    async countDocuments() {
+        try {
+            const count = await this.#model.countDocuments();
+            return count;
+        }
+        catch (error) {
+            logger.error(`count the documents: ${error.message}`);
+            throw new RepositoryError(`Failed to count document: ${error.message}`);
+        }
+    }
 }

@@ -176,11 +176,11 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
   const productName = order.product.title || order.product.name || 'N/A';
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="flex min-h-screen bg-gray-50">
       <SideNavbar />
       
-      <div className="p-6 md:p-10">
-        <div className="max-w-5xl mx-auto space-y-6">
+      <div className="p-8 flex-1">
+        <div className="max-w-7xl mx-auto space-y-6">
           
           {/* Back Button */}
           <button

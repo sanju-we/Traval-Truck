@@ -96,7 +96,7 @@ let AuthController = class AuthController {
         const schema = z.object({
             accessToken: z.string(),
         });
-        logger.info('req.cookies', req.cookies);
+        logger.info(`req.cookies ${JSON.stringify(req.cookies)}`);
         if (!req.cookies || !req.cookies.accessToken) {
             logger.info('User logged out Failed not found the cookie in the req:');
             return sendResponse(res, STATUS_CODE.BAD_REQUEST, false, 'No refresh token found');

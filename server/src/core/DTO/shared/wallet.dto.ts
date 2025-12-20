@@ -5,7 +5,7 @@ interface transactions{
   Type:string,
   Amount:number,
   Description:string,
-  paymentIntentId:string
+  paymentIntentId?:string
   Date:Date
 }
 

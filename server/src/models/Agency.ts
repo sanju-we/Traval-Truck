@@ -1,6 +1,5 @@
 import { Schema, model } from 'mongoose';
 import { IAgency } from '../core/interface/modelInterface/IAgency.js';
-import { string } from 'zod';
 
 const agencySchema = new Schema<IAgency>({
   companyName: {

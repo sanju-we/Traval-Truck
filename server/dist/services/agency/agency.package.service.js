@@ -40,7 +40,7 @@ let AgencyPackageService = class AgencyPackageService {
         }
         await this._authValidator.addPackageValidator(data);
         const agency = await this._agencyRepo.findById(id);
-        let images = [];
+        const images = [];
         for (const fieldname in files) {
             const fileArray = files[fieldname];
             for (const file of fileArray) {
@@ -67,7 +67,7 @@ let AgencyPackageService = class AgencyPackageService {
             data.itinerary = JSON.parse(data.itinerary);
         }
         await this._authValidator.addPackageValidator(data);
-        let images = [];
+        const images = [];
         logger.info(files);
         for (const fieldname in files) {
             const fileArray = files[fieldname];

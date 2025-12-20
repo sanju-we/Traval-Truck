@@ -5,5 +5,6 @@ export const toPackageDTO = (packages) => ({
     duration: packages.duration,
     itinerary: packages.itinerary,
     price: packages.price,
-    title: packages.title
+    title: packages.title,
+    images: packages.images
 });

@@ -30,9 +30,9 @@ let HotelRoomsService = class HotelRoomsService {
     async addRoom(data, file) {
         await this._authValidator.RoomValidator(data);
         logger.info(data.Images);
-        let Image = [];
-        for (let img of file) {
-            let url = await singleUpload(img, 'Travel-Travel-Document');
+        const Image = [];
+        for (const img of file) {
+            const url = await singleUpload(img, 'Travel-Travel-Document');
             Image.push(url);
         }
         const createdData = await this._roomsRepo.create({ ...data, Images: Image, Status: 'Available' });
@@ -86,9 +86,9 @@ let HotelRoomsService = class HotelRoomsService {
         schema.parse(id);
         logger.info(data);
         roomSchema.parse(data);
-        let Image = [];
-        for (let img of files) {
-            let url = await singleUpload(img, 'Travel-Travel-Document');
+        const Image = [];
+        for (const img of files) {
+            const url = await singleUpload(img, 'Travel-Travel-Document');
             Image.push(url);
         }
         const updatedRoom = await this._roomsRepo.update(id, { ...data, Images: Image });

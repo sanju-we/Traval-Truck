@@ -15,7 +15,8 @@ const OrdersSchema = new Schema<IOrders>({
   paymentId:{type:Schema.Types.ObjectId,ref:'Payments',required:true},
   couponApplied:{type:String},
   offer:{type:Number},
-  createdAt:{type:Date}
+  createdAt:{type:Date},
+  reason:{type:String}
 },{ timestamps: true })
 
 export const Order = model<IOrders>('Orders',OrdersSchema);

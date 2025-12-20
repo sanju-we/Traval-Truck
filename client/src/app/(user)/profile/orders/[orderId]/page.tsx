@@ -21,37 +21,23 @@ import {
   Download,
   Share2,
   Utensils,
-  Image as ImageIcon,
+  XCircle,
+  X,
 } from 'lucide-react';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import toast from 'react-hot-toast';
 
 interface OrderDetails {
-  _id: string;
+  id: string;
   orderId: string;
-  userId: {
+  userId: string | {
     _id: string;
     name: string;
     email: string;
     phoneNumber?: string;
   };
-  productType: 'Package' | 'Rooms' | 'Foods';
-  product: {
-    _id: string;
-    title?: string;
-    name?: string;
-    description?: string;
-    price: number;
-    images?: string[];
-    duration?: string;
-    availableFoods?: string[];
-    itinerary?: {
-      day: number;
-      title: string;
-      activities: string[];
-    }[];
-    discoveries?: string[];
-  };
+  productType?: 'Package' | 'Rooms' | 'Foods';
+  product: any;
   amount: number;
   originalAmount?: number;
   discount?: number;
@@ -60,35 +46,36 @@ interface OrderDetails {
     discount: number;
     type: string;
   };
-  ownedBy: {
-    _id: string;
-    name?: string;
-    agencyName?: string;
-    email?: string;
-  };
+  ownedBy?: any;
   startDate?: string;
   endDate?: string;
   status: 'Upcoming' | 'Ongoing' | 'Completed';
-  paymentId: {
-    _id: string;
-    transactionId?: string;
-    paymentMethod?: string;
-    paymentStatus?: string;
-  };
+  paymentId: any;
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
 }
 
-interface OrderDetailsPageProps {
-  orderId: string;
-}
+const CANCEL_REASONS = [
+  'Change of plans',
+  'Found a better deal',
+  'Health issues',
+  'Work commitments',
+  'Weather concerns',
+  'Financial reasons',
+  'Travel restrictions',
+  'Other (specify below)',
+];
 
 export default function UserOrderDetailsPage() {
   const [order, setOrder] = useState<OrderDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [cancelLoading, setCancelLoading] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [selectedReason, setSelectedReason] = useState<string>('');
+  const [customReason, setCustomReason] = useState('');
   const router = useRouter();
-  const params = useParams()
+  const params = useParams();
   const orderId = Array.isArray(params.orderId) ? params.orderId.join('') : params.orderId ?? "";
 
   useEffect(() => {
@@ -99,9 +86,9 @@ export default function UserOrderDetailsPage() {
     try {
       setLoading(true);
       const response = await USER_API_METHODS.getOrderDetails(orderId);
-      
+
       if (response.success) {
-        console.log(response.data)
+        console.log('Order data:', response.data);
         setOrder(response.data);
       } else {
         toast.error(response.message || 'Failed to load order details');
@@ -141,7 +128,60 @@ export default function UserOrderDetailsPage() {
   };
 
   const handleChatWithAgency = () => {
-    router.push(`/chat/${order?.ownedBy._id}?orderId=${order?.orderId}`);
+    const agencyId = order?.product?.ownedBy || order?.ownedBy;
+    if (agencyId) {
+      router.push(`/chat/${agencyId}?orderId=${order?.orderId}`);
+    } else {
+      toast.error('Agency information not available');
+    }
+  };
+
+  const openCancelModal = () => {
+    setShowCancelModal(true);
+    setSelectedReason('');
+    setCustomReason('');
+  };
+
+  const closeCancelModal = () => {
+    setShowCancelModal(false);
+    setSelectedReason('');
+    setCustomReason('');
+  };
+
+  const handleCancelOrder = async () => {
+    if (!order) return;
+
+    // Validation
+    if (!selectedReason) {
+      toast.error('Please select a cancellation reason');
+      return;
+    }
+
+    if (selectedReason === 'Other (specify below)' && !customReason.trim()) {
+      toast.error('Please provide a reason for cancellation');
+      return;
+    }
+
+    try {
+      setCancelLoading(true);
+
+      const finalReason = selectedReason === 'Other (specify below)' ? customReason : selectedReason;
+
+      const response = await USER_API_METHODS.cancelOrder(orderId, finalReason);
+
+      if (response.success) {
+        toast.success('Order cancelled successfully');
+        setOrder(response.data);
+        closeCancelModal();
+      } else {
+        toast.error(response.message || 'Failed to cancel order');
+      }
+    } catch (error) {
+      console.error('Error cancelling order:', error);
+      toast.error('An error occurred while cancelling the order');
+    } finally {
+      setCancelLoading(false);
+    }
   };
 
   if (loading) {
@@ -181,12 +221,22 @@ export default function UserOrderDetailsPage() {
     );
   }
 
-  const productName = order.product.title || order.product.name || 'N/A';
+  const productName = order.product?.title;
+  const productImages = order.product?.images || [];
+  const productDuration = order.product?.duration || null;
+  const productDescription = order.product?.description || null;
+  const productItinerary = order.product?.itinerary || [];
+  const productDiscoveries = order.product?.discoveries || [];
+  const productAvailableFoods = order.product?.availableFoods || [];
+
+  const userName = typeof order.userId === 'object' ? order.userId.name : 'N/A';
+  const userEmail = typeof order.userId === 'object' ? order.userId.email : 'N/A';
+  const userPhone = typeof order.userId === 'object' ? order.userId.phoneNumber : null;
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back Button */}
         <button
@@ -225,7 +275,7 @@ export default function UserOrderDetailsPage() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-3 mt-4">
+          <div className="flex flex-wrap gap-3 mt-4">
             {order.status !== 'Completed' && (
               <button
                 onClick={handleChatWithAgency}
@@ -233,6 +283,15 @@ export default function UserOrderDetailsPage() {
               >
                 <MessageCircle size={18} />
                 Chat with Agency
+              </button>
+            )}
+            {order.status === 'Upcoming' && (
+              <button
+                onClick={openCancelModal}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition flex items-center gap-2 font-semibold"
+              >
+                <XCircle size={18} />
+                Cancel Order
               </button>
             )}
             <button className="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition flex items-center gap-2 font-semibold">
@@ -254,32 +313,31 @@ export default function UserOrderDetailsPage() {
               <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
                 <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
                   <Package className="text-blue-600" size={22} />
-                  {order.productType} Information
+                  {order.productType || 'Package'} Information
                 </h2>
               </div>
-              
+
               <div className="p-6">
                 {/* Image Gallery */}
-                {order.product.images && order.product.images.length > 0 && (
+                {order.product?.images && (
                   <div className="mb-6">
-                    <div className="relative h-64 rounded-lg overflow-hidden mb-3">
+                    <div className="relative h-70 rounded-lg overflow-hidden mb-3">
                       <img
-                        src={order.product.images[selectedImage]}
+                        src={productImages[selectedImage]}
                         alt={productName}
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    {order.product.images.length > 1 && (
+                    {productImages.length > 1 && (
                       <div className="grid grid-cols-4 gap-2">
-                        {order.product.images.slice(0, 4).map((img, idx) => (
+                        {productImages.slice(0, 4).map((img: string, idx: number) => (
                           <button
                             key={idx}
                             onClick={() => setSelectedImage(idx)}
-                            className={`relative h-16 rounded-lg overflow-hidden border-2 transition ${
-                              selectedImage === idx
+                            className={`relative h-30 rounded-lg overflow-hidden border-2 transition ${selectedImage === idx
                                 ? 'border-blue-500'
                                 : 'border-gray-200 hover:border-gray-300'
-                            }`}
+                              }`}
                           >
                             <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-cover" />
                           </button>
@@ -290,35 +348,35 @@ export default function UserOrderDetailsPage() {
                 )}
 
                 <h3 className="text-xl font-bold text-gray-800 mb-3">{productName}</h3>
-                
-                {order.product.description && (
-                  <p className="text-gray-600 mb-4">{order.product.description}</p>
+
+                {productDescription && (
+                  <p className="text-gray-600 mb-4">{productDescription}</p>
                 )}
 
-                {order.product.duration && (
+                {productDuration && (
                   <div className="flex items-center gap-2 text-gray-700 mb-3">
                     <Clock size={18} className="text-gray-400" />
                     <span className="text-sm">
-                      <span className="font-medium">Duration:</span> {order.product.duration}
+                      <span className="font-medium">Duration:</span> {productDuration}
                     </span>
                   </div>
                 )}
 
                 {/* Itinerary */}
-                {order.product.itinerary && order.product.itinerary.length > 0 && (
+                {productItinerary.length > 0 && (
                   <div className="mt-6">
                     <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
                       <Calendar className="text-blue-600" size={18} />
                       Itinerary
                     </h4>
                     <div className="space-y-4">
-                      {order.product.itinerary.map((item, idx) => (
+                      {productItinerary.map((item: any, idx: number) => (
                         <div key={idx} className="relative pl-6 pb-4 border-l-2 border-blue-200 last:border-0">
                           <div className="absolute -left-2 top-0 w-4 h-4 bg-blue-600 rounded-full"></div>
                           <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
                             <h5 className="font-bold text-gray-800 mb-2">Day {item.day}: {item.title}</h5>
                             <ul className="space-y-1">
-                              {item.activities.map((activity, actIdx) => (
+                              {item.activities?.map((activity: string, actIdx: number) => (
                                 <li key={actIdx} className="text-sm text-gray-700 flex items-start gap-2">
                                   <span className="text-blue-600">•</span>
                                   <span>{activity}</span>
@@ -333,14 +391,14 @@ export default function UserOrderDetailsPage() {
                 )}
 
                 {/* Discoveries */}
-                {order.product.discoveries && order.product.discoveries.length > 0 && (
+                {productDiscoveries.length > 0 && (
                   <div className="mt-6">
                     <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
                       <MapPin className="text-blue-600" size={18} />
                       Places to Discover
                     </h4>
                     <div className="grid grid-cols-2 gap-2">
-                      {order.product.discoveries.map((place, idx) => (
+                      {productDiscoveries.map((place: string, idx: number) => (
                         <div key={idx} className="flex items-center gap-2 text-sm text-gray-700 bg-gray-50 rounded-lg p-2">
                           <MapPin size={14} className="text-gray-400" />
                           <span>{place}</span>
@@ -351,14 +409,14 @@ export default function UserOrderDetailsPage() {
                 )}
 
                 {/* Available Foods */}
-                {order.product.availableFoods && order.product.availableFoods.length > 0 && (
+                {productAvailableFoods.length > 0 && (
                   <div className="mt-6">
                     <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
                       <Utensils className="text-orange-600" size={18} />
                       Meals Included
                     </h4>
                     <div className="flex flex-wrap gap-2">
-                      {order.product.availableFoods.map((food, idx) => (
+                      {productAvailableFoods.map((food: string, idx: number) => (
                         <span
                           key={idx}
                           className="px-3 py-1 bg-orange-50 text-orange-700 rounded-full text-sm font-medium border border-orange-100"
@@ -366,44 +424,6 @@ export default function UserOrderDetailsPage() {
                           {food}
                         </span>
                       ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Schedule Information */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-lg font-bold text-gray-800 mb-4">Trip Schedule</h2>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-100">
-                  <Calendar className="text-blue-600" size={24} />
-                  <div>
-                    <p className="text-sm text-gray-600">Start Date</p>
-                    <p className="font-semibold text-gray-800">
-                      {order.startDate
-                        ? new Date(order.startDate).toLocaleDateString('en-US', {
-                            month: 'long',
-                            day: 'numeric',
-                            year: 'numeric',
-                          })
-                        : 'Not set yet'}
-                    </p>
-                  </div>
-                </div>
-
-                {order.endDate && (
-                  <div className="flex items-center gap-3 p-4 bg-purple-50 rounded-lg border border-purple-100">
-                    <Calendar className="text-purple-600" size={24} />
-                    <div>
-                      <p className="text-sm text-gray-600">End Date</p>
-                      <p className="font-semibold text-gray-800">
-                        {new Date(order.endDate).toLocaleDateString('en-US', {
-                          month: 'long',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })}
-                      </p>
                     </div>
                   </div>
                 )}
@@ -421,7 +441,7 @@ export default function UserOrderDetailsPage() {
                   Payment Details
                 </h2>
               </div>
-              
+
               <div className="p-6 space-y-4">
                 {order.originalAmount && order.discount && order.discount > 0 && (
                   <>
@@ -457,7 +477,7 @@ export default function UserOrderDetailsPage() {
                   )}
                 </div>
 
-                {order.paymentId.transactionId && (
+                {typeof order.paymentId === 'object' && order.paymentId.transactionId && (
                   <div className="pt-4 border-t">
                     <div className="flex items-start gap-3">
                       <CreditCard className="text-gray-400 flex-shrink-0 mt-0.5" size={18} />
@@ -471,7 +491,7 @@ export default function UserOrderDetailsPage() {
                   </div>
                 )}
 
-                {order.paymentId.paymentMethod && (
+                {typeof order.paymentId === 'object' && order.paymentId.paymentMethod && (
                   <div className="flex items-start gap-3">
                     <CreditCard className="text-gray-400 flex-shrink-0 mt-0.5" size={18} />
                     <div>
@@ -481,7 +501,7 @@ export default function UserOrderDetailsPage() {
                   </div>
                 )}
 
-                {order.paymentId.paymentStatus && (
+                {typeof order.paymentId === 'object' && order.paymentId.paymentStatus && (
                   <div className="flex items-start gap-3">
                     <CheckCircle className="text-green-500 flex-shrink-0 mt-0.5" size={18} />
                     <div>
@@ -501,16 +521,17 @@ export default function UserOrderDetailsPage() {
                   Travel Agency
                 </h2>
               </div>
-              
+
               <div className="p-6 space-y-4">
                 <div>
                   <p className="text-xs text-gray-500 mb-1">Agency Name</p>
-                  {/* <p className="font-semibold text-gray-800">
-                    {order.ownedBy.agencyName || order.ownedBy.name || 'N/A'}
-                  </p> */}
+                  <p className="font-semibold text-gray-800">
+                    {(order.ownedBy && typeof order.ownedBy === 'object' && (order.ownedBy.companyName || order.ownedBy.name)) ||
+                      (order.product?.ownedBy ? 'Agency Information' : 'N/A')}
+                  </p>
                 </div>
 
-                {/* {order.ownedBy.email && (
+                {order.ownedBy && typeof order.ownedBy === 'object' && order.ownedBy.email && (
                   <div className="flex items-start gap-3">
                     <Mail className="text-gray-400 flex-shrink-0 mt-0.5" size={18} />
                     <div>
@@ -518,7 +539,7 @@ export default function UserOrderDetailsPage() {
                       <p className="text-sm text-gray-800 break-all">{order.ownedBy.email}</p>
                     </div>
                   </div>
-                )} */}
+                )}
 
                 {order.status !== 'Completed' && (
                   <button
@@ -533,20 +554,20 @@ export default function UserOrderDetailsPage() {
             </div>
 
             {/* Your Information */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            {/* <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="bg-gradient-to-r from-blue-50 to-blue-100 px-6 py-4 border-b border-blue-200">
                 <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
                   <User className="text-blue-600" size={22} />
                   Your Information
                 </h2>
               </div>
-              
+
               <div className="p-6 space-y-4">
                 <div className="flex items-start gap-3">
                   <User className="text-gray-400 flex-shrink-0 mt-0.5" size={18} />
                   <div>
                     <p className="text-xs text-gray-500">Name</p>
-                    <p className="font-medium text-gray-800">{order.userId.name}</p>
+                    <p className="font-medium text-gray-800">{userName}</p>
                   </div>
                 </div>
 
@@ -554,16 +575,56 @@ export default function UserOrderDetailsPage() {
                   <Mail className="text-gray-400 flex-shrink-0 mt-0.5" size={18} />
                   <div>
                     <p className="text-xs text-gray-500">Email</p>
-                    <p className="text-sm text-gray-800 break-all">{order.userId.email}</p>
+                    <p className="text-sm text-gray-800 break-all">{userEmail}</p>
                   </div>
                 </div>
 
-                {order.userId.phoneNumber && (
+                {userPhone && (
                   <div className="flex items-start gap-3">
                     <Phone className="text-gray-400 flex-shrink-0 mt-0.5" size={18} />
                     <div>
                       <p className="text-xs text-gray-500">Phone</p>
-                      <p className="font-medium text-gray-800">{order.userId.phoneNumber}</p>
+                      <p className="font-medium text-gray-800">{userPhone}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div> */}
+
+            {/* Schedule Information */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className='bg-gradient-to-r from-blue-50 to-blue-100 px-6 py-4 border-b border-blue-200'>
+                <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">Trip Schedule</h2>
+              </div>
+              <div className="p-6 space-y-4">
+                <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                  <Calendar className="text-blue-600" size={24} />
+                  <div>
+                    <p className="text-sm text-gray-600">Start Date</p>
+                    <p className="font-semibold text-gray-800">
+                      {order.startDate
+                        ? new Date(order.startDate).toLocaleDateString('en-US', {
+                          month: 'long',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })
+                        : 'Not set yet'}
+                    </p>
+                  </div>
+                </div>
+
+                {order.endDate && (
+                  <div className="flex items-center gap-3 p-4 bg-purple-50 rounded-lg border border-purple-100">
+                    <Calendar className="text-purple-600" size={24} />
+                    <div>
+                      <p className="text-sm text-gray-600">End Date</p>
+                      <p className="font-semibold text-gray-800">
+                        {new Date(order.endDate).toLocaleDateString('en-US', {
+                          month: 'long',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })}
+                      </p>
                     </div>
                   </div>
                 )}
@@ -572,6 +633,130 @@ export default function UserOrderDetailsPage() {
           </div>
         </div>
       </div>
+
+      {/* Cancel Order Modal */}
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between rounded-t-2xl">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-red-100 rounded-full">
+                  <XCircle className="text-red-600" size={24} />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-800">Cancel Order</h2>
+                  <p className="text-sm text-gray-500">Order #{order.orderId}</p>
+                </div>
+              </div>
+              <button
+                onClick={closeCancelModal}
+                className="p-2 hover:bg-gray-100 rounded-full transition"
+              >
+                <X size={20} className="text-gray-500" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6">
+              <div className="mb-6">
+                <p className="text-gray-700 mb-4">
+                  We're sorry to see you cancel your order. Please let us know why you're canceling so we can improve our service.
+                </p>
+              </div>
+
+              {/* Cancellation Reasons */}
+              <div className="space-y-3 mb-6">
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  Select a reason for cancellation:
+                </label>
+                {CANCEL_REASONS.map((reason) => (
+                  <label
+                    key={reason}
+                    className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition ${
+                      selectedReason === reason
+                        ? 'border-red-500 bg-red-50'
+                        : 'border-gray-200 hover:border-gray-300 bg-white'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="cancelReason"
+                      value={reason}
+                      checked={selectedReason === reason}
+                      onChange={(e) => setSelectedReason(e.target.value)}
+                      className="w-5 h-5 text-red-600 focus:ring-red-500"
+                    />
+                    <span className="ml-3 text-gray-800 font-medium">{reason}</span>
+                  </label>
+                ))}
+              </div>
+
+              {/* Custom Reason Text Area */}
+              {selectedReason === 'Other (specify below)' && (
+                <div className="mb-6">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Please specify your reason:
+                  </label>
+                  <textarea
+                    value={customReason}
+                    onChange={(e) => setCustomReason(e.target.value)}
+                    placeholder="Enter your reason for cancellation..."
+                    rows={4}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none resize-none"
+                  />
+                  {customReason.trim() && (
+                    <p className="text-sm text-gray-500 mt-2">
+                      {customReason.length} characters
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Warning Message */}
+              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 rounded">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="text-yellow-600 flex-shrink-0 mt-0.5" size={20} />
+                  <div>
+                    <p className="text-sm font-semibold text-yellow-800">Important Notice</p>
+                    <p className="text-sm text-yellow-700 mt-1">
+                      Once you cancel this order, the action cannot be undone. Refund processing may take 5-7 business days.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4 flex gap-3 rounded-b-2xl">
+              <button
+                onClick={closeCancelModal}
+                disabled={cancelLoading}
+                className="flex-1 px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Keep Order
+              </button>
+              <button
+                onClick={handleCancelOrder}
+                disabled={cancelLoading || !selectedReason || (selectedReason === 'Other (specify below)' && !customReason.trim())}
+                className="flex-1 px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {cancelLoading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Cancelling...</span>
+                  </>
+                ) : (
+                  <>
+                    <XCircle size={18} />
+                    <span>Confirm Cancellation</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>

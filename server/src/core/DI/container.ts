@@ -19,6 +19,8 @@ import { ICouponValidator } from '../../core/interface/validator/Icoupon.validat
 import { CouponValidator } from '../../validators/coupon.validator.js';
 import { IPaymentValidator } from '../../core/interface/validator/Ipayment.validator.js';
 import { PaymentValidator } from '../../validators/payment.validator.js';
+import { IBaseValidator } from '../../core/interface/validator/IBasic.validator.js';
+import { BaseValidator } from '../../validators/base.validator.js';
 
 // ------------------------------------------------------shares-------------------------------------------------------------
 import { IWalletService } from '../interface/serivice/shared/IWaller.service.js';
@@ -168,7 +170,8 @@ container.bind<IGeneralService>('IGeneralService').to(GeneralService).inSingleto
 container.bind<IAuthValidator>('IAuthValidator').to(authValidator);
 container.bind<ISubscriptionValidator>('ISubscriptionValidator').to(SubscriptionValidator);
 container.bind<ICouponValidator>('ICouponValidator').to(CouponValidator);
-container.bind<IPaymentValidator>('IPaymentValidator').to(PaymentValidator)
+container.bind<IPaymentValidator>('IPaymentValidator').to(PaymentValidator);
+container.bind<IBaseValidator>('IBaseValidator').to(BaseValidator)
 
 // -------------------------------------------------------Shared container-----------------------------------------------------------
 container.bind<IWalletService>('IWalletService').to(WalletService);

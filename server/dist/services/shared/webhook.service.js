@@ -12,23 +12,28 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { inject, injectable } from "inversify";
 import { logger } from "../../utils/logger.js";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
+import { DataNotFoundError, PAYMENT_VALIDATION_FAILED, PAYMENT_VERIFICATOIN_FAILED } from "../../utils/resAndErrors.js";
 let WebhookService = class WebhookService {
     _paymentRepo;
     _walletRepo;
     _subscriptionHistoryRepo;
     _subscriptionRepo;
-    constructor(_paymentRepo, _walletRepo, _subscriptionHistoryRepo, _subscriptionRepo) {
+    _packageRepo;
+    _orderRepo;
+    _couponRepo;
+    constructor(_paymentRepo, _walletRepo, _subscriptionHistoryRepo, _subscriptionRepo, _packageRepo, _orderRepo, _couponRepo) {
         this._paymentRepo = _paymentRepo;
         this._walletRepo = _walletRepo;
         this._subscriptionHistoryRepo = _subscriptionHistoryRepo;
         this._subscriptionRepo = _subscriptionRepo;
+        this._packageRepo = _packageRepo;
+        this._orderRepo = _orderRepo;
+        this._couponRepo = _couponRepo;
     }
     async handleCheckoutSessionCompleted(session) {
         const sessionId = session.id;
         const paymentIntentId = session.payment_intent || session.payment_intent?.id;
         const metadata = session.metadata || {};
-        // Update payment document
         const paymentDoc = await this._paymentRepo.findOne({ sessionId: sessionId });
         if (paymentDoc) {
             paymentDoc.status = "paid";
@@ -38,15 +43,15 @@ let WebhookService = class WebhookService {
         const type = metadata.type;
         logger.info(`dasappan ${type}`);
         switch (type) {
-            case 'wallet_topup':
+            case 'wallet':
                 await this._handleWalletTopup(session, metadata, paymentIntentId);
                 break;
             case 'subscription':
                 await this._handleSubscriptionPurchase(session, metadata, paymentIntentId);
                 break;
-            // case 'package':
-            //   await this._handlePackagePurchase(metadata);
-            //   break;
+            case 'package':
+                await this._handlePackagePurchase(metadata, paymentIntentId);
+                break;
             // case 'booking':
             //   await this._handleBookingPurchase(metadata);
             //   break;
@@ -76,8 +81,8 @@ let WebhookService = class WebhookService {
     }
     // Private helper methods
     async _handleWalletTopup(session, metadata, paymentIntentId) {
-        logger.info('dasappan');
         const userId = metadata.userId;
+        logger.info(`meta`);
         const amount = (session.amount_total || 0) / 100;
         const wallet = await this._walletRepo.findOne({ UserId: userId });
         const transaction = {
@@ -89,6 +94,7 @@ let WebhookService = class WebhookService {
         };
         if (wallet) {
             wallet.Balance += amount;
+            wallet.role = metadata.role;
             wallet.Transaction.push(transaction);
             await this._walletRepo.update(wallet.id, wallet);
         }
@@ -103,7 +109,7 @@ let WebhookService = class WebhookService {
     }
     async _handleSubscriptionPurchase(session, metadata, paymentIntentId) {
         const userId = metadata.userId;
-        const planId = metadata.planId; // Fixed: was metadata.targetId
+        const planId = metadata.planId;
         const role = metadata.role;
         const plan = await this._subscriptionRepo.findById(planId);
         if (!plan) {
@@ -123,6 +129,68 @@ let WebhookService = class WebhookService {
         });
         logger.info(`Subscription purchase recorded for ${userId}, plan ${planId}`);
     }
+    async _handlePackagePurchase(metadata, paymentIntentId) {
+        const packageId = metadata.packageId;
+        const userId = metadata.userId;
+        const couponId = metadata.couponId;
+        const role = metadata.role;
+        const pack = await this._packageRepo.findById(packageId);
+        if (!pack)
+            throw new DataNotFoundError();
+        let discountAmount = 0;
+        let coupon = 'none';
+        logger.info(`fucking ${couponId}`);
+        let totalAmount = pack.price;
+        if (couponId != '') {
+            const couponData = await this._couponRepo.findById(couponId);
+            if (couponData && !couponData.usedBy.includes(userId)) {
+                if (couponData.discountType === 'percentage')
+                    discountAmount = pack.price * (couponData.discountValue / 100);
+                else
+                    discountAmount = couponData.discountValue;
+                totalAmount = pack.price - discountAmount;
+                coupon = couponData.couponCode;
+                couponData.usedBy.push(userId);
+                await couponData.save();
+            }
+        }
+        const transaction = await this._paymentRepo.findOne({ paymentIntentId: paymentIntentId });
+        if (!transaction)
+            throw new PAYMENT_VERIFICATOIN_FAILED();
+        const pad = (n) => n.toString().padStart(2, '0');
+        const count = (await this._orderRepo.countDocuments() + 1).toString().padStart(6, '0');
+        const date = new Date();
+        const orderId = `ORD-${pad(date.getDate())}${pad(date.getMonth() + 1)}${date.getFullYear()}-${count}`;
+        const orderData = await this._orderRepo.create({
+            userId: userId,
+            orderId: orderId,
+            productType: 'Package',
+            role: 'Agency',
+            product: packageId,
+            ownedBy: pack.ownedBy,
+            amount: totalAmount,
+            couponApplied: coupon,
+            offer: discountAmount,
+            paymentId: transaction.id
+        });
+        const adminWallet = await this._walletRepo.findOne({ role: 'admin' });
+        if (!adminWallet)
+            throw new PAYMENT_VALIDATION_FAILED();
+        logger.info(`adminWallet : ${adminWallet}`);
+        const adminTransaction = {
+            Type: 'credit',
+            Amount: orderData.amount,
+            Description: `Package purchase amount ${orderData.amount} of ${orderData.orderId}.`,
+            paymentIntentId,
+            Date: new Date(),
+            orderId: orderData._id.toString()
+        };
+        adminWallet.Transaction.push(adminTransaction);
+        adminWallet.Balance += orderData.amount;
+        await this._walletRepo.update(adminWallet.id, { Transaction: adminWallet.Transaction, Balance: adminWallet.Balance });
+        logger.info(`metadata da kunja ${JSON.stringify(metadata)}`);
+        //   logger.info(`Package/order ${orderId} marked paid`);
+    }
 };
 WebhookService = __decorate([
     injectable(),
@@ -130,6 +198,9 @@ WebhookService = __decorate([
     __param(1, inject('IWalletRespository')),
     __param(2, inject('ISubscriptionHistoryRepository')),
     __param(3, inject('ISubscriptionRepository')),
-    __metadata("design:paramtypes", [Object, Object, Object, Object])
+    __param(4, inject('IAgencyPackageRepository')),
+    __param(5, inject('IOrdersRepository')),
+    __param(6, inject('IAdminCouponRepository')),
+    __metadata("design:paramtypes", [Object, Object, Object, Object, Object, Object, Object])
 ], WebhookService);
 export { WebhookService };

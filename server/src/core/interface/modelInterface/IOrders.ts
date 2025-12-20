@@ -14,6 +14,7 @@ export interface IOrders extends Document {
   status : string;
   paymentId : Types.ObjectId;
   couponApplied ?: string;
+  reason?:string;
   offer?:number;
   createdAt:Date
 }
