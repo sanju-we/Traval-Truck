@@ -51,4 +51,10 @@ export class AgencyOrdersController implements IAgencyOrdersController {
     const order = await this._orderService.completeDay(orderId,day);
     sendResponse(res,STATUS_CODE.OK,true,MESSAGES.UPDATED,order)
   }
+
+  async completeTrip(req: Request, res: Response): Promise<void> {
+    const orderId = req.params.orderId;
+    const order = await this._orderService.completeTrip(orderId);
+    sendResponse(res,STATUS_CODE.OK,true,MESSAGES.TRIP_COMPLETED,order)
+  }
 }

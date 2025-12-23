@@ -7,4 +7,5 @@ export interface IAgencyOrdersController {
   startTrip(req:Request,res:Response):Promise<void>;
   completeActivity(req:Request,res:Response):Promise<void>;
   completeDay(req:Request,res:Response) :Promise<void>;
+  completeTrip(req:Request,res:Response):Promise<void>;
 }

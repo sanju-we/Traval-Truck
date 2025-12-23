@@ -7,4 +7,5 @@ export interface IAgencyOrderService{
   startTrip(orderId:string):Promise<orderDTO>;
   completeActivity(orderId:string,day:number,activityIndex:number):Promise<orderDTO>;
   completeDay(orderId:string,day:number):Promise<orderDTO>;
+  completeTrip(orderId:string):Promise<orderDTO>
 }

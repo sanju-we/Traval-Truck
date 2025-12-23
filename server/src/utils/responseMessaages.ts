@@ -79,4 +79,7 @@ export enum MESSAGES {
 
   // -------------------- TRIP ACTIONS --------------------
   TRIP_STARTED = 'Trip has been started successfully',
+  TRIP_ACTIVITY = 'Trip activity complete successfully',
+  TRIP_DAY = 'Trip Day complete successfully',
+  TRIP_COMPLETED = 'Trip completed successfully'
 }

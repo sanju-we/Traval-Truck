@@ -3,7 +3,7 @@ import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders
 import { inject, injectable } from "inversify";
 import { logger } from "../../utils/logger.js";
 import { orderDTO, toOrderDTO } from "../../core/DTO/agency/response/agency.order.DTO.js";
-import { DataNotFoundError, DataUpdatingError, START_DATE_ERROR, TRIP_ALREADY_STARTED, TRIP_UPDATION_ERROR } from "../../utils/resAndErrors.js";
+import { DataNotFoundError, DataUpdatingError, INVALID_STATUS_UPDATION, START_DATE_ERROR, TRIP_ALREADY_STARTED, TRIP_UPDATION_ERROR } from "../../utils/resAndErrors.js";
 import { IGenerateTrip } from "../../core/interface/utils/Igenerate.trip.js";
 import { IBaseValidator } from "../../core/interface/validator/IBasic.validator.js";
 
@@ -95,6 +95,22 @@ export class AgencyOrderService implements IAgencyOrderService {
     order.tripProgress.currentDay = nextDay ? nextDay.day : day
 
     await this._orderRepo.update(order._id.toString(),{ plan: order.plan,tripProgress: order.tripProgress })
+    return toOrderDTO(order)
+  }
+
+  async completeTrip(orderId: string): Promise<orderDTO> {
+    await this._baseValidator.idValidator(orderId);
+
+    const order = await this._orderRepo.findOrderWithProduct(orderId);
+    if(!order || !order.plan || !order.tripProgress || order.status != 'Ongoing') throw new DataNotFoundError();
+
+    const allCompleted = order.plan.every(p => p.isCompleted)
+    if(!allCompleted) throw new INVALID_STATUS_UPDATION();
+
+    order.status = 'Completed'
+    order.tripProgress.completedAt = new Date()
+
+    await this._orderRepo.update(order._id.toString(),{status : order.status,tripProgress:order.tripProgress})
     return toOrderDTO(order)
   }
 }
