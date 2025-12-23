@@ -1,3 +1,5 @@
+import { PackageDTO } from "@core/DTO/agency/request/packageDTO";
+
 // User Types
 export interface IUser {
   id?: string;
@@ -86,4 +88,29 @@ export interface subscriptionData {
   };
   Features: string[];
   Valid: number;
+}
+
+export interface TripPlan {
+  date: Date;
+  day: number;
+  title?: string;
+  activities?: string[];
+  completedActivities:number[];
+  isCompleted:boolean;
+}
+
+export interface TripProgress {
+  currentDay: number
+  completedDays: number[]
+  startedAt?: Date
+  completedAt?: Date
+}
+
+export interface TripInterface {
+  id: string
+  orderId: string
+  product: PackageDTO
+  status: string,
+  amount:number,
+  plan: TripPlan[] | undefined
 }

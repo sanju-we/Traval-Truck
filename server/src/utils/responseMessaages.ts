@@ -75,5 +75,8 @@ export enum MESSAGES {
   PAYMENT_VERIFY_SUCCESS = "Payment verifycation completed",
 
   // -------------------- Subscription------------------
-  SUBSCRIPTION_PURCHASED = 'Subscrtiption purchased successfully'
+  SUBSCRIPTION_PURCHASED = 'Subscrtiption purchased successfully',
+
+  // -------------------- TRIP ACTIONS --------------------
+  TRIP_STARTED = 'Trip has been started successfully',
 }

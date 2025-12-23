@@ -1,20 +1,24 @@
 import { Document, Types } from "mongoose";
+import { TripPlan, TripProgress } from "types";
 
 export interface IOrders extends Document {
-  _id:Types.ObjectId;
-  userId : Types.ObjectId;
-  orderId : string;
-  role : string;
-  productType : string;
-  product : Types.ObjectId;
-  ownedBy : string;
-  amount : number;
-  startDate:string;
-  endDate:Date;
-  status : string;
-  paymentId : Types.ObjectId;
-  couponApplied ?: string;
-  reason?:string;
-  offer?:number;
-  createdAt:Date
+  _id: Types.ObjectId;
+  userId: Types.ObjectId;
+  orderId: string;
+  role: string;
+  productType: string;
+  product: Types.ObjectId;
+  ownedBy: string;
+  amount: number;
+  startDate: string;
+  endDate: Date;
+  plan?: TripPlan[];
+  tripProgress?: TripProgress
+  status: string;
+  paymentId: Types.ObjectId;
+  couponApplied?: string;
+  reason?: string;
+  offer?: number;
+  createdAt: Date;
+  updatedAt: Date
 }

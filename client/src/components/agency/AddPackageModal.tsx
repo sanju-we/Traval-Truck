@@ -29,7 +29,6 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
     ],
   });
 
-  // 🖼️ Cropper States
   const [isCropping, setIsCropping] = useState(false);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -37,18 +36,12 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
   const [currentImage, setCurrentImage] = useState<string | null>(null);
   const [profileLoad, setProfileLoad] = useState(false);
 
-  // ----------------------------
-  // ✅ Handle Input Changes
-  // ----------------------------
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  // ----------------------------
-  // ✅ Image Upload + Cropping
-  // ----------------------------
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
     if (files.length === 0) return;
@@ -84,9 +77,6 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // ----------------------------
-  // ✅ Dynamic Fields
-  // ----------------------------
   const handleAddDiscovery = () =>
     setFormData((prev) => ({ ...prev, discoveries: [...prev.discoveries, ""] }));
 
@@ -111,9 +101,6 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
       itinerary: [...prev.itinerary, { day: prev.itinerary.length + 1, title: "", activities: [""] }],
     }));
 
-  // ----------------------------
-  // ✅ Validation
-  // ----------------------------
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.title.trim()) newErrors.title = "Package title is required";
@@ -130,9 +117,6 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
     return true;
   };
 
-  // ----------------------------
-  // ✅ Submit Handler
-  // ----------------------------
   const handleSubmit = async () => {
     if (!validateForm()) return;
     setLoading(true);

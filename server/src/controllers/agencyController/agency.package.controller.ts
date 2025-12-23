@@ -23,9 +23,9 @@ export class agencyPackageController implements IAgencyPackageController {
   async addPackage(req: Request, res: Response): Promise<void> {
     const data = req.body;
     const id = req.user.id
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+    const files = req.files as Express.Multer.File[];
     if (!files) throw new BADREQUEST()
-    logger.info('onn vada')
+      logger.info(`package data ${typeof files}`)
     const createdData = await this._packageService.addPackage(data, files, id)
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.CREATED, createdData)
   }

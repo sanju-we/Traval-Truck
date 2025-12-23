@@ -27,8 +27,14 @@ export class AgencyOrdersController implements IAgencyOrdersController {
 
   async getOrder(req: Request, res: Response): Promise<void> {
     const orderId = req.params.id;
-    logger.info(req.params)
     const order = await this._orderService.getOrder(orderId);
+    logger.info(`order details in controller: ${order}`)
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, order)
+  }
+
+  async startTrip(req: Request, res: Response): Promise<void> {
+    const orderId = req.params.orderId;
+    const order = await this._orderService.startTrip(orderId);
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.TRIP_STARTED, order)
   }
 }

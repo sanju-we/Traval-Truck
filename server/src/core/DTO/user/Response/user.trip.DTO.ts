@@ -2,6 +2,7 @@ import { Types } from "mongoose"
 import { PackageDTO, toPackageDTO } from "../../../../core/DTO/agency/request/packageDTO.js"
 import { IOrders } from "../../../../core/interface/modelInterface/IOrders.js"
 import { IPackage } from "../../../../core/interface/modelInterface/Ipackage.js"
+import { TripPlan } from "../../../../types/index.js"
 
 
 export interface TripDTO {
@@ -9,7 +10,8 @@ export interface TripDTO {
   orderId: string
   product: PackageDTO
   status: string,
-  amount:number
+  amount:number,
+  plan: TripPlan[] | undefined
 }
 
 export interface Trip {
@@ -32,4 +34,5 @@ export const toTripDTO = (order: IOrders): TripDTO => ({
   product: toPackageDTO(order.product as any),
   amount:order.amount,
   status: order.status,
+  plan : order.plan
 })

@@ -142,3 +142,15 @@ export class PAYMENT_VALIDATION_FAILED extends HttpError {
     super(STATUS_CODE.BAD_REQUEST, 'Payment validation failed, Please contact with out support team.');
   }
 }
+
+export class START_DATE_ERROR extends HttpError {
+  constructor() {
+    super(STATUS_CODE.BAD_REQUEST, 'Start date is not set for this trip');
+  }
+}
+
+export class TRIP_ALREADY_STARTED extends HttpError {
+  constructor() {
+    super(STATUS_CODE.BAD_REQUEST, 'Trip has already been started');
+  }
+}

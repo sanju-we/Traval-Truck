@@ -31,6 +31,7 @@ const packageSchema = new Schema<IPackage>({
     type: String,
   },
   availableFoods: { type: [String] },
+  discoveries: { type: [String], required: true },
   itinerary: { type: [itinerary] },
   reviews: { type: [reviews] },
   CreatedBy: { type: Date, default: new Date() },

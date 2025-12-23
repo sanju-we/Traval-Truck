@@ -1,5 +1,7 @@
 // agency paths
 
+import { start } from "repl"
+
 const AGENCY = `/agency`
 const AGENCY_AUTH = `${AGENCY}/auth`
 const AGENCY_PROFILE = `${AGENCY}/profile`
@@ -43,6 +45,8 @@ export const AGENCY_ROUTES = {
   orders:{
     getAll:`${AGENCY_ORDERS}/getAll`,
     setStartDate : `${AGENCY_ORDERS}/setDate`,
-    getOrder :(orderId:string)=> `${AGENCY_ORDERS}/getOrder/${orderId}`
+    getOrder :(orderId:string)=> `${AGENCY_ORDERS}/getOrder/${orderId}`,
+    startTrip : (orderId:string) => `${AGENCY_ORDERS}/startTrip/${orderId}`,
+    completeDayItinerary : (orderId:string) => `${AGENCY_ORDERS}/startTrip/${orderId}/complete-day`
   }
 }

@@ -22,7 +22,7 @@ export class AgencyPackageService implements IAgencyPackageService {
     return allPackage
   }
 
-  async addPackage(data: PackageDTO, files: { [fieldname: string]: Express.Multer.File[] }, id:string): Promise<{ data: PackageResDTO[]; total: number; page: number; totalPages: number; }> {
+  async addPackage(data: PackageDTO, files: Express.Multer.File[] , id:string): Promise<{ data: PackageResDTO[]; total: number; page: number; totalPages: number; }> {
     if (typeof data.discoveries === 'string') {
       data.discoveries = JSON.parse(data.discoveries);
     }
@@ -35,13 +35,11 @@ export class AgencyPackageService implements IAgencyPackageService {
     await this._authValidator.addPackageValidator(data)
     const agency = await this._agencyRepo.findById(id)
     const images: string[] = []
-    for (const fieldname in files) {
-      const fileArray = files[fieldname];
-      for (const file of fileArray) {
-        const result = await singleUpload(file, "Travel-Truck-Vendor-Document");
+    for (const fieldname of files) {
+        const result = await singleUpload(fieldname, "Travel-Truck-Vendor-Document");
         images.push(result);
-      }
     }
+    console.log(data)
     const packageData = await this._agencyPackeageRepository.create({ ...data, images: images, ownedBy:id })
     if (packageData) {
       agency?.packages.push(packageData._id.toString())

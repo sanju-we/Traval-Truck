@@ -16,7 +16,7 @@ export default function PaymentSuccessPage() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push('/'); 
+      router.push('/profile/orders'); 
     }, 8000);
     return () => clearTimeout(timer);
   }, [router]);
@@ -67,7 +67,7 @@ export default function PaymentSuccessPage() {
 
         <div className="flex flex-col gap-3">
           <Button
-            onClick={() => router.push('/package')}
+            onClick={() => router.push('/profile/orders')}
             className="bg-emerald-600 hover:bg-emerald-700 text-white w-full"
           >
             View My Bookings

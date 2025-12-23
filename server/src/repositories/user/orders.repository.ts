@@ -20,4 +20,9 @@ export class OrderRepository extends BaseRepository<IOrders> implements IOrdersR
     const data = await Order.findById(orderId).populate('product').populate('ownedBy')
     return data
   }
+
+  async findOrderWithUser(orderId: string): Promise<IOrders | null> {
+    const data = await Order.findById(orderId).populate('userId').populate('ownedBy')
+    return data
+  }
 }

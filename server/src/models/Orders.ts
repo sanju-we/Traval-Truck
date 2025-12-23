@@ -1,6 +1,13 @@
 import { IOrders } from "../core/interface/modelInterface/IOrders.js";
 import {Schema, model} from "mongoose";
 
+const planSchema = new Schema({
+  date: { type: Date, required: true },
+  day: { type: Number, required: true },
+  title: { type: String },
+  activities: { type: [String] }
+}, { _id: false })
+
 const OrdersSchema = new Schema<IOrders>({
   userId:{type:Schema.Types.ObjectId,required:true},
   orderId : {type:String,unique:true},
@@ -11,6 +18,7 @@ const OrdersSchema = new Schema<IOrders>({
   ownedBy:{type:String,required:true,refPath:'role'},
   startDate:{type:String},
   endDate:{type:Date},
+  plan:{type:[planSchema]},
   status :{type:String,enum : ['Upcoming','Ongoing','Completed'],default:'Upcoming'},
   paymentId:{type:Schema.Types.ObjectId,ref:'Payments',required:true},
   couponApplied:{type:String},

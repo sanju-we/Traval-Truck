@@ -9,5 +9,6 @@ const orderController = container.get<IAgencyOrdersController>('IAgencyOrdersCon
 orderRouter.get('/getAll',asyncHandler(orderController.getAll.bind(orderController)))
 .get('/getOrder/:id',asyncHandler(orderController.getOrder.bind(orderController)))
 .post('/setDate',asyncHandler(orderController.setDate.bind(orderController)))
+.post('/startTrip/:orderId',asyncHandler(orderController.startTrip.bind(orderController)))
 
 export default orderRouter
