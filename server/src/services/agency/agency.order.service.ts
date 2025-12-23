@@ -57,6 +57,7 @@ export class AgencyOrderService implements IAgencyOrderService {
   }
 
   async completeActivity(orderId: string, day: number, activityIndex: number): Promise<orderDTO> {
+    await this._baseValidator.idValidator(orderId);
     const order = await this._orderRepo.findOrderWithProduct(orderId);
     if (!order || order.status !== "Ongoing" || !order.plan) throw new DataNotFoundError();
     const planDay = order.plan.find((p) => p.day == day)
@@ -73,7 +74,27 @@ export class AgencyOrderService implements IAgencyOrderService {
       }
     })
 
-    await this._orderRepo.update(order._id.toString(), { plan: order.plan })
+    await this._orderRepo.update(order._id.toString(), { plan: order.plan,tripProgress: order.tripProgress })
+    return toOrderDTO(order)
+  }
+
+  async completeDay(orderId: string, day: number): Promise<orderDTO> {
+    await this._baseValidator.idValidator(orderId);
+    const order = await this._orderRepo.findOrderWithProduct(orderId);
+    if(!order || order.status !== "Ongoing" || !order.plan ||!order.tripProgress ) throw new DataNotFoundError();
+
+    const planDay = order.plan.find(p => p.day == day);
+    if(!planDay) throw new TRIP_UPDATION_ERROR();
+
+    if(planDay.completedActivities.length != planDay.activities.length) throw new TRIP_UPDATION_ERROR();
+
+    planDay.isCompleted = true;
+    order.tripProgress.completedDays.push(day)
+
+    const nextDay = order.plan.find(p => !p.isCompleted)
+    order.tripProgress.currentDay = nextDay ? nextDay.day : day
+
+    await this._orderRepo.update(order._id.toString(),{ plan: order.plan,tripProgress: order.tripProgress })
     return toOrderDTO(order)
   }
 }

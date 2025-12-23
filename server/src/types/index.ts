@@ -93,8 +93,8 @@ export interface subscriptionData {
 export interface TripPlan {
   date: Date;
   day: number;
-  title?: string;
-  activities?: string[];
+  title: string;
+  activities: string[];
   completedActivities:number[];
   isCompleted:boolean;
 }
@@ -102,7 +102,7 @@ export interface TripPlan {
 export interface TripProgress {
   currentDay: number
   completedDays: number[]
-  startedAt?: Date
+  startedAt: Date
   completedAt?: Date
 }
 

@@ -48,6 +48,7 @@ export const AGENCY_ROUTES = {
     getOrder :(orderId:string)=> `${AGENCY_ORDERS}/getOrder/${orderId}`,
     startTrip : (orderId:string) => `${AGENCY_ORDERS}/startTrip/${orderId}`,
     completeActivityItinerary : (orderId:string) => `${AGENCY_ORDERS}/startTrip/${orderId}/complete-activity`,
-    completeDayItinerary:(orderId:string) => `${AGENCY_ORDERS}/updateTrip/${orderId}`
+    completeDayItinerary:(orderId:string) => `${AGENCY_ORDERS}/updateTrip/${orderId}`,
+    completeTrip:(orderId:string) => `${AGENCY_ORDERS}/complete-trip/${orderId}`
   }
 }

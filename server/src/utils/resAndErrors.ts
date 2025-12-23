@@ -160,3 +160,9 @@ export class TRIP_UPDATION_ERROR extends HttpError {
     super(STATUS_CODE.BAD_REQUEST, 'Invalid Action Request');
   }
 }
+
+export class INVALID_STATUS_UPDATION extends HttpError {
+  constructor() {
+    super(STATUS_CODE.BAD_REQUEST, 'All activities must be completed');
+  }
+}

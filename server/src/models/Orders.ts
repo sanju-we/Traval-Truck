@@ -10,6 +10,13 @@ const planSchema = new Schema({
   isCompleted : {type:Boolean}
 }, { _id: false })
 
+const progress = new Schema({
+  currentDay: {type:Number},
+  completedDays: {type:[Number]},
+  startedAt: {type:Date},
+  completedAt: {type:Date}
+})
+
 const OrdersSchema = new Schema<IOrders>({
   userId:{type:Schema.Types.ObjectId,required:true},
   orderId : {type:String,unique:true},
@@ -21,6 +28,7 @@ const OrdersSchema = new Schema<IOrders>({
   startDate:{type:String},
   endDate:{type:Date},
   plan:{type:[planSchema]},
+  tripProgress:{type:progress},
   status :{type:String,enum : ['Upcoming','Ongoing','Completed'],default:'Upcoming'},
   paymentId:{type:Schema.Types.ObjectId,ref:'Payments',required:true},
   couponApplied:{type:String},
