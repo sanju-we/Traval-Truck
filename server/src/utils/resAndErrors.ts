@@ -154,3 +154,9 @@ export class TRIP_ALREADY_STARTED extends HttpError {
     super(STATUS_CODE.BAD_REQUEST, 'Trip has already been started');
   }
 }
+
+export class TRIP_UPDATION_ERROR extends HttpError {
+  constructor() {
+    super(STATUS_CODE.BAD_REQUEST, 'Invalid Action Request');
+  }
+}

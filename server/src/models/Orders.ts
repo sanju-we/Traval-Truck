@@ -5,7 +5,9 @@ const planSchema = new Schema({
   date: { type: Date, required: true },
   day: { type: Number, required: true },
   title: { type: String },
-  activities: { type: [String] }
+  activities: { type: [String] },
+  completedActivities:{type:[Number]},
+  isCompleted : {type:Boolean}
 }, { _id: false })
 
 const OrdersSchema = new Schema<IOrders>({

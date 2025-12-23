@@ -86,6 +86,7 @@ export default function OrderDetailsPage() {
   const [showStartModal, setShowStartModal] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
   const [completingActivity, setCompletingActivity] = useState<{day: number, activity: number} | null>(null);
+  const [testMode, setTestMode] = useState(false); // Test mode to bypass date checking
   const router = useRouter();
   const params = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -101,7 +102,6 @@ export default function OrderDetailsPage() {
       const response = await AGENCY_API_METHODS.getOrder(orderId);
 
       if (response.success) {
-        console.log('Order details fetched:', response.data);
         setOrder(response.data);
       } else {
         toast.error(response.message || 'Failed to load order details');
@@ -266,11 +266,11 @@ export default function OrderDetailsPage() {
 
   const canCompleteActivity = (day: number, activityIndex: number) => {
     if (order?.status !== 'Ongoing') return false;
-    const planDay = order?.plan?.find(p => p.day === day);
-    if (!planDay) return false;
+    // const planDay = order?.plan?.find(p => p.day === day);
+    // if (!planDay) return false;
     
     // Check if this is the current day
-    if (!isCurrentDay(day)) return false;
+    // if (!isCurrentDay(day)) return false;
     
     // Check if already completed
     if (isActivityCompleted(day, activityIndex)) return false;

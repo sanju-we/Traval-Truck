@@ -5,4 +5,5 @@ export interface IAgencyOrdersController {
   getOrder(req:Request,res:Response):Promise<void>;
   setDate(req:Request,res:Response):Promise<void>;
   startTrip(req:Request,res:Response):Promise<void>;
+  completeActivity(req:Request,res:Response):Promise<void>;
 }

@@ -51,5 +51,5 @@ export const AGENCY_API_METHODS = {
     startTrip : (orderId:string) => post(AGENCY_ROUTES.orders.startTrip(orderId),{}),
     completeDayItinerary : (orderId:string,day:number) => post(AGENCY_ROUTES.orders.completeDayItinerary(orderId),{day}),
     completeTrip : (orderId:string) => post(AGENCY_ROUTES.orders.completeDayItinerary(orderId),{completeTrip:true}),
-    completeActivity : (orderId:string,day:number,activityIndex:number) => post(AGENCY_ROUTES.orders.completeDayItinerary(orderId),{completeTrip:true}),
+    completeActivity : (orderId:string,day:number,activityIndex:number) => post(AGENCY_ROUTES.orders.completeActivityItinerary(orderId),{day,activityIndex}),
 };

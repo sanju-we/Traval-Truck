@@ -10,5 +10,6 @@ orderRouter.get('/getAll',asyncHandler(orderController.getAll.bind(orderControll
 .get('/getOrder/:id',asyncHandler(orderController.getOrder.bind(orderController)))
 .post('/setDate',asyncHandler(orderController.setDate.bind(orderController)))
 .post('/startTrip/:orderId',asyncHandler(orderController.startTrip.bind(orderController)))
+.post('/startTrip/:orderId/complete-activity',asyncHandler(orderController.completeActivity.bind(orderController)))
 
 export default orderRouter

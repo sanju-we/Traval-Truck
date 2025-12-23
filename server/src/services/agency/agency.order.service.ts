@@ -3,7 +3,7 @@ import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders
 import { inject, injectable } from "inversify";
 import { logger } from "../../utils/logger.js";
 import { orderDTO, toOrderDTO } from "../../core/DTO/agency/response/agency.order.DTO.js";
-import { DataNotFoundError, DataUpdatingError, START_DATE_ERROR, TRIP_ALREADY_STARTED } from "../../utils/resAndErrors.js";
+import { DataNotFoundError, DataUpdatingError, START_DATE_ERROR, TRIP_ALREADY_STARTED, TRIP_UPDATION_ERROR } from "../../utils/resAndErrors.js";
 import { IGenerateTrip } from "../../core/interface/utils/Igenerate.trip.js";
 import { IBaseValidator } from "../../core/interface/validator/IBasic.validator.js";
 
@@ -52,7 +52,28 @@ export class AgencyOrderService implements IAgencyOrderService {
     }
 
     const updated = await this._orderRepo.update(order._id.toString(), order)
-    if(!updated) throw new DataUpdatingError()
+    if (!updated) throw new DataUpdatingError()
     return toOrderDTO(updated)
+  }
+
+  async completeActivity(orderId: string, day: number, activityIndex: number): Promise<orderDTO> {
+    const order = await this._orderRepo.findOrderWithProduct(orderId);
+    if (!order || order.status !== "Ongoing" || !order.plan) throw new DataNotFoundError();
+    const planDay = order.plan.find((p) => p.day == day)
+    if (!planDay) throw new TRIP_UPDATION_ERROR()
+
+    planDay.completedActivities ??= [];
+    if (!planDay.completedActivities.includes(activityIndex)) {
+      planDay.completedActivities.push(activityIndex)
+    }
+
+    order.plan.find(p => {
+      if(p.day == day) {
+        p = planDay
+      }
+    })
+
+    await this._orderRepo.update(order._id.toString(), { plan: order.plan })
+    return toOrderDTO(order)
   }
 }
