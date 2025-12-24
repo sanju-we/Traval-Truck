@@ -206,7 +206,7 @@ let WebhookService = class WebhookService {
         const discountAmount = 0;
         const coupon = 'none';
         const totalAmount = amount;
-        const days = (room.PricePerNight / amount);
+        const days = (amount / room.PricePerNight);
         const startDate = new Date(start);
         const endDate = new Date(startDate);
         endDate.setDate(endDate.getDate() + days);
@@ -225,7 +225,7 @@ let WebhookService = class WebhookService {
             paymentId: transaction.id,
             couponApplied: coupon,
             startDate: startDate.toString(),
-            endDate: endDate
+            endDate: endDate.toString()
         });
         const adminWallet = await this._walletRepo.findOne({ role: 'admin' });
         if (!adminWallet)

@@ -50,7 +50,25 @@ let UserHotelsService = class UserHotelsService {
         const room = await this._hotelRoomRepo.findById(roomId);
         if (!room)
             throw new DataNotFoundError();
-        // const order = await this._orderRepo.findOne({})
+        const orders = await this._orderRepo.findAll({ product: roomId, status: { $in: ['Upcoming', 'Ongoing'] } }, {});
+        console.log(orders);
+        if (orders.length > 0) {
+            const days = amount / room.PricePerNight;
+            const date = new Date(startDate);
+            const endDate = new Date(date);
+            endDate.setDate(endDate.getDate() + days);
+            function isDateRangeOverlapping(startA, endA, startB, endB) {
+                return startA < endB && startB < endA;
+            }
+            for (const order of orders) {
+                if (!order.startDate || !order.endDate)
+                    continue;
+                const isOverlap = isDateRangeOverlapping(date, endDate, new Date(order.startDate), new Date(order.endDate));
+                if (isOverlap) {
+                    throw new Error(`Room is not available between ${date.toDateString()} and ${endDate.toDateString()}`);
+                }
+            }
+        }
         return this._paymentUtils.createCheckoutSession({
             amount: amount,
             currency: 'inr',

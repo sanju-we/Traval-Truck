@@ -19,9 +19,11 @@ import { DataNotFoundError } from "../../utils/resAndErrors.js";
 let HotelRoomsService = class HotelRoomsService {
     _roomsRepo;
     _authValidator;
-    constructor(_roomsRepo, _authValidator) {
+    _roomValidator;
+    constructor(_roomsRepo, _authValidator, _roomValidator) {
         this._roomsRepo = _roomsRepo;
         this._authValidator = _authValidator;
+        this._roomValidator = _roomValidator;
     }
     async getAllRooms(hotelID) {
         const allData = await this._roomsRepo.findAll({ HotelId: hotelID }, {});
@@ -34,7 +36,7 @@ let HotelRoomsService = class HotelRoomsService {
             const url = await singleUpload(img, 'Travel-Travel-Document');
             Image.push(url);
         }
-        const createdData = await this._roomsRepo.create({ ...data, images: Image, Status: 'Available' });
+        const createdData = await this._roomsRepo.create({ ...data, Images: Image, Status: 'Available' });
         return toRoomsDTO(createdData);
     }
     async getRoom(id) {
@@ -72,25 +74,13 @@ let HotelRoomsService = class HotelRoomsService {
         throw new DataNotFoundError();
     }
     async updateRoom(data, id, files) {
-        const roomSchema = z.object({
-            Capacity: z.string().regex(/^\d+$/, "Capacity must be a numeric string"),
-            Description: z.string().min(1, "Description is required").min(1, "At least one facility is required"),
-            Facilities: z.array(z.string().min(1, "Facility name cannot be empty")),
-            PricePerNight: z.string().regex(/^\d+$/, "PricePerNight must be a numeric string"),
-            RoomNumber: z.string().regex(/^\d+$/, "RoomNumber must be a numeric string"),
-            Status: z.enum(["Available", "Occupid", "Maintance"]),
-            isBlocked: z.enum(["true", "false"])
-        });
-        const schema = z.string().length(24, "id must be a valid MongoDB ObjectId");
-        schema.parse(id);
-        logger.info(data);
-        roomSchema.parse(data);
+        await this._roomValidator.roomValidator(data);
         const Image = [];
         for (const img of files) {
             const url = await singleUpload(img, 'Travel-Travel-Document');
             Image.push(url);
         }
-        const updatedRoom = await this._roomsRepo.update(id, { ...data, images: Image });
+        const updatedRoom = await this._roomsRepo.update(id, { ...data, Images: Image });
         if (updatedRoom)
             return toRoomsDTO(updatedRoom);
         throw new DataNotFoundError();
@@ -99,12 +89,12 @@ let HotelRoomsService = class HotelRoomsService {
         const room = await this._roomsRepo.findById(id);
         if (!room)
             throw new DataNotFoundError();
-        const publicId = await extractPublicId(room.images[index]);
+        const publicId = await extractPublicId(room.Images[index]);
         logger.info(`publidId ${publicId}`);
         const deleted = await deleteImage(publicId);
         if (!deleted)
             throw new DataNotFoundError();
-        room.images.splice(index, 1);
+        room.Images.splice(index, 1);
         await room.save();
         return toRoomsDTO(room);
     }
@@ -113,6 +103,7 @@ HotelRoomsService = __decorate([
     injectable(),
     __param(0, inject('IHotelRoomsRepository')),
     __param(1, inject('IAuthValidator')),
-    __metadata("design:paramtypes", [Object, Object])
+    __param(2, inject('IRoomValidator')),
+    __metadata("design:paramtypes", [Object, Object, Object])
 ], HotelRoomsService);
 export { HotelRoomsService };

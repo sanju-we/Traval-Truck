@@ -37,7 +37,8 @@ export const HOTEL_ROUTES = {
   },
 
   orders:{
-    getAll : `${HOTEL_ORDERS}/getAll`
+    getAll : `${HOTEL_ORDERS}/getAll`,
+    getOrder :(orderId:string)=> `${HOTEL_ORDERS}/getOrder/${orderId}`
   },
 
   payment: {

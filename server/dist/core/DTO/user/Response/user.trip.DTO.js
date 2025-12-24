@@ -25,5 +25,6 @@ export const toTripDTO = (order) => ({
     status: order.status,
     plan: order.plan,
     startDate: order.startDate,
-    endDate: order.endDate
+    endDate: order.endDate,
+    productType: order.productType
 });

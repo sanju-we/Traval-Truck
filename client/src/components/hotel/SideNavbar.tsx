@@ -46,7 +46,7 @@ function SideNavbar() {
               <Hotel className="material-icons">hotel</Hotel>
               <span>Rooms</span>
             </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
+            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded" onClick={()=>router.push('/hotel/bookings')}>
               <FlagTriangleRightIcon />
               Bookings / Trips
             </button>

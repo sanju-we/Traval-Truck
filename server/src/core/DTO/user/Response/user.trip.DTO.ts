@@ -45,7 +45,7 @@ export interface TripDTO {
   amount: number
   plan?: TripPlan[]
   startDate?: string
-  endDate?: Date
+  endDate?: string
   productType:string
 }
 

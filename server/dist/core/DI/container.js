@@ -11,6 +11,7 @@ import { CouponValidator } from '../../validators/coupon.validator.js';
 import { PaymentValidator } from '../../validators/payment.validator.js';
 import { BaseValidator } from '../../validators/base.validator.js';
 import { TripGenerator } from '../../utils/genarateTrip.js';
+import { RoomValidator } from '../../validators/room.validator.js';
 import { WalletService } from '../../services/shared/wallet.service.js';
 import { SharedWalletController } from '../../controllers/sharedController/shared.wallet.controller.js';
 import { WalletRespository } from '../../repositories/shared/wallet.repository.js';
@@ -66,6 +67,8 @@ import { HotelProfileService } from '../../services/hotel/hotel.profile.service.
 import { HotelRoomsController } from '../../controllers/hotelController/hotel.rooms.controller.js';
 import { HotelRoomsService } from '../../services/hotel/hotel.rooms.service.js';
 import { HotelRoomsRepository } from '../../repositories/hotel/hotel.rooms.repository.js';
+import { HotelOrderController } from '../../controllers/hotelController/hotel.orders.controller.js';
+import { HotelOrderService } from '../../services/hotel/hotel.order.service.js';
 import { RestaurantAuthController } from '../../controllers/restaurantController/restaurant.auth.controller.js';
 import { RestaurantAuthService } from '../../services/restaurant/restaurant.auth.service.js';
 import { RestaurantAuthRepository } from '../../repositories/restaunrat/restaurant.auth.repository.js';
@@ -88,6 +91,7 @@ container.bind('ICouponValidator').to(CouponValidator);
 container.bind('IPaymentValidator').to(PaymentValidator);
 container.bind('IBaseValidator').to(BaseValidator);
 container.bind('IGenerateTrip').to(TripGenerator);
+container.bind('IRoomValidator').to(RoomValidator);
 // -------------------------------------------------------Shared container-----------------------------------------------------------
 container.bind('IWalletService').to(WalletService);
 container.bind('ISharedWalletController').to(SharedWalletController);
@@ -149,6 +153,8 @@ container.bind('IHotelProfileService').to(HotelProfileService);
 container.bind('IHotelRoomsController').to(HotelRoomsController);
 container.bind('IHotelRoomsService').to(HotelRoomsService);
 container.bind('IHotelRoomsRepository').to(HotelRoomsRepository);
+container.bind('IHotelOrdersController').to(HotelOrderController);
+container.bind('IHotelOrderService').to(HotelOrderService);
 // -------------------------------------------------------Restaurant container----------------------------------------------------------
 container.bind('IRestaurantAuthController').to(RestaurantAuthController);
 container.bind('IRestaurantAuthRepository').to(RestaurantAuthRepository);

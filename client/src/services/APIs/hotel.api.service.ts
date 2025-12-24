@@ -39,6 +39,7 @@ export const HOTEL_API_METHODS = {
 
     // orders api 
     getAllOrders:()=> get(HOTEL_ROUTES.orders.getAll), 
+    getOrderDetails: (orderId:string)=> get(HOTEL_ROUTES.orders.getOrder(orderId)),
 
     // payment api requests
     createPayment: (data: any) => post(HOTEL_ROUTES.payment.create, data),

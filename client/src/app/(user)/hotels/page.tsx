@@ -13,7 +13,7 @@ interface Hotel {
   location: string;
   rating?: number;
   PricePerNight: number;
-  Images?: string;
+  images?: [string];
 }
 
 export default function HotelsPage() {
@@ -82,7 +82,7 @@ export default function HotelsPage() {
                 className="border rounded-lg p-4 shadow hover:shadow-md transition duration-200"
               >
                 <img
-                  src={hotel.Images || '/images/default-hotel.jpg'}
+                  src={hotel?.images[0] || '/images/default-hotel.jpg'}
                   alt={hotel.Description}
                   className="w-full h-40 object-cover rounded-lg mb-3"
                 />

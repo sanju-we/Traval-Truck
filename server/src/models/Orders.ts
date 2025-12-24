@@ -26,7 +26,7 @@ const OrdersSchema = new Schema<IOrders>({
   amount:{type:Number,required:true},
   ownedBy:{type:String,required:true,refPath:'role'},
   startDate:{type:String},
-  endDate:{type:Date},
+  endDate:{type:String},
   plan:{type:[planSchema]},
   tripProgress:{type:progress},
   status :{type:String,enum : ['Upcoming','Ongoing','Completed'],default:'Upcoming'},

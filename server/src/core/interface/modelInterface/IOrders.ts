@@ -11,7 +11,7 @@ export interface IOrders extends Document {
   ownedBy: string;
   amount: number;
   startDate: string;
-  endDate: Date;
+  endDate: string;
   plan?: TripPlan[];
   tripProgress?: TripProgress
   status: string;

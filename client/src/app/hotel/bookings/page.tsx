@@ -184,7 +184,7 @@ export default function HotelOrdersPage() {
                     <div className="flex gap-3">
                       <button
                         onClick={() =>
-                          router.push(`/hotel/orders/${order.id}`)
+                          router.push(`/hotel/bookings/${order.id}`)
                         }
                         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 text-sm font-medium"
                       >

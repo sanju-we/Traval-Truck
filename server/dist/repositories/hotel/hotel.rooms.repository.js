@@ -11,8 +11,8 @@ export class HotelRoomsRepository extends BaseRepository {
         const limit = lim || 6;
         const skip = (page - 1) * limit;
         const searchFilter = search
-            ? { RoomNumber: Number(search) }
-            : {};
+            ? { RoomNumber: Number(search), isBlocked: false }
+            : { isBlocked: false };
         logger.info(searchFilter);
         const [packages, total] = await Promise.all([
             Rooms.find(searchFilter)

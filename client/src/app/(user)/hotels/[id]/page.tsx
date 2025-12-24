@@ -26,7 +26,7 @@ interface RoomData {
   PricePerNight: number;
   Capacity: number;
   Facilities: string[];
-  Images: string[];
+  images: string[];
   Status: string;
   HotelId: {
     companyName: string;
@@ -104,15 +104,15 @@ export default function RoomDetailsPage() {
           <div className="space-y-4">
             <div className="rounded-xl overflow-hidden shadow">
               <img
-                src={room.Images?.[0] || '/images/room-placeholder.jpg'}
+                src={room.images?.[0] || '/images/room-placeholder.jpg'}
                 className="w-full h-80 object-cover"
                 alt="Room"
               />
             </div>
 
-            {room.Images?.length > 1 && (
+            {room.images?.length > 1 && (
               <div className="grid grid-cols-3 gap-3">
-                {room.Images.slice(1, 4).map((img, i) => (
+                {room.images.slice(1, 4).map((img, i) => (
                   <img
                     key={i}
                     src={img}

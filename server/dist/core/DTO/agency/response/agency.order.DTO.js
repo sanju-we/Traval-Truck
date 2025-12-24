@@ -10,5 +10,6 @@ export const toOrderDTO = (order) => ({
     createdAt: order.createdAt,
     ownedBy: order.ownedBy && typeof order.ownedBy === 'object' ? JSON.parse(JSON.stringify(order.ownedBy)) : order.ownedBy,
     reason: order.reason,
-    plan: order.plan
+    plan: order.plan,
+    productType: order.productType
 });

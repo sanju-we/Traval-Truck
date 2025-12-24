@@ -31,14 +31,13 @@ export class AgencyOrderService implements IAgencyOrderService {
     const order = await this._orderRepo.findOrderWithProduct(orderId);
     if (!order) throw new DataNotFoundError()
     const plan = await this._tripGenerator.generatePlanFromItinerary((order.product as any).itinerary, new Date(date))
-    const updated = await this._orderRepo.update(order.id, { startDate: date, plan: plan, endDate: plan[plan.length - 1].date })
+    const updated = await this._orderRepo.update(order.id, { startDate: date, plan: plan, endDate: plan[plan.length - 1].date.toString() })
     if (!updated) throw new DataUpdatingError()
     return toOrderDTO(updated)
   }
 
   async getOrder(orderId: string): Promise<orderDTO> {
     const order = await this._orderRepo.findOrderWithProduct(orderId);
-    logger.info(`sunnnnnyyyyyy:${order}`)
     if (!order) throw new DataNotFoundError()
     return toOrderDTO(order)
   }
