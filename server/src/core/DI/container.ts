@@ -145,6 +145,10 @@ import { IHotelRoomsService } from '../../core/interface/serivice/hotel/Ihotel.r
 import { HotelRoomsService } from '../../services/hotel/hotel.rooms.service.js';
 import { IHotelRoomsRepository } from '../../core/interface/repositorie/Hotel/Ihotel.rooms.repository.js';
 import { HotelRoomsRepository } from '../../repositories/hotel/hotel.rooms.repository.js';
+import { IHotelOrdersController } from '../../core/interface/controllerInterface/hotel/Ihotel.orders.controller.js';
+import { HotelOrderController } from '../../controllers/hotelController/hotel.orders.controller.js';
+import { IHotelOrderService } from '../../core/interface/serivice/hotel/Ihotel.order.service.js';
+import { HotelOrderService } from '../../services/hotel/hotel.order.service.js';
 
 // ----------------------------------------------------Restaurant------------------------------------------------------------------
 import { IRestaurantAuthController } from '../../core/interface/controllerInterface/restaurant/Irestaurant.auth.controller.js';
@@ -247,7 +251,9 @@ container.bind<IHotelProfileController>('IHotelProfileController').to(HotelProfi
 container.bind<IHotelProfileService>('IHotelProfileService').to(HotelProfileService);
 container.bind<IHotelRoomsController>('IHotelRoomsController').to(HotelRoomsController);
 container.bind<IHotelRoomsService>('IHotelRoomsService').to(HotelRoomsService);
-container.bind<IHotelRoomsRepository>('IHotelRoomsRepository').to(HotelRoomsRepository)
+container.bind<IHotelRoomsRepository>('IHotelRoomsRepository').to(HotelRoomsRepository);
+container.bind<IHotelOrdersController>('IHotelOrdersController').to(HotelOrderController);
+container.bind<IHotelOrderService>('IHotelOrderService').to(HotelOrderService);
 
 // -------------------------------------------------------Restaurant container----------------------------------------------------------
 container.bind<IRestaurantAuthController>('IRestaurantAuthController').to(RestaurantAuthController);

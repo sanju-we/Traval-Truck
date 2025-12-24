@@ -18,7 +18,7 @@ export interface IRoom {
   PricePerNight: number;
   Capacity: number;
   Facilities: string[];
-  Images: string[];
+  images: string[];
   reviews: {
     Comment: string;
     CreatedAt: string;
@@ -134,7 +134,7 @@ export default function RoomDetails() {
 
         <Card className="w-72 h-48 overflow-hidden">
           <img
-            src={room.Images[0]}
+            src={room.images[0]}
             alt="Room"
             className="w-full h-full object-cover"
           />

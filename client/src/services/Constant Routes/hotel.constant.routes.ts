@@ -4,6 +4,7 @@ const HOTEL = '/hotel'
 const HOTEL_AUTH = `${HOTEL}/auth`
 const HOTEL_PROFILE = `${HOTEL}/profile`
 const HOTEL_ROOMS = `${HOTEL}/rooms`
+const HOTEL_ORDERS = `${HOTEL}/orders`
 
 export const HOTEL_ROUTES = {
   auth: {
@@ -33,6 +34,10 @@ export const HOTEL_ROUTES = {
     updateBlock: `${HOTEL_ROOMS}/updateBlock`,
     editImage: (id: string) => `${HOTEL_ROOMS}/update/${id}`,
     deleteImage: (id: string) => `${HOTEL_ROOMS}/deleteImage/${id}`,
+  },
+
+  orders:{
+    getAll : `${HOTEL_ORDERS}/getAll`
   },
 
   payment: {

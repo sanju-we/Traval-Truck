@@ -32,7 +32,7 @@ interface Room {
   Description: string;
   PricePerNight: number;
   Status: string;
-  Images?: string[];
+  images?: string[];
 }
 
 export default function RoomsPage() {
@@ -165,7 +165,7 @@ export default function RoomsPage() {
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <img
-                          src={room.Images?.[0] || "/placeholder-room.jpg"}
+                          src={room.images?.[0] || "/placeholder-room.jpg"}
                           className="w-14 h-12 object-cover rounded-md border"
                           alt="room"
                         />
@@ -223,7 +223,7 @@ export default function RoomsPage() {
                 {/* Image */}
                 <div className="h-40 bg-gray-100">
                   <img
-                    src={room.Images?.[0] || "/placeholder-room.jpg"}
+                    src={room.images?.[0] || "/placeholder-room.jpg"}
                     alt="room"
                     className="h-full w-full object-cover"
                   />

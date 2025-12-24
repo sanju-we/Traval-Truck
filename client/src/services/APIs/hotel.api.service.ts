@@ -37,6 +37,9 @@ export const HOTEL_API_METHODS = {
     editImage: (id: string, data: any) => patch(HOTEL_ROUTES.rooms.editImage(id), data),
     deleteRoomImage: (id: string) => patch(HOTEL_ROUTES.rooms.deleteImage(id), {}),
 
+    // orders api 
+    getAllOrders:()=> get(HOTEL_ROUTES.orders.getAll), 
+
     // payment api requests
     createPayment: (data: any) => post(HOTEL_ROUTES.payment.create, data),
 

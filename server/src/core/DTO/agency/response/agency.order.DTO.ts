@@ -15,7 +15,8 @@ export interface orderDTO {
   createdAt:Date,
   ownedBy?:string | agencyProfileDTO,
   reason?:string,
-  plan?: TripPlan[]
+  plan?: TripPlan[],
+  productType:string
 }
 
 export const toOrderDTO = (order:IOrders) : orderDTO => ({
@@ -30,5 +31,6 @@ export const toOrderDTO = (order:IOrders) : orderDTO => ({
   createdAt:order.createdAt,
   ownedBy: order.ownedBy && typeof order.ownedBy === 'object' ? JSON.parse(JSON.stringify(order.ownedBy)) : order.ownedBy,
   reason:order.reason,
-  plan:order.plan
+  plan:order.plan,
+  productType:order.productType
 })

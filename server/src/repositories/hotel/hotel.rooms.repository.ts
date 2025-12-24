@@ -5,6 +5,7 @@ import { BaseRepository } from "../../repositories/baseRepository.js";
 import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors.js";
 import { toRoomsDTO, RoomsDTO } from "../../core/DTO/hotel/roomsDTO.js";
 import { logger } from "../../utils/logger.js";
+import { isBlock } from "typescript";
 
 export class HotelRoomsRepository extends BaseRepository<IRooms> implements IHotelRoomsRepository {
   constructor() {
@@ -15,8 +16,8 @@ export class HotelRoomsRepository extends BaseRepository<IRooms> implements IHot
     const limit = lim || 6;
     const skip = (page - 1) * limit;
     const searchFilter = search
-    ? { RoomNumber: Number(search) }
-    : {};
+    ? { RoomNumber: Number(search),isBlock:false}
+    : {isBlock:false};
     logger.info(searchFilter)
     const [packages, total] = await Promise.all([
       Rooms.find(searchFilter)

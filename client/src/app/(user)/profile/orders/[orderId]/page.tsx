@@ -4,28 +4,22 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
+import PackageDetails from '@/components/user/orders/PackageDetails';
+import RoomDetails from '@/components/user/orders/RoomDetails';
 import {
   ArrowLeft,
   Calendar,
-  MapPin,
   Clock,
   CheckCircle,
   AlertCircle,
-  Package,
   CreditCard,
-  User,
-  Phone,
-  Mail,
   Building2,
   MessageCircle,
   Download,
   Share2,
-  Utensils,
   XCircle,
   X,
-  Circle,
-  Check,
-  ChevronRight,
+  Mail,
 } from 'lucide-react';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import toast from 'react-hot-toast';
@@ -88,14 +82,15 @@ const CANCEL_REASONS = [
 export default function UserOrderDetailsPage() {
   const [order, setOrder] = useState<OrderDetails | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedImage, setSelectedImage] = useState(0);
   const [cancelLoading, setCancelLoading] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [selectedReason, setSelectedReason] = useState<string>('');
   const [customReason, setCustomReason] = useState('');
   const router = useRouter();
   const params = useParams();
-  const orderId = Array.isArray(params.orderId) ? params.orderId.join('') : params.orderId ?? "";
+  const orderId = Array.isArray(params.orderId)
+    ? params.orderId.join('')
+    : params.orderId ?? '';
 
   useEffect(() => {
     fetchOrderDetails();
@@ -185,7 +180,8 @@ export default function UserOrderDetailsPage() {
     try {
       setCancelLoading(true);
 
-      const finalReason = selectedReason === 'Other (specify below)' ? customReason : selectedReason;
+      const finalReason =
+        selectedReason === 'Other (specify below)' ? customReason : selectedReason;
 
       const response = await USER_API_METHODS.cancelOrder(orderId, finalReason);
 
@@ -204,26 +200,11 @@ export default function UserOrderDetailsPage() {
     }
   };
 
-  const isActivityCompleted = (day: number, activityIndex: number) => {
-    const planDay = order?.plan?.find(p => p.day === day);
-    return planDay?.completedActivities?.includes(activityIndex) || false;
-  };
-
-  const isDayCompleted = (day: number) => {
-    const planDay = order?.plan?.find(p => p.day === day);
-    return planDay?.isCompleted || false;
-  };
-
-  const isCurrentDay = (day: number) => {
-    return order?.tripProgress?.currentDay === day;
-  };
-
-  const getDayProgress = (day: number) => {
-    const planDay = order?.plan?.find(p => p.day === day);
-    if (!planDay) return 0;
-    const total = planDay.activities.length;
-    const completed = planDay.completedActivities?.length || 0;
-    return Math.round((completed / total) * 100);
+  const calculateNights = (start: string, end: string) => {
+    return Math.ceil(
+      (new Date(end).getTime() - new Date(start).getTime()) /
+        (1000 * 60 * 60 * 24)
+    );
   };
 
   if (loading) {
@@ -248,8 +229,12 @@ export default function UserOrderDetailsPage() {
           <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-xl p-12 text-center shadow-sm border border-gray-100">
               <AlertCircle className="mx-auto text-red-400 mb-4" size={64} />
-              <h3 className="text-xl font-semibold text-gray-700">Order Not Found</h3>
-              <p className="text-gray-500 mt-2">The order you're looking for doesn't exist</p>
+              <h3 className="text-xl font-semibold text-gray-700">
+                Order Not Found
+              </h3>
+              <p className="text-gray-500 mt-2">
+                The order you're looking for doesn't exist
+              </p>
               <button
                 onClick={() => router.push('/orders')}
                 className="mt-6 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
@@ -262,19 +247,6 @@ export default function UserOrderDetailsPage() {
       </div>
     );
   }
-
-  const productName = order.product?.title;
-  const productImages = order.product?.images || [];
-  const productDuration = order.product?.duration || null;
-  const productDescription = order.product?.description || null;
-  const productItinerary = order.product?.itinerary || [];
-  const productDiscoveries = order.product?.discoveries || [];
-  const productAvailableFoods = order.product?.availableFoods || [];
-  const hasPlan = order.plan && order.plan.length > 0;
-
-  const userName = typeof order.userId === 'object' ? order.userId.name : 'N/A';
-  const userEmail = typeof order.userId === 'object' ? order.userId.email : 'N/A';
-  const userPhone = typeof order.userId === 'object' ? order.userId.phoneNumber : null;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -297,13 +269,17 @@ export default function UserOrderDetailsPage() {
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-2xl font-bold">Order Details</h1>
                 <span
-                  className={`px-3 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1 border bg-white ${getStatusColor(order.status)}`}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1 border bg-white ${getStatusColor(
+                    order.status
+                  )}`}
                 >
                   {getStatusIcon(order.status)}
                   {order.status}
                 </span>
               </div>
-              <p className="text-blue-100 font-mono text-lg">Order #{order.orderId}</p>
+              <p className="text-blue-100 font-mono text-lg">
+                Order #{order.orderId}
+              </p>
             </div>
             <div className="text-right">
               <p className="text-blue-100 text-sm">Booking Date</p>
@@ -349,268 +325,22 @@ export default function UserOrderDetailsPage() {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
-          {/* Left Column - Package Details */}
+          {/* Left Column - Product Details */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Package Information */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
-                <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                  <Package className="text-blue-600" size={22} />
-                  {order.productType || 'Package'} Information
-                </h2>
-              </div>
-
-              <div className="p-6">
-                {/* Image Gallery */}
-                {order.product?.images && productImages.length > 0 && (
-                  <div className="mb-6">
-                    <div className="relative h-64 rounded-lg overflow-hidden mb-3">
-                      <img
-                        src={productImages[selectedImage]}
-                        alt={productName}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    {productImages.length > 1 && (
-                      <div className="grid grid-cols-4 gap-2">
-                        {productImages.slice(0, 4).map((img: string, idx: number) => (
-                          <button
-                            key={idx}
-                            onClick={() => setSelectedImage(idx)}
-                            className={`relative h-16 rounded-lg overflow-hidden border-2 transition ${
-                              selectedImage === idx
-                                ? 'border-blue-500'
-                                : 'border-gray-200 hover:border-gray-300'
-                            }`}
-                          >
-                            <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-cover" />
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                <h3 className="text-xl font-bold text-gray-800 mb-3">{productName}</h3>
-
-                {productDescription && (
-                  <p className="text-gray-600 mb-4">{productDescription}</p>
-                )}
-
-                {productDuration && (
-                  <div className="flex items-center gap-2 text-gray-700 mb-3">
-                    <Clock size={18} className="text-gray-400" />
-                    <span className="text-sm">
-                      <span className="font-medium">Duration:</span> {productDuration}
-                    </span>
-                  </div>
-                )}
-
-                {/* Available Foods */}
-                {productAvailableFoods.length > 0 && (
-                  <div className="mt-6">
-                    <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                      <Utensils className="text-orange-600" size={18} />
-                      Meals Included
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {productAvailableFoods.map((food: string, idx: number) => (
-                        <span
-                          key={idx}
-                          className="px-3 py-1 bg-orange-50 text-orange-700 rounded-full text-sm font-medium border border-orange-100"
-                        >
-                          {food}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Trip Plan Progress Tracker */}
-            {hasPlan && order.status !== 'Cancelled' && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="bg-gradient-to-r from-blue-50 to-blue-100 px-6 py-4 border-b border-blue-200">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-bold text-gray-800">Your Trip Plan</h2>
-                    {order.status === 'Ongoing' && (
-                      <span className="text-sm text-blue-600 font-medium">
-                        Day {order.tripProgress?.currentDay || 1} of {order.plan?.length}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="p-6">
-                  {order.status === 'Upcoming' ? (
-                    <div className="text-center py-8">
-                      <Clock className="mx-auto text-blue-500 mb-3" size={48} />
-                      <p className="text-gray-600 mb-2 font-medium">Your trip starts soon!</p>
-                      {order.startDate && (
-                        <p className="text-sm text-gray-500 mb-4">
-                          Starting on{' '}
-                          {new Date(order.startDate).toLocaleDateString('en-US', {
-                            month: 'long',
-                            day: 'numeric',
-                            year: 'numeric',
-                          })}
-                        </p>
-                      )}
-                      <p className="text-xs text-gray-400">The agency will start tracking your trip on the start date</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-6">
-                      {order.plan?.map((planDay, idx) => {
-                        const dayNumber = planDay.day;
-                        const dayCompleted = isDayCompleted(dayNumber);
-                        const current = isCurrentDay(dayNumber);
-                        const progress = getDayProgress(dayNumber);
-
-                        return (
-                          <div
-                            key={idx}
-                            className={`relative border-2 rounded-xl overflow-hidden transition-all ${
-                              dayCompleted
-                                ? 'border-purple-300 bg-purple-50'
-                                : current
-                                ? 'border-orange-400 bg-orange-50 shadow-lg'
-                                : 'border-gray-200 bg-white opacity-75'
-                            }`}
-                          >
-                            {/* Day Header */}
-                            <div className="p-5 border-b border-gray-200">
-                              <div className="flex items-start gap-4">
-                                <div
-                                  className={`flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center font-bold text-lg shadow-md ${
-                                    dayCompleted
-                                      ? 'bg-purple-500 text-white'
-                                      : current
-                                      ? 'bg-orange-500 text-white'
-                                      : 'bg-gray-200 text-gray-600'
-                                  }`}
-                                >
-                                  {dayCompleted ? <CheckCircle size={28} /> : dayNumber}
-                                </div>
-
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <h3 className="font-bold text-gray-800 text-xl">
-                                      Day {dayNumber}: {planDay.title}
-                                    </h3>
-                                    {current && !dayCompleted && (
-                                      <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs font-semibold rounded-full animate-pulse">
-                                        In Progress
-                                      </span>
-                                    )}
-                                    {dayCompleted && (
-                                      <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full flex items-center gap-1">
-                                        <Check size={12} />
-                                        Completed
-                                      </span>
-                                    )}
-                                  </div>
-
-                                  <p className="text-sm text-gray-600">
-                                    {new Date(planDay.date).toLocaleDateString('en-US', {
-                                      weekday: 'long',
-                                      month: 'long',
-                                      day: 'numeric',
-                                      year: 'numeric',
-                                    })}
-                                  </p>
-
-                                  {/* Progress Bar */}
-                                  {!dayCompleted && progress > 0 && (
-                                    <div className="mt-3">
-                                      <div className="flex items-center justify-between text-xs text-gray-600 mb-1">
-                                        <span>Progress</span>
-                                        <span className="font-semibold">{progress}%</span>
-                                      </div>
-                                      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                                        <div
-                                          className="h-full bg-orange-500 rounded-full transition-all duration-500 ease-out"
-                                          style={{ width: `${progress}%` }}
-                                        ></div>
-                                      </div>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Activities List */}
-                            <div className="p-5">
-                              <div className="space-y-3">
-                                {planDay.activities.map((activity, actIdx) => {
-                                  const activityCompleted = isActivityCompleted(dayNumber, actIdx);
-
-                                  return (
-                                    <div
-                                      key={actIdx}
-                                      className={`flex items-start gap-3 p-4 rounded-lg transition-all duration-300 ${
-                                        activityCompleted
-                                          ? 'bg-purple-100 border-2 border-purple-300'
-                                          : 'bg-gray-50 border-2 border-gray-200'
-                                      }`}
-                                    >
-                                      <div className="flex-shrink-0 mt-0.5">
-                                        {activityCompleted ? (
-                                          <div className="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center">
-                                            <Check size={16} className="text-white" />
-                                          </div>
-                                        ) : (
-                                          <Circle size={20} className="text-gray-300" />
-                                        )}
-                                      </div>
-
-                                      <div className="flex-1">
-                                        <p
-                                          className={`text-sm ${
-                                            activityCompleted
-                                              ? 'text-purple-800 font-medium line-through decoration-2'
-                                              : 'text-gray-700'
-                                          }`}
-                                        >
-                                          {activity}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-
-                  {order.status === 'Completed' && (
-                    <div className="mt-6 p-6 bg-purple-50 border-2 border-purple-200 rounded-xl">
-                      <div className="flex items-center gap-4">
-                        <div className="p-3 bg-purple-500 rounded-full">
-                          <CheckCircle className="text-white" size={32} />
-                        </div>
-                        <div>
-                          <p className="font-bold text-purple-800 text-lg">Trip Completed!</p>
-                          <p className="text-sm text-purple-600 mt-1">
-                            Completed on{' '}
-                            {order.tripProgress?.completedAt &&
-                              new Date(order.tripProgress.completedAt).toLocaleDateString('en-US', {
-                                month: 'long',
-                                day: 'numeric',
-                                year: 'numeric',
-                              })}
-                          </p>
-                          <p className="text-xs text-purple-500 mt-2">
-                            We hope you had an amazing experience! 🎉
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
+            {/* Render Package or Room Details Component */}
+            {order.productType === 'Package' ? (
+              <PackageDetails
+                product={order.product}
+                status={order.status}
+                plan={order.plan}
+                tripProgress={order.tripProgress}
+                startDate={order.startDate}
+              />
+            ) : order.productType === 'Rooms' ? (
+              <RoomDetails product={order.product} />
+            ) : (
+              <div className="bg-white rounded-xl p-6 text-center">
+                <p className="text-gray-500">Product type not supported</p>
               </div>
             )}
           </div>
@@ -631,7 +361,9 @@ export default function UserOrderDetailsPage() {
                   <>
                     <div className="flex items-center justify-between text-gray-600">
                       <span>Original Price</span>
-                      <span className="line-through">₹{order.originalAmount.toLocaleString()}</span>
+                      <span className="line-through">
+                        ₹{order.originalAmount.toLocaleString()}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between text-blue-600">
                       <span className="flex items-center gap-1">
@@ -661,39 +393,46 @@ export default function UserOrderDetailsPage() {
                   )}
                 </div>
 
-                {typeof order.paymentId === 'object' && order.paymentId.transactionId && (
-                  <div className="pt-4 border-t">
+                {typeof order.paymentId === 'object' &&
+                  order.paymentId.transactionId && (
+                    <div className="pt-4 border-t">
+                      <div className="flex items-start gap-3">
+                        <CreditCard className="text-gray-400 flex-shrink-0 mt-0.5" size={18} />
+                        <div>
+                          <p className="text-xs text-gray-500">Transaction ID</p>
+                          <p className="font-mono text-sm text-gray-800 break-all">
+                            {order.paymentId.transactionId}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                {typeof order.paymentId === 'object' &&
+                  order.paymentId.paymentMethod && (
                     <div className="flex items-start gap-3">
                       <CreditCard className="text-gray-400 flex-shrink-0 mt-0.5" size={18} />
                       <div>
-                        <p className="text-xs text-gray-500">Transaction ID</p>
-                        <p className="font-mono text-sm text-gray-800 break-all">
-                          {order.paymentId.transactionId}
+                        <p className="text-xs text-gray-500">Payment Method</p>
+                        <p className="font-medium text-gray-800">
+                          {order.paymentId.paymentMethod}
                         </p>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {typeof order.paymentId === 'object' && order.paymentId.paymentMethod && (
-                  <div className="flex items-start gap-3">
-                    <CreditCard className="text-gray-400 flex-shrink-0 mt-0.5" size={18} />
-                    <div>
-                      <p className="text-xs text-gray-500">Payment Method</p>
-                      <p className="font-medium text-gray-800">{order.paymentId.paymentMethod}</p>
+                {typeof order.paymentId === 'object' &&
+                  order.paymentId.paymentStatus && (
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="text-blue-500 flex-shrink-0 mt-0.5" size={18} />
+                      <div>
+                        <p className="text-xs text-gray-500">Payment Status</p>
+                        <p className="font-medium text-blue-600">
+                          {order.paymentId.paymentStatus}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                )}
-
-                {typeof order.paymentId === 'object' && order.paymentId.paymentStatus && (
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="text-blue-500 flex-shrink-0 mt-0.5" size={18} />
-                    <div>
-                      <p className="text-xs text-gray-500">Payment Status</p>
-                      <p className="font-medium text-blue-600">{order.paymentId.paymentStatus}</p>
-                    </div>
-                  </div>
-                )}
+                  )}
               </div>
             </div>
 
@@ -702,28 +441,36 @@ export default function UserOrderDetailsPage() {
               <div className="bg-gradient-to-r from-purple-50 to-purple-100 px-6 py-4 border-b border-purple-200">
                 <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
                   <Building2 className="text-purple-600" size={22} />
-                  Travel Agency
+                  {order.productType === 'Rooms' ? 'Hotel' : 'Travel Agency'}
                 </h2>
               </div>
 
               <div className="p-6 space-y-4">
                 <div>
-                  <p className="text-xs text-gray-500 mb-1">Agency Name</p>
+                  <p className="text-xs text-gray-500 mb-1">
+                    {order.productType === 'Rooms' ? 'Hotel Name' : 'Agency Name'}
+                  </p>
                   <p className="font-semibold text-gray-800">
-                    {(order.ownedBy && typeof order.ownedBy === 'object' && (order.ownedBy.companyName || order.ownedBy.name)) ||
-                      (order.product?.ownedBy ? 'Agency Information' : 'N/A')}
+                    {(order.ownedBy &&
+                      typeof order.ownedBy === 'object' &&
+                      (order.ownedBy.companyName || order.ownedBy.name)) ||
+                      (order.product?.ownedBy ? 'Information' : 'N/A')}
                   </p>
                 </div>
 
-                {order.ownedBy && typeof order.ownedBy === 'object' && order.ownedBy.email && (
-                  <div className="flex items-start gap-3">
-                    <Mail className="text-gray-400 flex-shrink-0 mt-0.5" size={18} />
-                    <div>
-                      <p className="text-xs text-gray-500">Email</p>
-                      <p className="text-sm text-gray-800 break-all">{order.ownedBy.email}</p>
+                {order.ownedBy &&
+                  typeof order.ownedBy === 'object' &&
+                  order.ownedBy.email && (
+                    <div className="flex items-start gap-3">
+                      <Mail className="text-gray-400 flex-shrink-0 mt-0.5" size={18} />
+                      <div>
+                        <p className="text-xs text-gray-500">Email</p>
+                        <p className="text-sm text-gray-800 break-all">
+                          {order.ownedBy.email}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {order.status !== 'Completed' && order.status !== 'Cancelled' && (
                   <button
@@ -731,7 +478,7 @@ export default function UserOrderDetailsPage() {
                     className="w-full mt-4 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2 font-semibold"
                   >
                     <MessageCircle size={18} />
-                    Contact Agency
+                    Contact {order.productType === 'Rooms' ? 'Hotel' : 'Agency'}
                   </button>
                 )}
               </div>
@@ -739,24 +486,28 @@ export default function UserOrderDetailsPage() {
 
             {/* Schedule Information */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className='bg-gradient-to-r from-blue-50 to-blue-100 px-6 py-4 border-b border-blue-200'>
+              <div className="bg-gradient-to-r from-blue-50 to-blue-100 px-6 py-4 border-b border-blue-200">
                 <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
                   <Calendar className="text-blue-600" size={22} />
-                  Trip Schedule
+                  {order.productType === 'Rooms'
+                    ? 'Booking Schedule'
+                    : 'Trip Schedule'}
                 </h2>
               </div>
               <div className="p-6 space-y-4">
                 <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-100">
                   <Calendar className="text-blue-600" size={24} />
                   <div>
-                    <p className="text-sm text-gray-600">Start Date</p>
+                    <p className="text-sm text-gray-600">
+                      {order.productType === 'Rooms' ? 'Check-in Date' : 'Start Date'}
+                    </p>
                     <p className="font-semibold text-gray-800">
                       {order.startDate
                         ? new Date(order.startDate).toLocaleDateString('en-US', {
-                          month: 'long',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric',
+                          })
                         : 'Not set yet'}
                     </p>
                   </div>
@@ -766,7 +517,11 @@ export default function UserOrderDetailsPage() {
                   <div className="flex items-center gap-3 p-4 bg-purple-50 rounded-lg border border-purple-100">
                     <Calendar className="text-purple-600" size={24} />
                     <div>
-                      <p className="text-sm text-gray-600">End Date</p>
+                      <p className="text-sm text-gray-600">
+                        {order.productType === 'Rooms'
+                          ? 'Check-out Date'
+                          : 'End Date'}
+                      </p>
                       <p className="font-semibold text-gray-800">
                         {new Date(order.endDate).toLocaleDateString('en-US', {
                           month: 'long',
@@ -777,6 +532,23 @@ export default function UserOrderDetailsPage() {
                     </div>
                   </div>
                 )}
+
+                {/* Calculate and show nights for Rooms */}
+                {order.productType === 'Rooms' &&
+                  order.startDate &&
+                  order.endDate && (
+                    <div className="pt-4 border-t border-gray-200">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600">Total Nights</span>
+                        <span className="font-bold text-blue-600 text-lg">
+                          {calculateNights(order.startDate, order.endDate)}{' '}
+                          {calculateNights(order.startDate, order.endDate) === 1
+                            ? 'Night'
+                            : 'Nights'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
               </div>
             </div>
           </div>
@@ -810,7 +582,8 @@ export default function UserOrderDetailsPage() {
             <div className="p-6">
               <div className="mb-6">
                 <p className="text-gray-700 mb-4">
-                  We're sorry to see you cancel your order. Please let us know why you're canceling so we can improve our service.
+                  We're sorry to see you cancel your order. Please let us know why
+                  you're canceling so we can improve our service.
                 </p>
               </div>
 
@@ -867,9 +640,12 @@ export default function UserOrderDetailsPage() {
                 <div className="flex items-start gap-3">
                   <AlertCircle className="text-yellow-600 flex-shrink-0 mt-0.5" size={20} />
                   <div>
-                    <p className="text-sm font-semibold text-yellow-800">Important Notice</p>
+                    <p className="text-sm font-semibold text-yellow-800">
+                      Important Notice
+                    </p>
                     <p className="text-sm text-yellow-700 mt-1">
-                      Once you cancel this order, the action cannot be undone. Refund processing may take 5-7 business days.
+                      Once you cancel this order, the action cannot be undone. Refund
+                      processing may take 5-7 business days.
                     </p>
                   </div>
                 </div>
@@ -887,7 +663,12 @@ export default function UserOrderDetailsPage() {
               </button>
               <button
                 onClick={handleCancelOrder}
-                disabled={cancelLoading || !selectedReason || (selectedReason === 'Other (specify below)' && !customReason.trim())}
+                disabled={
+                  cancelLoading ||
+                  !selectedReason ||
+                  (selectedReason === 'Other (specify below)' &&
+                    !customReason.trim())
+                }
                 className="flex-1 px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {cancelLoading ? (
