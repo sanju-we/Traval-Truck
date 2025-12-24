@@ -38,7 +38,7 @@ export function SideNavbar({ active }: SideNavbarProps) {
     { label: 'Requests', icon: <List className="w-5 h-5 mr-3" />, path: '/admin/requestes' },
     { label: 'Restaurants', icon: <Utensils className="w-5 h-5 mr-3" />, path: '#' },
     { label: 'Subscriptions', icon: <IndianRupee className="w-5 h-5 mr-3" />, path: '/admin/subscription' },
-    { label: 'Orders', icon: <ShoppingBag className="w-5 h-5 mr-3" />, path: '#' },
+    { label: 'Orders', icon: <ShoppingBag className="w-5 h-5 mr-3" />, path: '/admin/orders' },
     { label: 'Coupon', icon: <Ticket className="w-5 h-5 mr-3" />, path: '/admin/coupons' },
     { label: 'Wallet', icon: <BarChart3 className="w-5 h-5 mr-3" />, path: '/admin/wallet' },
     { label: 'Settings', icon: <Settings className="w-5 h-5 mr-3" />, path: '#' },

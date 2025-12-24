@@ -30,5 +30,8 @@ export const ADMIN_API_METHODS = {
   fetchAllSubscriptions : () => get(ADMIN_ROUTES.subscription.getAllSubcription),
   createSubscription : (data:any) => post(ADMIN_ROUTES.subscription.create,data),
   editSubscription : (data:any,id:string) => put(ADMIN_ROUTES.subscription.editSubscription(id),data),
-  editSubscriptionStatus : (id:string) => put(ADMIN_ROUTES.subscription.updateStatus(id),{})
+  editSubscriptionStatus : (id:string) => put(ADMIN_ROUTES.subscription.updateStatus(id),{}),
+
+  // order api's
+  getAllOrders : () => get(ADMIN_ROUTES.orders.getAll)
 }

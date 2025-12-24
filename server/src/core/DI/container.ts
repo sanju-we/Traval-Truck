@@ -99,6 +99,10 @@ import { IAdminCouponService } from '../../core/interface/serivice/admin/IAdmin.
 import { AdminCouponService } from '../../services/admin/admin.coupon.service.js';
 import { IAdminCouponRepository } from '../../core/interface/repositorie/admin/Iadmin.coupon.repository.js';
 import { AdminCouponRepository } from '../../repositories/admin/admin.coupon.repository.js';
+import { IAdminOrderController } from '../../core/interface/controllerInterface/admin/Iadmin.orders.controller.js';
+import { AdminOrdersController } from '../../controllers/adminController/admin.orders.controller.js';
+import { IAdminOrderService } from '../../core/interface/serivice/admin/Iadmin.orders.service.js';
+import { AdminOrderService } from '../../services/admin/admin.orders.service.js';
 
 // ----------------------------------------------------agency----------------------------------------------------------------------
 import { IAgencyAuthController } from '../../core/interface/controllerInterface/agency/agency.Iauth.controller.js';
@@ -216,7 +220,9 @@ container.bind<IAdminSubscriptionService>('IAdminSubscriptionService').to(AdminS
 container.bind<ISubscriptionRepository>('ISubscriptionRepository').to(SubscriptionRepository);
 container.bind<IAdminCouponController>('IAdminCouponController').to(AdminCouponController);
 container.bind<IAdminCouponService>('IAdminCouponService').to(AdminCouponService);
-container.bind<IAdminCouponRepository>('IAdminCouponRepository').to(AdminCouponRepository)
+container.bind<IAdminCouponRepository>('IAdminCouponRepository').to(AdminCouponRepository);
+container.bind<IAdminOrderController>('IAdminOrderController').to(AdminOrdersController);
+container.bind<IAdminOrderService>('IAdminOrderService').to(AdminOrderService);
 
 // ------------------------------------------------------agency containers--------------------------------------------------------
 container.bind<IAgencyAuthController>('IAgencyAuthController').to(AgencyAuthController);

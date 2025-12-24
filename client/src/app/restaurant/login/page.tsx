@@ -24,8 +24,7 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const res = await RESTAURANT_API_METHODS.login(formData);
-      const data = res.data;
+      const data = await RESTAURANT_API_METHODS.login(formData);
       console.log('data:', data);
 
       if (data.success) {

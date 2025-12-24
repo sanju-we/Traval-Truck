@@ -12,7 +12,6 @@ export class OrderRepository extends BaseRepository<IOrders> implements IOrdersR
 
   async findAllByProduct(userId: string): Promise<TripDTO[]> {
       const data = await Order.find({userId:userId}).populate('product')
-      logger.info(`sanju ${data}`)
       return data.map(toTripDTO)
   }
 
@@ -24,5 +23,10 @@ export class OrderRepository extends BaseRepository<IOrders> implements IOrdersR
   async findOrderWithUser(orderId: string): Promise<IOrders | null> {
     const data = await Order.findById(orderId).populate('userId').populate('ownedBy')
     return data
+  }
+
+  async findAllOrdersAdmin(): Promise<TripDTO[] | null> {
+    const orders = await Order.find().populate('userId').populate('ownedBy').populate('product')
+    return orders.map(toTripDTO)
   }
 }

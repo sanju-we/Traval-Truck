@@ -4,6 +4,7 @@ const ADMIN_AUTH = `${ADMIN_BASE}/auth`
 const ADMIN_VENDOR =  `${ADMIN_BASE}/vendor`
 const ADMIN_SUBSCRIPTION = `${ADMIN_BASE}/subscription`
 const ADMIN_COUPONS = `${ADMIN_BASE}/coupons`
+const ADMIN_ORDERS = `${ADMIN_BASE}/orders`
 
 export const ADMIN_ROUTES = {
   auth:{
@@ -30,5 +31,9 @@ export const ADMIN_ROUTES = {
     create : `${ADMIN_COUPONS}/add`,
     editCoupons : (id:string) => `${ADMIN_COUPONS}/edit/${id}`,
     updateStatus : (id:string) => `${ADMIN_COUPONS}/tongle/${id}`
+  },
+
+  orders:{
+    getAll : `${ADMIN_ORDERS}/all`
   }
 }

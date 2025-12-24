@@ -7,4 +7,5 @@ export interface IOrdersRepository extends IBaserepository<IOrders>{
   findAllByProduct(userId:string):Promise<TripDTO[]>;
   findOrderWithProduct(orderId:string):Promise<IOrders | null>
   findOrderWithUser(orderId:string):Promise<IOrders | null>
+  findAllOrdersAdmin():Promise<TripDTO[] | null>
 }

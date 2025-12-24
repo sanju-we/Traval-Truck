@@ -11,7 +11,9 @@ export interface TripDTO {
   product: PackageDTO
   status: string,
   amount:number,
-  plan: TripPlan[] | undefined
+  plan: TripPlan[] | undefined,
+  startDate : string,
+  endDate : Date
 }
 
 export interface Trip {
@@ -34,5 +36,7 @@ export const toTripDTO = (order: IOrders): TripDTO => ({
   product: toPackageDTO(order.product as any),
   amount:order.amount,
   status: order.status,
-  plan : order.plan
+  plan : order.plan,
+  startDate:order.startDate,
+  endDate:order.endDate
 })
