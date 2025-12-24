@@ -6,13 +6,19 @@ import { orderDTO, toOrderDTO } from "../../core/DTO/agency/response/agency.orde
 import { DataNotFoundError, DataUpdatingError, INVALID_STATUS_UPDATION, START_DATE_ERROR, TRIP_ALREADY_STARTED, TRIP_UPDATION_ERROR } from "../../utils/resAndErrors.js";
 import { IGenerateTrip } from "../../core/interface/utils/Igenerate.trip.js";
 import { IBaseValidator } from "../../core/interface/validator/IBasic.validator.js";
+import { IWalletRespository } from "../../core/interface/repositorie/shared/IWallet.repository.js";
+import { IPaymentRepository } from "../../core/interface/repositorie/shared/Ishared.payment.repository.js";
+import { IAgencyRespository } from "../../core/interface/repositorie/agency/Iagency.auth.repository.js";
 
 @injectable()
 export class AgencyOrderService implements IAgencyOrderService {
   constructor(
     @inject('IOrdersRepository') private readonly _orderRepo: IOrdersRepository,
     @inject('IGenerateTrip') private readonly _tripGenerator: IGenerateTrip,
-    @inject('IBaseValidator') private readonly _baseValidator: IBaseValidator
+    @inject('IBaseValidator') private readonly _baseValidator: IBaseValidator,
+    @inject('IWalletRespository') private readonly _walletRepo : IWalletRespository,
+    @inject('IPaymentRepository') private readonly _paymentRepo : IPaymentRepository,
+    @inject('IAgencyRespository') private readonly _agencyRepo : IAgencyRespository,
   ) { }
 
   async getAllOrder(userId: string): Promise<orderDTO[]> {
@@ -109,6 +115,48 @@ export class AgencyOrderService implements IAgencyOrderService {
 
     order.status = 'Completed'
     order.tripProgress.completedAt = new Date()
+
+    const adminWallet = await this._walletRepo.findOne({role:'admin'});
+    if(!adminWallet) throw new DataNotFoundError();
+
+    const agency = await this._agencyRepo.findById(order.ownedBy)
+    if(!agency) throw new DataNotFoundError()
+
+    const agencyWallet = await this._walletRepo.findOne({UserId:order.ownedBy})
+    if(!agencyWallet) throw new DataNotFoundError();
+
+    const paymentHistory = await this._paymentRepo.findById(order.paymentId.toString());
+    if(!paymentHistory) throw new DataNotFoundError();
+
+    const walletHistory = adminWallet.Transaction.find(T => T.paymentIntentId == paymentHistory.paymentIntentId);
+    if(!walletHistory) throw new DataNotFoundError();
+
+    const agencyRevenue = walletHistory.Amount - (walletHistory.Amount * 0.30);
+
+    const adminTransaction = {
+      Type:'debit',
+      Amount : agencyRevenue,
+      Description : `Trip completed revenue sended to the ${agency.companyName} From the Trip ${order.orderId}`,
+      Date : new Date(),
+      orderId : order._id.toString(),
+    }
+
+    adminWallet.Transaction.push(adminTransaction);
+    adminWallet.Balance -= agencyRevenue;
+
+    const agencyTransaction = {
+      Type:'credit',
+      Amount : agencyRevenue,
+      Description : `Trip completed Revenue Receved on Trip ${order.orderId}, Amount ₹${agencyRevenue}`,
+      Date : new Date,
+      orderId : order._id.toString()
+    }
+
+    agencyWallet.Transaction.push(agencyTransaction);
+    agencyWallet.Balance += agencyRevenue;
+
+    await this._walletRepo.update(adminWallet._id.toString(),adminWallet);
+    await this._walletRepo.update(agencyWallet._id.toString(),agencyWallet);
 
     await this._orderRepo.update(order._id.toString(),{status : order.status,tripProgress:order.tripProgress})
     return toOrderDTO(order)
