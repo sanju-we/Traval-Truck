@@ -35,7 +35,11 @@ export const AGENCY_API_METHODS = {
             'Content-Type':'multipart/form-data'
         }
     }),
-    editPackage: (id: string, data: any) => put(AGENCY_ROUTES.package.edit(id), data),
+    editPackage: (id: string, data: any) => api.put(AGENCY_ROUTES.package.edit(id), data,{
+        headers:{
+            'Content-Type':'multipart/form-data'
+        }
+    }),
     deletePackageImage: (id: string, data: any) => patch(AGENCY_ROUTES.package.deleteImage(id), data),
 
     // payment api requests

@@ -37,8 +37,8 @@ export default function RoomDetailsPage() {
   const fetchRoomDetails = async (roomId: string) => {
     try {
       const data = await api.get(`/user/hotels/getRoom/${roomId}`);
-      console.log(data)
-      setRoom(data.data);
+      console.log(data.data.data)
+      setRoom(data.data.data);
     } catch (error) {
       console.error('Error fetching room details:', error);
     } finally {
@@ -78,7 +78,7 @@ export default function RoomDetailsPage() {
               <Users size={16} /> Capacity: {room.Capacity}
             </span>
             <span className="flex items-center gap-1 text-emerald-600 font-semibold">
-              <IndianRupee size={16} /> {room.PricePerNight.toLocaleString()} / night
+              <IndianRupee size={16} /> {room.PricePerNight} / night
             </span>
             <span
               className={`px-3 py-1 text-xs rounded-full ${

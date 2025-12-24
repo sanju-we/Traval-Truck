@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
 import {
   Select,
   SelectTrigger,
@@ -21,9 +20,10 @@ import {
 } from "@/components/ui/table";
 import { LayoutGrid, List } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { HOTEL_API_METHODS } from '@/services/APIs/hotel.api.service';
+import { useRouter } from "next/navigation";
 import SideNavbar from "@/components/hotel/SideNavbar";
 import AddRoomModal from "@/components/hotel/addRoomsModal";
+import { HOTEL_API_METHODS } from "@/services/APIs/hotel.api.service";
 
 interface Room {
   id: string;
@@ -31,7 +31,8 @@ interface Room {
   Capacity: number;
   Description: string;
   PricePerNight: number;
-  Status: string
+  Status: string;
+  Images?: string[];
 }
 
 export default function RoomsPage() {
@@ -39,19 +40,19 @@ export default function RoomsPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
-  const [Description, setDescription] = useState("");
-  const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
+  const [status, setStatus] = useState("");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [loading, setLoading] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
-  const router = useRouter()
+
+  const router = useRouter();
 
   const fetchRooms = async () => {
     setLoading(true);
     try {
-      const res = await HOTEL_API_METHODS.getAllRooms(page, search, Description);
-      console.log(res.data)
-      setRooms(res.data);
-      setTotalPages(res.data.totalPages);
+      const res = await HOTEL_API_METHODS.getAllRooms(page, search, status);
+      setRooms(res.data.data || res.data);
+      setTotalPages(res.data.totalPages || 1);
     } catch {
       toast.error("Failed to fetch rooms");
     } finally {
@@ -61,7 +62,7 @@ export default function RoomsPage() {
 
   useEffect(() => {
     fetchRooms();
-  }, [page, Description]);
+  }, [page, status]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,24 +70,22 @@ export default function RoomsPage() {
     fetchRooms();
   };
 
-  const handleRoomAdded = () => {
-    fetchRooms();
-    setShowAddModal(false);
-  };
-
   return (
     <div className="flex min-h-screen bg-gray-50">
+      {/* Sidebar */}
       <SideNavbar />
 
+      {/* Main */}
       <div className="flex-1 p-8 space-y-6">
         {/* Header */}
         <div className="flex flex-wrap justify-between items-center gap-4">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900">All Rooms</h1>
+            <h1 className="text-2xl font-semibold text-gray-900">Rooms</h1>
             <p className="text-gray-500">
-              Manage all room types, pricing, and current Description.
+              Manage room availability, pricing, and details
             </p>
           </div>
+
           <Button
             className="bg-blue-600 text-white hover:bg-blue-700"
             onClick={() => setShowAddModal(true)}
@@ -101,15 +100,15 @@ export default function RoomsPage() {
           className="flex flex-wrap items-center gap-3"
         >
           <Input
-            placeholder="Search by room number or type"
+            placeholder="Search by room number"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full md:w-1/3"
           />
 
-          <Select value={Description} onValueChange={setDescription}>
-            <SelectTrigger>
-              <SelectValue placeholder="Description" />
+          <Select value={status} onValueChange={setStatus}>
+            <SelectTrigger >
+              <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="">All</SelectItem>
@@ -125,114 +124,157 @@ export default function RoomsPage() {
           </Button>
 
           <Button
+            type="button"
             variant="outline"
             className="ml-auto flex items-center gap-2"
             onClick={() =>
-              setViewMode(viewMode === "list" ? "grid" : "list")
+              setViewMode(viewMode === "grid" ? "list" : "grid")
             }
           >
-            {viewMode === "list" ? (
-              <>
-                <LayoutGrid size={16} /> Grid
-              </>
-            ) : (
-              <>
-                <List size={16} /> List
-              </>
-            )}
+            {viewMode === "grid" ? <List size={16} /> : <LayoutGrid size={16} />}
+            {viewMode === "grid" ? "List" : "Grid"}
           </Button>
         </form>
 
-        {/* Rooms Display */}
-        <div>
-          {loading ? (
-            <p className="text-center text-gray-500 py-10">Loading rooms...</p>
-          ) : rooms?.length === 0 ? (
-            <p className="text-center text-gray-600 py-10">
-              No rooms found. Try adjusting filters.
-            </p>
-          ) : viewMode === "list" ? (
-            <div className="border rounded-xl shadow-sm overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Room No.</TableHead>
-                    <TableHead>Capacity</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Price (₹/Night)</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {rooms?.map((room) => (
-                    <TableRow key={room.id}>
-                      <TableCell>{room.RoomNumber}</TableCell>
-                      <TableCell>{room.Capacity} Adults</TableCell>
-                      <TableCell>
-                        <span
-                          className={`px-3 py-1 rounded-full text-sm font-medium ${room.Status === "Available"
+        {/* Content */}
+        {loading ? (
+          <div className="text-center py-20 text-gray-500">
+            Loading rooms...
+          </div>
+        ) : rooms.length === 0 ? (
+          <div className="bg-white rounded-xl shadow-sm p-10 text-center text-gray-500">
+            No rooms found. Try adjusting filters.
+          </div>
+        ) : viewMode === "list" ? (
+          /* ================= LIST VIEW ================= */
+          <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Room</TableHead>
+                  <TableHead>Capacity</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead>Action</TableHead>
+                </TableRow>
+              </TableHeader>
+
+              <TableBody>
+                {rooms.map((room) => (
+                  <TableRow key={room.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={room.Images?.[0] || "/placeholder-room.jpg"}
+                          className="w-14 h-12 object-cover rounded-md border"
+                          alt="room"
+                        />
+                        <span className="font-medium">
+                          #{room.RoomNumber}
+                        </span>
+                      </div>
+                    </TableCell>
+
+                    <TableCell>{room.Capacity} Adults</TableCell>
+
+                    <TableCell>
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          room.Status === "Available"
                             ? "bg-green-100 text-green-700"
                             : room.Status === "Occupied"
-                              ? "bg-red-100 text-red-700"
-                              : room.Status === "Cleaning"
-                                ? "bg-yellow-100 text-yellow-700"
-                                : "bg-gray-100 text-gray-700"
-                            }`}
-                        >
-                          {room.Status}
-                        </span>
-                      </TableCell>
-                      <TableCell>₹{room.PricePerNight}</TableCell>
-                      <TableCell>
-                        <div className="space-x-3 text-sm font-medium text-blue-600">
-                          <button onClick={() => router.push(`/hotel/rooms/${room.id}`)}>View</button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {rooms?.map((room) => (
-                <div
-                  key={room.id}
-                  className="border rounded-2xl p-5 bg-white shadow-sm hover:shadow-md transition"
-                >
-                  <div className="flex justify-between items-start mb-3">
-                    <span
-                      className={`px-3 py-1 text-xs rounded-full font-medium ${room.Status === "Available"
-                        ? "bg-green-100 text-green-700"
-                        : room.Status === "Occupied"
-                          ? "bg-red-100 text-red-700"
-                          : room.Status === "Cleaning"
+                            ? "bg-red-100 text-red-700"
+                            : room.Status === "Cleaning"
                             ? "bg-yellow-100 text-yellow-700"
                             : "bg-gray-100 text-gray-700"
                         }`}
+                      >
+                        {room.Status}
+                      </span>
+                    </TableCell>
+
+                    <TableCell>
+                      ₹{room.PricePerNight.toLocaleString()}
+                    </TableCell>
+
+                    <TableCell>
+                      <button
+                        onClick={() =>
+                          router.push(`/hotel/rooms/${room.id}`)
+                        }
+                        className="text-blue-600 hover:underline text-sm"
+                      >
+                        View
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ) : (
+          /* ================= GRID VIEW ================= */
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {rooms.map((room) => (
+              <div
+                key={room.id}
+                className="bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden"
+              >
+                {/* Image */}
+                <div className="h-40 bg-gray-100">
+                  <img
+                    src={room.Images?.[0] || "/placeholder-room.jpg"}
+                    alt="room"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+
+                {/* Content */}
+                <div className="p-5">
+                  <div className="flex justify-between items-center mb-2">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        room.Status === "Available"
+                          ? "bg-green-100 text-green-700"
+                          : room.Status === "Occupied"
+                          ? "bg-red-100 text-red-700"
+                          : room.Status === "Cleaning"
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-gray-100 text-gray-700"
+                      }`}
                     >
                       {room.Status}
                     </span>
                   </div>
-                  <p className="text-gray-600">Room No: {room.RoomNumber}</p>
-                  <p className="text-gray-500">
+
+                  <p className="font-semibold text-gray-800">
+                    Room #{room.RoomNumber}
+                  </p>
+                  <p className="text-sm text-gray-500">
                     Capacity: {room.Capacity} Adults
                   </p>
-                  <p className="font-semibold text-lg mt-3 text-gray-900">
-                    ₹{room.PricePerNight.toLocaleString()}
+
+                  <p className="text-lg font-bold text-gray-900 mt-3">
+                    ₹{room.PricePerNight.toLocaleString()} / night
                   </p>
-                  <div className="flex justify-between text-sm text-blue-600 mt-4">
-                    <button onClick={() => router.push(`/hotel/rooms/${room.id}`)}>View</button>
-                  </div>
+
+                  <button
+                    onClick={() =>
+                      router.push(`/hotel/rooms/${room.id}`)
+                    }
+                    className="mt-4 text-blue-600 text-sm hover:underline"
+                  >
+                    View Details
+                  </button>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-3 mt-8">
+          <div className="flex justify-center items-center gap-3 pt-6">
             <Button
               variant="outline"
               disabled={page === 1}
@@ -240,10 +282,12 @@ export default function RoomsPage() {
             >
               Prev
             </Button>
-            <span className="text-gray-600 text-sm">
-              Page <span className="font-medium">{page}</span> of{" "}
-              <span className="font-medium">{totalPages}</span>
+
+            <span className="text-sm text-gray-600">
+              Page <strong>{page}</strong> of{" "}
+              <strong>{totalPages}</strong>
             </span>
+
             <Button
               variant="outline"
               disabled={page === totalPages}

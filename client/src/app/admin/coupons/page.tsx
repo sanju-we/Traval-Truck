@@ -24,7 +24,7 @@ export default function CouponsPage() {
   const fetchCoupons = async () => {
     try {
       setLoading(true);
-      const { data } = await ADMIN_API_METHODS.fetchAllCoupons();
+      const data = await ADMIN_API_METHODS.fetchAllCoupons();
       setCoupons(data?.data?.data || []);
     } catch {
       toast.error("Failed to load coupons");

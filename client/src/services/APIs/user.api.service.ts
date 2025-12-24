@@ -33,7 +33,7 @@ export const USER_API_METHODS = {
     GetAllCoupon : () => get(USER_ROUTES.packages.GetAllCoupon),
 
     // hotel api requests
-    getAllHotel: (params?: any) => get(USER_ROUTES.hotel.getAllHotel, params),
+    getAllHotel: (page?: number,limit?: number) => get(USER_ROUTES.hotel.getAllHotel, {page,limit}),
     getRoomDetails: (id: string) => get(USER_ROUTES.hotel.getRoomDetails(id)),
 
     // foods api requests

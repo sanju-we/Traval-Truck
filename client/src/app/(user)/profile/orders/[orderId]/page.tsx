@@ -23,9 +23,21 @@ import {
   Utensils,
   XCircle,
   X,
+  Circle,
+  Check,
+  ChevronRight,
 } from 'lucide-react';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import toast from 'react-hot-toast';
+
+interface PlanDay {
+  date: string;
+  day: number;
+  title: string;
+  activities: string[];
+  completedActivities?: number[];
+  isCompleted?: boolean;
+}
 
 interface OrderDetails {
   id: string;
@@ -49,7 +61,14 @@ interface OrderDetails {
   ownedBy?: any;
   startDate?: string;
   endDate?: string;
-  status: 'Upcoming' | 'Ongoing' | 'Completed';
+  status: 'Upcoming' | 'Ongoing' | 'Completed' | 'Cancelled';
+  plan?: PlanDay[];
+  tripProgress?: {
+    currentDay: number;
+    completedDays: number[];
+    startedAt?: string;
+    completedAt?: string;
+  };
   paymentId: any;
   createdAt: string;
   updatedAt?: string;
@@ -108,7 +127,9 @@ export default function UserOrderDetailsPage() {
       case 'Ongoing':
         return 'bg-orange-100 text-orange-700 border-orange-200';
       case 'Completed':
-        return 'bg-green-100 text-green-700 border-green-200';
+        return 'bg-purple-100 text-purple-700 border-purple-200';
+      case 'Cancelled':
+        return 'bg-red-100 text-red-700 border-red-200';
       default:
         return 'bg-gray-100 text-gray-700 border-gray-200';
     }
@@ -151,7 +172,6 @@ export default function UserOrderDetailsPage() {
   const handleCancelOrder = async () => {
     if (!order) return;
 
-    // Validation
     if (!selectedReason) {
       toast.error('Please select a cancellation reason');
       return;
@@ -182,6 +202,28 @@ export default function UserOrderDetailsPage() {
     } finally {
       setCancelLoading(false);
     }
+  };
+
+  const isActivityCompleted = (day: number, activityIndex: number) => {
+    const planDay = order?.plan?.find(p => p.day === day);
+    return planDay?.completedActivities?.includes(activityIndex) || false;
+  };
+
+  const isDayCompleted = (day: number) => {
+    const planDay = order?.plan?.find(p => p.day === day);
+    return planDay?.isCompleted || false;
+  };
+
+  const isCurrentDay = (day: number) => {
+    return order?.tripProgress?.currentDay === day;
+  };
+
+  const getDayProgress = (day: number) => {
+    const planDay = order?.plan?.find(p => p.day === day);
+    if (!planDay) return 0;
+    const total = planDay.activities.length;
+    const completed = planDay.completedActivities?.length || 0;
+    return Math.round((completed / total) * 100);
   };
 
   if (loading) {
@@ -228,6 +270,7 @@ export default function UserOrderDetailsPage() {
   const productItinerary = order.product?.itinerary || [];
   const productDiscoveries = order.product?.discoveries || [];
   const productAvailableFoods = order.product?.availableFoods || [];
+  const hasPlan = order.plan && order.plan.length > 0;
 
   const userName = typeof order.userId === 'object' ? order.userId.name : 'N/A';
   const userEmail = typeof order.userId === 'object' ? order.userId.email : 'N/A';
@@ -276,7 +319,7 @@ export default function UserOrderDetailsPage() {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-3 mt-4">
-            {order.status !== 'Completed' && (
+            {order.status !== 'Completed' && order.status !== 'Cancelled' && (
               <button
                 onClick={handleChatWithAgency}
                 className="px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition flex items-center gap-2 font-semibold"
@@ -319,9 +362,9 @@ export default function UserOrderDetailsPage() {
 
               <div className="p-6">
                 {/* Image Gallery */}
-                {order.product?.images && (
+                {order.product?.images && productImages.length > 0 && (
                   <div className="mb-6">
-                    <div className="relative h-70 rounded-lg overflow-hidden mb-3">
+                    <div className="relative h-64 rounded-lg overflow-hidden mb-3">
                       <img
                         src={productImages[selectedImage]}
                         alt={productName}
@@ -334,10 +377,11 @@ export default function UserOrderDetailsPage() {
                           <button
                             key={idx}
                             onClick={() => setSelectedImage(idx)}
-                            className={`relative h-30 rounded-lg overflow-hidden border-2 transition ${selectedImage === idx
+                            className={`relative h-16 rounded-lg overflow-hidden border-2 transition ${
+                              selectedImage === idx
                                 ? 'border-blue-500'
                                 : 'border-gray-200 hover:border-gray-300'
-                              }`}
+                            }`}
                           >
                             <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-cover" />
                           </button>
@@ -362,52 +406,6 @@ export default function UserOrderDetailsPage() {
                   </div>
                 )}
 
-                {/* Itinerary */}
-                {productItinerary.length > 0 && (
-                  <div className="mt-6">
-                    <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                      <Calendar className="text-blue-600" size={18} />
-                      Itinerary
-                    </h4>
-                    <div className="space-y-4">
-                      {productItinerary.map((item: any, idx: number) => (
-                        <div key={idx} className="relative pl-6 pb-4 border-l-2 border-blue-200 last:border-0">
-                          <div className="absolute -left-2 top-0 w-4 h-4 bg-blue-600 rounded-full"></div>
-                          <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
-                            <h5 className="font-bold text-gray-800 mb-2">Day {item.day}: {item.title}</h5>
-                            <ul className="space-y-1">
-                              {item.activities?.map((activity: string, actIdx: number) => (
-                                <li key={actIdx} className="text-sm text-gray-700 flex items-start gap-2">
-                                  <span className="text-blue-600">•</span>
-                                  <span>{activity}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Discoveries */}
-                {productDiscoveries.length > 0 && (
-                  <div className="mt-6">
-                    <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                      <MapPin className="text-blue-600" size={18} />
-                      Places to Discover
-                    </h4>
-                    <div className="grid grid-cols-2 gap-2">
-                      {productDiscoveries.map((place: string, idx: number) => (
-                        <div key={idx} className="flex items-center gap-2 text-sm text-gray-700 bg-gray-50 rounded-lg p-2">
-                          <MapPin size={14} className="text-gray-400" />
-                          <span>{place}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
                 {/* Available Foods */}
                 {productAvailableFoods.length > 0 && (
                   <div className="mt-6">
@@ -429,15 +427,201 @@ export default function UserOrderDetailsPage() {
                 )}
               </div>
             </div>
+
+            {/* Trip Plan Progress Tracker */}
+            {hasPlan && order.status !== 'Cancelled' && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="bg-gradient-to-r from-blue-50 to-blue-100 px-6 py-4 border-b border-blue-200">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-lg font-bold text-gray-800">Your Trip Plan</h2>
+                    {order.status === 'Ongoing' && (
+                      <span className="text-sm text-blue-600 font-medium">
+                        Day {order.tripProgress?.currentDay || 1} of {order.plan?.length}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="p-6">
+                  {order.status === 'Upcoming' ? (
+                    <div className="text-center py-8">
+                      <Clock className="mx-auto text-blue-500 mb-3" size={48} />
+                      <p className="text-gray-600 mb-2 font-medium">Your trip starts soon!</p>
+                      {order.startDate && (
+                        <p className="text-sm text-gray-500 mb-4">
+                          Starting on{' '}
+                          {new Date(order.startDate).toLocaleDateString('en-US', {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric',
+                          })}
+                        </p>
+                      )}
+                      <p className="text-xs text-gray-400">The agency will start tracking your trip on the start date</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      {order.plan?.map((planDay, idx) => {
+                        const dayNumber = planDay.day;
+                        const dayCompleted = isDayCompleted(dayNumber);
+                        const current = isCurrentDay(dayNumber);
+                        const progress = getDayProgress(dayNumber);
+
+                        return (
+                          <div
+                            key={idx}
+                            className={`relative border-2 rounded-xl overflow-hidden transition-all ${
+                              dayCompleted
+                                ? 'border-purple-300 bg-purple-50'
+                                : current
+                                ? 'border-orange-400 bg-orange-50 shadow-lg'
+                                : 'border-gray-200 bg-white opacity-75'
+                            }`}
+                          >
+                            {/* Day Header */}
+                            <div className="p-5 border-b border-gray-200">
+                              <div className="flex items-start gap-4">
+                                <div
+                                  className={`flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center font-bold text-lg shadow-md ${
+                                    dayCompleted
+                                      ? 'bg-purple-500 text-white'
+                                      : current
+                                      ? 'bg-orange-500 text-white'
+                                      : 'bg-gray-200 text-gray-600'
+                                  }`}
+                                >
+                                  {dayCompleted ? <CheckCircle size={28} /> : dayNumber}
+                                </div>
+
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <h3 className="font-bold text-gray-800 text-xl">
+                                      Day {dayNumber}: {planDay.title}
+                                    </h3>
+                                    {current && !dayCompleted && (
+                                      <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs font-semibold rounded-full animate-pulse">
+                                        In Progress
+                                      </span>
+                                    )}
+                                    {dayCompleted && (
+                                      <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full flex items-center gap-1">
+                                        <Check size={12} />
+                                        Completed
+                                      </span>
+                                    )}
+                                  </div>
+
+                                  <p className="text-sm text-gray-600">
+                                    {new Date(planDay.date).toLocaleDateString('en-US', {
+                                      weekday: 'long',
+                                      month: 'long',
+                                      day: 'numeric',
+                                      year: 'numeric',
+                                    })}
+                                  </p>
+
+                                  {/* Progress Bar */}
+                                  {!dayCompleted && progress > 0 && (
+                                    <div className="mt-3">
+                                      <div className="flex items-center justify-between text-xs text-gray-600 mb-1">
+                                        <span>Progress</span>
+                                        <span className="font-semibold">{progress}%</span>
+                                      </div>
+                                      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div
+                                          className="h-full bg-orange-500 rounded-full transition-all duration-500 ease-out"
+                                          style={{ width: `${progress}%` }}
+                                        ></div>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Activities List */}
+                            <div className="p-5">
+                              <div className="space-y-3">
+                                {planDay.activities.map((activity, actIdx) => {
+                                  const activityCompleted = isActivityCompleted(dayNumber, actIdx);
+
+                                  return (
+                                    <div
+                                      key={actIdx}
+                                      className={`flex items-start gap-3 p-4 rounded-lg transition-all duration-300 ${
+                                        activityCompleted
+                                          ? 'bg-purple-100 border-2 border-purple-300'
+                                          : 'bg-gray-50 border-2 border-gray-200'
+                                      }`}
+                                    >
+                                      <div className="flex-shrink-0 mt-0.5">
+                                        {activityCompleted ? (
+                                          <div className="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center">
+                                            <Check size={16} className="text-white" />
+                                          </div>
+                                        ) : (
+                                          <Circle size={20} className="text-gray-300" />
+                                        )}
+                                      </div>
+
+                                      <div className="flex-1">
+                                        <p
+                                          className={`text-sm ${
+                                            activityCompleted
+                                              ? 'text-purple-800 font-medium line-through decoration-2'
+                                              : 'text-gray-700'
+                                          }`}
+                                        >
+                                          {activity}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {order.status === 'Completed' && (
+                    <div className="mt-6 p-6 bg-purple-50 border-2 border-purple-200 rounded-xl">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 bg-purple-500 rounded-full">
+                          <CheckCircle className="text-white" size={32} />
+                        </div>
+                        <div>
+                          <p className="font-bold text-purple-800 text-lg">Trip Completed!</p>
+                          <p className="text-sm text-purple-600 mt-1">
+                            Completed on{' '}
+                            {order.tripProgress?.completedAt &&
+                              new Date(order.tripProgress.completedAt).toLocaleDateString('en-US', {
+                                month: 'long',
+                                day: 'numeric',
+                                year: 'numeric',
+                              })}
+                          </p>
+                          <p className="text-xs text-purple-500 mt-2">
+                            We hope you had an amazing experience! 🎉
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right Column - Payment & Agency */}
           <div className="space-y-6">
             {/* Payment Information */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="bg-gradient-to-r from-green-50 to-green-100 px-6 py-4 border-b border-green-200">
+              <div className="bg-gradient-to-r from-blue-50 to-blue-100 px-6 py-4 border-b border-blue-200">
                 <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                  <CreditCard className="text-green-600" size={22} />
+                  <CreditCard className="text-blue-600" size={22} />
                   Payment Details
                 </h2>
               </div>
@@ -449,11 +633,11 @@ export default function UserOrderDetailsPage() {
                       <span>Original Price</span>
                       <span className="line-through">₹{order.originalAmount.toLocaleString()}</span>
                     </div>
-                    <div className="flex items-center justify-between text-green-600">
+                    <div className="flex items-center justify-between text-blue-600">
                       <span className="flex items-center gap-1">
                         Discount
                         {order.couponId && (
-                          <span className="text-xs bg-green-100 px-2 py-0.5 rounded font-mono">
+                          <span className="text-xs bg-blue-100 px-2 py-0.5 rounded font-mono">
                             {order.couponId.code}
                           </span>
                         )}
@@ -471,7 +655,7 @@ export default function UserOrderDetailsPage() {
                     </span>
                   </div>
                   {order.originalAmount && order.discount && order.discount > 0 && (
-                    <p className="text-sm text-green-600 text-right">
+                    <p className="text-sm text-blue-600 text-right">
                       You saved ₹{order.discount.toLocaleString()}!
                     </p>
                   )}
@@ -503,10 +687,10 @@ export default function UserOrderDetailsPage() {
 
                 {typeof order.paymentId === 'object' && order.paymentId.paymentStatus && (
                   <div className="flex items-start gap-3">
-                    <CheckCircle className="text-green-500 flex-shrink-0 mt-0.5" size={18} />
+                    <CheckCircle className="text-blue-500 flex-shrink-0 mt-0.5" size={18} />
                     <div>
                       <p className="text-xs text-gray-500">Payment Status</p>
-                      <p className="font-medium text-green-600">{order.paymentId.paymentStatus}</p>
+                      <p className="font-medium text-blue-600">{order.paymentId.paymentStatus}</p>
                     </div>
                   </div>
                 )}
@@ -541,7 +725,7 @@ export default function UserOrderDetailsPage() {
                   </div>
                 )}
 
-                {order.status !== 'Completed' && (
+                {order.status !== 'Completed' && order.status !== 'Cancelled' && (
                   <button
                     onClick={handleChatWithAgency}
                     className="w-full mt-4 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2 font-semibold"
@@ -553,48 +737,13 @@ export default function UserOrderDetailsPage() {
               </div>
             </div>
 
-            {/* Your Information */}
-            {/* <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="bg-gradient-to-r from-blue-50 to-blue-100 px-6 py-4 border-b border-blue-200">
-                <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                  <User className="text-blue-600" size={22} />
-                  Your Information
-                </h2>
-              </div>
-
-              <div className="p-6 space-y-4">
-                <div className="flex items-start gap-3">
-                  <User className="text-gray-400 flex-shrink-0 mt-0.5" size={18} />
-                  <div>
-                    <p className="text-xs text-gray-500">Name</p>
-                    <p className="font-medium text-gray-800">{userName}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <Mail className="text-gray-400 flex-shrink-0 mt-0.5" size={18} />
-                  <div>
-                    <p className="text-xs text-gray-500">Email</p>
-                    <p className="text-sm text-gray-800 break-all">{userEmail}</p>
-                  </div>
-                </div>
-
-                {userPhone && (
-                  <div className="flex items-start gap-3">
-                    <Phone className="text-gray-400 flex-shrink-0 mt-0.5" size={18} />
-                    <div>
-                      <p className="text-xs text-gray-500">Phone</p>
-                      <p className="font-medium text-gray-800">{userPhone}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div> */}
-
             {/* Schedule Information */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
               <div className='bg-gradient-to-r from-blue-50 to-blue-100 px-6 py-4 border-b border-blue-200'>
-                <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">Trip Schedule</h2>
+                <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                  <Calendar className="text-blue-600" size={22} />
+                  Trip Schedule
+                </h2>
               </div>
               <div className="p-6 space-y-4">
                 <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-100">

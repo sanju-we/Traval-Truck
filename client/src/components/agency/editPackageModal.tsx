@@ -47,7 +47,6 @@ export default function EditPackageModal({
     itinerary: [{ day: 1, title: '', activities: [''] }],
   });
 
-  // ✅ Pre-fill data when editing existing package
   useEffect(() => {
     if (pkg) {
       setFormData({

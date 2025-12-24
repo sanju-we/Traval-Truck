@@ -54,7 +54,7 @@ export default function SubscriptionPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const { data } = await ADMIN_API_METHODS.fetchAllSubscriptions();
+        const data = await ADMIN_API_METHODS.fetchAllSubscriptions();
         if (data.success) {
           console.log(data.data)
           setSubscriptions(data.data);

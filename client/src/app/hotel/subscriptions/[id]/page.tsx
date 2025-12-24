@@ -21,7 +21,7 @@ interface Subscription {
 }
 
 async function getSubscriptionById(id: string) {
-  const res = await SHARED_API_METHODS.subscriptionDetails("agency", id);
+  const res = await SHARED_API_METHODS.subscriptionDetails("hotel", id);
   return res.success ? res.data : null;
 }
 

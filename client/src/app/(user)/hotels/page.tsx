@@ -33,8 +33,10 @@ export default function HotelsPage() {
   const fetchHotels = async (page: number) => {
     setLoading(true);
     try {
-      const data = await USER_API_METHODS.showAllFoods(page);
-      setHotels(data.data || []);
+      let limit = 6
+      const data = await USER_API_METHODS.getAllHotel(page,limit);
+      console.log('fucking',data.data)
+      setHotels(data.data.data || []);
       setTotalPages(data.totalPages || 1);
     } catch (error) {
       console.error('Error fetching hotels:', error);
@@ -46,6 +48,18 @@ export default function HotelsPage() {
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
+
+  if(!hotels){
+    return (
+    <div className="bg-white text-gray-800">
+      <Header />
+      <section className="max-w-6xl mx-auto px-6 mt-10">
+        <h2 className="text-2xl font-bold mb-6 text-center">Explore Our Partner Hotels</h2>
+        NO data in here
+      </section>
+    </div>
+    )
+  }
 
   return (
     <div className="bg-white text-gray-800">
@@ -62,7 +76,7 @@ export default function HotelsPage() {
           <p className="text-center text-gray-500">No hotels available.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {hotels.map((hotel) => (
+            {hotels?.map((hotel) => (
               <div
                 key={hotel.id}
                 className="border rounded-lg p-4 shadow hover:shadow-md transition duration-200"

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import SideNavbar from "@/components/agency/SideNavbar";
 import { createServerAxios } from "@/services/serverApi";
+import { CheckCircle, AlertTriangle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -13,99 +14,120 @@ async function getSubscriptions() {
 async function getActiveSubscription() {
   const serverApi = await createServerAxios();
   const res = await serverApi.get(`/shared/subscriptions/agency/current`);
-  console.log(res.data.data)
   return res.data.success ? res.data.data : null;
 }
 
 export default async function SubscriptionsPage() {
   const [subscriptions, activeSubscription] = await Promise.all([
     getSubscriptions(),
-    getActiveSubscription()
+    getActiveSubscription(),
   ]);
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-
-      {/* Sidebar */}
-      <div className="w-64 hidden md:block bg-white">
+      <div className="flex min-h-screen bg-gray-50">
         <SideNavbar />
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 p-6 md:p-10">
-        <div className="max-w-6xl mx-auto space-y-10">
+        <div className="max-w-7xl mx-auto space-y-10">
 
-          {/* Title */}
-          <h1 className="text-2xl font-bold text-gray-800">Subscriptions</h1>
-
-          {/* ⭐ Already Purchased Subscription */}
+          {/* Page Header */}
           <div>
-            <h2 className="text-lg font-semibold text-gray-800 mb-3">
-              Your Active Subscription
+            <h1 className="text-3xl font-bold text-gray-800">
+              Subscriptions
+            </h1>
+            <p className="text-gray-500 mt-1">
+              Manage your current plan or upgrade anytime
+            </p>
+          </div>
+
+          {/* ================= ACTIVE SUBSCRIPTION ================= */}
+          <section>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              Current Subscription
             </h2>
 
             {activeSubscription ? (
-              <div className="bg-green-50 border border-green-300 rounded-xl p-6 shadow">
-                <h3 className="text-xl font-bold text-green-700">
+              <div className="relative bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-6 shadow-lg text-white">
+                <div className="absolute top-4 right-4 flex items-center gap-1 text-sm bg-white/20 px-3 py-1 rounded-full">
+                  <CheckCircle size={16} />
+                  Active
+                </div>
+
+                <h3 className="text-2xl font-bold mb-2">
                   {activeSubscription.name}
                 </h3>
 
-                <p className="text-gray-700">
-                  Valid for: {activeSubscription.valid} days
+                <p className="opacity-90">
+                  Valid for {activeSubscription.valid} days
                 </p>
 
-                <p className="text-gray-700">
-                  Expiry Date: {new Date(activeSubscription.endDate).toLocaleDateString()}
+                <p className="opacity-90 mt-1">
+                  Expires on{" "}
+                  <span className="font-semibold">
+                    {new Date(activeSubscription.endDate).toLocaleDateString()}
+                  </span>
                 </p>
 
-                <p className="text-green-800 font-semibold mt-2">
+                <p className="text-3xl font-bold mt-4">
                   ₹{activeSubscription.amount}
                 </p>
 
-                <ul className="mt-4 text-gray-700 space-y-1">
+                <ul className="mt-5 space-y-1 text-sm opacity-95">
                   {activeSubscription.features?.map((f: string, i: number) => (
                     <li key={i}>• {f}</li>
                   ))}
                 </ul>
               </div>
             ) : (
-              <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-6 shadow">
-                <p className="text-yellow-800">
-                  You do not have an active subscription.
-                </p>
+              <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-6 flex items-start gap-3">
+                <AlertTriangle className="text-yellow-600 mt-1" />
+                <div>
+                  <p className="font-semibold text-yellow-800">
+                    No active subscription
+                  </p>
+                  <p className="text-yellow-700 text-sm mt-1">
+                    Choose a plan below to unlock premium features.
+                  </p>
+                </div>
               </div>
             )}
-          </div>
+          </section>
 
-          {/* ⭐ Available Subscriptions */}
-          <div>
-            <h2 className="text-lg font-semibold text-gray-800 mb-3">
+          {/* ================= AVAILABLE PLANS ================= */}
+          <section>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
               Available Subscription Plans
             </h2>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {subscriptions.length === 0 ? (
-                <p className="text-gray-500">No subscriptions available.</p>
-              ) : (
-                subscriptions.map((sub: any) => (
+            {subscriptions.length === 0 ? (
+              <div className="bg-white border rounded-xl p-10 text-center shadow-sm">
+                <p className="text-gray-500">
+                  No subscription plans are available right now.
+                </p>
+              </div>
+            ) : (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {subscriptions.map((sub: any) => (
                   <div
                     key={sub.id}
-                    className="bg-white border rounded-xl shadow p-6 flex flex-col justify-between"
+                    className="bg-white border rounded-xl shadow-sm hover:shadow-md transition flex flex-col justify-between"
                   >
-                    <div>
+                    <div className="p-6">
                       <h3 className="text-lg font-semibold text-gray-800">
                         {sub.name}
                       </h3>
 
-                      <p className="text-emerald-600 font-bold text-xl mt-2">
+                      <p className="text-emerald-600 font-bold text-2xl mt-2">
                         ₹{sub.amount}
                       </p>
 
                       <p className="text-gray-500 text-sm">
-                        {sub.valid} days
+                        {sub.valid} days validity
                       </p>
 
-                      <ul className="mt-4 text-gray-700 text-sm space-y-1">
+                      <ul className="mt-4 text-sm text-gray-600 space-y-1">
                         {sub.features.map((f: string, i: number) => (
                           <li key={i}>• {f}</li>
                         ))}
@@ -114,15 +136,15 @@ export default async function SubscriptionsPage() {
 
                     <Link
                       href={`/agency/subscriptions/${sub.id}`}
-                      className="mt-6 block text-center px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700"
+                      className="m-6 mt-0 text-center px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition font-medium"
                     >
                       View Details
                     </Link>
                   </div>
-                ))
-              )}
-            </div>
-          </div>
+                ))}
+              </div>
+            )}
+          </section>
         </div>
       </div>
     </div>
