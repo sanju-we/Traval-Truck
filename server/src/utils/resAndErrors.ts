@@ -172,3 +172,9 @@ export class ROOM_ALREADY_OCCUPAID extends HttpError {
     super(STATUS_CODE.BAD_REQUEST, 'Sorry this Room is Occupaid those days, Try another day');
   }
 }
+
+export class ROOM_VACATING_EARLY extends HttpError {
+  constructor() {
+    super(STATUS_CODE.BAD_REQUEST, 'Vacating early is not acceptable');
+  }
+}

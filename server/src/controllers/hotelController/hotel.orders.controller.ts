@@ -16,4 +16,22 @@ export class HotelOrderController implements IHotelOrdersController{
     const orders = await this._hotelService.getAllOrders(userId);
     sendResponse(res,STATUS_CODE.OK,true,MESSAGES.ALL_DATA_FOUND,orders)
   }
+
+  async getOrder(req: Request, res: Response): Promise<void> {
+    const orderId = req.params.id;
+    const order = await this._hotelService.getOrder(orderId);
+    sendResponse(res,STATUS_CODE.OK,true,MESSAGES.DATA_FOUND,order)
+  }
+
+  async updateCheckIn(req: Request, res: Response): Promise<void> {
+    const orderId = req.params.orderId;
+    const status = await this._hotelService.checkIn(orderId);
+    sendResponse(res,STATUS_CODE.OK,true,MESSAGES.UPDATED,status);
+  }
+
+  async updateCheckOut(req: Request, res: Response): Promise<void> {
+    const orderId = req.params.orderId;
+    const status = await this._hotelService.checkOut(orderId);
+    sendResponse(res,STATUS_CODE.OK,true,MESSAGES.UPDATED,status);
+  }
 }
