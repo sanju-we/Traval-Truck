@@ -49,7 +49,6 @@ let RestaurantAuthController = class RestaurantAuthController {
                 phone: z.number(),
             }),
         });
-        logger.info(`ggggggoooooooooooooooooooooooo`);
         const { email, otp, restaurantData } = schema.parse(req.body);
         const result = await this._restaurantService.verifyRestaurantSignup(email, otp, restaurantData);
         await this._IJWT.setTokenInCookies(res, result.accessToken, result.refreshToken);

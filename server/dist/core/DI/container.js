@@ -10,6 +10,7 @@ import { SubscriptionValidator } from '../../validators/subscription.validator.j
 import { CouponValidator } from '../../validators/coupon.validator.js';
 import { PaymentValidator } from '../../validators/payment.validator.js';
 import { BaseValidator } from '../../validators/base.validator.js';
+import { TripGenerator } from '../../utils/genarateTrip.js';
 import { WalletService } from '../../services/shared/wallet.service.js';
 import { SharedWalletController } from '../../controllers/sharedController/shared.wallet.controller.js';
 import { WalletRespository } from '../../repositories/shared/wallet.repository.js';
@@ -45,6 +46,8 @@ import { AdminSubscriptionService } from '../../services/admin/admin.subscriptio
 import { AdminCouponController } from '../../controllers/adminController/admin.coupon.controller.js';
 import { AdminCouponService } from '../../services/admin/admin.coupon.service.js';
 import { AdminCouponRepository } from '../../repositories/admin/admin.coupon.repository.js';
+import { AdminOrdersController } from '../../controllers/adminController/admin.orders.controller.js';
+import { AdminOrderService } from '../../services/admin/admin.orders.service.js';
 import { AgencyAuthController } from '../../controllers/agencyController/agency.auth.controller.js';
 import { agencyRepository } from '../../repositories/agency/agency.auth.repository.js';
 import { agencyAuthService } from '../../services/agency/agency.auth.service.js';
@@ -84,6 +87,7 @@ container.bind('ISubscriptionValidator').to(SubscriptionValidator);
 container.bind('ICouponValidator').to(CouponValidator);
 container.bind('IPaymentValidator').to(PaymentValidator);
 container.bind('IBaseValidator').to(BaseValidator);
+container.bind('IGenerateTrip').to(TripGenerator);
 // -------------------------------------------------------Shared container-----------------------------------------------------------
 container.bind('IWalletService').to(WalletService);
 container.bind('ISharedWalletController').to(SharedWalletController);
@@ -123,6 +127,8 @@ container.bind('ISubscriptionRepository').to(SubscriptionRepository);
 container.bind('IAdminCouponController').to(AdminCouponController);
 container.bind('IAdminCouponService').to(AdminCouponService);
 container.bind('IAdminCouponRepository').to(AdminCouponRepository);
+container.bind('IAdminOrderController').to(AdminOrdersController);
+container.bind('IAdminOrderService').to(AdminOrderService);
 // ------------------------------------------------------agency containers--------------------------------------------------------
 container.bind('IAgencyAuthController').to(AgencyAuthController);
 container.bind('IAgencyRespository').to(agencyRepository);

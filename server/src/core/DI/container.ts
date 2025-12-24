@@ -23,6 +23,8 @@ import { IBaseValidator } from '../../core/interface/validator/IBasic.validator.
 import { BaseValidator } from '../../validators/base.validator.js';
 import { IGenerateTrip } from '../../core/interface/utils/Igenerate.trip.js';
 import { TripGenerator } from '../../utils/genarateTrip.js';
+import { IRoomValidator } from '../../core/interface/validator/Iroom.validator.js';
+import { RoomValidator } from '../../validators/room.validator.js';
 
 // ------------------------------------------------------shares-------------------------------------------------------------
 import { IWalletService } from '../interface/serivice/shared/IWaller.service.js';
@@ -179,6 +181,7 @@ container.bind<ICouponValidator>('ICouponValidator').to(CouponValidator);
 container.bind<IPaymentValidator>('IPaymentValidator').to(PaymentValidator);
 container.bind<IBaseValidator>('IBaseValidator').to(BaseValidator);
 container.bind<IGenerateTrip>('IGenerateTrip').to(TripGenerator);
+container.bind<IRoomValidator>('IRoomValidator').to(RoomValidator);
 
 // -------------------------------------------------------Shared container-----------------------------------------------------------
 container.bind<IWalletService>('IWalletService').to(WalletService);

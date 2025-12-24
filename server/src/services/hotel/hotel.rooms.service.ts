@@ -7,12 +7,14 @@ import { IHotelRoomsRepository } from "../../core/interface/repositorie/Hotel/Ih
 import { inject, injectable } from "inversify";
 import { DataNotFoundError } from "../../utils/resAndErrors.js";
 import { IAuthValidator } from "../../core/interface/validator/Iauth.validator.js";
+import { IRoomValidator } from "../../core/interface/validator/Iroom.validator.js";
 
 @injectable()
 export class HotelRoomsService implements IHotelRoomsService {
   constructor(
     @inject('IHotelRoomsRepository') private readonly _roomsRepo: IHotelRoomsRepository,
-    @inject('IAuthValidator') private readonly _authValidator: IAuthValidator
+    @inject('IAuthValidator') private readonly _authValidator: IAuthValidator,
+    @inject('IRoomValidator') private readonly _roomValidator : IRoomValidator,
   ) { }
 
   async getAllRooms(hotelID: string): Promise<RoomsDTO[]> {
@@ -22,7 +24,6 @@ export class HotelRoomsService implements IHotelRoomsService {
 
   async addRoom(data: RoomsDTO, file: Express.Multer.File[]): Promise<RoomsDTO> {
     await this._authValidator.RoomValidator(data)
-    logger.info(data.Images)
     const Image: string[] = []
     for (const img of file) {
       const url = await singleUpload(img, 'Travel-Travel-Document')
@@ -68,19 +69,7 @@ export class HotelRoomsService implements IHotelRoomsService {
   }
 
   async updateRoom(data: Partial<RoomsDTO>, id: string, files: Express.Multer.File[]): Promise<RoomsDTO> {
-    const roomSchema = z.object({
-      Capacity: z.string().regex(/^\d+$/, "Capacity must be a numeric string"),
-      Description: z.string().min(1, "Description is required").min(1, "At least one facility is required"),
-      Facilities: z.array(z.string().min(1, "Facility name cannot be empty")),
-      PricePerNight: z.string().regex(/^\d+$/, "PricePerNight must be a numeric string"),
-      RoomNumber: z.string().regex(/^\d+$/, "RoomNumber must be a numeric string"),
-      Status: z.enum(["Available", "Occupid","Maintance"]),
-      isBlocked: z.enum(["true", "false"])
-    })
-    const schema = z.string().length(24, "id must be a valid MongoDB ObjectId");
-    schema.parse(id)
-    logger.info(data)
-    roomSchema.parse(data)
+    await this._roomValidator.roomValidator(data)
     const Image: string[] = []
     for (const img of files) {
       const url = await singleUpload(img, 'Travel-Travel-Document')

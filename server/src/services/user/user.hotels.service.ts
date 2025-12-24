@@ -4,12 +4,16 @@ import { inject, injectable } from "inversify";
 import { RoomsDTO } from "../../core/DTO/hotel/roomsDTO.js";
 import { DataNotFoundError } from "../../utils/resAndErrors.js";
 import { ISubscriptionHistoryRepository } from "../../core/interface/repositorie/shared/ISubscription.hisroty.repository.js";
+import { IPaymentUtils } from "../../core/interface/PaymentInterface/Ipayment.utils.js";
+import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository.js";
 
 @injectable()
 export class UserHotelsService implements IUserHotelsService {
   constructor(
     @inject('IHotelRoomsRepository') private readonly _hotelRoomRepo: IHotelRoomsRepository,
-    @inject('ISubscriptionHistoryRepository') private readonly _subscriptionHistoryRepo: ISubscriptionHistoryRepository
+    @inject('ISubscriptionHistoryRepository') private readonly _subscriptionHistoryRepo: ISubscriptionHistoryRepository,
+    @inject('IPaymentUtils') private readonly _paymentUtils : IPaymentUtils,
+    @inject('IOrdersRepository') private readonly _orderRepo : IOrdersRepository,
   ) { }
 
   async getAllHotels(page: number, limit: number, search?: string): Promise<{ data: RoomsDTO[]; total: number; page: number; totalPages: number; }> {
@@ -35,5 +39,29 @@ export class UserHotelsService implements IUserHotelsService {
     })
     if(room) return  data 
     throw new DataNotFoundError() 
+  }
+
+  async initializeSession(roomId: string, role: string, userId: string, amount: number, couponId: string,startDate:string): Promise<{ url: string; sessionId: string; }> {
+    const room = await this._hotelRoomRepo.findById(roomId);
+    if(!room) throw new DataNotFoundError();
+
+    // const order = await this._orderRepo.findOne({})
+
+    return this._paymentUtils.createCheckoutSession({
+      amount: amount,
+      currency: 'inr',
+      description: `Room Number: ${room.RoomNumber}`,
+      successUrl: `${process.env.FRONTEND_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancelUrl: `${process.env.FRONTEND_URL}/cancel`,
+      metadata: {
+        type: 'booking',
+        userId,
+        role,
+        amount,
+        roomId,
+        couponId,
+        startDate
+      }
+    })
   }
 }

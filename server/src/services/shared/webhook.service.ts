@@ -10,6 +10,7 @@ import { Data_Creation_Error, DataNotFoundError, PAYMENT_VALIDATION_FAILED, PAYM
 import { IAgencyPackageRepository } from "../../core/interface/repositorie/agency/Iagency.package.repository.js";
 import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository.js";
 import { IAdminCouponRepository } from "../../core/interface/repositorie/admin/Iadmin.coupon.repository.js";
+import { IHotelRoomsRepository } from "../../core/interface/repositorie/Hotel/Ihotel.rooms.repository.js";
 
 @injectable()
 export class WebhookService implements IWebhookService {
@@ -20,7 +21,8 @@ export class WebhookService implements IWebhookService {
         @inject('ISubscriptionRepository') private readonly _subscriptionRepo: ISubscriptionRepository,
         @inject('IAgencyPackageRepository') private readonly _packageRepo: IAgencyPackageRepository,
         @inject('IOrdersRepository') private readonly _orderRepo: IOrdersRepository,
-        @inject('IAdminCouponRepository') private readonly _couponRepo: IAdminCouponRepository
+        @inject('IAdminCouponRepository') private readonly _couponRepo: IAdminCouponRepository,
+        @inject('IHotelRoomsRepository') private readonly _roomRepo: IHotelRoomsRepository,
     ) { }
 
     async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session): Promise<void> {
@@ -51,9 +53,9 @@ export class WebhookService implements IWebhookService {
                 await this._handlePackagePurchase(metadata, paymentIntentId);
                 break;
 
-            // case 'booking':
-            //   await this._handleBookingPurchase(metadata);
-            //   break;
+            case 'booking':
+                await this._handleBookingPurchase(metadata, paymentIntentId);
+                break;
 
             default:
                 logger.warn("Unknown payment metadata.type: " + metadata.type);
@@ -161,8 +163,7 @@ export class WebhookService implements IWebhookService {
         if (!pack) throw new DataNotFoundError()
 
         let discountAmount: number = 0;
-        let coupon:string = 'none';
-        logger.info(`fucking ${couponId}`)
+        let coupon: string = 'none';
         let totalAmount: number = pack.price;
         if (couponId != '') {
             const couponData = await this._couponRepo.findById(couponId)
@@ -193,8 +194,8 @@ export class WebhookService implements IWebhookService {
             product: packageId,
             ownedBy: pack.ownedBy,
             amount: totalAmount,
-            couponApplied:coupon,
-            offer:discountAmount,
+            couponApplied: coupon,
+            offer: discountAmount,
             paymentId: transaction.id
         })
 
@@ -214,12 +215,60 @@ export class WebhookService implements IWebhookService {
         await this._walletRepo.update(adminWallet.id, { Transaction: adminWallet.Transaction, Balance: adminWallet.Balance })
 
         logger.info(`metadata da kunja ${JSON.stringify(metadata)}`)
-        //   logger.info(`Package/order ${orderId} marked paid`);
     }
 
-    // private async _handleBookingPurchase(metadata: Record<string, any>): Promise<void> {
-    //   const bookingId = metadata.targetId;
-    //   // await Booking.findByIdAndUpdate(bookingId, { paid: true, paymentRef: sessionId })
-    //   logger.info(`Booking ${bookingId} marked paid`);
-    // }
+    private async _handleBookingPurchase(metadata: Record<string, any>, paymentIntentId: string): Promise<void> {
+        const roomId = metadata.roomId;
+        const amount = metadata.amount;
+        const start = metadata.startDate;
+        const userId = metadata.userId;
+        const couponId = metadata.couponId;
+
+        const room = await this._roomRepo.findById(roomId);
+        if (!room) throw new DataNotFoundError();
+
+        const transaction = await this._paymentRepo.findOne({ paymentIntentId: paymentIntentId })
+        if (!transaction) throw new PAYMENT_VERIFICATOIN_FAILED();
+
+        const discountAmount: number = 0;
+        const coupon: string = 'none';
+        const totalAmount: number = amount;
+        const days = (room.PricePerNight / amount)
+        const startDate = new Date(start);
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + days);
+
+        const pad = (n: number) => n.toString().padStart(2, '0');
+        const count = (await this._orderRepo.countDocuments() + 1).toString().padStart(6, '0')
+        const date = new Date()
+        const orderId = `ORD-${pad(date.getDate())}${pad(date.getMonth() + 1)}${date.getFullYear()}-${count}`
+
+        const orderData = await this._orderRepo.create({
+            orderId:orderId,
+            amount:totalAmount,
+            userId:userId,
+            productType:'Rooms',
+            role:'Hotel',
+            product:roomId,
+            ownedBy:room.HotelId,
+            paymentId:transaction.id,
+            couponApplied:coupon,
+            startDate:startDate.toString(),
+            endDate:endDate
+        })
+
+        const adminWallet = await this._walletRepo.findOne({role:'admin'})
+        if(!adminWallet) throw new DataNotFoundError();
+        const adminTransaction = {
+            Type: 'credit',
+            Amount: orderData.amount,
+            Description: `Room Booked amount ${orderData.amount} of ${orderData.orderId}.`,
+            paymentIntentId,
+            Date: new Date(),
+            orderId: orderData._id.toString()
+        }
+        adminWallet.Transaction.push(adminTransaction);
+        adminWallet.Balance += orderData.amount;
+        await this._walletRepo.update(adminWallet._id.toString(),adminWallet)
+    }
 }

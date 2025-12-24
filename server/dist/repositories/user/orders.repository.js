@@ -1,6 +1,5 @@
 import { BaseRepository } from "../../repositories/baseRepository.js";
 import { Order } from "../../models/Orders.js";
-import { logger } from "../../utils/logger.js";
 import { toTripDTO } from "../../core/DTO/user/Response/user.trip.DTO.js";
 export class OrderRepository extends BaseRepository {
     constructor() {
@@ -8,11 +7,19 @@ export class OrderRepository extends BaseRepository {
     }
     async findAllByProduct(userId) {
         const data = await Order.find({ userId: userId }).populate('product');
-        logger.info(`sanju ${data}`);
-        return data.map(toTripDTO);
+        console.log(data);
+        return data.map(order => toTripDTO(order));
     }
     async findOrderWithProduct(orderId) {
-        const data = await Order.findById(orderId).populate('product');
+        const data = await Order.findById(orderId).populate('product').populate('ownedBy');
         return data;
+    }
+    async findOrderWithUser(orderId) {
+        const data = await Order.findById(orderId).populate('userId').populate('ownedBy');
+        return data;
+    }
+    async findAllOrdersAdmin() {
+        const orders = await Order.find().populate('userId').populate('ownedBy').populate('product');
+        return orders.map(order => toTripDTO(order));
     }
 }

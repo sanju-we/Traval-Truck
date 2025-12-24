@@ -29,7 +29,6 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       const data = await ADMIN_API_METHODS.login(formData);
-      console.log('duck ass')
       console.log(data)
 
       if (data.success) {

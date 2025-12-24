@@ -26,4 +26,11 @@ export class UserHotelsController implements IUserHotelsController {
     const data = await this._userHotelService.getRoom(String(id))
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, data)
   }
+
+  async purchaseRoom(req: Request, res: Response): Promise<void> {
+    const {roomId,amount,couponId,role,startDate} = req.body
+    const userId = req.user.id;
+    const session = await this._userHotelService.initializeSession(roomId,role,userId,amount,couponId,startDate);
+    sendResponse(res,STATUS_CODE.OK,true,MESSAGES.CREATED,session)
+  } 
 }

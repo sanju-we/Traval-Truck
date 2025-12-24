@@ -11,7 +11,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from 'inversify';
-import { logger } from '../../utils/logger.js';
 import { sendResponse } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
@@ -27,7 +26,6 @@ let AdminSubscriptionController = class AdminSubscriptionController {
     }
     async getAll(req, res) {
         const data = await this._adminSubcriptionService.getAllSubscriptions();
-        logger.info('data that getting from the service', data);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, data);
     }
     async updateSubscription(req, res) {

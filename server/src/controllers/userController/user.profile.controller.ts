@@ -5,12 +5,10 @@ import { BADREQUEST, sendResponse } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository.js';
 import z from 'zod';
-import { logger } from '../../utils/logger.js';
 import { IUserProfileController } from '../../core/interface/controllerInterface/user/userProfile.js';
 import { IUserProfileService } from '../../core/interface/serivice/user/Iuser.profile.service.js';
 import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
-import { HttpError } from '../../utils/resAndErrors.js';
 
 @injectable()
 export class ProfileController implements IUserProfileController {

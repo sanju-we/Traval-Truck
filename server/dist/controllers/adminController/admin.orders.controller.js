@@ -14,33 +14,19 @@ import { inject, injectable } from "inversify";
 import { sendResponse } from "../../utils/resAndErrors.js";
 import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
 import { MESSAGES } from "../../utils/responseMessaages.js";
-import { logger } from "../../utils/logger.js";
-let UserTripController = class UserTripController {
-    _tripService;
-    constructor(_tripService) {
-        this._tripService = _tripService;
+let AdminOrdersController = class AdminOrdersController {
+    _orderService;
+    constructor(_orderService) {
+        this._orderService = _orderService;
     }
-    async getHistory(req, res) {
-        const userId = req.user.id;
-        const history = await this._tripService.history(userId);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, history);
-    }
-    async getOrder(req, res) {
-        const orderId = req.params.orderId;
-        const orderDetails = await this._tripService.getOrder(orderId);
-        logger.info(`orderDetail ${JSON.stringify(orderDetails)}`);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, orderDetails);
-    }
-    async orderCalcellation(req, res) {
-        logger.info(`req.body ${JSON.stringify(req.body)}`);
-        const { orderId, reason } = req.body;
-        const result = await this._tripService.orderCancellation(orderId, reason);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, result);
+    async getAllOrders(req, res) {
+        const orders = await this._orderService.getAllOrders();
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, orders);
     }
 };
-UserTripController = __decorate([
+AdminOrdersController = __decorate([
     injectable(),
-    __param(0, inject('IUserTripService')),
+    __param(0, inject('IAdminOrderService')),
     __metadata("design:paramtypes", [Object])
-], UserTripController);
-export { UserTripController };
+], AdminOrdersController);
+export { AdminOrdersController };

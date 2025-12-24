@@ -5,7 +5,6 @@ import { inject, injectable } from "inversify";
 import { sendResponse } from "../../utils/resAndErrors.js";
 import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
 import { MESSAGES } from "../../utils/responseMessaages.js";
-import { logger } from "../../utils/logger.js";
 
 @injectable()
 export class AgencyOrdersController implements IAgencyOrdersController {
@@ -28,7 +27,6 @@ export class AgencyOrdersController implements IAgencyOrdersController {
   async getOrder(req: Request, res: Response): Promise<void> {
     const orderId = req.params.id;
     const order = await this._orderService.getOrder(orderId);
-    logger.info(`order details in controller: ${order}`)
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, order)
   }
 

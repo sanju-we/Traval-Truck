@@ -1,5 +1,4 @@
 import { IAdminVendorController } from '../../core/interface/controllerInterface/admin/Iadmin.vendor.controller.js';
-import { logger } from '../../utils/logger.js';
 import { sendResponse } from '../../utils/resAndErrors.js';
 import { HttpError } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
@@ -55,7 +54,6 @@ export class AdminVendorController implements IAdminVendorController {
   }
 
   async blockTongle(req: Request, res: Response): Promise<void> {
-    logger.info(`request got in here role:`);
     const { id, role } = req.params;
     await this._adminVenderService.updateBlock(id, role);
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED);

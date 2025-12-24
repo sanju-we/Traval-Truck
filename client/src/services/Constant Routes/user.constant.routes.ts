@@ -36,7 +36,8 @@ export const USER_ROUTES = {
 
   hotel : {
     getAllHotel : `${USER_HOTELS}/getAll`,
-    getRoomDetails :(id:string) => `${USER_HOTELS}/getRoom/${id}`
+    getRoomDetails :(id:string) => `${USER_HOTELS}/getRoom/${id}`,
+    purchaseRoom : `${USER_HOTELS}/purchase`
   },
 
   foods : {

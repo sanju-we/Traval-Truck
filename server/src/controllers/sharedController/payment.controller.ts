@@ -5,7 +5,6 @@ import { sendResponse } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
 import { inject, injectable } from 'inversify';
-import { logger } from '../../utils/logger.js';
 
 @injectable()
 export class UserPaymentController implements IPaymentController {
@@ -22,8 +21,6 @@ export class UserPaymentController implements IPaymentController {
       priceId,
       couponId
     } = req.body;
-
-    logger.info(`funcking bitch ${JSON.stringify(req.body)}`)
 
     const userId = req.user.id;
     const role = req.user.role;

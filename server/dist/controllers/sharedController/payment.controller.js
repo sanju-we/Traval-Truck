@@ -14,7 +14,6 @@ import { sendResponse } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
 import { inject, injectable } from 'inversify';
-import { logger } from '../../utils/logger.js';
 let UserPaymentController = class UserPaymentController {
     _paymentService;
     constructor(_paymentService) {
@@ -22,7 +21,6 @@ let UserPaymentController = class UserPaymentController {
     }
     async initiate(req, res) {
         const { type, amount, currency = "inr", targetId, priceId, couponId } = req.body;
-        logger.info(`funcking bitch ${JSON.stringify(req.body)}`);
         const userId = req.user.id;
         const role = req.user.role;
         const description = (type === "wallet" || type === "wallet_topup")

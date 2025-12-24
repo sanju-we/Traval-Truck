@@ -5,13 +5,14 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
 interface props {
-  packageId: string,
+  roomId: string,
   amount: number,
   role: string,
-  couponCode?: string
+  couponCode?: string,
+  startDate : string,
 }
 
-export default function BuyNowButton({ packageId, amount, role, couponCode }: props) {
+export default function BuyNowButton({ roomId, amount, role, couponCode,startDate }: props) {
   const [loading, setLoading] = useState(false);
 
   const handleBuy = async () => {
@@ -24,7 +25,7 @@ export default function BuyNowButton({ packageId, amount, role, couponCode }: pr
     try {
       setLoading(true);
 
-      const res = await service.PurchasePackage({ packageId, role, amount, couponId:couponCode});
+      const res = await service.purchaseRoom({ roomId, role, amount, couponId:couponCode,startDate});
       console.log(res)
       if (res.success && res.data.url) {
         window.location.href = res.data.url;

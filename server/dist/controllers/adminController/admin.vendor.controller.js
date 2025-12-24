@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { logger } from '../../utils/logger.js';
 import { sendResponse } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { inject, injectable } from 'inversify';
@@ -56,7 +55,6 @@ let AdminVendorController = class AdminVendorController {
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.APPROVED);
     }
     async blockTongle(req, res) {
-        logger.info(`request got in here role:`);
         const { id, role } = req.params;
         await this._adminVenderService.updateBlock(id, role);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED);

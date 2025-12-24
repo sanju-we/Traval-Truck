@@ -45,6 +45,7 @@ export default function OrdersPage() {
       const data = await response.data;
       
       if (response.success) {
+        console.log('data:',data)
         setTrips(data);
       } else {
         toast.error(response.message || 'Failed to fetch trips');
@@ -207,7 +208,7 @@ export default function OrdersPage() {
                 className="bg-white border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-all duration-200"
               >
                 <div className="flex gap-5">
-                  {trip.product.images[0] && (
+                  {trip.product.images && (
                     <img
                       src={trip.product.images[0]}
                       alt={trip.product.title}

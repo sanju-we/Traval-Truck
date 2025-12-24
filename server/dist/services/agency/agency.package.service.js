@@ -41,12 +41,9 @@ let AgencyPackageService = class AgencyPackageService {
         await this._authValidator.addPackageValidator(data);
         const agency = await this._agencyRepo.findById(id);
         const images = [];
-        for (const fieldname in files) {
-            const fileArray = files[fieldname];
-            for (const file of fileArray) {
-                const result = await singleUpload(file, "Travel-Truck-Vendor-Document");
-                images.push(result);
-            }
+        for (const fieldname of files) {
+            const result = await singleUpload(fieldname, "Travel-Truck-Vendor-Document");
+            images.push(result);
         }
         const packageData = await this._agencyPackeageRepository.create({ ...data, images: images, ownedBy: id });
         if (packageData) {

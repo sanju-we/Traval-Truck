@@ -38,8 +38,6 @@ export const postRequest = async < T = any> (url: string, body: object | FormDat
     }
     return res.data
   } catch (error) {
-    console.log('fucking king')
-    // handleAPIerror(error,options)
     return null
   }
 }

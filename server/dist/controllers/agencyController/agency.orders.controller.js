@@ -14,7 +14,6 @@ import { inject, injectable } from "inversify";
 import { sendResponse } from "../../utils/resAndErrors.js";
 import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
 import { MESSAGES } from "../../utils/responseMessaages.js";
-import { logger } from "../../utils/logger.js";
 let AgencyOrdersController = class AgencyOrdersController {
     _orderService;
     constructor(_orderService) {
@@ -32,9 +31,30 @@ let AgencyOrdersController = class AgencyOrdersController {
     }
     async getOrder(req, res) {
         const orderId = req.params.id;
-        logger.info(req.params);
         const order = await this._orderService.getOrder(orderId);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, order);
+    }
+    async startTrip(req, res) {
+        const orderId = req.params.orderId;
+        const order = await this._orderService.startTrip(orderId);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.TRIP_STARTED, order);
+    }
+    async completeActivity(req, res) {
+        const orderId = req.params.orderId;
+        const { day, activityIndex } = req.body;
+        const order = await this._orderService.completeActivity(orderId, day, activityIndex);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, order);
+    }
+    async completeDay(req, res) {
+        const orderId = req.params.orderId;
+        const { day } = req.body;
+        const order = await this._orderService.completeDay(orderId, day);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, order);
+    }
+    async completeTrip(req, res) {
+        const orderId = req.params.orderId;
+        const order = await this._orderService.completeTrip(orderId);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.TRIP_COMPLETED, order);
     }
 };
 AgencyOrdersController = __decorate([

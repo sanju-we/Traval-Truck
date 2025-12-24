@@ -305,7 +305,6 @@ export default function SubscriptionPage() {
       Features: subscription.features?.join(", ") || "",
       IsActive: subscription.isActive,
     });
-    console.log('funcking girl... ', subscription)
     setShowEditModal(true);
   };
 

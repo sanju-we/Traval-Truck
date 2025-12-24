@@ -8,4 +8,5 @@ export interface IUserHotelsService {
     totalPages: number;
   }>;
   getRoom(id:string) :Promise<RoomsDTO>
+  initializeSession(roomId:string,role:string,userId:string,amount:number,couponId:string,startDate:string):Promise<{url:string,sessionId:string}>
 }

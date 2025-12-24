@@ -6,9 +6,6 @@ import { MESSAGES } from '../../utils/responseMessaages.js';
 import { IHotelProfileService } from '../../core/interface/serivice/hotel/Ihotel.profile.service.js';
 import { Request, Response } from 'express';
 import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Ihotel.auth.repository.js';
-import { logger } from '../../utils/logger.js';
-import { singleUpload } from '../../utils/upload.cloudinary.js';
-import { id } from 'zod/v4/locales';
 import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
 
 @injectable()

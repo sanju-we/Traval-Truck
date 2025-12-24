@@ -22,15 +22,12 @@ export class AdminAuthController implements IAdminAuthController {
     const data = await this._adminauthService.verifyAdminEmail(email, password);
     await this._IJWT.setTokenInCookies(res, data.accessToken, data.refreshToken);
 
-    logger.info(`admin logged in response sending successfully`);
     sendResponse(res, STATUS_CODE.OK, true, 'Admin logged in', data);
   }
 
   async logout(req: Request, res: Response): Promise<void> {
     try {
-      logger.info('req.cookies', req.cookies);
       if (!req.cookies || !req.cookies.accessToken) {
-        logger.info('Admin logged out Failed not found the cookie in the req:');
         return sendResponse(res, STATUS_CODE.BAD_REQUEST, false, 'No accessToken token found');
       }
       await this._IJWT.blacklistRefreshToken(res);
@@ -38,7 +35,6 @@ export class AdminAuthController implements IAdminAuthController {
     } catch (error) {
       const status = error instanceof HttpError ? error.statusCode : STATUS_CODE.BAD_REQUEST;
       const message = error instanceof Error ? error.message : 'Unknown error';
-      logger.error(`Failed to logout user: ${message}`);
       sendResponse(res, status, false, message);
     }
   }

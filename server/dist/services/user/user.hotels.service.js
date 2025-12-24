@@ -15,9 +15,13 @@ import { DataNotFoundError } from "../../utils/resAndErrors.js";
 let UserHotelsService = class UserHotelsService {
     _hotelRoomRepo;
     _subscriptionHistoryRepo;
-    constructor(_hotelRoomRepo, _subscriptionHistoryRepo) {
+    _paymentUtils;
+    _orderRepo;
+    constructor(_hotelRoomRepo, _subscriptionHistoryRepo, _paymentUtils, _orderRepo) {
         this._hotelRoomRepo = _hotelRoomRepo;
         this._subscriptionHistoryRepo = _subscriptionHistoryRepo;
+        this._paymentUtils = _paymentUtils;
+        this._orderRepo = _orderRepo;
     }
     async getAllHotels(page, limit, search) {
         const data = await this._hotelRoomRepo.findAllPackageWithPartners(page, limit, search);
@@ -42,11 +46,35 @@ let UserHotelsService = class UserHotelsService {
             return data;
         throw new DataNotFoundError();
     }
+    async initializeSession(roomId, role, userId, amount, couponId, startDate) {
+        const room = await this._hotelRoomRepo.findById(roomId);
+        if (!room)
+            throw new DataNotFoundError();
+        // const order = await this._orderRepo.findOne({})
+        return this._paymentUtils.createCheckoutSession({
+            amount: amount,
+            currency: 'inr',
+            description: `Room Number: ${room.RoomNumber}`,
+            successUrl: `${process.env.FRONTEND_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+            cancelUrl: `${process.env.FRONTEND_URL}/cancel`,
+            metadata: {
+                type: 'booking',
+                userId,
+                role,
+                amount,
+                roomId,
+                couponId,
+                startDate
+            }
+        });
+    }
 };
 UserHotelsService = __decorate([
     injectable(),
     __param(0, inject('IHotelRoomsRepository')),
     __param(1, inject('ISubscriptionHistoryRepository')),
-    __metadata("design:paramtypes", [Object, Object])
+    __param(2, inject('IPaymentUtils')),
+    __param(3, inject('IOrdersRepository')),
+    __metadata("design:paramtypes", [Object, Object, Object, Object])
 ], UserHotelsService);
 export { UserHotelsService };

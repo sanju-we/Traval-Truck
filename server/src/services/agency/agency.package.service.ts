@@ -39,7 +39,6 @@ export class AgencyPackageService implements IAgencyPackageService {
         const result = await singleUpload(fieldname, "Travel-Truck-Vendor-Document");
         images.push(result);
     }
-    console.log(data)
     const packageData = await this._agencyPackeageRepository.create({ ...data, images: images, ownedBy:id })
     if (packageData) {
       agency?.packages.push(packageData._id.toString())

@@ -6,7 +6,6 @@ import { BADREQUEST, sendResponse, UserNotFoundError } from '../../utils/resAndE
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
 import { IRestaurantProfileService } from '../../core/interface/serivice/restaurant/IRestaurant.profile.service.js';
-import { logger } from '../../utils/logger.js';
 import z from 'zod';
 import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
 

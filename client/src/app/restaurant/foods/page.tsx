@@ -36,7 +36,6 @@ export default function FoodList() {
   useEffect(() => {
     async function fetchData() {
       const data  = await RESTAURANT_API_METHODS.getFood('/restaurant/food/getFoods')
-      console.log('sunny pussy',data)
       if (data.success) {
         toast.success(data.message)
         console.log(data.data.image)

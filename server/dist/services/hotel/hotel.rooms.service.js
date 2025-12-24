@@ -29,13 +29,12 @@ let HotelRoomsService = class HotelRoomsService {
     }
     async addRoom(data, file) {
         await this._authValidator.RoomValidator(data);
-        logger.info(data.Images);
         const Image = [];
         for (const img of file) {
             const url = await singleUpload(img, 'Travel-Travel-Document');
             Image.push(url);
         }
-        const createdData = await this._roomsRepo.create({ ...data, Images: Image, Status: 'Available' });
+        const createdData = await this._roomsRepo.create({ ...data, images: Image, Status: 'Available' });
         return toRoomsDTO(createdData);
     }
     async getRoom(id) {
@@ -91,7 +90,7 @@ let HotelRoomsService = class HotelRoomsService {
             const url = await singleUpload(img, 'Travel-Travel-Document');
             Image.push(url);
         }
-        const updatedRoom = await this._roomsRepo.update(id, { ...data, Images: Image });
+        const updatedRoom = await this._roomsRepo.update(id, { ...data, images: Image });
         if (updatedRoom)
             return toRoomsDTO(updatedRoom);
         throw new DataNotFoundError();
@@ -100,12 +99,12 @@ let HotelRoomsService = class HotelRoomsService {
         const room = await this._roomsRepo.findById(id);
         if (!room)
             throw new DataNotFoundError();
-        const publicId = await extractPublicId(room.Images[index]);
+        const publicId = await extractPublicId(room.images[index]);
         logger.info(`publidId ${publicId}`);
         const deleted = await deleteImage(publicId);
         if (!deleted)
             throw new DataNotFoundError();
-        room.Images.splice(index, 1);
+        room.images.splice(index, 1);
         await room.save();
         return toRoomsDTO(room);
     }

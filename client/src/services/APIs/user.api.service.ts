@@ -35,6 +35,7 @@ export const USER_API_METHODS = {
     // hotel api requests
     getAllHotel: (page?: number,limit?: number) => get(USER_ROUTES.hotel.getAllHotel, {page,limit}),
     getRoomDetails: (id: string) => get(USER_ROUTES.hotel.getRoomDetails(id)),
+    purchaseRoom:(data:{roomId:string,role:string,amount:number,couponId?:string,startDate:string})=> post(USER_ROUTES.hotel.purchaseRoom,data),
 
     // foods api requests
     showAllFoods: (params?: any) => get(USER_ROUTES.foods.showAllFoods, params),

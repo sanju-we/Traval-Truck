@@ -72,4 +72,9 @@ export var MESSAGES;
     MESSAGES["PAYMENT_VERIFY_SUCCESS"] = "Payment verifycation completed";
     // -------------------- Subscription------------------
     MESSAGES["SUBSCRIPTION_PURCHASED"] = "Subscrtiption purchased successfully";
+    // -------------------- TRIP ACTIONS --------------------
+    MESSAGES["TRIP_STARTED"] = "Trip has been started successfully";
+    MESSAGES["TRIP_ACTIVITY"] = "Trip activity complete successfully";
+    MESSAGES["TRIP_DAY"] = "Trip Day complete successfully";
+    MESSAGES["TRIP_COMPLETED"] = "Trip completed successfully";
 })(MESSAGES || (MESSAGES = {}));

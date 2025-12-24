@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { IAgencyPackageController } from "../../core/interface/controllerInterface/agency/Iagencu.package.controller.js";
-import { logger } from "../../utils/logger.js";
 import { IAgencyPackageService } from "../../core/interface/serivice/agency/Iagency.package.service.js";
 import { inject, injectable } from "inversify";
 import { BADREQUEST, sendResponse } from "../../utils/resAndErrors.js";
@@ -16,7 +15,6 @@ export class agencyPackageController implements IAgencyPackageController {
   async getAllPackages(req: Request, res: Response): Promise<void> {
     const { page } = req.query
     const allPackage = await this._packageService.getAllPackage(Number(page))
-    logger.info(allPackage)
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, allPackage)
   }
 
@@ -25,13 +23,11 @@ export class agencyPackageController implements IAgencyPackageController {
     const id = req.user.id
     const files = req.files as Express.Multer.File[];
     if (!files) throw new BADREQUEST()
-      logger.info(`package data ${typeof files}`)
     const createdData = await this._packageService.addPackage(data, files, id)
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.CREATED, createdData)
   }
 
   async updatePackage(req: Request, res: Response): Promise<void> {
-    logger.info('yup')
     const data = req.body;
     const id = req.params.id
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };

@@ -42,14 +42,12 @@ let AgencyAuthController = class AgencyAuthController {
         const { email, otp, restaurantData } = req.body;
         const { agencyData, accessToken, refreshToken } = await this._agencyAuthService.verifyAgencySignup(email, otp, restaurantData);
         await this._IJWT.setTokenInCookies(res, accessToken, refreshToken);
-        logger.info(`${agencyData.companyName} is successfully ragistered`);
         sendResponse(res, STATUS_CODE.CREATED, true, MESSAGES.CREATED);
     }
     async verifyAgencyLogin(req, res) {
         const { email, password } = req.body;
         const result = await this._agencyAuthService.verifyAgencyLogin(email, password);
         await this._IJWT.setTokenInCookies(res, result.accessToken, result.refreshToken);
-        logger.info(`${result.agencyData.companyName} Logged In`);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.LOGIN_SUCCESS);
     }
     async agencyLogout(req, res) {

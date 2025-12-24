@@ -3,7 +3,9 @@ import { BaseRepository } from "../../repositories/baseRepository.js";
 import { Order } from "../../models/Orders.js";
 import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository.js";
 import { logger } from "../../utils/logger.js";
-import { toTripDTO, TripDTO } from "../../core/DTO/user/Response/user.trip.DTO.js";
+import { IOrderWithProduct, toTripDTO, TripDTO } from "../../core/DTO/user/Response/user.trip.DTO.js";
+import { IPackage } from "../../core/interface/modelInterface/Ipackage.js";
+import { IRooms } from "../../core/interface/modelInterface/IRooms.js";
 
 export class OrderRepository extends BaseRepository<IOrders> implements IOrdersRepository{
   constructor(){
@@ -11,8 +13,9 @@ export class OrderRepository extends BaseRepository<IOrders> implements IOrdersR
   }
 
   async findAllByProduct(userId: string): Promise<TripDTO[]> {
-      const data = await Order.find({userId:userId}).populate('product')
-      return data.map(toTripDTO)
+      const data = await Order.find({userId:userId}).populate<{ product: IPackage | IRooms }>('product')
+          console.log(data)
+      return data.map(order => toTripDTO(order as IOrderWithProduct))
   }
 
   async findOrderWithProduct(orderId: string): Promise<IOrders | null> {
@@ -26,7 +29,7 @@ export class OrderRepository extends BaseRepository<IOrders> implements IOrdersR
   }
 
   async findAllOrdersAdmin(): Promise<TripDTO[] | null> {
-    const orders = await Order.find().populate('userId').populate('ownedBy').populate('product')
-    return orders.map(toTripDTO)
+    const orders = await Order.find().populate('userId').populate('ownedBy').populate<{ product: IPackage | IRooms }>('product')
+    return orders.map(order => toTripDTO(order as IOrderWithProduct))
   }
 }

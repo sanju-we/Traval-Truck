@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { IAdminSubscriptionController } from '../../core/interface/controllerInterface/admin/Iadmin.subscription.controller.js';
 import { inject, injectable } from 'inversify';
-import { logger } from '../../utils/logger.js';
 import { IAdminSubscriptionService } from '../../core/interface/serivice/admin/IAdmin.subscription.service.js';
 import { sendResponse } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
@@ -23,7 +22,6 @@ export class AdminSubscriptionController implements IAdminSubscriptionController
 
   async getAll(req: Request, res: Response): Promise<void> {
     const data = await this._adminSubcriptionService.getAllSubscriptions();
-    logger.info('data that getting from the service', data);
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, data);
   }
 

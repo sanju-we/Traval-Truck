@@ -14,7 +14,6 @@ import { inject, injectable } from 'inversify';
 import { BADREQUEST, sendResponse, UserNotFoundError } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
-import { logger } from '../../utils/logger.js';
 import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
 let AgencyProfileController = class AgencyProfileController {
     _agencyRepository;
@@ -60,7 +59,6 @@ let AgencyProfileController = class AgencyProfileController {
         const { documentUrl, key } = req.body;
         if (!documentUrl)
             throw new BADREQUEST();
-        logger.info(`requested get on the server side`);
         const agency = await this._agencyProfileService.deleteImage(agencyId, documentUrl, key);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DELETED, agency);
     }

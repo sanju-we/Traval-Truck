@@ -5,7 +5,7 @@ export const toRoomsDTO = (Room) => ({
     PricePerNight: Room.PricePerNight,
     Capacity: Room.Capacity,
     Facilities: Room.Facilities,
-    Images: Room.Images,
+    images: Room.images,
     reviews: Room.reviews,
     Available: Room.AvailableCount,
     Status: Room.Status,

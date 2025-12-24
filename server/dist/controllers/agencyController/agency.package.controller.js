@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { logger } from "../../utils/logger.js";
 import { inject, injectable } from "inversify";
 import { BADREQUEST, sendResponse } from "../../utils/resAndErrors.js";
 import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
@@ -23,7 +22,6 @@ let agencyPackageController = class agencyPackageController {
     async getAllPackages(req, res) {
         const { page } = req.query;
         const allPackage = await this._packageService.getAllPackage(Number(page));
-        logger.info(allPackage);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, allPackage);
     }
     async addPackage(req, res) {
@@ -32,12 +30,10 @@ let agencyPackageController = class agencyPackageController {
         const files = req.files;
         if (!files)
             throw new BADREQUEST();
-        logger.info('onn vada');
         const createdData = await this._packageService.addPackage(data, files, id);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.CREATED, createdData);
     }
     async updatePackage(req, res) {
-        logger.info('yup');
         const data = req.body;
         const id = req.params.id;
         const files = req.files;

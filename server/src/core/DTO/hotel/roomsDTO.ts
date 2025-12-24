@@ -16,7 +16,7 @@ export interface RoomsDTO{
   PricePerNight:number;
   Capacity:number;
   Facilities:string[];
-  Images:string[];
+  images:string[];
   reviews:{ Comment: string; CreatedAt: Date; Name: string; Rating: string; UserId: string; }[];
   Available?:number;
   Status:string;
@@ -32,7 +32,7 @@ export const toRoomsDTO = (Room:IRooms) : RoomsDTO => ({
   PricePerNight:Room.PricePerNight,
   Capacity:Room.Capacity,
   Facilities:Room.Facilities,
-  Images:Room.Images,
+  images:Room.Images,
   reviews:Room.reviews,
   Available:Room.AvailableCount,
   Status:Room.Status,

@@ -8,5 +8,6 @@ const userHotelsController = container.get<IUserHotelsController>('IUserHotelsCo
 
 UserHotelsRouter.get('/getAll', asyncHandler(userHotelsController.getAllHotels.bind(userHotelsController)))
   .get('/getRoom/:id', asyncHandler(userHotelsController.getRoom.bind(userHotelsController)))
+  .post('/purchase',asyncHandler(userHotelsController.purchaseRoom.bind(userHotelsController)))
 
 export default UserHotelsRouter

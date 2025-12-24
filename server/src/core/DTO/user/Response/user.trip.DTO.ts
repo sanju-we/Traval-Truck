@@ -3,17 +3,49 @@ import { PackageDTO, toPackageDTO } from "../../../../core/DTO/agency/request/pa
 import { IOrders } from "../../../../core/interface/modelInterface/IOrders.js"
 import { IPackage } from "../../../../core/interface/modelInterface/Ipackage.js"
 import { TripPlan } from "../../../../types/index.js"
+import { RoomsDTO, toRoomsDTO } from "../../../../core/DTO/hotel/roomsDTO.js"
+import { IRooms } from "../../../../core/interface/modelInterface/IRooms.js"
+// import FoodsDTO later
 
+export type TripProductDTO =
+  | { type: "Package"; data: PackageDTO }
+  | { type: "Rooms"; data: RoomsDTO }
+
+export interface IOrderWithProduct
+  extends Omit<IOrders, "product"> {
+  product: IPackage | IRooms
+}
+
+export const mapTripProduct = (
+  order: IOrderWithProduct
+): TripProductDTO => {
+  switch (order.productType) {
+    case "Package":
+      return {
+        type: "Package",
+        data: toPackageDTO(order.product as IPackage)
+      }
+
+    case "Rooms":
+      return {
+        type: "Rooms",
+        data: toRoomsDTO(order.product as IRooms)
+      }
+
+    default:
+      throw new Error("Unsupported product type")
+  }
+}
 
 export interface TripDTO {
   id: string
   orderId: string
-  product: PackageDTO
-  status: string,
-  amount:number,
-  plan: TripPlan[] | undefined,
-  startDate : string,
-  endDate : Date
+  product: TripProductDTO
+  status: string
+  amount: number
+  plan?: TripPlan[]
+  startDate?: string
+  endDate?: Date
 }
 
 export interface Trip {
@@ -30,13 +62,15 @@ export interface Trip {
 
 // export const toTrip = (order)
 
-export const toTripDTO = (order: IOrders): TripDTO => ({
+export const toTripDTO = (
+  order: IOrderWithProduct
+): TripDTO => ({
   id: order._id.toString(),
   orderId: order.orderId,
-  product: toPackageDTO(order.product as any),
-  amount:order.amount,
+  product: mapTripProduct(order),
+  amount: order.amount,
   status: order.status,
-  plan : order.plan,
-  startDate:order.startDate,
-  endDate:order.endDate
+  plan: order.plan,
+  startDate: order.startDate,
+  endDate: order.endDate
 })

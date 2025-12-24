@@ -6,7 +6,6 @@ import { BADREQUEST, sendResponse, UserNotFoundError } from '../../utils/resAndE
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
 import { IAgencyProfileService } from '../../core/interface/serivice/agency/Iagenc.profile.service.js';
-import { logger } from '../../utils/logger.js';
 import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
 
 @injectable()
@@ -62,7 +61,6 @@ export class AgencyProfileController implements IAgencyProfileController {
     const agencyId = req.user.id;
     const { documentUrl, key } = req.body;
     if (!documentUrl) throw new BADREQUEST();
-    logger.info(`requested get on the server side`);
     const agency = await this._agencyProfileService.deleteImage(agencyId, documentUrl, key);
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DELETED, agency);
   }

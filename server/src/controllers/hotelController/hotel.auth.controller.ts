@@ -36,16 +36,13 @@ export class HotelAuthController implements IHotelAuthController {
       hotelData,
     );
     await this._ijwt.setTokenInCookies(res, accessToken, refreshToken);
-    logger.info(`${hotel.companyName} successfully registered`);
     sendResponse(res, STATUS_CODE.CREATED, true, MESSAGES.CREATED, hotel);
   }
 
   async verifyHotelLogin(req: Request, res: Response): Promise<void> {
     const { email, password } = req.body;
     const result = await this._hotelService.verifyHotelLogin(email, password);
-    logger.info(`got it in here`);
     await this._ijwt.setTokenInCookies(res, result.accessToken, result.refreshToken);
-    logger.info(`${result.hotel.companyName} loggeIn successfully`);
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.LOGIN_SUCCESS);
   }
 
@@ -54,7 +51,6 @@ export class HotelAuthController implements IHotelAuthController {
 
     await this._ijwt.blacklistRefreshToken(res);
     res.clearCookie('accessToken', { httpOnly: true, secure: false, sameSite: 'lax' });
-    logger.info(`hotel logged out successfully`);
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.LOGOUT_SUCCESS);
   }
 

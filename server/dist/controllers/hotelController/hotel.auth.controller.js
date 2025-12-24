@@ -38,15 +38,12 @@ let HotelAuthController = class HotelAuthController {
         const { email, otp, hotelData } = req.body;
         const { hotel, accessToken, refreshToken } = await this._hotelService.verifyHotel(email, otp, hotelData);
         await this._ijwt.setTokenInCookies(res, accessToken, refreshToken);
-        logger.info(`${hotel.companyName} successfully registered`);
         sendResponse(res, STATUS_CODE.CREATED, true, MESSAGES.CREATED, hotel);
     }
     async verifyHotelLogin(req, res) {
         const { email, password } = req.body;
         const result = await this._hotelService.verifyHotelLogin(email, password);
-        logger.info(`got it in here`);
         await this._ijwt.setTokenInCookies(res, result.accessToken, result.refreshToken);
-        logger.info(`${result.hotel.companyName} loggeIn successfully`);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.LOGIN_SUCCESS);
     }
     async hotelLogout(req, res) {
@@ -54,7 +51,6 @@ let HotelAuthController = class HotelAuthController {
             throw new NoAccessToken();
         await this._ijwt.blacklistRefreshToken(res);
         res.clearCookie('accessToken', { httpOnly: true, secure: false, sameSite: 'lax' });
-        logger.info(`hotel logged out successfully`);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.LOGOUT_SUCCESS);
     }
     async forgotPassword(req, res) {

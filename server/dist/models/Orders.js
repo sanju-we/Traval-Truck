@@ -1,4 +1,18 @@
 import { Schema, model } from "mongoose";
+const planSchema = new Schema({
+    date: { type: Date, required: true },
+    day: { type: Number, required: true },
+    title: { type: String },
+    activities: { type: [String] },
+    completedActivities: { type: [Number] },
+    isCompleted: { type: Boolean }
+}, { _id: false });
+const progress = new Schema({
+    currentDay: { type: Number },
+    completedDays: { type: [Number] },
+    startedAt: { type: Date },
+    completedAt: { type: Date }
+});
 const OrdersSchema = new Schema({
     userId: { type: Schema.Types.ObjectId, required: true },
     orderId: { type: String, unique: true },
@@ -9,10 +23,13 @@ const OrdersSchema = new Schema({
     ownedBy: { type: String, required: true, refPath: 'role' },
     startDate: { type: String },
     endDate: { type: Date },
+    plan: { type: [planSchema] },
+    tripProgress: { type: progress },
     status: { type: String, enum: ['Upcoming', 'Ongoing', 'Completed'], default: 'Upcoming' },
     paymentId: { type: Schema.Types.ObjectId, ref: 'Payments', required: true },
     couponApplied: { type: String },
     offer: { type: Number },
-    createdAt: { type: Date }
+    createdAt: { type: Date },
+    reason: { type: String }
 }, { timestamps: true });
 export const Order = model('Orders', OrdersSchema);
