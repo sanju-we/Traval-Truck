@@ -35,7 +35,7 @@ export default function FoodList() {
 
   useEffect(() => {
     async function fetchData() {
-      const data  = await RESTAURANT_API_METHODS.getFood('/restaurant/food/getFoods')
+      const data  = await RESTAURANT_API_METHODS.getFood()
       if (data.success) {
         toast.success(data.message)
         console.log(data.data.image)

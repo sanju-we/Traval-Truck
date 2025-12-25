@@ -27,12 +27,13 @@ export const RESTAURANT_API_METHODS = {
     uploadProfile: (data: any) => patch(RESTAURANT_ROUTES.profile.uploadProfile, data),
 
     // food api requests
-    getFood: (params?: any) => get(RESTAURANT_ROUTES.food.getFood, params),
+    getFood: () => get(RESTAURANT_ROUTES.food.getFood),
     create: (data: any) => post(RESTAURANT_ROUTES.food.create, data),
     editFood: (data: any) => patch(RESTAURANT_ROUTES.food.edit, data),
 
     // payment api requests
     createPayment: (data: any) => post(RESTAURANT_ROUTES.payment.create, data),
+    // createOfflineBill : ()=> post(RESTAURANT_ROUTES.)
 
     // subscription api requests
     purchaseSubscription: (data: any) => post(RESTAURANT_ROUTES.subscription.purchase, data),

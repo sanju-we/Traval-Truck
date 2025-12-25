@@ -269,6 +269,9 @@ export class WebhookService implements IWebhookService {
         }
         adminWallet.Transaction.push(adminTransaction);
         adminWallet.Balance += orderData.amount;
-        await this._walletRepo.update(adminWallet._id.toString(),adminWallet)
+        await this._walletRepo.update(adminWallet._id.toString(),adminWallet);
+        
+        room.Status = 'Occupid';
+        await this._roomRepo.update(room._id.toString(),room);
     }
 }

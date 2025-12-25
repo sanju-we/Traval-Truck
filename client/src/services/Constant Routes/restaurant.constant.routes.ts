@@ -1,7 +1,7 @@
 const RESTAURANT = '/restaurant'
 const RESTAURANT_AUTH = `${RESTAURANT}/auth`
 const RESTAURANT_PROFILE = `${RESTAURANT}/profile`
-const RESTAURANT_FOODS = `${RESTAURANT}/foods`
+const RESTAURANT_FOODS = `${RESTAURANT}/food`
 
 export const RESTAURANT_ROUTES = {
   auth: {

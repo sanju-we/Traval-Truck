@@ -239,7 +239,7 @@ export default function RoomDetailsPage() {
 
           {/* Book Button */}
           <div className="flex justify-end">
-            {acceptedTerms && checkInDate ? (
+            {acceptedTerms && room.Status == 'Available' && checkInDate ? (
               <BookNowButton
                 roomId={room.id}
                 amount={totalAmount}
@@ -251,7 +251,7 @@ export default function RoomDetailsPage() {
                 disabled
                 className="px-8 py-3 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed"
               >
-                Select date & accept terms
+                Select date & accept terms & only if the Room is Available
               </button>
             )}
           </div>
