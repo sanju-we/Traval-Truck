@@ -13,75 +13,38 @@ class RedisError extends Error {
 @injectable()
 export class RedisClient implements IRedisClient {
   #client: RedisClientType;
-  #isConnected: boolean = false;
+  #isConnected = false;
   #redisUrl: string;
 
   constructor() {
-    this.#redisUrl = process.env.REDIS_URL ?? '';
-    if (!this.#redisUrl) {
-      logger.error('REDIS_URL not provided in environment variables');
-      throw new RedisError('Missing REDIS_URL');
-    }
+    this.#redisUrl = process.env.REDIS_HOST ?? '';
+    if (!this.#redisUrl) throw new RedisError('Missing REDIS_URL');
 
-    this.#client = createClient({
-      url: this.#redisUrl,
-      socket: {
-        reconnectStrategy: (retries) => {
-          if (retries > 10) return new Error('Redis reconnect failed');
-          return Math.min(retries * 100, 3000);
-        },
-      },
+    this.#client = createClient({ 
+      username: process.env.REDIS_USER_NAME, 
+      password: process.env.REDIS_PASSWORD, 
+      socket: { host: process.env.REDIS_HOST, port: Number(process.env.REDIS_PORT)  } 
     });
 
-    this.#client.on('error', (err) => logger.error(`Redis client error: ${err.message}`));
-    this.#client.on('connect', () => {
-      this.#isConnected = true;
-      logger.info('Redis client connected');
-    });
-    this.#client.on('end', () => {
-      this.#isConnected = false;
-      logger.warn('Redis client disconnected');
-    });
+    this.#client.on('connect', () => (this.#isConnected = true));
+    this.#client.on('end', () => (this.#isConnected = false));
+    this.#client.on('error', (err) => logger.error(err.message));
 
-    this.#initialize();
-    logger.debug('RedisClient initialized');
-  }
-
-  // Private method for connection
-  #initialize(): void {
-    this.#client.connect().catch((err: any) => {
-      logger.error(`Redis connection failed: ${err.message}`);
-      throw new RedisError(`Failed to connect to Redis: ${err.message}`);
-    });
+    this.#client.connect();
   }
 
   async get(key: string): Promise<string | null> {
     if (!this.#isConnected) throw new RedisError('Redis client not connected');
-    try {
-      return await this.#client.get(key);
-    } catch (err: any) {
-      logger.error(`Redis get failed for key ${key}: ${err.message}`);
-      throw new RedisError('Failed to access Redis');
-    }
+    return this.#client.get(key);
   }
 
   async setEx(key: string, seconds: number, value: string): Promise<void> {
     if (!this.#isConnected) throw new RedisError('Redis client not connected');
-    try {
-      await this.#client.setEx(key, seconds, value);
-    } catch (err: any) {
-      logger.error(`Redis setEx failed for key ${key}: ${err.message}`);
-      throw new RedisError('Failed to access Redis');
-    }
+    await this.#client.setEx(key, seconds, value);
   }
 
   async del(key: string): Promise<void> {
     if (!this.#isConnected) throw new RedisError('Redis client not connected');
-    try {
-      await this.#client.del(key);
-    } catch (err: any) {
-      logger.error(`Redis del failed for key ${key}: ${err.message}`);
-      throw new RedisError('Failed to access Redis');
-    }
+    await this.#client.del(key);
   }
 }

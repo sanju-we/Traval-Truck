@@ -166,7 +166,7 @@ export default function TripHistory({ userId }: TripHistoryProps) {
             className="border rounded-xl p-5 hover:shadow-md transition bg-white"
           >
             <div className="flex gap-4">
-              {trip.product.images[0] && (
+              {trip.product.images && trip.product.images[0] && (
                 <img
                   src={trip.product.images[0]}
                   alt={trip.product.title}
