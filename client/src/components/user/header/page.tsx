@@ -65,32 +65,6 @@ export function Header() {
     }
   }
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
-        setProfileOpen(false);
-      }
-      if (notifyRef.current && !notifyRef.current.contains(event.target as Node)) {
-        setNotifyOpen(false);
-      }
-    };
-
-    const fetchUser = async () => {
-      try {
-        const { data } = await api.get('/user/profile/profile');
-        if (data.success) {
-          setUser(data.data);
-        }
-      } catch (err) {
-        console.error('Error fetching user:', err);
-      }
-    };
-
-    fetchUser();
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
   const unreadCount = notifications.filter(n => n.unread).length;
 
   return (
@@ -118,7 +92,7 @@ export function Header() {
                 { name: 'Packages', path: '/package' },
                 { name: 'Hotels', path: '/hotels' },
                 { name: 'Destinations', path: '/description' },
-                { name: 'Tips', path: '/trips' },
+                { name: 'Mind-Map', path: '/mind-map' },
               ].map((item) => (
                 <a
                   key={item.name}

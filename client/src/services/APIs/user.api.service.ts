@@ -43,5 +43,8 @@ export const USER_API_METHODS = {
     // booking api request
     orderHistory : () => get(USER_ROUTES.Trip.History),
     getOrderDetails : (orderId:string)=>get(USER_ROUTES.Trip.OrderDetail(orderId)),
-    cancelOrder : (orderId:string,reason:string)=> patch(USER_ROUTES.Trip.orderCancel,{orderId,reason})
+    cancelOrder : (orderId:string,reason:string)=> patch(USER_ROUTES.Trip.orderCancel,{orderId,reason}),
+
+    // Mind Map
+    generateMap : (data:any) => post(USER_ROUTES.Mind_Map.GenerateTrip,data)
 };

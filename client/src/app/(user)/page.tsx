@@ -75,7 +75,7 @@ export default function HomePage() {
             </p>
             <div className="flex flex-wrap gap-4">
               <button className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-full font-semibold flex items-center space-x-2 transition transform hover:scale-105 shadow-lg">
-                <span>Plan Your Journey</span>
+                <span>Create Mind-Map</span>
                 <ArrowRight className="w-5 h-5" />
               </button>
               <button className="bg-white/10 backdrop-blur-md hover:bg-white/20 text-white px-8 py-4 rounded-full font-semibold border-2 border-white/30 transition">

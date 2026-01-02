@@ -7,6 +7,7 @@ const USER_PACKAGE =  `${BASE}/packages`
 const USER_HOTELS = `${BASE}/hotels`
 const USER_FOODS = `${BASE}/foods`
 const USER_TRIP = `${BASE}/trip`
+const USER_MIND_MAP = `${BASE}/mind-map`
 
 export const USER_ROUTES = {
   auth : {
@@ -48,5 +49,9 @@ export const USER_ROUTES = {
     History : `${USER_TRIP}/tripHistory`,
     OrderDetail : (orderId:string)=>`${USER_TRIP}/orderDetails/${orderId}`,
     orderCancel : `${USER_TRIP}/cancelOrder`
+  },
+
+  Mind_Map : {
+    GenerateTrip : `${USER_MIND_MAP}/create`
   }
 } 
