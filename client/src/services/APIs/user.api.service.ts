@@ -11,7 +11,7 @@ const delet = deleteRequest;
 
 export const USER_API_METHODS = {
     // authentication api requests
-    login: (data: any) => post(USER_ROUTES.auth.login, data),
+    login: (data: {email:string,password:string}) => post(USER_ROUTES.auth.login, data),
     logout: () => post(USER_ROUTES.auth.logout, {}),
     sendOtp: (data: any) => post(USER_ROUTES.auth.sendOtp, data),
     verifySignup: (data: any) => post(USER_ROUTES.auth.verifySignup, data),
@@ -46,5 +46,6 @@ export const USER_API_METHODS = {
     cancelOrder : (orderId:string,reason:string)=> patch(USER_ROUTES.Trip.orderCancel,{orderId,reason}),
 
     // Mind Map
-    generateMap : (data:any) => post(USER_ROUTES.Mind_Map.GenerateTrip,data)
+    generateMap : (data:any) => post(USER_ROUTES.Mind_Map.GenerateTrip,data),
+    getMindMap : (page:number)=> get(USER_ROUTES.Mind_Map.getMindMap,{page})
 };

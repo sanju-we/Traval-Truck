@@ -4,6 +4,7 @@ import { IMindMap } from "../../../../core/interface/modelInterface/IMindMap";
 
 export interface MindMapResDTO{
   orderId:string,
+  title:string,
   places:places[],
   plan:PlaceNode[][],
   startDate:Date,
@@ -17,6 +18,7 @@ export interface MindMapResDTO{
 
 export const toMindMapRes = (mindMap:IMindMap):MindMapResDTO => ({
   orderId:mindMap.orderId,
+  title:mindMap.title,
   places:mindMap.places,
   plan:mindMap.plan,
   startDate:mindMap.startDate,

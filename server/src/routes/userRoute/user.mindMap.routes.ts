@@ -7,5 +7,6 @@ const mindMapRouter = Router();
 const mindMapController = container.get<IUserMindMapController>('IUserMindMapController')
 
 mindMapRouter.post('/create',asyncHandler(mindMapController.create.bind(mindMapController)))
+.get('/getMap',asyncHandler(mindMapController.getmap.bind(mindMapController)))
 
 export default mindMapRouter

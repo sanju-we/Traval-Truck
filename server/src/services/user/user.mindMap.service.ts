@@ -64,35 +64,14 @@ export class UserMindMapService implements IUserMindMapService {
     const mindMap = await this._mindMapRepo.create(newMindMap)
     return toMindMapRes(mindMap)
   }
-}
 
-// {
-//   title: 'Trip-01',
-//   startDate: '2026-01-03',
-//   startPlace: 'KINFRA Tehcno Industrial Park, 747- R, Kakkanchery, MALAPPURAM, Kerala 673634, India',
-//   endDate: '2026-01-04',
-//   places: [
-//     {
-//       id: 1767366149834,
-//       name: 'Kozhikode',
-//       address: 'Kozhikode, Kerala, India',
-//       lat: 11.2488425,
-//       lng: 75.78392099999999,
-//       description: 'locality',
-//       timePreference: 'any',
-//       selected: true,
-//       placeId: 'ChIJR0c9VjhZpjsRq-wyykEGFTI'
-//     },
-//     {
-//       id: 1767366164814,
-//       name: 'Kovalam Beach',
-//       address: 'Kovalam Beach, Kerala 695521, India',
-//       lat: 8.3837841,
-//       lng: 76.98041760000001,
-//       description: 'neighborhood',
-//       timePreference: 'any',
-//       selected: true,
-//       placeId: 'ChIJ17_bmbulBTsRtakQ3EdZQco'
-//     }
-//   ]
-// }
+  async getMaps(page: number,userId:string): Promise<{data:MindMapResDTO[],page:number}> {
+    const maps = await this._mindMapRepo.findMapsWithPagination(userId,page);
+    if(!maps) throw new DataNotFoundError()
+    const data = {
+      data : maps,
+      page : page
+    }
+    return data
+  }
+}

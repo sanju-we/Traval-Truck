@@ -52,6 +52,7 @@ export const USER_ROUTES = {
   },
 
   Mind_Map : {
-    GenerateTrip : `${USER_MIND_MAP}/create`
+    GenerateTrip : `${USER_MIND_MAP}/create`,
+    getMindMap : `${USER_MIND_MAP}/getMap`,
   }
 } 
