@@ -45,6 +45,8 @@ import { IWebhookController } from '../../core/interface/controllerInterface/sha
 import webHook from '../../controllers/sharedController/stripe.webhook.controller.js';
 import { IWebhookService } from '../../core/interface/serivice/shared/IWebhook.service.js';
 import { WebhookService } from '../../services/shared/webhook.service.js';
+import { IMindMapRepository } from '../../core/interface/repositorie/User/IMindMap.repository.js';
+import { MindMapRepository } from '../../repositories/user/mindMap.repositoty.js';
 
 // ----------------------------------------------------user-------------------------------------------------------------
 import { IAuthService } from '../../core/interface/serivice/user/auth.interface.js';
@@ -79,6 +81,10 @@ import { IUserTripController } from '../../core/interface/controllerInterface/us
 import { UserTripController } from '../../controllers/userController/user.trip.controller.js';
 import { IUserTripService } from '../../core/interface/serivice/user/IUser.trips.service.js';
 import { UserTripService } from '../../services/user/user.trip.service.js';
+import { IUserMindMapController } from '../../core/interface/controllerInterface/user/IUser.mindMap.controller.js';
+import { UserMindMapController } from '../../controllers/userController/user.mindMap.controller.js';
+import { IUserMindMapService } from '../../core/interface/serivice/user/IUser.mindMap.service.js';
+import { UserMindMapService } from '../../services/user/user.mindMap.service.js';
 
 // ----------------------------------------------------admin--------------------------------------------------------------------
 import { IAdminAuthService } from '../interface/serivice/admin/IAdmin.auth.service.js';
@@ -197,6 +203,7 @@ container.bind<ISubscriptionHistoryRepository>('ISubscriptionHistoryRepository')
 container.bind<IPaymentRepository>('IPaymentRepository').to(PaymentRepository);
 container.bind<IWebhookService>('IWebhookService').to(WebhookService);
 container.bind<IWebhookController>('IWebhookController').to(webHook);
+container.bind<IMindMapRepository>('IMindMapRepository').to(MindMapRepository);
 
 // ---------------------------------------------------user container-------------------------------------------------------------------------
 container.bind<IAuthRepository>('IAuthRepository').to(AuthRepository);
@@ -215,6 +222,8 @@ container.bind<IUserFoodsService>('IUserFoodsService').to(userFoodsService);
 container.bind<IOrdersRepository>('IOrdersRepository').to(OrderRepository);
 container.bind<IUserTripController>('IUserTripController').to(UserTripController);
 container.bind<IUserTripService>('IUserTripService').to(UserTripService);
+container.bind<IUserMindMapController>('IUserMindMapController').to(UserMindMapController);
+container.bind<IUserMindMapService>('IUserMindMapService').to(UserMindMapService);
 
 // -----------------------------------------------------admin containers----------------------------------------------------------------------
 container.bind<IAdminAuthController>('IAdminAuthController').to(AdminAuthController);
