@@ -11,7 +11,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from "inversify";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
+import { DataNotFoundError, ROOM_ALREADY_OCCUPAID } from "../../utils/resAndErrors.js";
 let UserHotelsService = class UserHotelsService {
     _hotelRoomRepo;
     _subscriptionHistoryRepo;
@@ -64,9 +64,8 @@ let UserHotelsService = class UserHotelsService {
                 if (!order.startDate || !order.endDate)
                     continue;
                 const isOverlap = isDateRangeOverlapping(date, endDate, new Date(order.startDate), new Date(order.endDate));
-                if (isOverlap) {
-                    throw new Error(`Room is not available between ${date.toDateString()} and ${endDate.toDateString()}`);
-                }
+                if (isOverlap)
+                    throw new ROOM_ALREADY_OCCUPAID();
             }
         }
         return this._paymentUtils.createCheckoutSession({

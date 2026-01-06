@@ -13,5 +13,11 @@ export interface MindMapRequest{
   endDate:Date,
   startPlace:string,
   title:string,
+  vehicle:string,
+  milage:string,
+  member:string,
+  hotelTyep:string,
+  food:string,
+  foodAmount:string,
   places:places[]
 }

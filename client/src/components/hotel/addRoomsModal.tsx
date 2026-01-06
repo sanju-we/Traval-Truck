@@ -16,6 +16,7 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
     price: "",
     capacity: "",
     description: "",
+    roomLevel: '',
     amenities: [""],
     images: [] as File[],
     imagePreviews: [] as string[],
@@ -124,8 +125,8 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
       formData.images.forEach((img) => {
         data.append("images", img);
       });
-      for(let da of data){
-      console.log(da)
+      for (let da of data) {
+        console.log(da)
       }
       const res = await api.post("/hotel/rooms/addRooms", data, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -133,7 +134,7 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
 
       if (res.data.success) {
         toast.success("Room added successfully!");
-        rooms((prev: any)=>[...prev,res.data.data])
+        rooms((prev: any) => [...prev, res.data.data])
         onAdd?.();
         onClose();
       } else {
@@ -154,7 +155,14 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
 
         <div className="space-y-3">
           <Input name="roomNumber" placeholder="Room Number" value={formData.roomNumber} onChange={handleChange} />
-          <Input name="roomType" placeholder="Room Type (e.g. Deluxe, Suite)" value={formData.roomType} onChange={handleChange} />
+          <select name="roomType" id="roomType" className="'flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm',
+          'placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+          'disabled:cursor-not-allowed disabled:opacity-50',">
+            <option value="single" disabled>Select Room type</option>
+            <option value="single">Single</option>
+            <option value="double">Double</option>
+            <option value="villa">Villa</option>
+          </select>
           <Input name="price" placeholder="Price per night" type="number" value={formData.price} onChange={handleChange} />
           <Input name="capacity" placeholder="Capacity (e.g. 2 Adults, 1 Kid)" value={formData.capacity} onChange={handleChange} />
           <Textarea name="description" placeholder="Room Description" value={formData.description} onChange={handleChange} />

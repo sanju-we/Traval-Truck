@@ -16,6 +16,7 @@ const restaurantSchema = new Schema<IRestaurant>({
     type: String,
     required: true,
   },
+  address:{type:String,},
   rating: {
     type: Number,
     default: 0,

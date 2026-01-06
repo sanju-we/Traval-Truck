@@ -60,6 +60,12 @@ export default function CreateMindMapPage() {
   const [title, setTitle] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [member,setMember] = useState('');
+  const [vehicle, setVehicle] = useState('car');
+  const [milage, setMilage] = useState('');
+  const [food,setFood] = useState('veg');
+  const [foodAmount, setFoodAmount] = useState('');
+  const [room, setRoom] = useState('5 star');
   const [startingPlaceInput, setStartingPlaceInput] = useState('');
   const [startingLocation, setStartingLocation] = useState<StartingLocation | null>(null);
   const [startingSuggestions, setStartingSuggestions] = useState<PlaceSuggestion[]>([]);
@@ -178,7 +184,8 @@ export default function CreateMindMapPage() {
     if (!startingLocation) { toast.error('Set starting location!'); return; }
     if (selectedPlaces.length === 0) { toast.error('Select at least one place!'); return; }
     if (!title || !startDate || !endDate) { toast.error('Fill in all details!'); return; }
-    const data = await USER_API_METHODS.generateMap({ title, startDate, endDate, startingLocation, places: selectedPlaces });
+    console.log(startingLocation)
+    const data = await USER_API_METHODS.generateMap({ title, startDate, endDate, startPlace:startingLocation.address, places: selectedPlaces, vehicle, milage, food, foodAmount, room, member });
     if (data.success) { toast.success('Mind-Map created!'); router.push('/mind-map'); }
   };
 
@@ -212,11 +219,11 @@ export default function CreateMindMapPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Select members</label>
-                <input type="number" min={0} max={5} placeholder='Select members 1-5' className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none" />
+                <input type="number" min={0} max={5} placeholder='Select members 1-5' value={member} onChange={(e)=>setMember(e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Choose the Travel Method</label>
-                <select name="vehicle" id="vehicleId" className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none">
+                <select name="vehicle" id="vehicleId" value={vehicle} onChange={(e)=>setVehicle(e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none">
                   <option disabled>Select a option</option>
                   <option value="car">Cars</option>
                   <option value="bike">Bike</option>
@@ -224,11 +231,29 @@ export default function CreateMindMapPage() {
                 </select>
               </div>
               <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Vehicle milage</label>
+                <input type="number" min={10} max={100} value={milage} onChange={(e)=> setMilage(e.target.value)} placeholder='eg. 65' className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none" />
+              </div>
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Select Food preference</label>
-                <select name="Food" id="foodId" className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none">
+                <select name="food" id="foodId" value={food} onChange={(e) => setFood(e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none">
                   <option disabled>Select a option</option>
                   <option value="veg">Veg</option>
                   <option value="non-veg">Non-Veg</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Estimate amount for food</label>
+                <input type="number" min={100} max={50000} value={foodAmount} onChange={(e)=>setFoodAmount(e.target.value)} placeholder='eg. 1500' className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Select Room preference</label>
+                <select name="room" id="roomId" value={room} onChange={(e)=>setRoom(e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none">
+                  <option disabled>Select a option</option>
+                  <option value="5 star">5 star</option>
+                  <option value="4 star">4 star</option>
+                  <option value="3 star">3 star</option>
+                  <option value="2&1 star">below 3 star</option>
                 </select>
               </div>
             </div>
@@ -249,7 +274,7 @@ export default function CreateMindMapPage() {
 
               {/* Starting Location */}
               <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-2xl shadow-lg border border-blue-200">
-                <label className="block text-sm font-medium text-gray-800 mb-3 flex items-center gap-2">
+                <label className="text-sm font-medium text-gray-800 mb-3 flex items-center gap-2">
                   <HomeIcon />
                   Starting Location (Required)
                 </label>

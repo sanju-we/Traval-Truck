@@ -14,35 +14,27 @@ import { inject, injectable } from "inversify";
 import { sendResponse } from "../../utils/resAndErrors.js";
 import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
 import { MESSAGES } from "../../utils/responseMessaages.js";
-let HotelOrderController = class HotelOrderController {
-    _hotelService;
-    constructor(_hotelService) {
-        this._hotelService = _hotelService;
+let UserMindMapController = class UserMindMapController {
+    _mindMapService;
+    constructor(_mindMapService) {
+        this._mindMapService = _mindMapService;
     }
-    async getAll(req, res) {
+    async create(req, res) {
+        const body = req.body;
         const userId = req.user.id;
-        const orders = await this._hotelService.getAllOrders(userId);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, orders);
+        const map = await this._mindMapService.createMap(body, userId);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.CREATED, map);
     }
-    async getOrder(req, res) {
-        const orderId = req.params.id;
-        const order = await this._hotelService.getOrder(orderId);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, order);
-    }
-    async updateCheckIn(req, res) {
-        const orderId = req.params.orderId;
-        const status = await this._hotelService.checkIn(orderId);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, status);
-    }
-    async updateCheckOut(req, res) {
-        const orderId = req.params.orderId;
-        const status = await this._hotelService.checkOut(orderId);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, status);
+    async getmap(req, res) {
+        const page = req.query.page;
+        const userId = req.user.id;
+        const mindMaps = await this._mindMapService.getMaps(Number(page), userId);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, mindMaps);
     }
 };
-HotelOrderController = __decorate([
+UserMindMapController = __decorate([
     injectable(),
-    __param(0, inject('IHotelOrderService')),
+    __param(0, inject('IUserMindMapService')),
     __metadata("design:paramtypes", [Object])
-], HotelOrderController);
-export { HotelOrderController };
+], UserMindMapController);
+export { UserMindMapController };

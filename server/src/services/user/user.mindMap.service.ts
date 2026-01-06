@@ -3,10 +3,11 @@ import { IUserMindMapService } from "../../core/interface/serivice/user/IUser.mi
 import { IBaseValidator } from "../../core/interface/validator/IBasic.validator.js";
 import { inject, injectable } from "inversify";
 import { IAuthRepository } from "../../core/interface/repositorie/User/IAuth.Repository.js";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
-import { buildOptimizedRoute, splitIntoDays, PlaceNode, } from "../../utils/tripPlanner/index.js";
+import { BADREQUEST, DataNotFoundError } from "../../utils/resAndErrors.js";
+import { buildOptimizedRoute, splitIntoDays, PlaceNode, getDistanceInKm, } from "../../utils/tripPlanner/index.js";
 import { IMindMapRepository } from "../../core/interface/repositorie/User/IMindMap.repository.js";
 import { MindMapResDTO, toMindMapRes } from "../../core/DTO/user/Response/mindMap.res.js";
+import { validateTripPlan } from "../../services/Ai.service.js";
 
 @injectable()
 export class UserMindMapService implements IUserMindMapService {
@@ -25,6 +26,7 @@ export class UserMindMapService implements IUserMindMapService {
     if (!user) throw new DataNotFoundError();
 
     const days = (new Date(data.endDate).getDate() - new Date(data.startDate).getDate()) + 1
+    if (days <= 0) throw new BADREQUEST();
 
     // start Date Lat and Lng find
     let startLat, startLng;
@@ -43,35 +45,118 @@ export class UserMindMapService implements IUserMindMapService {
       lng: p.lng
     }))
 
-    const route = buildOptimizedRoute(startLat, startLng, places);
+    // const distance = getDistanceInKm()
+    const { route, totalDistance } = buildOptimizedRoute(startLat, startLng, places);
     const dayWaysSplit = splitIntoDays<PlaceNode>(route, days)
+
+    const fuelCost = ((totalDistance / Number(data.milage)) * 100)
 
     const pad = (n: number) => n.toString().padStart(2, '0');
     const count = (await this._mindMapRepo.countDocuments() + 1).toString().padStart(6, '0')
     const date = new Date()
     const orderId = `ORD-${pad(date.getDate())}${pad(date.getMonth() + 1)}${date.getFullYear()}-${count}`
 
-    const newMindMap = {
+    const aiValidationPayload = {
+      route,
+      totalDistanceKm: totalDistance,
+      daysAvailable: days,
+      drivingHoursPerDay: 6,
+
+      vehicle: {
+        type: data.vehicle,
+        mileage: data.milage
+      },
+
+      fuelCost,
+      people: Number(data.member),
+      hotelClass: data.hotelTyep,
+      foodPreference: data.food,
+      estimatedFoodCost: Number(data.foodAmount)
+    };
+    const aiResult = await validateTripPlan(aiValidationPayload)
+    if (aiResult.tripFeasibility.status !== "feasible") {
+      throw new Error(
+        `Trip not feasible: ${aiResult.tripFeasibility.reason}`
+      );
+    }
+
+    const MindMap = {
       orderId,
       title: data.title,
       startDate: data.startDate,
       endDate: data.endDate,
-      places: data.places,
-      startingPosition: data.startingPostition,
-      userId: userId,
-      plan: dayWaysSplit
+      userId,
+      places:data.places,
+      startingPosition: {
+        address: data.startPlace,
+        lat: Number(startLat),
+        lng: Number(startLng)
+      },
+      partners:Number(data.member),
+      plan: dayWaysSplit,
+      routeMetrics: {
+        totalDistance,
+        fuelCost,
+        days
+      },
+      aiInsights: {
+        feasibility: aiResult.tripFeasibility,
+        realism: aiResult.dailyTravelDistanceRealistic,
+        budgetReliability: aiResult.budgetReliability,
+        risks: aiResult.risks,
+        improvements: aiResult.improvements,
+        breakdown: aiResult.detailedBreakdown,
+      }
     }
-    const mindMap = await this._mindMapRepo.create(newMindMap)
+
+    const mindMap = await this._mindMapRepo.create(MindMap)
+    console.log(mindMap)
     return toMindMapRes(mindMap)
   }
 
-  async getMaps(page: number,userId:string): Promise<{data:MindMapResDTO[],page:number}> {
-    const maps = await this._mindMapRepo.findMapsWithPagination(userId,page);
-    if(!maps) throw new DataNotFoundError()
+  async getMaps(page: number, userId: string): Promise<{ data: MindMapResDTO[], page: number }> {
+    const maps = await this._mindMapRepo.findMapsWithPagination(userId, page);
+    if (!maps) throw new DataNotFoundError()
     const data = {
-      data : maps,
-      page : page
+      data: maps,
+      page: page
     }
     return data
   }
 }
+
+// {
+//   "route": [
+//     {
+//       "place": "Kozhikode",
+//       "distanceToNextKm": 220
+//     },
+//     {
+//       "place": "Mangalore",
+//       "distanceToNextKm": 150
+//     },
+//     {
+//       "place": "Udupi",
+//       "distanceToNextKm": 280
+//     }
+//   ],
+//   "totalDistanceKm": 650,
+//   "daysAvailable": 3,
+//   "drivingHoursPerDay": 6,
+//   "vehicle": {
+//     "type": "car",
+//     "mileageKmpl": 16
+//   },
+//   "fuelCost": 4060,
+//   "people": 2,
+//   "hotelClass": "3star",
+//   "estimatedHotelCost": 9000,
+//   "foodPreference": "nonveg",
+//   "estimatedFoodCost": 6000,
+//   "additionalCosts": {
+//     "localTransport": 1500,
+//     "activities": 3000
+//   }
+// }
+
+

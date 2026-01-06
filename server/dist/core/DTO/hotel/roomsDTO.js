@@ -1,6 +1,8 @@
 export const toRoomsDTO = (Room) => ({
     id: Room._id.toString(),
     RoomNumber: Room.RoomNumber,
+    roomType: Room.roomType,
+    roomLevel: Room.roomLevel,
     Description: Room.Description,
     PricePerNight: Room.PricePerNight,
     Capacity: Room.Capacity,

@@ -12,6 +12,7 @@ export interface reviews{
 export interface RoomsDTO{
   id:string;
   RoomNumber:number;
+  roomType:string;
   Description:string;
   PricePerNight:number;
   Capacity:number;
@@ -28,6 +29,7 @@ export interface RoomsDTO{
 export const toRoomsDTO = (Room:IRooms) : RoomsDTO => ({
   id:Room._id.toString(),
   RoomNumber:Room.RoomNumber,
+  roomType:Room.roomType,
   Description:Room.Description,
   PricePerNight:Room.PricePerNight,
   Capacity:Room.Capacity,

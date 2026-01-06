@@ -7,6 +7,7 @@ export interface IRooms extends Document {
   PricePerNight: number;
   Capacity: number;
   Facilities: string[];
+  roomType:string;
   Images: string[];
   reviews: {
     Comment: string;

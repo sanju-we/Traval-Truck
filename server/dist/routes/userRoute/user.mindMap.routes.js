@@ -1,0 +1,8 @@
+import { Router } from "express";
+import { container } from "../../core/DI/container.js";
+import { asyncHandler } from "../../middleware/asyncHandler.js";
+const mindMapRouter = Router();
+const mindMapController = container.get('IUserMindMapController');
+mindMapRouter.post('/create', asyncHandler(mindMapController.create.bind(mindMapController)))
+    .get('/getMap', asyncHandler(mindMapController.getmap.bind(mindMapController)));
+export default mindMapRouter;

@@ -3,7 +3,7 @@ import { Document, Schema, Types } from 'mongoose';
 export interface IRestaurant extends Document {
   _id: Types.ObjectId;
   companyName: string;
-  address: Schema.Types.ObjectId;
+  address: string;
   email: string;
   password: string;
   rating: number;

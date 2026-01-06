@@ -6,6 +6,7 @@ export const toOrderDTO = (order) => ({
     amount: order.amount,
     status: order.status,
     startDate: order.startDate,
+    endDate: order.endDate,
     paymentId: order.paymentId && typeof order.paymentId === 'object' ? JSON.parse(JSON.stringify(order.paymentId)) : order.paymentId,
     createdAt: order.createdAt,
     ownedBy: order.ownedBy && typeof order.ownedBy === 'object' ? JSON.parse(JSON.stringify(order.ownedBy)) : order.ownedBy,

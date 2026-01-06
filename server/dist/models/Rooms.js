@@ -7,6 +7,8 @@ const RoomsSchema = new Schema({
     Capacity: { type: Number },
     Facilities: [{ type: String, }],
     Images: [{ type: String, }],
+    roomType: { type: String, enum: ['single', 'double', 'villa'] },
+    roomLevel: { type: Number, required: true },
     Reviews: [{
             Comment: { type: String },
             CreatedAt: { type: Date },

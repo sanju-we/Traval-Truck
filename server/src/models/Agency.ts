@@ -24,6 +24,7 @@ const agencySchema = new Schema<IAgency>({
     type: Number,
     default: 0,
   },
+  address:{type:String,},
   packages: [
     {
       type: String,

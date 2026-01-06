@@ -12,6 +12,21 @@ const placeSchema = new Schema(
   { _id: false }
 );
 
+const aiInsightsSchema = new Schema({
+  feasibility:{type:[String]},
+  realism:{type:[String]},
+  budgetReliability:{type:[String]},
+  risks:{type:[String]},
+  improvements:{type:[String]},
+  breakdown:{type:[String]}
+})
+
+const routeSchema = new Schema({
+  totalDistance:{type:Number},
+  fuelCost:{type:Number},
+  days:{type:Number}
+})
+
 const planSchema = new Schema({
   id: {type:Number},
   name: {type:String},
@@ -27,9 +42,11 @@ const mindMapSchema = new Schema<IMindMap>({
   startingPosition: { type: [String], required: true },
   partners: { type: Number },
   budget: { type: Number },
+  routeMetrics:{type:routeSchema},
+  aiInsights:{type:aiInsightsSchema},
   userId: { type: String, ref: 'User', required: true },
   orderId: { type: String, required: true, unique: true },
-  status: { type: String, enum: ['Pending', 'Ongoing', 'Completed'], default: 'Pending' },
+  status: { type: String, enum: ['Draft', 'Ongoing', 'Completed'], default: 'Draft' },
   plan: { type: [[planSchema]] },
   tripProgress: { type: [String] },
   isPublic: { type: Boolean, default: false },

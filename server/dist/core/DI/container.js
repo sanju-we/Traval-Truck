@@ -21,6 +21,7 @@ import { subscriptionHistoryRepository } from '../../repositories/shared/subscri
 import { PaymentRepository } from '../../repositories/shared/payments.repository.js';
 import webHook from '../../controllers/sharedController/stripe.webhook.controller.js';
 import { WebhookService } from '../../services/shared/webhook.service.js';
+import { MindMapRepository } from '../../repositories/user/mindMap.repositoty.js';
 import { AuthService } from '../../services/user/auth.service.js';
 import { AuthRepository } from '../../repositories/user/auth.repository.js';
 import { AuthController } from '../../controllers/userController/user.auth.controller.js';
@@ -37,6 +38,8 @@ import { userFoodsService } from '../../services/user/user.foods.service.js';
 import { OrderRepository } from '../../repositories/user/orders.repository.js';
 import { UserTripController } from '../../controllers/userController/user.trip.controller.js';
 import { UserTripService } from '../../services/user/user.trip.service.js';
+import { UserMindMapController } from '../../controllers/userController/user.mindMap.controller.js';
+import { UserMindMapService } from '../../services/user/user.mindMap.service.js';
 import { AdminAuthService } from '../../services/admin/admin.auth.service.js';
 import { AdminAuthController } from '../../controllers/adminController/admin.auth.controller.js';
 import { AdminVendorController } from '../../controllers/adminController/admin.vendor.controller.js';
@@ -102,6 +105,7 @@ container.bind('ISubscriptionHistoryRepository').to(subscriptionHistoryRepositor
 container.bind('IPaymentRepository').to(PaymentRepository);
 container.bind('IWebhookService').to(WebhookService);
 container.bind('IWebhookController').to(webHook);
+container.bind('IMindMapRepository').to(MindMapRepository);
 // ---------------------------------------------------user container-------------------------------------------------------------------------
 container.bind('IAuthRepository').to(AuthRepository);
 container.bind('IAuthService').to(AuthService);
@@ -119,6 +123,8 @@ container.bind('IUserFoodsService').to(userFoodsService);
 container.bind('IOrdersRepository').to(OrderRepository);
 container.bind('IUserTripController').to(UserTripController);
 container.bind('IUserTripService').to(UserTripService);
+container.bind('IUserMindMapController').to(UserMindMapController);
+container.bind('IUserMindMapService').to(UserMindMapService);
 // -----------------------------------------------------admin containers----------------------------------------------------------------------
 container.bind('IAdminAuthController').to(AdminAuthController);
 container.bind('IAdminAuthService').to(AdminAuthService);
