@@ -7,5 +7,6 @@ const reviewRouter = Router()
 const reviewController = container.get<IReviewController>('IReviewController')
 
 reviewRouter.post('/rating/:id',asyncHandler(reviewController.addReview.bind(reviewController)))
+.get('/getReview',asyncHandler(reviewController.getReview.bind(reviewController)))
 
 export default reviewRouter

@@ -6,7 +6,7 @@ const reviewSchema = new Schema<IReviews>({
     type: String,
     required: true,
   },
-  packageId: {
+  orderId: {
     type: String,
     required: true,
   },

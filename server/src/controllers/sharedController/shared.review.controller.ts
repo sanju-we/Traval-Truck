@@ -15,8 +15,16 @@ export class ReviewController implements IReviewController{
   async addReview(req: Request, res: Response): Promise<void> {
     const data = req.body;
     const userId = req.user.id
-    const packageId = req.params.id
-    const review = await this._reviewService.create(userId,data,packageId)
+    const orderId = req.params.id
+    console.log(data)
+    const review = await this._reviewService.create(userId,data,orderId)
     sendResponse(res,STATUS_CODE.OK,true,MESSAGES.APPROVED,review);
+  }
+
+  async getReview(req: Request, res: Response): Promise<void> {
+    const orderId = req.query.orderId;
+    const userId = req.user.id;
+    const review = await this._reviewService.getReview(userId,String(orderId));
+    sendResponse(res,STATUS_CODE.OK,true,MESSAGES.DATA_FOUND,review)
   }
 }
