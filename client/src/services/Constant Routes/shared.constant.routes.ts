@@ -3,7 +3,8 @@
 const SHARED = '/shared',
 SHARED_PAYMENT = `${SHARED}/paymets`,
 SHARED_WALLET = `${SHARED}/wallet`,
-SHARED_SUBSCRIPTIONS = `${SHARED}/subscriptions`
+SHARED_SUBSCRIPTIONS = `${SHARED}/subscriptions`,
+SHARED_REVIEW = `${SHARED}/review`
 
 export const SHARED_ROUTES = {
   paymet : {
@@ -13,6 +14,10 @@ export const SHARED_ROUTES = {
   wallet : {
     getWallet : (role : string) => `${SHARED_WALLET}/${role}`,
     addMoney : (role:string) => `${SHARED_WALLET}/${role}/add-money`
+  },
+
+  Review : {
+    rating: (role:string,packageId:string) => `${SHARED_REVIEW}/${role}/rating/${packageId}`
   },
 
   subscriptions : {

@@ -47,6 +47,12 @@ import { IWebhookService } from '../../core/interface/serivice/shared/IWebhook.s
 import { WebhookService } from '../../services/shared/webhook.service.js';
 import { IMindMapRepository } from '../../core/interface/repositorie/User/IMindMap.repository.js';
 import { MindMapRepository } from '../../repositories/user/mindMap.repositoty.js';
+import { IReviewController } from '../../core/interface/controllerInterface/shared/Ishared.review.controller.js';
+import { ReviewController } from '../../controllers/sharedController/shared.review.controller.js';
+import { IReviewService } from '../../core/interface/serivice/shared/Ishared.review.service.js';
+import { ReviewService } from '../../services/shared/shared.review.service.js';
+import { IReviewRepository } from '../../core/interface/repositorie/shared/Ishare.review.repository.js';
+import { ReviewRepository } from '../../repositories/shared/share.review.repository.js';
 
 // ----------------------------------------------------user-------------------------------------------------------------
 import { IAuthService } from '../../core/interface/serivice/user/auth.interface.js';
@@ -204,6 +210,9 @@ container.bind<IPaymentRepository>('IPaymentRepository').to(PaymentRepository);
 container.bind<IWebhookService>('IWebhookService').to(WebhookService);
 container.bind<IWebhookController>('IWebhookController').to(webHook);
 container.bind<IMindMapRepository>('IMindMapRepository').to(MindMapRepository);
+container.bind<IReviewController>('IReviewController').to(ReviewController);
+container.bind<IReviewService>('IReviewService').to(ReviewService);
+container.bind<IReviewRepository>('IReviewRepository').to(ReviewRepository);
 
 // ---------------------------------------------------user container-------------------------------------------------------------------------
 container.bind<IAuthRepository>('IAuthRepository').to(AuthRepository);

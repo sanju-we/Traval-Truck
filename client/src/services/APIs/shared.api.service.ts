@@ -13,4 +13,5 @@ export const SHARED_API_METHODS = {
   currentSubscription : (role:string) => get(SHARED_ROUTES.subscriptions.currentSubscription(role)),
   subscriptionDetails : (role:string,id:string) => get(SHARED_ROUTES.subscriptions.detailSubscription(role,id)),
   purchaseSubscription : (role:string) => post(SHARED_ROUTES.subscriptions.purchase(role),{}),
+  rating:(data:{rating:number,comment:string,vendor:string},role:string,pakcageId:string) => post(SHARED_ROUTES.Review.rating(role,pakcageId),data),
 }

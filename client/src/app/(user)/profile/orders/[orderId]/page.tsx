@@ -18,11 +18,13 @@ import {
   Download,
   Share2,
   XCircle,
+  Star,
   X,
   Mail,
 } from 'lucide-react';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import toast from 'react-hot-toast';
+import RatingCard from '@/components/user/orders/Rating';
 
 interface PlanDay {
   date: string;
@@ -203,7 +205,7 @@ export default function UserOrderDetailsPage() {
   const calculateNights = (start: string, end: string) => {
     return Math.ceil(
       (new Date(end).getTime() - new Date(start).getTime()) /
-        (1000 * 60 * 60 * 24)
+      (1000 * 60 * 60 * 24)
     );
   };
 
@@ -504,10 +506,10 @@ export default function UserOrderDetailsPage() {
                     <p className="font-semibold text-gray-800">
                       {order.startDate
                         ? new Date(order.startDate).toLocaleDateString('en-US', {
-                            month: 'long',
-                            day: 'numeric',
-                            year: 'numeric',
-                          })
+                          month: 'long',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })
                         : 'Not set yet'}
                     </p>
                   </div>
@@ -551,6 +553,7 @@ export default function UserOrderDetailsPage() {
                   )}
               </div>
             </div>
+            {order.status == 'Completed' && <RatingCard packageId={order.id} vendor={order.ownedBy}/>}
           </div>
         </div>
       </div>
@@ -595,11 +598,10 @@ export default function UserOrderDetailsPage() {
                 {CANCEL_REASONS.map((reason) => (
                   <label
                     key={reason}
-                    className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition ${
-                      selectedReason === reason
+                    className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition ${selectedReason === reason
                         ? 'border-red-500 bg-red-50'
                         : 'border-gray-200 hover:border-gray-300 bg-white'
-                    }`}
+                      }`}
                   >
                     <input
                       type="radio"

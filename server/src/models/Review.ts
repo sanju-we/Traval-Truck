@@ -3,12 +3,17 @@ import { IReviews } from '../core/interface/modelInterface/IReviews.js';
 
 const reviewSchema = new Schema<IReviews>({
   vendor: {
-    type: Schema.Types.ObjectId,
+    type: String,
     required: true,
   },
-  user: {
-    type: Schema.Types.ObjectId,
+  packageId: {
+    type: String,
     required: true,
+  },
+  userId: {
+    type: String,
+    required: true,
+    ref:'User'
   },
   rating: {
     type: Number,
