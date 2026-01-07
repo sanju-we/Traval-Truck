@@ -169,9 +169,9 @@ export default function SubscriptionPage() {
     };
 
     try {
-      const res = await ADMIN_API_METHODS.createSubscription(payload);
+      const data = await ADMIN_API_METHODS.createSubscription(payload);
 
-      if (res.data.success) {
+      if (data.success) {
         toast.success("Subscription added successfully!");
         setShowAddModal(false);
         setAddFormData({
@@ -185,10 +185,10 @@ export default function SubscriptionPage() {
           IsActive: true,
         });
         // Refresh subscriptions
-        const { data } = await ADMIN_API_METHODS.fetchAllSubscriptions();
+        const data = await ADMIN_API_METHODS.fetchAllSubscriptions();
         setSubscriptions(data.data);
       } else {
-        toast.error(res.data.message || "Failed to add subscription.");
+        toast.error(data.message || "Failed to add subscription.");
       }
     } catch (error) {
       console.error(error);
@@ -224,9 +224,9 @@ export default function SubscriptionPage() {
     };
 
     try {
-      const res = await ADMIN_API_METHODS.editSubscription( payload,selectedSubscription.id);
+      const data = await ADMIN_API_METHODS.editSubscription( payload,selectedSubscription.id);
 
-      if (res.data.success) {
+      if (data.success) {
         toast.success("Subscription updated successfully!");
         setShowEditModal(false);
         setSelectedSubscription(null);
@@ -240,10 +240,10 @@ export default function SubscriptionPage() {
           Features: "",
           IsActive: true,
         });
-        const { data } = await ADMIN_API_METHODS.fetchAllSubscriptions();
+        const data = await ADMIN_API_METHODS.fetchAllSubscriptions();
         setSubscriptions(data.data);
       } else {
-        toast.error(res.data.message || "Failed to update subscription.");
+        toast.error(data.message || "Failed to update subscription.");
       }
     } catch (error) {
       console.error(error);
@@ -264,8 +264,8 @@ export default function SubscriptionPage() {
     setShowConfirmModal(false);
 
     try {
-      const res = await ADMIN_API_METHODS.editSubscriptionStatus(toggleTarget.id);
-      if (res.data.success) {
+      const data = await ADMIN_API_METHODS.editSubscriptionStatus(toggleTarget.id);
+      if (data.success) {
         toast.success("Subscription status updated!");
         setSubscriptions((prev) =>
           prev.map((s) =>
@@ -273,7 +273,7 @@ export default function SubscriptionPage() {
           )
         );
       } else {
-        toast.error(res.data.message || "Failed to update status.");
+        toast.error(data.message || "Failed to update status.");
       }
     } catch (error) {
       console.error(error);

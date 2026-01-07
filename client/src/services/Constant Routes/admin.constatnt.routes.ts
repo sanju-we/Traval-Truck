@@ -23,7 +23,7 @@ export const ADMIN_ROUTES = {
     create:`${ADMIN_SUBSCRIPTION}/add`,
     getAllSubcription:`${ADMIN_SUBSCRIPTION}/getAll`,
     editSubscription:(id:string) => `${ADMIN_SUBSCRIPTION}/update/${id}`,
-    updateStatus:(id:string) =>  `${ADMIN_SUBSCRIPTION}/tongle/${id}`
+    updateStatus:(id:string) =>  `${ADMIN_SUBSCRIPTION}/toggle/${id}`
   },
 
   coupons:{

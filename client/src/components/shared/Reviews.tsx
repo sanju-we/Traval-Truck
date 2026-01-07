@@ -4,9 +4,9 @@ import toast from 'react-hot-toast';
 import { SHARED_API_METHODS } from '@/services/APIs/shared.api.service';
 
 interface Review {
-  Comment: string;
-  Date: string;
-  Rating: number;
+  comment: string;
+  createdAt: string;
+  rating: number;
   UserName: string;
 }
 
@@ -75,10 +75,10 @@ export default function PackageReviews({ packageId, reviewsPerPage = 5 }: Packag
       console.log(response)
       if (response.success) {
         setReviews(response.data.data);
-        setTotalPages(response.data.pagination.totalPage);
-        setTotalReviews(response.data.pagination.totalReviews);
-        setAverageRating(response.data.stats.averageRating);
-        setRatingCounts(response.data.stats.ratingCounts);
+        setTotalPages(response.data.totalPage);
+        setTotalReviews(response.data.totalCount);
+        setAverageRating(response.data.averageRating);
+        setRatingCounts(response.data.totalCount);
       }
     } catch (error) {
       console.error('Error fetching reviews:', error);
@@ -177,7 +177,6 @@ export default function PackageReviews({ packageId, reviewsPerPage = 5 }: Packag
 
   return (
     <div id="reviews-section" className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-      {/* Header */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-gray-800 mb-2 flex items-center gap-3">
           <Star className="text-yellow-500 fill-yellow-500" size={28} />
@@ -189,13 +188,11 @@ export default function PackageReviews({ packageId, reviewsPerPage = 5 }: Packag
         </p>
       </div>
 
-      {/* Rating Summary */}
       <div className="grid md:grid-cols-2 gap-8 mb-8 pb-8 border-b border-gray-100">
-        {/* Average Rating */}
         <div className="text-center md:text-left">
           <div className="inline-block bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl p-6 shadow-lg">
             <div className="text-5xl font-bold text-white mb-2">
-              {averageRating.toFixed(1)}
+              {averageRating}
             </div>
             <div className="flex items-center justify-center gap-1 mb-2">
               {[...Array(5)].map((_, i) => (
@@ -280,7 +277,7 @@ export default function PackageReviews({ packageId, reviewsPerPage = 5 }: Packag
                   <div>
                     <p className="font-semibold text-gray-800 text-lg">{review.UserName}</p>
                     <p className="text-xs text-gray-500">
-                      {new Date(review.Date).toLocaleDateString('en-US', {
+                      {new Date(review.createdAt).toLocaleDateString('en-US', {
                         month: 'long',
                         day: 'numeric',
                         year: 'numeric',
@@ -290,7 +287,7 @@ export default function PackageReviews({ packageId, reviewsPerPage = 5 }: Packag
                 </div>
                 <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full border border-yellow-100">
                   <Star size={16} className="text-yellow-500 fill-yellow-500" />
-                  <span className="font-bold text-yellow-700">{review.Rating}</span>
+                  <span className="font-bold text-yellow-700">{review.rating}</span>
                 </div>
               </div>
               <div className="flex gap-1 mb-3">
@@ -299,14 +296,14 @@ export default function PackageReviews({ packageId, reviewsPerPage = 5 }: Packag
                     key={i}
                     size={18}
                     className={
-                      i < review.Rating
+                      i < review.rating
                         ? 'text-yellow-500 fill-yellow-500'
                         : 'text-gray-300'
                     }
                   />
                 ))}
               </div>
-              <p className="text-gray-700 leading-relaxed">{review.Comment}</p>
+              <p className="text-gray-700 leading-relaxed">{review.comment}</p>
             </div>
           ))}
         </div>

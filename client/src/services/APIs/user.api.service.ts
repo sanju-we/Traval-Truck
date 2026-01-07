@@ -47,5 +47,6 @@ export const USER_API_METHODS = {
 
     // Mind Map
     generateMap : (data:any) => post(USER_ROUTES.Mind_Map.GenerateTrip,data),
-    getMindMap : (page:number)=> get(USER_ROUTES.Mind_Map.getMindMap,{page})
+    getMindMap : (page:number)=> get(USER_ROUTES.Mind_Map.getMindMap,{page}),
+    MindMapDetails: (id:string) => get(USER_ROUTES.Mind_Map.MindMapDetails,{id}),
 };

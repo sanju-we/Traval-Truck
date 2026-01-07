@@ -1,5 +1,7 @@
 
 export interface PaginationResponse<T>{
   data:T[],
-  totalPage:number
+  totalPage:number,
+  totalCount:number
+  averageRating?:number
 }

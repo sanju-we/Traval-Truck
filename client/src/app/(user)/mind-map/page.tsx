@@ -41,6 +41,7 @@ interface Place {
 }
 
 interface MindMapTrip {
+  id:string;
   title: string;
   orderId:string;
   startDate?: string;
@@ -448,7 +449,7 @@ export default function MindMapsPage() {
                   key={plan.orderId}
                   variants={itemVariants}
                   className="group bg-white rounded-2xl shadow-md hover:shadow-2xl border border-gray-100 overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-2"
-                  onClick={() => router.push(`/mind-maps/${plan.orderId}`)}
+                  onClick={() => router.push(`/mind-maps/${plan.id}`)}
                 >
                   {/* Cover Image */}
                   <div className="relative h-48 bg-gradient-to-br from-emerald-400 to-blue-500 overflow-hidden">

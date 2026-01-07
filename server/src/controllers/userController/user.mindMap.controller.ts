@@ -26,4 +26,10 @@ export class UserMindMapController implements IUserMindMapController{
     const mindMaps = await this._mindMapService.getMaps(Number(page),userId);
     sendResponse(res,STATUS_CODE.OK,true,MESSAGES.ALL_DATA_FOUND,mindMaps);
   }
+
+  async mindMap(req: Request, res: Response): Promise<void> {
+    const mapId = req.query.id as string;
+    const mindMap = await this._mindMapService.getMap(mapId);
+    sendResponse(res,STATUS_CODE.OK,true,MESSAGES.DATA_FOUND,mindMap);
+  }
 }

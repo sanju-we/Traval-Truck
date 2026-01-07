@@ -38,10 +38,12 @@ export interface aiInsights {
 }
 
 export interface MindMapResDTO {
+  id:string,
   orderId: string,
   title: string,
   places: places[],
   plan: PlaceNode[][],
+  partners:number,
   startDate: Date,
   endDate: Date,
   startingPosition: startingPosition,
@@ -54,10 +56,12 @@ export interface MindMapResDTO {
 }
 
 export const toMindMapRes = (mindMap: IMindMap): MindMapResDTO => ({
+  id:mindMap._id.toString(),
   orderId: mindMap.orderId,
   title: mindMap.title,
   places: mindMap.places,
   plan: mindMap.plan,
+  partners:mindMap.partners,
   startDate: mindMap.startDate,
   endDate: mindMap.endDate,
   startingPosition: mindMap.startingPosition,
