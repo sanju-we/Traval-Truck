@@ -74,11 +74,11 @@ export class UserMindMapService implements IUserMindMapService {
       estimatedFoodCost: Number(data.foodAmount)
     };
     const aiResult = await validateTripPlan(aiValidationPayload)
-    if (aiResult.tripFeasibility.status !== "feasible") {
-      throw new Error(
-        `Trip not feasible: ${aiResult.tripFeasibility.reason}`
-      );
-    }
+    // if (aiResult.tripFeasibility.status !== "feasible") {
+    //   throw new Error(
+    //     `Trip not feasible: ${aiResult.tripFeasibility.reason}`
+    //   );
+    // }
 
     const MindMap = {
       orderId,
@@ -94,18 +94,22 @@ export class UserMindMapService implements IUserMindMapService {
       },
       partners:Number(data.member),
       plan: dayWaysSplit,
+      budget:aiResult.budget,
+      timeAllocation:aiResult.timeAllocation,
       routeMetrics: {
         totalDistance,
         fuelCost,
         days
       },
       aiInsights: {
-        feasibility: aiResult.tripFeasibility,
-        realism: aiResult.dailyTravelDistanceRealistic,
-        budgetReliability: aiResult.budgetReliability,
-        risks: aiResult.risks,
-        improvements: aiResult.improvements,
-        breakdown: aiResult.detailedBreakdown,
+        feasibilityStatus:aiResult.tripValidationSummary.feasibilityStatus,
+        feasibilityDetails:aiResult.tripValidationSummary.feasibilityDetails,
+        dailyTravelDistanceReality:aiResult.tripValidationSummary.dailyTravelDistanceReality,
+        dailyTravelDistanceDetails:aiResult.tripValidationSummary.dailyTravelDistanceDetails,
+        budgetReliability:aiResult.tripValidationSummary.budgetReliability,
+        budgetReliabilityDetails:aiResult.tripValidationSummary.budgetReliabilityDetails,
+        risks:aiResult.tripValidationSummary.risks,
+        improvements:aiResult.tripValidationSummary.improvements,
       }
     }
 
@@ -126,37 +130,43 @@ export class UserMindMapService implements IUserMindMapService {
 }
 
 // {
-//   "route": [
-//     {
-//       "place": "Kozhikode",
-//       "distanceToNextKm": 220
-//     },
-//     {
-//       "place": "Mangalore",
-//       "distanceToNextKm": 150
-//     },
-//     {
-//       "place": "Udupi",
-//       "distanceToNextKm": 280
-//     }
-//   ],
-//   "totalDistanceKm": 650,
-//   "daysAvailable": 3,
-//   "drivingHoursPerDay": 6,
-//   "vehicle": {
-//     "type": "car",
-//     "mileageKmpl": 16
+//   tripValidationSummary: {
+//     feasibilityStatus: 'Highly Feasible',
+//     feasibilityDetails: 'The trip involves a total estimated driving time of approximately 4 hours 13 minutes for the entire route, which is well within the allocated 6 hours for driving on a single day. This leaves ample time for activities, meals, and unforeseen delays, making the trip easily achievable within the given timeframe.',
+//     dailyTravelDistanceReality: 'Realistic',
+//     dailyTravelDistanceDetails: 'The total distance of 168.73 km for a single day is a moderate and highly realistic travel distance, especially for bike travel. It does not demand excessive driving time or rush.',
+//     budgetReliability: 'Reliable',
+//     budgetReliabilityDetails: 'The estimated fuel cost (241.04) and food cost (1500) for two people on a day trip are reasonable. However, the budget does not include potential costs for activities, entry fees, or miscellaneous expenses, which could impact overall spending.',    
+//     risks: [
+//       'No budget allocated for activities, entry fees, or miscellaneous expenses.',
+//       'Bike travel is weather-dependent; sudden changes in weather could impact travel comfort and safety.',
+//       'Road conditions, especially towards Wayanad, might be winding or hilly, potentially slowing down actual travel more than estimated.',
+//       'Limited flexibility for unexpected delays or extended stays at any location due to the single-day timeframe.'
+//     ],
+//     improvements: [
+//       'Allocate a separate budget for activities, entry fees, and parking charges.',
+//       'Include a small buffer for miscellaneous expenses or emergencies.',
+//       'Check the weather forecast before the trip, especially for bike travel.',
+//       'Ensure the bike is serviced and in good condition, and consider carrying a basic repair kit.'
+//     ]
 //   },
-//   "fuelCost": 4060,
-//   "people": 2,
-//   "hotelClass": "3star",
-//   "estimatedHotelCost": 9000,
-//   "foodPreference": "nonveg",
-//   "estimatedFoodCost": 6000,
-//   "additionalCosts": {
-//     "localTransport": 1500,
-//     "activities": 3000
+//   tripDetails: {
+//     route: [ [Object], [Object], [Object], [Object] ],
+//     totalDistanceKm: 168.73,
+//     daysAvailable: 1,
+//     peopleTraveling: 2,
+//     vehicleType: 'bike',
+//     vehicleMileageKmpl: 70,
+//     foodPreference: 'non-veg'
+//   },
+//   budget: {
+//     fuelAmount: 241.04,
+//     foodAmount: 1500,
+//     totalApproximateBudget: 1741.04
+//   },
+//   timeAllocation: {
+//     drivingHoursAllocatedPerDay: 6,
+//     estimatedActualDrivingTimeInVehicle: '4 hours 13 minutes',        
+//     timeForFoodAndActivities: 'Approximately 2 hours for meals and short breaks, leaving about 8 hours for dedicated activities and sightseeing.'
 //   }
 // }
-
-

@@ -1,7 +1,7 @@
 import { Document,Schema,Types } from "mongoose";
 import { places } from "../../../core/DTO/user/Request/mindMap";
 import { PlaceNode } from "../../../utils/tripPlanner";
-import { aiInsights, routeMetrics, startingPosition } from "../../../core/DTO/user/Response/mindMap.res";
+import { aiInsights, budget, routeMetrics, startingPosition, timeAllocation } from "../../../core/DTO/user/Response/mindMap.res";
 
 export interface IMindMap extends Document{
   _id:Types.ObjectId;
@@ -9,10 +9,11 @@ export interface IMindMap extends Document{
   title:string;
   startDate:Date;
   endDate:Date;
+  timeAllocation:timeAllocation,
   places:places[];
   startingPosition:startingPosition;
   partners:number;
-  budget:number;
+  budget:budget;
   userId:string;
   status:string;
   routeMetrics:routeMetrics;

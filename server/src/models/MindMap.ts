@@ -12,26 +12,46 @@ const placeSchema = new Schema(
   { _id: false }
 );
 
+const startingPosition = new Schema({
+  address: { type: String },
+  lat: { type: Number },
+  lng: { type: Number }
+})
+
 const aiInsightsSchema = new Schema({
-  feasibility:{type:[String]},
-  realism:{type:[String]},
-  budgetReliability:{type:[String]},
-  risks:{type:[String]},
-  improvements:{type:[String]},
-  breakdown:{type:[String]}
+  feasibilityStatus: { type: String },
+  feasibilityDetails: { type: String },
+  dailyTravelDistanceReality: { type: String },
+  dailyTravelDistanceDetails: { type: String },
+  budgetReliability: { type: String },
+  budgetReliabilityDetails: { type: String },
+  risks: { type: [String] },
+  improvements: { type: [String] },
+})
+
+const budget = new Schema({
+  fuelAmount: { type: Number },
+  foodAmount: { type: Number },
+  totalApproximateBudget: { type: Number }
+})
+
+const timeAllocation = new Schema({
+  drivingHoursAllocatedPerDay: { type: Number },
+  estimatedActualDrivingTimeInVehicle: { type: String },
+  timeForFoodAndActivities: { type: String }
 })
 
 const routeSchema = new Schema({
-  totalDistance:{type:Number},
-  fuelCost:{type:Number},
-  days:{type:Number}
+  totalDistance: { type: Number },
+  fuelCost: { type: Number },
+  days: { type: Number }
 })
 
 const planSchema = new Schema({
-  id: {type:Number},
-  name: {type:String},
-  lat: {type:Number},
-  lng: {type:Number},
+  id: { type: Number },
+  name: { type: String },
+  lat: { type: Number },
+  lng: { type: Number },
 })
 
 const mindMapSchema = new Schema<IMindMap>({
@@ -39,12 +59,13 @@ const mindMapSchema = new Schema<IMindMap>({
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
   places: { type: [placeSchema], required: true },
-  startingPosition: { type: [String], required: true },
+  startingPosition: { type: startingPosition, required: true },
   partners: { type: Number },
-  budget: { type: Number },
-  routeMetrics:{type:routeSchema},
-  aiInsights:{type:aiInsightsSchema},
+  budget: { type: budget },
+  routeMetrics: { type: routeSchema },
+  aiInsights: { type: aiInsightsSchema },
   userId: { type: String, ref: 'User', required: true },
+  timeAllocation:{type:timeAllocation},
   orderId: { type: String, required: true, unique: true },
   status: { type: String, enum: ['Draft', 'Ongoing', 'Completed'], default: 'Draft' },
   plan: { type: [[planSchema]] },
