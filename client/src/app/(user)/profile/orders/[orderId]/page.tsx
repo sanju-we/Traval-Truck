@@ -553,7 +553,7 @@ export default function UserOrderDetailsPage() {
                   )}
               </div>
             </div>
-            {order.status == 'Completed' && <RatingCard orderId={order.id} vendor={order.ownedBy}/>}
+            {order.status == 'Completed' && <RatingCard orderId={order.id} productId={order.product} vendor={order.ownedBy}/>}
           </div>
         </div>
       </div>

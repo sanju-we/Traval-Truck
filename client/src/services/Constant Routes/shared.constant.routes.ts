@@ -19,6 +19,7 @@ export const SHARED_ROUTES = {
   Review : {
     rating: (role:string,packageId:string) => `${SHARED_REVIEW}/${role}/rating/${packageId}`,
     getRiview: (role:string) => `${SHARED_REVIEW}/${role}/getReview`,
+    getAllPackageReview: (role:string) => `${SHARED_REVIEW}/${role}/getAll`
   },
 
   subscriptions : {

@@ -4,6 +4,8 @@ import { IReviewRepository } from "../../core/interface/repositorie/shared/Ishar
 import { IBaseValidator } from "../../core/interface/validator/IBasic.validator.js";
 import { toReviewDTO,reviewDTO } from "../../core/DTO/shared/reviewDTO.js";
 import { DataNotFoundError } from "../../utils/resAndErrors.js";
+import { PaginationResponse } from "@core/DTO/pagination.DTO.js";
+import { IReviews } from "@core/interface/modelInterface/IReviews.js";
 
 @injectable()
 export class ReviewService implements IReviewService {
@@ -12,14 +14,16 @@ export class ReviewService implements IReviewService {
     @inject('IBaseValidator') private readonly _baseValidator: IBaseValidator,
   ) { }
 
-  async create(userId: string, data: { rating: number; comment: string; vendor:string }, orderId: string): Promise<reviewDTO> {
+  async create(userId: string, data: { rating: number; comment: string; vendor:string, productId:string }, orderId: string): Promise<reviewDTO> {
     await this._baseValidator.reviewValidator(data);
     await this._baseValidator.idValidator(userId);
+    await this._baseValidator.idValidator(data.productId);
     await this._baseValidator.idValidator(orderId);
     const reviewData = {
       vendor:data.vendor,
       orderId,
       userId,
+      productId:data.productId,
       rating: data.rating,
       comment: data.comment
     }
@@ -35,5 +39,17 @@ export class ReviewService implements IReviewService {
     if(!review) throw new DataNotFoundError();
 
     return toReviewDTO(review)
+  }
+
+  async getAll(packageId: string, currentPage: number, reviewPerPage: number, filterRating: number ): Promise<PaginationResponse<IReviews>> {
+    const reviews = await this._reviewRepo.ReviewsWithPagination(currentPage,reviewPerPage,packageId,filterRating);
+    if(reviews.data.length <= 0 ){
+      return {
+        data:[],
+        totalPage:0,
+      }
+    };
+
+    return reviews
   }
 }

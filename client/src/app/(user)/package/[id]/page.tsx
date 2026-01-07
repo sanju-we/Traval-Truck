@@ -24,6 +24,7 @@ import {
 import TermsModal from '@/components/shared/TermsModal';
 import BookNowButton from '@/components/user/booking/bookNowButton';
 import toast from 'react-hot-toast';
+import PackageReviews from '@/components/shared/Reviews';
 
 interface PackageData {
   _id: string;
@@ -62,9 +63,9 @@ export default function PackageDetailsPage() {
   const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
   const [discountedPrice, setDiscountedPrice] = useState(pack?.price || 0);
   const [availableCoupons, setAvailableCoupons] = useState<any[]>([]);
-  const [couponId , setCouponId] = useState('')
+  const [couponId, setCouponId] = useState('')
   const [couponLoading, setCouponLoading] = useState(true);
-  
+
   const id = typeof params.id === "string" ? params.id : params.id?.[0];
 
   useEffect(() => {
@@ -101,7 +102,7 @@ export default function PackageDetailsPage() {
   }
 
   const applyCoupon = () => {
-    console.log('couponCode:',couponCode)
+    console.log('couponCode:', couponCode)
     const coupon = availableCoupons.find(c => c.couponCode === couponCode);
     if (coupon) {
       setAppliedCoupon(coupon);
@@ -582,7 +583,7 @@ export default function PackageDetailsPage() {
           {/* Book Now Button */}
           <div className="flex justify-end">
             {acceptedTerms ? (
-              <BookNowButton packageId={id} amount={Math.round(discountedPrice)} role="user" couponCode={couponId}/>
+              <BookNowButton packageId={id} amount={Math.round(discountedPrice)} role="user" couponCode={couponId} />
             ) : (
               <button
                 disabled
@@ -594,6 +595,8 @@ export default function PackageDetailsPage() {
           </div>
         </div>
       </div>
+
+      <PackageReviews packageId={id} reviewsPerPage={5} />
 
       <Footer />
       <TermsModal isOpen={showTermsModal} onClose={() => setShowTermsModal(false)} />

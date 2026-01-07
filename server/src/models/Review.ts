@@ -10,6 +10,10 @@ const reviewSchema = new Schema<IReviews>({
     type: String,
     required: true,
   },
+  productId: {
+    type: String,
+    required: true,
+  },
   userId: {
     type: String,
     required: true,
@@ -23,6 +27,10 @@ const reviewSchema = new Schema<IReviews>({
     type: String,
     required: true,
   },
+  createdAt:{
+    type:Date,
+    default:new Date()
+  }
 });
 
 export const Reviews = model<IReviews>('Reviews', reviewSchema);

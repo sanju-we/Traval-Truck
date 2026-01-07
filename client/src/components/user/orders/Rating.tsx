@@ -7,10 +7,13 @@ interface props{
   orderId:string,
   vendor:{
     _id:number
-  }
+  },
+  productId:{
+    _id:number
+  },
 }
 
-export default function RatingCard({orderId, vendor}:props) {
+export default function RatingCard({orderId, vendor, productId}:props) {
   const [rating, setRating] = useState(0);
   const [hovered, setHovered] = useState(0);
   const [comment, setComment] = useState("");
@@ -32,7 +35,7 @@ export default function RatingCard({orderId, vendor}:props) {
   }
 
   async function handleSubmit(){
-    const data = await SHARED_API_METHODS.rating({rating,comment,vendor:vendor._id.toString()},'user',orderId)
+    const data = await SHARED_API_METHODS.rating({rating,comment,vendor:vendor._id.toString(), productId:productId._id.toString()},'user',orderId)
     if(data.success){
       toast.success('Rating submited successfully');
       setReview(data.data)
