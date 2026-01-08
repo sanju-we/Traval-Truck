@@ -7,4 +7,5 @@ export interface IReviewController {
   getAllReviews(req:Request,res:Response) : Promise<void>;
   replayReview(req:Request,res:Response) : Promise<void>;
   getReplaysVendor(req:Request,res:Response) : Promise<void>;
+  getAllReplayUser(req:Request,res:Response) : Promise<void>;
 }

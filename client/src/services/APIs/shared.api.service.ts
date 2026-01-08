@@ -19,5 +19,6 @@ export const SHARED_API_METHODS = {
   getPackageReviews:(data:{packageId:string,currentPage:number,reviewPerPage:number,filterRating:number},role:string) => get(SHARED_ROUTES.Review.getAllPackageReview(role),data),
   getAllReviews:(role:string,curr:number,limi:number,rating:number|null) => get(SHARED_ROUTES.Review.getAllReviews(role)),
   replyToReview:(role:string,reviewId:string,replayMessage:string) => post(SHARED_ROUTES.Review.replayReview(role),{reviewId,replayMessage}),
-  getReplays:(role:string,vendorId:string) => get(SHARED_ROUTES.Review.getReplay(role),{vendorId})
+  getReplays:(role:string,vendorId:string) => get(SHARED_ROUTES.Review.getReplay(role),{vendorId}),
+  getReplayUser:(role:string,packageId:string) => get(SHARED_ROUTES.Review.userReplay(role),{packageId})
 }

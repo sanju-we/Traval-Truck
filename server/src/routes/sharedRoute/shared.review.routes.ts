@@ -12,5 +12,6 @@ reviewRouter.post('/rating/:id',asyncHandler(reviewController.addReview.bind(rev
 .get('/getAllReviews',asyncHandler(reviewController.getAllReviews.bind(reviewController)))
 .post('/replayReview',asyncHandler(reviewController.replayReview.bind(reviewController)))
 .get('/replaysForVendor',asyncHandler(reviewController.getReplaysVendor.bind(reviewController)))
+.get('/allReplayForUser',asyncHandler(reviewController.getAllReplayUser.bind(reviewController)))
 
 export default reviewRouter

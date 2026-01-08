@@ -11,4 +11,5 @@ export interface IReviewService{
   getAllReviews(vendorId:string):Promise<PaginationResponse<IReviews>>
   replayReview(vendorId:string,data:{replayMessage:string,reviewId:string},role:string):Promise<ReplayDTO>;
   getVendorReplays(vendorId:string):Promise<ReplayDTO[]>;
+  getReplaysUser(pakcageId:string):Promise<ReplayDTO[]>
 }

@@ -23,6 +23,7 @@ export const SHARED_ROUTES = {
     getAllReviews:(role:string) => `${SHARED_REVIEW}/${role}/getAllReviews`,
     replayReview:(role:string) => `${SHARED_REVIEW}/${role}/replayReview`,
     getReplay:(role:string) => `${SHARED_REVIEW}/${role}/replaysForVendor`,
+    userReplay:(role:string) => `${SHARED_REVIEW}/${role}/allReplayForUser`
   },
 
   subscriptions : {

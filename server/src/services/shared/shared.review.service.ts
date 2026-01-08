@@ -102,6 +102,7 @@ export class ReviewService implements IReviewService {
     const replayData = {
       comment: data.replayMessage,
       replayer: vendor?.companyName,
+      productId:review.productId,
       replayerId: vendorId,
       reviewId: data.reviewId
     }
@@ -116,6 +117,12 @@ export class ReviewService implements IReviewService {
     const replays = await this._replayRepo.findAll({ replayerId: vendorId }, {});
     if (!replays) throw new DataNotFoundError();
     console.log(replays)
+    return replays.map(toReplayDTO)
+  }
+
+  async getReplaysUser(pakcageId: string): Promise<ReplayDTO[]> {
+    const replays = await this._replayRepo.findAll({productId:pakcageId},{})
+    if(!replays) throw new DataNotFoundError();
     return replays.map(toReplayDTO)
   }
 }

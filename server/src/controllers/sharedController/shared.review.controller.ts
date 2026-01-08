@@ -56,4 +56,10 @@ export class ReviewController implements IReviewController {
     const replays = await this._reviewService.getVendorReplays(vendorId);
     sendResponse(res,STATUS_CODE.OK,true,MESSAGES.ALL_DATA_FOUND,replays);
   }
+
+  async getAllReplayUser(req: Request, res: Response): Promise<void> {
+    const packageId = req.query.packageId as string
+    const replays = await this._reviewService.getReplaysUser(packageId)
+    sendResponse(res,STATUS_CODE.OK,true,MESSAGES.ALL_DATA_FOUND,replays)
+  }
 }

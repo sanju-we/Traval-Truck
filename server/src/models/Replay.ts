@@ -5,6 +5,7 @@ const replaySchema = new Schema<IReplay>({
   comment:{type:String},
   replayer:{type:String},
   replayerId:{type:String,refPath:'replayer'},
+  productId:{type:String},
   reviewId:{type:String,ref:'Review'}
 })
 
