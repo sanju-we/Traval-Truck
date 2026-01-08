@@ -2,16 +2,24 @@ import { IReviewService } from "../../core/interface/serivice/shared/Ishared.rev
 import { inject, injectable } from "inversify";
 import { IReviewRepository } from "../../core/interface/repositorie/shared/Ishare.review.repository.js";
 import { IBaseValidator } from "../../core/interface/validator/IBasic.validator.js";
-import { toReviewDTO, reviewDTO } from "../../core/DTO/shared/reviewDTO.js";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
-import { PaginationResponse } from "@core/DTO/pagination.DTO.js";
-import { IReviews } from "@core/interface/modelInterface/IReviews.js";
+import { toReviewDTO, reviewDTO, toReviewWithReplayDTO, reviewWithReplayDTO } from "../../core/DTO/shared/reviewDTO.js";
+import { BADREQUEST, DataNotFoundError } from "../../utils/resAndErrors.js";
+import { PaginationResponse } from "../../core/DTO/pagination.DTO.js";
+import { IReplayRepository } from "../../core/interface/repositorie/shared/Ireplay.repository.js";
+import { IReviews } from "../../core/interface/modelInterface/IReviews.js";
+import { IAgencyRespository } from "../../core/interface/repositorie/agency/Iagency.auth.repository.js";
+import { IHotelAuthRepository } from "../../core/interface/repositorie/Hotel/Ihotel.auth.repository.js";
+import { ReplayDTO, toReplayDTO } from "../../core/DTO/shared/Replay.js";
+import { IReplay } from "@core/interface/modelInterface/IReplay.js";
 
 @injectable()
 export class ReviewService implements IReviewService {
   constructor(
     @inject('IReviewRepository') private readonly _reviewRepo: IReviewRepository,
     @inject('IBaseValidator') private readonly _baseValidator: IBaseValidator,
+    @inject('IReplayRepository') private readonly _replayRepo: IReplayRepository,
+    @inject('IAgencyRespository') private readonly _agencyRepo: IAgencyRespository,
+    @inject('IHotelAuthRepository') private readonly _hotelRepo: IHotelAuthRepository
   ) { }
 
   async create(userId: string, data: { rating: number; comment: string; vendor: string, productId: string }, orderId: string): Promise<reviewDTO> {
@@ -54,5 +62,60 @@ export class ReviewService implements IReviewService {
     };
 
     return { data: reviews.data, totalPage: reviews.totalPage, totalCount: reviews.totalCount, averageRating: averageRating.averageRating }
+  }
+
+  async getAllReviews(
+    vendorId: string
+  ): Promise<PaginationResponse<IReviews>> {
+
+    const allReviews = await this._reviewRepo.ReviewsForVendors(1, 5, vendorId);
+    const averageRating = await this._reviewRepo.averageRatingForVendor(vendorId);
+
+    if (!allReviews || !allReviews.data.length) {
+      return {
+        data: [],
+        totalCount: 0,
+        totalPage: 0,
+        averageRating: averageRating?.averageRating ?? 0
+      };
+    }
+
+    return {
+      ...allReviews,
+      averageRating: averageRating.averageRating
+    };
+  }
+
+
+  async replayReview(vendorId: string, data: { replayMessage: string; reviewId: string; }, role: string): Promise<ReplayDTO> {
+    await this._baseValidator.idValidator(vendorId);
+    const review = await this._reviewRepo.findById(data.reviewId)
+    console.log(vendorId)
+    if (!review) throw new DataNotFoundError();
+    if (review.isReplayed) throw new BADREQUEST();
+
+    let vendor;
+    if (role === 'agency') vendor = await this._agencyRepo.findById(vendorId)
+    else if (role === 'hotel') vendor = await this._hotelRepo.findById(vendorId)
+    if (!vendor) throw new DataNotFoundError()
+
+    const replayData = {
+      comment: data.replayMessage,
+      replayer: vendor?.companyName,
+      replayerId: vendorId,
+      reviewId: data.reviewId
+    }
+
+    const replay = await this._replayRepo.create(replayData);
+    await this._reviewRepo.update(data.reviewId, { isReplayed: true })
+    return toReplayDTO(replay)
+  }
+
+  async getVendorReplays(vendorId: string): Promise<ReplayDTO[]> {
+    await this._baseValidator.idValidator(vendorId);
+    const replays = await this._replayRepo.findAll({ replayerId: vendorId }, {});
+    if (!replays) throw new DataNotFoundError();
+    console.log(replays)
+    return replays.map(toReplayDTO)
   }
 }

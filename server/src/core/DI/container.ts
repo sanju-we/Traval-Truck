@@ -53,6 +53,8 @@ import { IReviewService } from '../../core/interface/serivice/shared/Ishared.rev
 import { ReviewService } from '../../services/shared/shared.review.service.js';
 import { IReviewRepository } from '../../core/interface/repositorie/shared/Ishare.review.repository.js';
 import { ReviewRepository } from '../../repositories/shared/share.review.repository.js';
+import { IReplayRepository } from '../../core/interface/repositorie/shared/Ireplay.repository.js';
+import { ReplayRepository } from '../../repositories/shared/shared.replay.repository.js';
 
 // ----------------------------------------------------user-------------------------------------------------------------
 import { IAuthService } from '../../core/interface/serivice/user/auth.interface.js';
@@ -213,6 +215,7 @@ container.bind<IMindMapRepository>('IMindMapRepository').to(MindMapRepository);
 container.bind<IReviewController>('IReviewController').to(ReviewController);
 container.bind<IReviewService>('IReviewService').to(ReviewService);
 container.bind<IReviewRepository>('IReviewRepository').to(ReviewRepository);
+container.bind<IReplayRepository>('IReplayRepository').to(ReplayRepository);
 
 // ---------------------------------------------------user container-------------------------------------------------------------------------
 container.bind<IAuthRepository>('IAuthRepository').to(AuthRepository);

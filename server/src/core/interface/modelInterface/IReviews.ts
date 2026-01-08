@@ -6,6 +6,8 @@ export interface IReviews extends Document {
   orderId:string;
   productId:string;
   userId: string;
+  replay:string;
+  isReplayed:boolean,
   rating: number;
   comment: string;
   createdAt:Date;

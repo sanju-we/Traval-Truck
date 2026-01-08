@@ -61,6 +61,12 @@ function SideNavbar() {
               <span>Orders</span>
             </button>
             </div>
+            <div className='hover:bg-gray-200 rounded-md' onClick={() => router.push('/agency/reviews')}>
+              <button className="flex items-center space-x-2 p-2 text-black-600 rounded">
+              <List  className="material-icons">Review</List >
+              <span>Reviews</span>
+            </button>
+            </div>
             <div className='hover:bg-gray-200 rounded-md' onClick={() => router.push('/agency/wallet')}>
               <button className="flex items-center space-x-2 p-2 text-black-600  rounded" >
               <IndianRupee className="material-icons">payment</IndianRupee>

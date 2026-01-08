@@ -27,6 +27,11 @@ const reviewSchema = new Schema<IReviews>({
     type: String,
     required: true,
   },
+  replay:{
+    type:String,
+    ref:'Replay'
+  },
+  isReplayed:{type:Boolean},
   createdAt:{
     type:Date,
     default:new Date()

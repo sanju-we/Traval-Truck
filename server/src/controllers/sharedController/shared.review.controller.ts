@@ -33,7 +33,27 @@ export class ReviewController implements IReviewController {
     const currentPage = Number(req.query.currentPage);
     const reviewPerPage = Number(req.query.reviewPerPage);
     const filterRating = Number(req.query.filterRating);
-    const response = await this._reviewService.getAll(packageId, currentPage, reviewPerPage, filterRating )
+    const response = await this._reviewService.getAll(packageId, currentPage, reviewPerPage, filterRating)
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, response)
+  }
+
+  async getAllReviews(req: Request, res: Response): Promise<void> {
+    const vendorId = req.user.id;
+    const reviews = await this._reviewService.getAllReviews(vendorId)
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, reviews)
+  }
+
+  async replayReview(req: Request, res: Response): Promise<void> {
+    const data = req.body;
+    const vendorId = req.user.id;
+    const role = req.user.role
+    const updatedReview = await this._reviewService.replayReview(vendorId,data,role);
+    sendResponse(res,STATUS_CODE.OK,true,MESSAGES.UPDATED,updatedReview)
+  }
+
+  async getReplaysVendor(req: Request, res: Response): Promise<void> {
+    const vendorId = req.user.id;
+    const replays = await this._reviewService.getVendorReplays(vendorId);
+    sendResponse(res,STATUS_CODE.OK,true,MESSAGES.ALL_DATA_FOUND,replays);
   }
 }
