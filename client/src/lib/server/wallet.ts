@@ -2,10 +2,10 @@ import api from "@/services/api";
 import toast from "react-hot-toast";
 import { createServerAxios } from "@/services/serverApi";
 
-export async function getWalletData( role: string) {
+export async function getWalletData( role: string,currentPage:number) {
   try {
     const serverApi = await createServerAxios()
-    const res = await serverApi.get(`/shared/wallet/${role}`);
+    const res = await serverApi.get(`/shared/wallet/${role}?currentPage=${currentPage}`);
     console.log(res.data);
     return await res.data.data;
   } catch (err) {

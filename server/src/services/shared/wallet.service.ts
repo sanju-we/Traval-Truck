@@ -7,6 +7,7 @@ import { IPaymentUtils } from "../../core/interface/PaymentInterface/Ipayment.ut
 import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors.js";
 import { IWallet } from "../../core/interface/modelInterface/IWaller.js";
 import { logger } from "../../utils/logger.js";
+import { PaginationResponse } from "@core/DTO/pagination.DTO.js";
 
 @injectable()
 export class WalletService implements IWalletService {
@@ -16,8 +17,8 @@ export class WalletService implements IWalletService {
     @inject('IPaymentUtils') private readonly _paymentUtils: IPaymentUtils
   ) { }
 
-  async getWallet(id: string): Promise<WallterDTO> {
-    const wallet = await this._walletRepo.FindByUserId(id);
+  async getWallet(id: string,currentPage:number): Promise<PaginationResponse<IWallet>> {
+    const wallet = await this._walletRepo.FindByUserIdWithPaginatin(id,currentPage,5);
     if (!wallet) throw new DataNotFoundError();
     return wallet;
   }
@@ -39,7 +40,6 @@ export class WalletService implements IWalletService {
     });
   }
 
-  // ⚠️ This function is called ONLY from the Stripe webhook
   async addMoney(userId: string, amount: number, paymentId: string): Promise<IWallet> {
     const wallet = await this._walletRepo.FindByUserId(userId);
     const transaction = {

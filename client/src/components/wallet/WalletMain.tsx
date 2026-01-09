@@ -3,9 +3,23 @@ import WalletTransactions from "./WalletTransactions";
 import AddMoneySection from "./AddMoneySection";
 import { getWalletData } from "@/lib/server/wallet";
 
-export default async function WalletMain({ role }: { role: string }) {
-  const walletData = await getWalletData(role);
+interface Transaction {
+  _id: string;
+  Amount: number;
+  Type: 'credit' | 'debit';
+  Description: string;
+  Date: string;
+}
 
+export default async function WalletMain({ role }: { role: string }) {
+  const data = await getWalletData(role, 1);
+  console.log(data)
+  const walletData = data.data.data;
+
+  const fetchData = async (currentPage: number): Promise<{ data: Transaction[]; totalPages: number; }> => {
+    const wallet = await getWalletData(role, currentPage);
+    return wallet
+  }
   const wallet = walletData || {
     Balance: 0,
     Transaction: [],
@@ -25,10 +39,12 @@ export default async function WalletMain({ role }: { role: string }) {
           role={role}
         />
 
-        <AddMoneySection role={role}/>
+        <AddMoneySection role={role} />
 
         <WalletTransactions
           transactions={wallet.Transaction}
+          totlaPage={data.data.totalPage}
+          newPage={fetchData}
           role={role}
         />
       </div>
