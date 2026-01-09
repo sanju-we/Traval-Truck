@@ -1,11 +1,82 @@
 'use client';
 import { LoadScript } from '@react-google-maps/api';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import MapSection from '@/components/Map/Map';
 import toast from 'react-hot-toast';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import MindMapDraftReview from '@/components/user/draft';
+interface Place {
+  id: number;
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
+}
+
+interface StartingPosition {
+  address: string;
+  lat: number;
+  lng: number;
+}
+
+interface AIInsights {
+  feasibilityStatus: string;
+  feasibilityDetails: string;
+  dailyTravelDistanceReality: string;
+  dailyTravelDistanceDetails: string;
+  budgetReliability: string;
+  budgetReliabilityDetails: string;
+  risks: string[];
+  improvements: string[];
+}
+
+interface Budget {
+  fuelAmount: number;
+  foodAmount: number;
+  totalApproximateBudget: number;
+}
+
+interface TimeAllocation {
+  drivingHoursAllocatedPerDay: number;
+  estimatedActualDrivingTimeInVehicle: string;
+  timeForFoodAndActivities: string;
+}
+
+interface RouteMetrics {
+  totalDistance: number;
+  fuelCost: number;
+  days: number;
+}
+
+interface PlanLocation {
+  id: number;
+  name: string;
+  lat: number;
+  lng: number;
+}
+
+interface MindMapData {
+  id: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+  places: Place[];
+  startingPosition: StartingPosition;
+  partners: number;
+  budget: Budget;
+  routeMetrics: RouteMetrics;
+  aiInsights: AIInsights;
+  timeAllocation: TimeAllocation;
+  userId: string;
+  orderId: string;
+  status: 'Draft' | 'Ongoing' | 'Completed';
+  plan: PlanLocation[][];
+  tripProgress: string[];
+  isPublic: boolean;
+  createdAt: string;
+  updateAt: string;
+}
 
 interface Place {
   id: number;
@@ -55,6 +126,7 @@ const HomeIcon = () => (<svg width="20" height="20" viewBox="0 0 24 24" fill="no
 const NavigationIcon = () => (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>);
 
 export default function CreateMindMapPage() {
+  const params = useParams();
   const router = useRouter();
   const googeApi = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -79,9 +151,16 @@ export default function CreateMindMapPage() {
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false);
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>({ lat: 10.8505, lng: 76.2711 });
   const [created, setCreated] = useState(false);
-  const [draft, setDraft] = useState()
+  const [id, setId] = useState('')
+  const [draft, setDraft] = useState<MindMapData | null>()
+  const [mindMap, setMindMap] = useState<MindMapData | null>()
   const [isGenerating, setIsGenerating] = useState(false);
   const draftRef = useRef<HTMLDivElement | null>(null);
+  console.log(typeof params.id)
+  const ID = typeof params.id === 'string' ? params.id : params.id?.[0];
+  if (!ID) return (
+    <h1>Invalid URL</h1>
+  )
 
   const tomorrow = new Date();
   const formattedTomorrow = tomorrow.toISOString().split('T')[0];
@@ -102,6 +181,65 @@ export default function CreateMindMapPage() {
       } else { setStartingSuggestions([]); }
     });
   };
+
+  useEffect(() => {
+    fetchMindMap()
+  }, [])
+
+  useEffect(() => {
+    if (!mindMap) return;
+    console.log(mindMap)
+
+    setTitle(mindMap.title);
+    setStartDate(mindMap.startDate);
+    setEndDate(mindMap.endDate);
+    setMember(String(mindMap.partners));
+    setId(ID)
+
+    setFood(mindMap.budget?.foodAmount ? 'non-veg' : 'veg');
+    setFoodAmount(String(mindMap.budget?.foodAmount ?? ''));
+    setVehicle(mindMap.routeMetrics?.days ? 'car' : 'bike');
+    const fuelUsed = mindMap.routeMetrics?.fuelCost / 100
+    setMilage(String(mindMap.routeMetrics?.totalDistance / fuelUsed));
+
+    setStartingLocation({
+      name: mindMap.startingPosition.address,
+      address: mindMap.startingPosition.address,
+      lat: mindMap.startingPosition.lat,
+      lng: mindMap.startingPosition.lng,
+    });
+
+    setMapCenter({
+      lat: mindMap.startingPosition.lat,
+      lng: mindMap.startingPosition.lng,
+    });
+
+    setPlaces(
+      mindMap.places.map((place) => ({
+        id: place.id,
+        name: place.name,
+        address: place.address,
+        lat: place.lat,
+        lng: place.lng,
+        description: place.description ?? '',
+        selected: true,
+        placeId: place.placeId,
+        dayPreference: place.dayPreference,
+        timePreference: place.timePreference ?? 'any',
+      }))
+    );
+
+  }, [mindMap]);
+
+
+  const fetchMindMap = async () => {
+    const map = await USER_API_METHODS.MindMapDetails(ID);
+    if (map.success) {
+      setMindMap(map.data)
+    } else {
+      router.back()
+    }
+  }
 
   const handleStartingPlaceSelect = (placeSuggestion: PlaceSuggestion) => {
     const service = new window.google.maps.places.PlacesService(document.createElement('div'));
@@ -202,6 +340,7 @@ export default function CreateMindMapPage() {
       setIsGenerating(true);
 
       const data = await USER_API_METHODS.generateMap({
+        id,
         title,
         startDate,
         endDate,
@@ -235,9 +374,12 @@ export default function CreateMindMapPage() {
     }
   };
 
+  if (!mindMap) return (
+    <h1>sadf</h1>
+  )
 
   const handleOnSubmit = async () => {
-    const data = await USER_API_METHODS.submitTheMindmap(draft.id)
+    const data = await USER_API_METHODS.submitTheMindmap(mindMap.id)
     if (data.success) {
       toast.success('Mind Map confirmed')
       router.push('/mind-map')
@@ -245,9 +387,6 @@ export default function CreateMindMapPage() {
   }
 
   const totalDays = getTotalDays();
-
-  // Replace the return statement in the main component with this:
-
   return (
     <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!} libraries={libraries}>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50">
@@ -535,7 +674,7 @@ export default function CreateMindMapPage() {
         </div>
         {created && draft && (
           <div ref={draftRef} className="scroll-mt-24">
-            <MindMapDraftReview draft={draft} onAccept={handleOnSubmit} />
+            <MindMapDraftReview draft={draft} isEditMode={true} onAccept={handleOnSubmit} />
           </div>
         )}
       </div>

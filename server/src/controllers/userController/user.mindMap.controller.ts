@@ -32,4 +32,10 @@ export class UserMindMapController implements IUserMindMapController{
     const mindMap = await this._mindMapService.getMap(mapId);
     sendResponse(res,STATUS_CODE.OK,true,MESSAGES.DATA_FOUND,mindMap);
   }
+
+  async confirmMap(req: Request, res: Response): Promise<void> {
+    const mapId = req.body.id;
+    const updated = await this._mindMapService.confirmMap(mapId);
+    sendResponse(res,STATUS_CODE.OK,true,MESSAGES.UPDATED,updated)
+  }
 }

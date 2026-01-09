@@ -45,6 +45,7 @@ export interface MindMapResDTO {
   plan: PlaceNode[][],
   partners:number,
   startDate: Date,
+  aiInsights:aiInsights,
   endDate: Date,
   startingPosition: startingPosition,
   budget:budget,
@@ -52,7 +53,8 @@ export interface MindMapResDTO {
   status: string,
   isPublic: boolean,
   tripProgress: string[],
-  createdAt: Date
+  createdAt: Date,
+  updateAt:Date,
 }
 
 export const toMindMapRes = (mindMap: IMindMap): MindMapResDTO => ({
@@ -60,6 +62,7 @@ export const toMindMapRes = (mindMap: IMindMap): MindMapResDTO => ({
   orderId: mindMap.orderId,
   title: mindMap.title,
   places: mindMap.places,
+  aiInsights:mindMap.aiInsights,
   plan: mindMap.plan,
   partners:mindMap.partners,
   startDate: mindMap.startDate,
@@ -70,5 +73,6 @@ export const toMindMapRes = (mindMap: IMindMap): MindMapResDTO => ({
   status: mindMap.status,
   isPublic: mindMap.isPublic,
   tripProgress: mindMap.tripProgress,
-  createdAt: mindMap.createdAt
+  createdAt: mindMap.createdAt,
+  updateAt:mindMap.updatedAt
 })

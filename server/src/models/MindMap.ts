@@ -67,12 +67,12 @@ const mindMapSchema = new Schema<IMindMap>({
   userId: { type: String, ref: 'User', required: true },
   timeAllocation:{type:timeAllocation},
   orderId: { type: String, required: true, unique: true },
-  status: { type: String, enum: ['Draft', 'Ongoing', 'Completed'], default: 'Draft' },
+  status: { type: String, enum: ['Draft', 'Ongoing', 'Completed','Confirm'], default: 'Draft' },
   plan: { type: [[planSchema]] },
   tripProgress: { type: [String] },
   isPublic: { type: Boolean, default: false },
   createdAt: { type: Date },
   updatedAt: { type: Date }
-})
+},{timestamps:true})
 
 export const MindMap = model<IMindMap>('MindMap', mindMapSchema);

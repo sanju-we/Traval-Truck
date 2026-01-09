@@ -3,7 +3,7 @@ import { IUserMindMapService } from "../../core/interface/serivice/user/IUser.mi
 import { IBaseValidator } from "../../core/interface/validator/IBasic.validator.js";
 import { inject, injectable } from "inversify";
 import { IAuthRepository } from "../../core/interface/repositorie/User/IAuth.Repository.js";
-import { BADREQUEST, DataNotFoundError } from "../../utils/resAndErrors.js";
+import { BADREQUEST, DataNotFoundError, DataUpdatingError } from "../../utils/resAndErrors.js";
 import { buildOptimizedRoute, splitIntoDays, PlaceNode, getDistanceInKm, } from "../../utils/tripPlanner/index.js";
 import { IMindMapRepository } from "../../core/interface/repositorie/User/IMindMap.repository.js";
 import { MindMapResDTO, toMindMapRes } from "../../core/DTO/user/Response/mindMap.res.js";
@@ -20,7 +20,7 @@ export class UserMindMapService implements IUserMindMapService {
 
   async createMap(data: MindMapRequest, userId: string): Promise<MindMapResDTO> {
     await this._baseValidator.idValidator(userId);
-    // create a validator for the mind map
+    await this._baseValidator.MindMapValidation(data)
 
     const user = await this._userAuth.findById(userId);
     if (!user) throw new DataNotFoundError();
@@ -28,7 +28,6 @@ export class UserMindMapService implements IUserMindMapService {
     const days = (new Date(data.endDate).getDate() - new Date(data.startDate).getDate()) + 1
     if (days <= 0) throw new BADREQUEST();
 
-    // start Date Lat and Lng find
     let startLat, startLng;
     const loca = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(data.startPlace)}&key=${process.env.GOOGLE_MAPS_API_KEY}`);
     const startLoca = await loca.json();
@@ -45,7 +44,6 @@ export class UserMindMapService implements IUserMindMapService {
       lng: p.lng
     }))
 
-    // const distance = getDistanceInKm()
     const { route, totalDistance } = buildOptimizedRoute(startLat, startLng, places);
     const dayWaysSplit = splitIntoDays<PlaceNode>(route, days)
 
@@ -74,11 +72,6 @@ export class UserMindMapService implements IUserMindMapService {
       estimatedFoodCost: Number(data.foodAmount)
     };
     const aiResult = await validateTripPlan(aiValidationPayload)
-    // if (aiResult.tripFeasibility.status !== "feasible") {
-    //   throw new Error(
-    //     `Trip not feasible: ${aiResult.tripFeasibility.reason}`
-    //   );
-    // }
 
     const MindMap = {
       orderId,
@@ -86,35 +79,41 @@ export class UserMindMapService implements IUserMindMapService {
       startDate: data.startDate,
       endDate: data.endDate,
       userId,
-      places:data.places,
+      places: data.places,
       startingPosition: {
         address: data.startPlace,
         lat: Number(startLat),
         lng: Number(startLng)
       },
-      partners:Number(data.member),
+      partners: Number(data.member),
       plan: dayWaysSplit,
-      budget:aiResult.budget,
-      timeAllocation:aiResult.timeAllocation,
+      budget: aiResult.budget,
+      timeAllocation: aiResult.timeAllocation,
       routeMetrics: {
         totalDistance,
         fuelCost,
         days
       },
       aiInsights: {
-        feasibilityStatus:aiResult.tripValidationSummary.feasibilityStatus,
-        feasibilityDetails:aiResult.tripValidationSummary.feasibilityDetails,
-        dailyTravelDistanceReality:aiResult.tripValidationSummary.dailyTravelDistanceReality,
-        dailyTravelDistanceDetails:aiResult.tripValidationSummary.dailyTravelDistanceDetails,
-        budgetReliability:aiResult.tripValidationSummary.budgetReliability,
-        budgetReliabilityDetails:aiResult.tripValidationSummary.budgetReliabilityDetails,
-        risks:aiResult.tripValidationSummary.risks,
-        improvements:aiResult.tripValidationSummary.improvements,
+        feasibilityStatus: aiResult.tripValidationSummary.feasibilityStatus,
+        feasibilityDetails: aiResult.tripValidationSummary.feasibilityDetails,
+        dailyTravelDistanceReality: aiResult.tripValidationSummary.dailyTravelDistanceReality,
+        dailyTravelDistanceDetails: aiResult.tripValidationSummary.dailyTravelDistanceDetails,
+        budgetReliability: aiResult.tripValidationSummary.budgetReliability,
+        budgetReliabilityDetails: aiResult.tripValidationSummary.budgetReliabilityDetails,
+        risks: aiResult.tripValidationSummary.risks,
+        improvements: aiResult.tripValidationSummary.improvements,
       }
     }
+    let mindMap
 
-    const mindMap = await this._mindMapRepo.create(MindMap)
-    console.log(mindMap)
+    console.log(data)
+    if (!data.id) {
+      mindMap = await this._mindMapRepo.create(MindMap)
+    } else {
+      mindMap = await this._mindMapRepo.update(data.id, MindMap)
+    }
+    if (!mindMap) throw new DataNotFoundError();
     return toMindMapRes(mindMap)
   }
 
@@ -131,7 +130,22 @@ export class UserMindMapService implements IUserMindMapService {
   async getMap(mapId: string): Promise<MindMapResDTO> {
     await this._baseValidator.idValidator(mapId);
     const map = await this._mindMapRepo.findById(mapId);
-    if(!map) throw new DataNotFoundError();
+    if (!map) throw new DataNotFoundError();
     return toMindMapRes(map)
+  }
+
+  async confirmMap(mapId: string): Promise<MindMapResDTO> {
+    await this._baseValidator.idValidator(mapId);
+    const map = await this._mindMapRepo.findById(mapId);
+
+    if (!map) throw new DataNotFoundError();
+    if (map.status !== 'Draft') throw new BADREQUEST();
+
+    map.status = 'Confirm'
+    const updated = await this._mindMapRepo.update(mapId, { status: 'Confirm' })
+    if (!updated) throw new DataUpdatingError();
+    console.log('updated:', updated)
+
+    return toMindMapRes(updated)
   }
 }

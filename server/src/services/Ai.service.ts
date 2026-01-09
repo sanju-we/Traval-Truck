@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY2 as string);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 
 export async function validateTripPlan(tripData: any) {
   const model = genAI.getGenerativeModel({
@@ -22,12 +22,26 @@ You MUST:
 - Rearrange and interpret values logically
 - Allocate time realistically based on minimum safe driving speed
 - Distribute available time between driving, food, and activities
+- Include room cost using the ROOM COST RULES below
 - Summarize feasibility, risks, and improvements clearly for a normal user
 
 You MUST NOT:
-- Recalculate distances or costs with new assumptions
-- Assume external prices
-- Change numeric values unless they are explicitly derived from given data
+- Recalculate distances or fuel cost
+- Assume prices EXCEPT the room costs defined below
+- Change numeric values unless explicitly derived from given data
+
+ROOM COST RULES (MANDATORY):
+- 5star: 10000 INR per night
+- 4star: 6000 INR per night
+- 3star: 3000 INR per night
+- below3star: 1500 INR per night
+
+Rules:
+- Use roomType from Trip Data
+- Nights = daysAvailable - 1
+- If daysAvailable = 1 → room cost = 0
+- Add room cost ONLY to totalApproximateBudget
+- Explain room cost inside budgetReliabilityDetails
 
 ====================
 RESPONSE JSON FORMAT

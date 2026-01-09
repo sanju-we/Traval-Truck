@@ -8,6 +8,7 @@ export interface places{
 }
 
 export interface MindMapRequest{
+  id?:string,
   startingPostition:string[],
   startDate:Date,
   endDate:Date,
