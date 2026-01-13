@@ -3,7 +3,7 @@ import { foodType } from "../../types/restaurantType.js";
 import { IRestaurantFoodService } from "../../core/interface/serivice/restaurant/Irestaurant.food.service.js";
 import { IRestaurantFoodRespository } from "@core/interface/repositorie/restaurant/Irestaurant.food.repository.js";
 import z from "zod";
-import { singleUpload } from "../../utils/upload.cloudinary.js";
+import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.cloudinary.js";
 import { inject, injectable } from "inversify";
 import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors.js";
 import { logger } from "../../utils/logger.js";
@@ -62,5 +62,16 @@ export class RestaurantFoodService implements IRestaurantFoodService {
     await updateData?.save()
     if (updateData) return toFoodDTO(updateData)
     throw new DataNotFoundError()
+  }
+
+  async delete(productId: string, index: number): Promise<foodDTO> {
+    const data = await this._foodRepo.findById(productId);
+    if(!data)throw new DataNotFoundError();
+
+    const publicId = extractPublicId(data.Image[index]);
+    const deleted = await deleteImage(publicId)
+    deleted && data.Image.splice(index,1) 
+    await this._foodRepo.update(productId,data);
+    return toFoodDTO(data)
   }
 }

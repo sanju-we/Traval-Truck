@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { IRestaurantProfileController } from '../../core/interface/controllerInterface/restaurant/Irestaurant.profile.controller.js';
 import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository.js';
 import { inject, injectable } from 'inversify';
-import { BADREQUEST, sendResponse, UserNotFoundError } from '../../utils/resAndErrors.js';
+import { BADREQUEST, DataUpdatingError, sendResponse, UserNotFoundError } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
 import { IRestaurantProfileService } from '../../core/interface/serivice/restaurant/IRestaurant.profile.service.js';
@@ -61,17 +61,10 @@ export class RestaurantProfileController implements IRestaurantProfileController
     };
 
     const update = this._restaurantProfileService.updateDocuments(restaurantId, files);
-    update.then((data) => {
-      sendResponse(
-        res,
-        STATUS_CODE.OK,
-        true,
-        restricted ? MESSAGES.RESUBMITED : MESSAGES.SUCCESS,
-        data,
-      );
-    });
+    if(!update) throw new DataUpdatingError();
+    sendResponse(res,STATUS_CODE.OK,true,MESSAGES.UPDATED,update)
   }
-
+ 
   async deleteImage(req: Request, res: Response): Promise<void> {
     const { documentUrl, key } = req.body;
     const restaurantId = req.user.id;

@@ -38,7 +38,7 @@ export class BaseValidator implements IBaseValidator {
     });
 
     const MindMapSchema = z.object({
-      id: z.string().min(23),
+      id: z.string().min(23).optional(),
 
       title: z.string().min(3, "Title must be at least 3 characters"),
 

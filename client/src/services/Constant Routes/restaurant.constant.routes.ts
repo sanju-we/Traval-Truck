@@ -25,7 +25,8 @@ export const RESTAURANT_ROUTES = {
   food: {
     getFood: `${RESTAURANT_FOODS}/getFoods`,
     create: `${RESTAURANT_FOODS}/addItem`,
-    edit: `${RESTAURANT_FOODS}/update`
+    edit: `${RESTAURANT_FOODS}/update`,
+    delete: `${RESTAURANT_FOODS}/deleteImage`
   },
 
   payment: {

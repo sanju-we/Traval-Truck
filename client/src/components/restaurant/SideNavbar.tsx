@@ -1,3 +1,5 @@
+'use client'
+
 import {
   LogOut,
   Home,
@@ -33,41 +35,51 @@ function SideNavbar() {
         <div className="flex flex-col space-y-4">
           <h1 className="text-2xl font-semibold text-gray-800">Travel Agency</h1>
           <div className="space-y-2 ">
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
-              <Home className="material-icons">home</Home>
-              <span>Dashboard</span>
-            </button>
-            <div className='hover:bg-gray-200 rounded' onClick={()=> router.push('/restaurant/foods')}>
-              <button className="flex items-center space-x-2 p-2 text-gray-600">
-              <Utensils className="material-icons">Foods</Utensils>
-              <span>Foods</span>
-            </button>
+            <div className='hover:bg-gray-200 rounded'>
+              <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
+                <Home className="material-icons">home</Home>
+                <span>Dashboard</span>
+              </button>
             </div>
-            <div className='hover:bg-gray-200 rounded' onClick={()=> router.push('/restaurant/subscriptions')}>
+            <div className='hover:bg-gray-200 rounded' onClick={() => router.push('/restaurant/foods')}>
               <button className="flex items-center space-x-2 p-2 text-gray-600">
-              <UserPlus className="material-icons">Subscriptions</UserPlus>
-              <span>Subscriptions</span>
-            </button>
+                <Utensils className="material-icons">Foods</Utensils>
+                <span>Foods</span>
+              </button>
             </div>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
-              <IndianRupee className="material-icons">payment</IndianRupee>
-              <span>Payments</span>
-            </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
-              <Inbox className="material-icons">chat</Inbox>
-              <span>Chat</span>
-            </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
-              <BarChart className="material-icons">bar_chart</BarChart>
-              <span>Reports</span>
-            </button>
-            <button
-              className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded"
-              onClick={() => setShowModal(!showModal)}
-            >
-              <LogOut className="material-icons">LogOut</LogOut>
-              <span>Logout</span>
-            </button>
+            <div className='hover:bg-gray-200 rounded' onClick={() => router.push('/restaurant/subscriptions')}>
+              <button className="flex items-center space-x-2 p-2 text-gray-600">
+                <UserPlus className="material-icons">Subscriptions</UserPlus>
+                <span>Subscriptions</span>
+              </button>
+            </div>
+            <div className='hover:bg-gray-200 rounded' onClick={() => router.push('/restaurant/wallet')}>
+              <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
+                <IndianRupee className="material-icons">payment</IndianRupee>
+                <span>Payments</span>
+              </button>
+            </div>
+            <div className='hover:bg-gray-200 rounded'>
+              <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
+                <Inbox className="material-icons">chat</Inbox>
+                <span>Chat</span>
+              </button>
+            </div>
+            <div className='hover:bg-gray-200 rounded'>
+              <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
+                <BarChart className="material-icons">bar_chart</BarChart>
+                <span>Reports</span>
+              </button>
+            </div>
+            <div className='hover:bg-gray-200 rounded'>
+              <button
+                className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded"
+                onClick={() => setShowModal(!showModal)}
+              >
+                <LogOut className="material-icons">LogOut</LogOut>
+                <span>Logout</span>
+              </button>
+            </div>
           </div>
         </div>
         <AnimatePresence>

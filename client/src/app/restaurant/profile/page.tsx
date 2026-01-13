@@ -101,14 +101,13 @@ export default function VendorProfilePage() {
     }
     setDeleteLoad(key);
     try {
-      const response = await RESTAURANT_API_METHODS.deleteImage({
+      const data = await RESTAURANT_API_METHODS.deleteImage({
         data: { documentUrl, key },
         headers: {
           'Content-Type': 'application/json',
         },
       });
 
-      const data = response.data;
       if (data.success) {
         setFormData(data.data);
         setVendor(data.data);
@@ -168,7 +167,7 @@ export default function VendorProfilePage() {
         });
       }
 
-      const { data } = await RESTAURANT_API_METHODS.edit(formPayload);
+      const data = await RESTAURANT_API_METHODS.updateDocument({formPayload});
 
       if (!data.success) {
         toast.error(data.message || 'Update failed');
@@ -214,7 +213,7 @@ export default function VendorProfilePage() {
         console.log(key, value);
       }
 
-      const { data } = await RESTAURANT_API_METHODS.updateDocument(formPayload);
+      const data = await RESTAURANT_API_METHODS.updateDocument(formPayload);
 
       if (!data.success) {
         toast.error(data.message || 'Upload failed');
@@ -255,10 +254,10 @@ export default function VendorProfilePage() {
 
       const formDataImg = new FormData();
       formDataImg.append('profile', file);
-      const res = await RESTAURANT_API_METHODS.uploadProfile(formDataImg);
-      if (res.data.success) {
-        if (res.data.data != null) {
-          setFormData(res.data.data);
+      const data = await RESTAURANT_API_METHODS.uploadProfile(formDataImg);
+      if (data.success) {
+        if (data.data != null) {
+          setFormData(data.data);
         }
         toast.success('Profile picture updated successfully!');
       }

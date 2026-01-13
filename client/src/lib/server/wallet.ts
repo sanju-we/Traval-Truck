@@ -5,11 +5,11 @@ import { createServerAxios } from "@/services/serverApi";
 export async function getWalletData( role: string) {
   try {
     const serverApi = await createServerAxios()
-    const res = await serverApi.get(`/shared/wallet/${role}`);
-    console.log(res.data);
-    return await res.data.data;
+    const data = await serverApi.get(`/shared/wallet/${role}`);
+    console.log(data);
+    return await data.data;
   } catch (err) {
-    console.error('Wallet fetch error:', err);
+    console.log('Wallet fetch error:', err);
     return null;
   }
 }

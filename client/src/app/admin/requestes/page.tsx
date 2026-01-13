@@ -32,10 +32,10 @@ export default function VendorRequestsPage() {
   const fetchRequests = async (query?: string) => {
     try {
       setLoading(true);
-      const res = await ADMIN_API_METHODS.fetchAllRequest(
+      const data = await ADMIN_API_METHODS.fetchAllRequest(
         query ? { search: query } : {}
       );
-      setRequests(res.data.data || []);
+      setRequests(data.data || []);
     } catch {
       toast.error('Failed to fetch vendor requests');
     } finally {
@@ -68,8 +68,8 @@ export default function VendorRequestsPage() {
     reason?: string,
   ) {
     try {
-      const res = await ADMIN_API_METHODS.updateStatus(id, action, role, reason);
-      if (res.data.success) {
+      const data = await ADMIN_API_METHODS.updateStatus(id, action, role, reason);
+      if (data.success) {
         toast.success(`Vendor ${action}ed successfully`);
         fetchRequests(searchTerm);
         setIsModalOpen(false);

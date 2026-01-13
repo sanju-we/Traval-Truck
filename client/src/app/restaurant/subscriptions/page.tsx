@@ -5,7 +5,7 @@ import Link from "next/link";
 import SideNavbar from "@/components/restaurant/SideNavbar";
 import { CheckCircle, AlertTriangle, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
-import api from "@/services/api";
+import { SHARED_API_METHODS } from "@/services/APIs/shared.api.service";
 
 interface Subscription {
   id: string;
@@ -27,8 +27,8 @@ export default function SubscriptionsPage() {
       setLoading(true);
 
       const [allRes, currentRes] = await Promise.all([
-        api.get("/shared/subscriptions/restaurant/getAll"),
-        api.get("/shared/subscriptions/restaurant/current"),
+        SHARED_API_METHODS.getAllSubscriptions('restaurant'),
+        SHARED_API_METHODS.currentSubscription('restaurant'),
       ]);
 
       if (allRes.data.success) {
@@ -39,13 +39,12 @@ export default function SubscriptionsPage() {
       if (currentRes.data.success && currentRes.data.data) {
         const current = currentRes.data.data;
 
-        const subscriptionRes = await api.get(
-          `/shared/subscriptions/restaurant/${current.subscriptionId}`
-        );
+        
+        const data = await SHARED_API_METHODS.currentSubscription('restaurant')
 
-        if (subscriptionRes.data.success) {
+        if (data.success) {
           setActiveSubscription({
-            ...subscriptionRes.data.data,   // name, amount, valid, features
+            ...data.data,   // name, amount, valid, features
             endDate: current.endDate,        // from ownership record
           });
         } else {
@@ -56,7 +55,6 @@ export default function SubscriptionsPage() {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to load subscriptions");
     } finally {
       setLoading(false);
     }

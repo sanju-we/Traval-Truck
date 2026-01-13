@@ -31,22 +31,22 @@ export async function verifyToken(req: Request, res: Response, next: NextFunctio
     }
     const payload = jwt.verify(token, secret) as { id: string; role: string };
     if (!payload) return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
-    
+
     const user = await User.findById(payload.id);
     if (!user) {
       ijwt.blacklistRefreshToken(res);
       return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'User not found');
     }
-    
+
     if (payload.role !== 'user') {
       return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
     }
-    
-    if (user.isBlocked) { 
+
+    if (user.isBlocked) {
       res.clearCookie('accessToken', { httpOnly: true, secure: false, sameSite: 'lax' });
       throw new RESTRICTED_USER();
     }
-    
+
     req.user = userSignupDTO(user);
 
     next();
@@ -167,9 +167,12 @@ export async function verifyRestaurantToken(req: Request, res: Response, next: N
       return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
     }
 
-    if (restaurant.isRestricted) {
-      if (req.url !== '/profile' && req.url !== '/update-documents') {
-        if (!restaurant.isApproved) throw new UNAUTHORIZEDUserFounf();
+    if (restaurant.isRestricted || !restaurant.isApproved) {
+      if (req.url !== '/profile' && req.url !== '/update-documents' && req.url !== '/update') {
+        if (!restaurant.isApproved) {
+          console.log('in here',req.url)
+          throw new UNAUTHORIZEDUserFounf()
+        };
       }
     }
 

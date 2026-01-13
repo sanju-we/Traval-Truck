@@ -37,7 +37,6 @@ export default function FoodList() {
     async function fetchData() {
       const data  = await RESTAURANT_API_METHODS.getFood()
       if (data.success) {
-        toast.success(data.message)
         console.log(data.data.image)
         setFoods(data.data)
       } else {

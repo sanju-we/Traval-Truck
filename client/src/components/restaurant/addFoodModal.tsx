@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ImageCropperModal } from './ImagesCroperModalForRestaurant';
+import { RESTAURANT_API_METHODS } from '@/services/APIs/restaurant.api.service';
 import toast from 'react-hot-toast';
 import api from '@/services/api';
 
@@ -103,8 +104,12 @@ export default function FoodModal({ isOpen, onClose, onSave, editingFood }: Food
     }
   }
 
-  const handleDeleteImage = (index: number) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
+  const handleDeleteImage = async (index: number) => {
+    if(!editingFood) return 
+    const data = await RESTAURANT_API_METHODS.DeleteImage(index,editingFood?.id);
+    if(data.success){
+      setImages((prev) => prev.filter((_, i) => i !== index));
+    }
   };
 
   const handleChange = (
@@ -143,23 +148,19 @@ export default function FoodModal({ isOpen, onClose, onSave, editingFood }: Food
         }
       }
 
-      let res;
+      let data;
       if (!editingFood) {
-        res = await api.post(`/restaurant/food/addItem`, form, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        data = await RESTAURANT_API_METHODS.create(form)
       } else {
-        res = await api.patch('/restaurant/food/update', form, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        })
+        data = await RESTAURANT_API_METHODS.editFood(form)
       }
 
-      if (res.data.success) {
+      if (data.success) {
         toast.success(editingFood ? 'Food item updated!' : 'Food item added!');
-        onSave(res.data.data);
+        onSave(data.data);
         onClose();
       } else {
-        toast.error(res.data.message || 'Failed to save food item.');
+        toast.error(data.message || 'Failed to save food item.');
       }
     } catch (error: any) {
       console.error(error);

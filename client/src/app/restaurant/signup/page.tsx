@@ -104,9 +104,7 @@ export default function SignUpPage() {
     setIsResendingOtp(true);
 
     try {
-      const res = await RESTAURANT_API_METHODS.sendOtp(formData.email);
-
-      const data = res.data;
+      const data = await RESTAURANT_API_METHODS.sendOtp({ email: formData.email });
 
       if (data.success) {
         toast.success('OTP resent to your email');
@@ -127,8 +125,7 @@ export default function SignUpPage() {
 
     setIsOtpLoading(true);
     try {
-      const res = await RESTAURANT_API_METHODS.sendOtp( formData.email);
-      const data = res.data;
+      const data = await RESTAURANT_API_METHODS.sendOtp({ email: formData.email });
 
       if (data.success) {
         setShowOtpInput(true);
@@ -156,7 +153,7 @@ export default function SignUpPage() {
 
     setIsVerifyingOtp(true);
     try {
-      const res = await RESTAURANT_API_METHODS.verifyOtp( {
+      const data = await RESTAURANT_API_METHODS.verifyOtp({
         email: formData.email,
         otp: otpCode,
         restaurantData: {
@@ -167,8 +164,6 @@ export default function SignUpPage() {
           phone: Number(formData.phone),
         },
       });
-      const data = res.data;
-      console.log('Error verifying OTP: ');
 
       if (data.success) {
         toast.success('Email Registered successfully, Approval Request sended');
@@ -303,9 +298,8 @@ export default function SignUpPage() {
           </div>
 
           <div
-            className={`transition-all duration-500 ease-in-out overflow-hidden ${
-              showOtpInput ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
-            }`}
+            className={`transition-all duration-500 ease-in-out overflow-hidden ${showOtpInput ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
+              }`}
           >
             <div className="space-y-4 pt-4">
               <label className="block text-sm font-medium">Enter OTP</label>

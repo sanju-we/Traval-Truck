@@ -36,4 +36,12 @@ export class RestaurantFoodController implements IRestaurantFoodController {
     const updateData = await this._foodService.update({...data,Price:Number(data.Price),AvailableQuantity:Number(data.AvailableQuantity)},files)
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updateData)
   }
+
+  async deleteImage(req: Request, res: Response): Promise<void> {
+    const index = req.body.index;
+    const restaurantId = req.user.id;
+    const foodId = req.body.foodId;
+    const data = await this._foodService.delete(foodId,index);
+    sendResponse(res,STATUS_CODE.OK,true,MESSAGES.DELETED,data);
+  }
 }

@@ -11,7 +11,7 @@ const delet = deleteRequest;
 
 export const RESTAURANT_API_METHODS = {
     // authentication api requests
-    sendOtp: (data: any) => post(RESTAURANT_ROUTES.auth.sendOtp, data),
+    sendOtp: (data: { email: string }) => post(RESTAURANT_ROUTES.auth.sendOtp, data),
     verifyOtp: (data: any) => post(RESTAURANT_ROUTES.auth.verifyOtp, data),
     login: (data: any) => post(RESTAURANT_ROUTES.auth.login, data),
     logout: () => post(RESTAURANT_ROUTES.auth.logout, {}),
@@ -21,14 +21,25 @@ export const RESTAURANT_API_METHODS = {
     // profile api requests
     getProfile: () => get(RESTAURANT_ROUTES.profile.getProfile),
     getDashboard: () => get(RESTAURANT_ROUTES.profile.getDashboard),
-    edit: (data: any) => put(RESTAURANT_ROUTES.profile.edit, data),
-    updateDocument: (data: any) => patch(RESTAURANT_ROUTES.profile.updateDocument, data),
+    edit: (data: {
+        ownerName: string, 
+        companyName: string, 
+        phone: number, 
+        bankDetails: { 
+            ifscCode: string, 
+            bankName: string, 
+            accountNumber: string, 
+            accountHolder: string 
+        } 
+    }) => patch(RESTAURANT_ROUTES.profile.edit, data),
+    updateDocument: (data: any) => put(RESTAURANT_ROUTES.profile.updateDocument, data),
     deleteImage: (data: any) => patch(RESTAURANT_ROUTES.profile.deleteImage, data),
     uploadProfile: (data: any) => patch(RESTAURANT_ROUTES.profile.uploadProfile, data),
 
     // food api requests
     getFood: () => get(RESTAURANT_ROUTES.food.getFood),
     create: (data: any) => post(RESTAURANT_ROUTES.food.create, data),
+    DeleteImage:(index:number,foodId:string) => patch(RESTAURANT_ROUTES.food.delete,{index,foodId}),
     editFood: (data: any) => patch(RESTAURANT_ROUTES.food.edit, data),
 
     // payment api requests

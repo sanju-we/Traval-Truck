@@ -42,9 +42,10 @@ export class RestaurantProfileService implements IRestaurantProfileService {
     files: { [fieldname: string]: Express.Multer.File[] },
   ): Promise<vendorRequestDTO | null> {
     let update;
+    console.log('asdkfjasld;fj',files)
     for (const fileName in files) {
       const file = files[fileName][0];
-
+      console.log(file)
       const result = await singleUpload(file, 'Travel-Truck-Vendor-Document');
       update = await this._restaurantAuthRepo.update(id, { [`documents.${fileName}`]: result });
     }
