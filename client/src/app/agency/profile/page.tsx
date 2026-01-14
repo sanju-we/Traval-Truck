@@ -101,7 +101,7 @@ export default function VendorProfilePage() {
     }
     setDeleteLoad(key);
     try {
-      const { data } = await AGENCY_API_METHODS.deleteImage({ documentUrl, key });
+      const data = await AGENCY_API_METHODS.deleteImage({ documentUrl, key });
 
       if (data.success) {
         setFormData(data.data);
@@ -162,10 +162,11 @@ export default function VendorProfilePage() {
         });
       }
 
-      const { data } = await AGENCY_API_METHODS.edit(formPayload);
+      const data = await AGENCY_API_METHODS.edit(formPayload);
 
-      if (!data.success) {
-        toast.error(data.message || 'Update failed');
+      if (data.success) {
+        toast.success(data.message || 'Update failed');
+        setIsEditing(false)
         return;
       }
 
@@ -203,7 +204,7 @@ export default function VendorProfilePage() {
         });
       }
 
-      const { data } = await AGENCY_API_METHODS.updateDocument(formPayload);
+      const data = await AGENCY_API_METHODS.updateDocument(formPayload);
 
       if (!data.success) {
         toast.error(data.message || 'Upload failed');
@@ -245,7 +246,7 @@ export default function VendorProfilePage() {
       const formPayload = new FormData();
       formPayload.append('logo', blob, 'profile.jpg');
 
-      const { data } = await AGENCY_API_METHODS.uploadProfile(formPayload);
+      const data = await AGENCY_API_METHODS.uploadProfile(formPayload);
 
       if (data.success) {
         toast.success('Profile picture updated successfully');

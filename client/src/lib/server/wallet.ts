@@ -7,7 +7,7 @@ export async function getWalletData( role: string) {
     const serverApi = await createServerAxios()
     const data = await serverApi.get(`/shared/wallet/${role}`);
     console.log(data);
-    return await data.data;
+    return await data.data.data;
   } catch (err) {
     console.log('Wallet fetch error:', err);
     return null;

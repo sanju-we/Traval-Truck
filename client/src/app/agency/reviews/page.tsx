@@ -49,16 +49,13 @@ export default function Reviews() {
         setTotalPages(data.data.totalPages)
         setTotalReviews(data.data.totalReviews)
         setAverageRating(data.data.averageRating)
-        const repliesRes = await SHARED_API_METHODS.getReplays(
+        const replies = await SHARED_API_METHODS.getReplays(
           'agency',
           data.data.vendor
         );
 
-        const replies = repliesRes.data;
-
-        /* 🔑 MERGE replies into reviews */
         const mergedReviews = data.data.data.map((review: Review) => {
-          const reply = replies.find(
+          const reply = replies.data.find(
             (r: any) => r.reviewId === review._id
           );
 
@@ -124,48 +121,48 @@ export default function Reviews() {
           )
         );
 
-  setShowReplyModal(false)
-  setSelectedReview(null)
-} else {
-  toast.error('Failed to send reply')
-}
+        setShowReplyModal(false)
+        setSelectedReview(null)
+      } else {
+        toast.error('Failed to send reply')
+      }
     } catch (error) {
-  console.error('Error sending reply:', error)
-  toast.error('An error occurred while sending reply')
-}
+      console.error('Error sending reply:', error)
+      toast.error('An error occurred while sending reply')
+    }
   }
 
-return (
-  <div className="flex min-h-screen bg-gray-50">
-    <SideNavbar />
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+      <SideNavbar />
 
-    <div className="flex-1 p-8">
-      <VendorRatings
-        title="Customer Feedback"
-        totalPages={totalPages}
-        totalReviews={totalReviews}
-        averageRating={averageRating}
-        reviews={reviews}
-        currentPage={currentPage}
-        filterRating={filterRating}
-        loading={loading}
-        onPageChange={handlePageChange}
-        onFilterChange={handleFilterChange}
-        onReplyClick={handleReplyClick}
-      />
+      <div className="flex-1 p-8">
+        <VendorRatings
+          title="Customer Feedback"
+          totalPages={totalPages}
+          totalReviews={totalReviews}
+          averageRating={averageRating}
+          reviews={reviews}
+          currentPage={currentPage}
+          filterRating={filterRating}
+          loading={loading}
+          onPageChange={handlePageChange}
+          onFilterChange={handleFilterChange}
+          onReplyClick={handleReplyClick}
+        />
+      </div>
+
+      {/* Reply Modal */}
+      {showReplyModal && selectedReview && (
+        <ReplyModal
+          review={selectedReview}
+          onClose={() => {
+            setShowReplyModal(false)
+            setSelectedReview(null)
+          }}
+          onSubmit={handleReplySubmit}
+        />
+      )}
     </div>
-
-    {/* Reply Modal */}
-    {showReplyModal && selectedReview && (
-      <ReplyModal
-        review={selectedReview}
-        onClose={() => {
-          setShowReplyModal(false)
-          setSelectedReview(null)
-        }}
-        onSubmit={handleReplySubmit}
-      />
-    )}
-  </div>
-)
+  )
 }

@@ -27,11 +27,10 @@ export default function ResetPasswordPage() {
 
     setIsLoading(true);
     try {
-      const res = await AGENCY_API_METHODS.resetPassword({
+      const data = await AGENCY_API_METHODS.resetPassword({
         token,
         newPassword: password,
       });
-      const data = res.data;
 
       if (data.success) {
         toast.success('Password reset successful! Redirecting...');

@@ -19,8 +19,7 @@ export default function ForgotPasswordPage() {
 
     setIsLoading(true);
     try {
-      const res = await AGENCY_API_METHODS.forgotPassword({ email });
-      const data = res.data;
+      const data = await AGENCY_API_METHODS.forgotPassword({ email });
 
       if (data.success) {
         toast.success(`success`);

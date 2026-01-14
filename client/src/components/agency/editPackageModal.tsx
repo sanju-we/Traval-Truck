@@ -110,7 +110,7 @@ export default function EditPackageModal({
         return;
       }
 
-      const { data } = await AGENCY_API_METHODS.deletePackageImage(formData.id, { index });
+      const data = await AGENCY_API_METHODS.deletePackageImage(formData.id, { index });
 
       console.log("🟢 Response:", data);
 

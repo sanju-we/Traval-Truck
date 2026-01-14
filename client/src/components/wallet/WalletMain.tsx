@@ -20,7 +20,7 @@ export default async function WalletMain({ role }: { role: string }) {
 
         <WalletSummary
           Balance={wallet.Balance}
-          totalTransactions={wallet.Transaction.length}
+          totalTransactions={wallet.Transaction?.length}
           lastUpdated={wallet.lastUpdated || new Date().toISOString()}
           role={role}
         />
