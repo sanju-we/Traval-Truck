@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/shared/ui/card';
 import { useEffect, useState } from 'react';
 import api from '@/services/api';
 import toast from 'react-hot-toast';

@@ -8,5 +8,6 @@ export function getDistanceInKm(lat1, lng1, lat2, lng2) {
             Math.cos(lat2 * Math.PI / 180) *
             Math.sin(dLng / 2) *
             Math.sin(dLng / 2);
+    console.log(2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
     return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }

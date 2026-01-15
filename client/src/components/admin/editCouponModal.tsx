@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { X, Loader2, Tag } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shared/ui/button";
 import toast from "react-hot-toast";
 import api from "@/services/api";
 

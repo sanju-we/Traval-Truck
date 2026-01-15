@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from '@/components/utils/UserCropImage';
 import toast from 'react-hot-toast';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/shared/ui/button';
 
 interface ImageCropperModalProps {
   imagePreview: string | null;

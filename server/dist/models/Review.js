@@ -1,12 +1,21 @@
 import { model, Schema } from 'mongoose';
 const reviewSchema = new Schema({
     vendor: {
-        type: Schema.Types.ObjectId,
+        type: String,
         required: true,
     },
-    user: {
-        type: Schema.Types.ObjectId,
+    orderId: {
+        type: String,
         required: true,
+    },
+    productId: {
+        type: String,
+        required: true,
+    },
+    userId: {
+        type: String,
+        required: true,
+        ref: 'User'
     },
     rating: {
         type: Number,
@@ -16,5 +25,14 @@ const reviewSchema = new Schema({
         type: String,
         required: true,
     },
+    replay: {
+        type: String,
+        ref: 'Replay'
+    },
+    isReplayed: { type: Boolean },
+    createdAt: {
+        type: Date,
+        default: new Date()
+    }
 });
 export const Reviews = model('Reviews', reviewSchema);

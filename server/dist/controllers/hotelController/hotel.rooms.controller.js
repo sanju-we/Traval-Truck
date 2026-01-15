@@ -22,7 +22,11 @@ let HotelRoomsController = class HotelRoomsController {
     }
     async rooms(req, res) {
         const hotelID = req.user.id;
-        const allRooms = await this._roomService.getAllRooms(hotelID);
+        const page = req.query.Description;
+        const search = req.query.Description;
+        const Description = req.query.Description;
+        const roomNum = isNaN(Number(search)) ? 0 : Number(search);
+        const allRooms = await this._roomService.getAllRooms(hotelID, Number(page), roomNum, Description);
         logger.info(allRooms);
         if (allRooms)
             return sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, allRooms);

@@ -22,6 +22,10 @@ import { PaymentRepository } from '../../repositories/shared/payments.repository
 import webHook from '../../controllers/sharedController/stripe.webhook.controller.js';
 import { WebhookService } from '../../services/shared/webhook.service.js';
 import { MindMapRepository } from '../../repositories/user/mindMap.repositoty.js';
+import { ReviewController } from '../../controllers/sharedController/shared.review.controller.js';
+import { ReviewService } from '../../services/shared/shared.review.service.js';
+import { ReviewRepository } from '../../repositories/shared/share.review.repository.js';
+import { ReplayRepository } from '../../repositories/shared/shared.replay.repository.js';
 import { AuthService } from '../../services/user/auth.service.js';
 import { AuthRepository } from '../../repositories/user/auth.repository.js';
 import { AuthController } from '../../controllers/userController/user.auth.controller.js';
@@ -106,6 +110,10 @@ container.bind('IPaymentRepository').to(PaymentRepository);
 container.bind('IWebhookService').to(WebhookService);
 container.bind('IWebhookController').to(webHook);
 container.bind('IMindMapRepository').to(MindMapRepository);
+container.bind('IReviewController').to(ReviewController);
+container.bind('IReviewService').to(ReviewService);
+container.bind('IReviewRepository').to(ReviewRepository);
+container.bind('IReplayRepository').to(ReplayRepository);
 // ---------------------------------------------------user container-------------------------------------------------------------------------
 container.bind('IAuthRepository').to(AuthRepository);
 container.bind('IAuthService').to(AuthService);

@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/components/shared/ui/button';
+import { Input } from '@/components/shared/ui/input';
+import { Label } from '@/components/shared/ui/label';
 import getCroppedImg from '../utils/UserCropImage';
 import { IRoom } from '@/app/hotel/rooms/[roomId]/page';
 import { ImageCropperModal } from './ImageCropperModal';
@@ -27,7 +27,7 @@ export default function EditRoomModal({ room, isOpen, onClose, onSave }: EditRoo
     PricePerNight: room.PricePerNight || '',
     Capacity: room.Capacity || '',
     Facilities: room.Facilities || [],
-    Images: room.Images || [],
+    Images: room.images || [],
     reviews: room.reviews || [],
     rating: room.rating || { Average: 0, Count: 0 },
     AvailableCount: room.AvailableCount || 0,
@@ -37,7 +37,7 @@ export default function EditRoomModal({ room, isOpen, onClose, onSave }: EditRoo
     isBlocked: room.isBlocked || false,
   });
 
-  const [images, setImages] = useState<string[]>(room.Images || []);
+  const [images, setImages] = useState<string[]>(room.images || []);
   const [croppingImage, setCroppingImage] = useState<string | null>(null);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
   const [showConfirm, setShowConfirm] = useState(false);

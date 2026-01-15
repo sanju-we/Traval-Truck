@@ -43,6 +43,13 @@ let RestaurantFoodController = class RestaurantFoodController {
         const updateData = await this._foodService.update({ ...data, Price: Number(data.Price), AvailableQuantity: Number(data.AvailableQuantity) }, files);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updateData);
     }
+    async deleteImage(req, res) {
+        const index = req.body.index;
+        const restaurantId = req.user.id;
+        const foodId = req.body.foodId;
+        const data = await this._foodService.delete(foodId, index);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DELETED, data);
+    }
 };
 RestaurantFoodController = __decorate([
     injectable(),

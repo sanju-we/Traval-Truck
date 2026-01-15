@@ -31,6 +31,7 @@ let RestaurantAuthController = class RestaurantAuthController {
         const schema = z.object({
             email: z.email(),
         });
+        // logger.info()
         const { email } = schema.parse(req.body);
         const otp = await this._generalService.generateOtp();
         await this._generalService.storeOtp(email, otp);

@@ -8,18 +8,19 @@ import { inject, injectable } from "inversify";
 import { DataNotFoundError } from "../../utils/resAndErrors.js";
 import { IAuthValidator } from "../../core/interface/validator/Iauth.validator.js";
 import { IRoomValidator } from "../../core/interface/validator/Iroom.validator.js";
+import { PaginationResponse } from "@core/DTO/pagination.DTO.js";
 
 @injectable()
 export class HotelRoomsService implements IHotelRoomsService {
   constructor(
     @inject('IHotelRoomsRepository') private readonly _roomsRepo: IHotelRoomsRepository,
     @inject('IAuthValidator') private readonly _authValidator: IAuthValidator,
-    @inject('IRoomValidator') private readonly _roomValidator : IRoomValidator,
+    @inject('IRoomValidator') private readonly _roomValidator: IRoomValidator,
   ) { }
 
-  async getAllRooms(hotelID: string): Promise<RoomsDTO[]> {
-    const allData = await this._roomsRepo.findAll({ HotelId: hotelID }, {})
-    return allData.map(toRoomsDTO)
+  async getAllRooms(hotelID: string, page: number, search: number, Description: string): Promise<PaginationResponse<RoomsDTO>> {
+    const allData = await this._roomsRepo.findAllPackageWithPartners(page,Description,5,search,hotelID)
+    return allData
   }
 
   async addRoom(data: RoomsDTO, file: Express.Multer.File[]): Promise<RoomsDTO> {
@@ -69,8 +70,11 @@ export class HotelRoomsService implements IHotelRoomsService {
   }
 
   async updateRoom(data: Partial<RoomsDTO>, id: string, files: Express.Multer.File[]): Promise<RoomsDTO> {
+    console.log(data);
     await this._roomValidator.roomValidator(data)
-    const Image: string[] = []
+    const room = await this._roomsRepo.findById(id);
+    if (!room) throw new DataNotFoundError();
+    const Image: string[] = room.Images
     for (const img of files) {
       const url = await singleUpload(img, 'Travel-Travel-Document')
       Image.push(url)
@@ -86,8 +90,8 @@ export class HotelRoomsService implements IHotelRoomsService {
     const publicId = await extractPublicId(room.Images[index]);
     logger.info(`publidId ${publicId}`)
     const deleted = await deleteImage(publicId);
-    if(!deleted) throw new DataNotFoundError()
-    room.Images.splice(index,1);
+    if (!deleted) throw new DataNotFoundError()
+    room.Images.splice(index, 1);
     await room.save()
     return toRoomsDTO(room)
   }

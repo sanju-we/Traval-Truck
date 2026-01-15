@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Card, CardContent } from "@/components/shared/ui/card";
 import { Plus, Edit, Trash } from "lucide-react";
 import SideNavbar from "@/components/restaurant/SideNavbar";
 import FoodModal from "@/components/restaurant/addFoodModal";

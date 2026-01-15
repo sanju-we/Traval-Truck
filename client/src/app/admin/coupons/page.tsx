@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ADMIN_API_METHODS } from "@/services/APIs/admin.api.service";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shared/ui/button";
 import { Pencil, Plus, Loader2, Tag } from "lucide-react";
 import AddCouponModal from "@/components/admin/addCouponModal";
 import EditCouponModal from "@/components/admin/editCouponModal";

@@ -136,10 +136,13 @@ export async function verifyRestaurantToken(req, res, next) {
         if (restaurant.role !== 'restaurant') {
             return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
         }
-        if (restaurant.isRestricted) {
-            if (req.url !== '/profile' && req.url !== '/update-documents') {
-                if (!restaurant.isApproved)
+        if (restaurant.isRestricted || !restaurant.isApproved) {
+            if (req.url !== '/profile' && req.url !== '/update-documents' && req.url !== '/update') {
+                if (!restaurant.isApproved) {
+                    console.log('in here', req.url);
                     throw new UNAUTHORIZEDUserFounf();
+                }
+                ;
             }
         }
         req.user = toVendorAuth(restaurant);

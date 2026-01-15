@@ -16,7 +16,7 @@ export class UserHotelsController implements IUserHotelsController {
     const { page, limit } = req.query
     const search = req.query.search
     if (!page || !limit) throw new BADREQUEST()
-    const data = await this._userHotelService.getAllHotels(Number(page), Number(limit),search != undefined ? String(search) : '')
+    const data = await this._userHotelService.getAllHotels(Number(page), Number(limit),isNaN(Number(search))? 0 : Number(search))
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, data)
   }
 

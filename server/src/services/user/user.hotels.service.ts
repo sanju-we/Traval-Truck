@@ -6,6 +6,7 @@ import { DataNotFoundError, ROOM_ALREADY_OCCUPAID } from "../../utils/resAndErro
 import { ISubscriptionHistoryRepository } from "../../core/interface/repositorie/shared/ISubscription.hisroty.repository.js";
 import { IPaymentUtils } from "../../core/interface/PaymentInterface/Ipayment.utils.js";
 import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository.js";
+import { PaginationResponse } from "@core/DTO/pagination.DTO.js";
 
 @injectable()
 export class UserHotelsService implements IUserHotelsService {
@@ -16,8 +17,9 @@ export class UserHotelsService implements IUserHotelsService {
     @inject('IOrdersRepository') private readonly _orderRepo: IOrdersRepository,
   ) { }
 
-  async getAllHotels(page: number, limit: number, search?: string): Promise<{ data: RoomsDTO[]; total: number; page: number; totalPages: number; }> {
-    const data = await this._hotelRoomRepo.findAllPackageWithPartners(page, limit, search)
+  async getAllHotels(page: number, limit: number, search?: number): Promise<PaginationResponse<RoomsDTO>> {
+    const status = ''
+    const data = await this._hotelRoomRepo.findAllPackageWithPartners(page,status,limit,search)
     const checks = await Promise.all(
       data.data.map(async (pkg) => {
         const room = await this._subscriptionHistoryRepo.findOne({

@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/shared/ui/button";
+import { Input } from "@/components/shared/ui/input";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "@/components/ui/select";
+} from "@/components/shared/ui/select";
 import {
   Table,
   TableBody,
@@ -17,7 +17,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/shared/ui/table";
 import { LayoutGrid, List } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -62,7 +62,7 @@ export default function RoomsPage() {
 
   useEffect(() => {
     fetchRooms();
-  }, [page, status]);
+  }, [page, status, search]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,11 +111,11 @@ export default function RoomsPage() {
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All</SelectItem>
-              <SelectItem value="Available">Available</SelectItem>
-              <SelectItem value="Occupied">Occupied</SelectItem>
-              <SelectItem value="Cleaning">Cleaning</SelectItem>
-              <SelectItem value="Maintenance">Maintenance</SelectItem>
+              <SelectItem value="" onSelect={setStatus}>All</SelectItem>
+              <SelectItem value="Available" onSelect={setStatus}>Available</SelectItem>
+              <SelectItem value="Occupied" onSelect={setStatus}>Occupied</SelectItem>
+              <SelectItem value="Cleaning" onSelect={setStatus}>Cleaning</SelectItem>
+              <SelectItem value="Maintenance" onSelect={setStatus}>Maintenance</SelectItem>
             </SelectContent>
           </Select>
 

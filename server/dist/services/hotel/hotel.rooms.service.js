@@ -25,9 +25,9 @@ let HotelRoomsService = class HotelRoomsService {
         this._authValidator = _authValidator;
         this._roomValidator = _roomValidator;
     }
-    async getAllRooms(hotelID) {
-        const allData = await this._roomsRepo.findAll({ HotelId: hotelID }, {});
-        return allData.map(toRoomsDTO);
+    async getAllRooms(hotelID, page, search, Description) {
+        const allData = await this._roomsRepo.findAllPackageWithPartners(page, Description, 5, search, hotelID);
+        return allData;
     }
     async addRoom(data, file) {
         await this._authValidator.RoomValidator(data);
@@ -74,8 +74,12 @@ let HotelRoomsService = class HotelRoomsService {
         throw new DataNotFoundError();
     }
     async updateRoom(data, id, files) {
+        console.log(data);
         await this._roomValidator.roomValidator(data);
-        const Image = [];
+        const room = await this._roomsRepo.findById(id);
+        if (!room)
+            throw new DataNotFoundError();
+        const Image = room.Images;
         for (const img of files) {
             const url = await singleUpload(img, 'Travel-Travel-Document');
             Image.push(url);

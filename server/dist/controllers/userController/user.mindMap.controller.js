@@ -31,6 +31,16 @@ let UserMindMapController = class UserMindMapController {
         const mindMaps = await this._mindMapService.getMaps(Number(page), userId);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, mindMaps);
     }
+    async mindMap(req, res) {
+        const mapId = req.query.id;
+        const mindMap = await this._mindMapService.getMap(mapId);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, mindMap);
+    }
+    async confirmMap(req, res) {
+        const mapId = req.body.id;
+        const updated = await this._mindMapService.confirmMap(mapId);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updated);
+    }
 };
 UserMindMapController = __decorate([
     injectable(),

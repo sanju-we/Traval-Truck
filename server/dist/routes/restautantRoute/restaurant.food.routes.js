@@ -7,5 +7,6 @@ const foodController = container.get('IRestaurantFoodController');
 foodRouter
     .get('/getFoods', asyncHandler(foodController.getAllFoods.bind(foodController)))
     .post('/addItem', upload.array('Image', 10), asyncHandler(foodController.addFood.bind(foodController)))
-    .patch('/update', upload.array('Image', 10), asyncHandler(foodController.update.bind(foodController)));
+    .patch('/update', upload.array('Image', 10), asyncHandler(foodController.update.bind(foodController)))
+    .patch('/deleteImage', asyncHandler(foodController.deleteImage.bind(foodController)));
 export default foodRouter;

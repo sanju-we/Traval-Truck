@@ -15,7 +15,12 @@ export class HotelRoomsController implements IHotelRoomsController {
 
   async rooms(req: Request, res: Response): Promise<void> {
     const hotelID = req.user.id
-    const allRooms = await this._roomService.getAllRooms(hotelID)
+    const page = req.query.Description as string
+    const search = req.query.Description as string
+    const Description = req.query.Description as string
+    const roomNum = isNaN(Number(search)) ? 0 : Number(search)
+    const pageNum = isNaN(Number(page)) ? 0 : Number(page) 
+    const allRooms = await this._roomService.getAllRooms(hotelID,pageNum,roomNum,Description)
     logger.info(allRooms)
     if (allRooms) return sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, allRooms)
     throw new DataNotFoundError()

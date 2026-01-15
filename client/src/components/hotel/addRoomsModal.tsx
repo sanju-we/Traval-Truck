@@ -1,8 +1,8 @@
 'use client';
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/shared/ui/button";
+import { Input } from "@/components/shared/ui/input";
+import { Textarea } from "@/components/shared/ui/textarea";
 import { Loader2, X } from "lucide-react";
 import Cropper from "react-easy-crop";
 import { getCroppedImg } from "@/components/utils/cropImage";
@@ -30,7 +30,7 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -117,6 +117,10 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
       const data = new FormData();
       data.append("RoomNumber", formData.roomNumber);
       data.append("roomType", formData.roomType);
+      if (formData.roomType == '') {
+        toast.error('sucks')
+        return
+      }
       data.append("PricePerNight", formData.price);
       data.append("Capacity", formData.capacity);
       data.append("Description", formData.description);
@@ -155,10 +159,15 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
 
         <div className="space-y-3">
           <Input name="roomNumber" placeholder="Room Number" value={formData.roomNumber} onChange={handleChange} />
-          <select name="roomType" id="roomType" className="'flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm',
-          'placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
-          'disabled:cursor-not-allowed disabled:opacity-50',">
-            <option value="single" disabled>Select Room type</option>
+          <select
+            name="roomType"
+            className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+            value={formData.roomType}
+            onChange={handleChange}
+          >
+            <option value="none" disabled>
+              Select Room type
+            </option>
             <option value="single">Single</option>
             <option value="double">Double</option>
             <option value="villa">Villa</option>

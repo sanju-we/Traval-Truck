@@ -103,6 +103,7 @@ export class authValidator {
                 .string()
                 .min(2, { message: "Room type must be at least 2 characters long" }),
         });
+        console.log(data);
         roomSchema.parse(data);
     }
     async updateStatusValidator(id, status) {

@@ -60,6 +60,14 @@ let UserTripService = class UserTripService {
             throw new DataNotFoundError();
         if (order.status == 'Upcoming' && !order.startDate && diff < 7) {
             userWallet.Balance += Transaction.amount;
+            const userTransaction = {
+                UserId: userWallet.UserId,
+                Amount: Transaction.amount,
+                Type: 'credit',
+                Description: `Refund for order cancellation of orderId ${order.orderId}`,
+                Date: new Date()
+            };
+            userWallet.Transaction.push(userTransaction);
             await this._walletRepo.update(userWallet._id.toString(), userWallet);
             order.status = 'Cancelled';
             order.reason = reason;

@@ -7,27 +7,31 @@ export class HotelRoomsRepository extends BaseRepository {
     constructor() {
         super(Rooms);
     }
-    async findAllPackageWithPartners(page = 1, lim, search) {
-        const limit = lim || 6;
-        const skip = (page - 1) * limit;
-        const searchFilter = search
-            ? { RoomNumber: Number(search), isBlocked: false }
-            : { isBlocked: false };
-        logger.info(searchFilter);
-        const [packages, total] = await Promise.all([
-            Rooms.find(searchFilter)
+    async findAllPackageWithPartners(page = 1, status, lim, search, hotelID) {
+        const skip = Math.abs((page - 1) * lim);
+        const filter = {
+            HotelId: hotelID,
+            isBlocked: false
+        };
+        if (search) {
+            filter.RoomNumber = Number(search);
+        }
+        if (status) {
+            filter.status = status;
+        }
+        logger.info(filter);
+        const [rooms, total] = await Promise.all([
+            Rooms.find(filter)
                 .populate('HotelId')
                 .skip(skip)
-                .limit(limit)
+                .limit(lim)
                 .lean(),
-            Rooms.countDocuments()
+            Rooms.countDocuments(filter)
         ]);
-        // if (!packages.length) throw new Data_Creation_Error();
         return {
-            data: packages.map(toRoomsDTO),
-            total,
-            page,
-            totalPages: Math.ceil(total / limit)
+            data: rooms.map(toRoomsDTO),
+            totalCount: total,
+            totalPage: Math.ceil(total / lim)
         };
     }
     async findPackageWithPartner(id) {

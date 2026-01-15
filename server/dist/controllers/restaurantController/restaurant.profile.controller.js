@@ -11,7 +11,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from 'inversify';
-import { BADREQUEST, sendResponse, UserNotFoundError } from '../../utils/resAndErrors.js';
+import { BADREQUEST, DataUpdatingError, sendResponse, UserNotFoundError } from '../../utils/resAndErrors.js';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
 import { MESSAGES } from '../../utils/responseMessaages.js';
 import z from 'zod';
@@ -60,9 +60,9 @@ let RestaurantProfileController = class RestaurantProfileController {
         const restricted = req.user.isRestricted;
         const files = req.files;
         const update = this._restaurantProfileService.updateDocuments(restaurantId, files);
-        update.then((data) => {
-            sendResponse(res, STATUS_CODE.OK, true, restricted ? MESSAGES.RESUBMITED : MESSAGES.SUCCESS, data);
-        });
+        if (!update)
+            throw new DataUpdatingError();
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, update);
     }
     async deleteImage(req, res) {
         const { documentUrl, key } = req.body;

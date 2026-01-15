@@ -6,7 +6,7 @@ import { Table,
   TableBody,
   TableRow,
   TableHead,
-  TableCell, } from "@/components/ui/table";
+  TableCell, } from "@/components/shared/ui/table";
 import { SideNavbar } from "@/components/admin/SideNavbar";
 import {
   Loader2,

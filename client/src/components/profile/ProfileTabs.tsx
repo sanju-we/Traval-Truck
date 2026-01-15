@@ -1,5 +1,5 @@
 // components/profile/ProfileTabs.tsx
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/shared/ui/tabs';
 import { Mail, Phone } from 'lucide-react';
 
 interface ProfileTabsProps<T, D> {

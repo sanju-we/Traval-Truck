@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/seperator";
-import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Card, CardContent } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Separator } from "@/components/shared/ui/seperator";
+import { Badge } from "@/components/shared/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/shared/ui/table";
 import api from "@/services/api";
 import toast from "react-hot-toast";
 import EditRoomModal from "@/components/hotel/EditRoomModal";
@@ -138,68 +138,6 @@ export default function RoomDetails() {
             alt="Room"
             className="w-full h-full object-cover"
           />
-        </Card>
-      </div>
-
-      {/* Booking History */}
-      <div>
-        <h2 className="font-semibold text-lg mb-2">Recent Booking History</h2>
-        <Card>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Guest Name</TableHead>
-                <TableHead>Check-in</TableHead>
-                <TableHead>Check-out</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell>Anu Raj</TableCell>
-                <TableCell>Aug 14</TableCell>
-                <TableCell>Aug 16</TableCell>
-                <TableCell>
-                  <Badge variant="secondary">Checked-Out</Badge>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Joseph M</TableCell>
-                <TableCell>Aug 10</TableCell>
-                <TableCell>Aug 12</TableCell>
-                <TableCell>
-                  <Badge variant="outline">Cancelled</Badge>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </Card>
-      </div>
-
-      <div>
-        <h2 className="font-semibold text-lg mb-2">Status Change Log</h2>
-        <Card>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Changed To</TableHead>
-                <TableHead>By</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell>Aug 16</TableCell>
-                <TableCell>Available</TableCell>
-                <TableCell>Front Desk</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Aug 16</TableCell>
-                <TableCell>Cleaning</TableCell>
-                <TableCell>Housekeeping</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
         </Card>
       </div>
 

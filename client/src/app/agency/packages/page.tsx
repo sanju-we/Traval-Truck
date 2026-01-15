@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
 import AddPackageModal from "@/components/agency/AddPackageModal";
 import { Plus, Edit3, ChevronLeft, ChevronRight } from "lucide-react";
 import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';

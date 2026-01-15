@@ -50,10 +50,10 @@ function SideNavbar() {
               <FlagTriangleRightIcon />
               Bookings / Trips
             </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
+            {/* <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
               <PersonStanding className="material-icons">person</PersonStanding>
               <span>Guests</span>
-            </button>
+            </button> */}
             <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded" onClick={()=>router.push('/hotel/subscriptions')}>
               <IndianRupee className="material-icons">payment</IndianRupee>
               <span>Subscriptions</span>

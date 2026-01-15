@@ -2,8 +2,8 @@
 
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/shared/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/shared/ui/card';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import Image from 'next/image';

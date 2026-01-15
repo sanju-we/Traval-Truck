@@ -24,7 +24,8 @@ let UserHotelsService = class UserHotelsService {
         this._orderRepo = _orderRepo;
     }
     async getAllHotels(page, limit, search) {
-        const data = await this._hotelRoomRepo.findAllPackageWithPartners(page, limit, search);
+        const status = '';
+        const data = await this._hotelRoomRepo.findAllPackageWithPartners(page, status, limit, search);
         const checks = await Promise.all(data.data.map(async (pkg) => {
             const room = await this._subscriptionHistoryRepo.findOne({
                 userId: pkg.HotelId,

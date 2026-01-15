@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 interface SelectProps {
   value: string;
@@ -12,6 +12,12 @@ interface SelectProps {
 export function Select({ value, onValueChange, placeholder, children, className }: SelectProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  const handleSelect = (val: string) => {
+    console.log(val)
+    onValueChange(val);   // ✅ CALL IT HERE
+    setOpen(false);       // ✅ close dropdown
+  };
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -43,7 +49,13 @@ export function Select({ value, onValueChange, placeholder, children, className 
       </button>
       {open && (
         <div className="absolute z-10 bg-white border rounded-lg mt-1 w-full shadow-md">
-          {children}
+          {React.Children.map(children, (child) => {
+            if (!React.isValidElement(child)) return child;
+
+            return React.cloneElement(child as React.ReactElement<any>, {
+              onSelect: handleSelect,
+            });
+          })}
         </div>
       )}
     </div>

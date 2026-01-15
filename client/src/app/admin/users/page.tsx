@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import api from '@/services/api';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/shared/ui/card';
 import { SideNavbar } from '@/components/admin/SideNavbar';
 import { useDispatch } from 'react-redux';
 import { setSelectedUser } from '@/redux/userDetailsSlice';
 import { useRouter } from 'next/navigation';
 import User from '@/types/user/profile';
 import { Search } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/shared/ui/button';
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);

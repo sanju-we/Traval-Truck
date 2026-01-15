@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/shared/ui/button";
+import { Input } from "@/components/shared/ui/input";
+import { Textarea } from "@/components/shared/ui/textarea";
 import { Loader2, X, ImagePlus } from "lucide-react";
 import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
 import toast from "react-hot-toast";
