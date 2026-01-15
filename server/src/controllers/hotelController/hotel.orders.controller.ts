@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { IHotelOrdersController } from "../../core/interface/controllerInterface/hotel/Ihotel.orders.controller.js";
+import { IHotelOrdersController } from "../../core/interface/controllerInterface/hotel/Ihotel.orders.controller";
 import { inject,injectable } from "inversify";
-import { IHotelOrderService } from "../../core/interface/serivice/hotel/Ihotel.order.service.js";
-import { sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
+import { IHotelOrderService } from "../../core/interface/serivice/hotel/Ihotel.order.service";
+import { sendResponse } from "../../utils/resAndErrors";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/responseMessaages";
 
 @injectable()
 export class HotelOrderController implements IHotelOrdersController{

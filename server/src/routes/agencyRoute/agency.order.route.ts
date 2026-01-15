@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { IAgencyOrdersController } from "../../core/interface/controllerInterface/agency/Iagency.orders.controller.js";
-import { container } from "../../core/DI/container.js";
-import { asyncHandler } from "../../middleware/asyncHandler.js";
+import { IAgencyOrdersController } from "../../core/interface/controllerInterface/agency/Iagency.orders.controller";
+import { container } from "../../core/DI/container";
+import { asyncHandler } from "../../middleware/asyncHandler";
 
 const orderRouter = Router()
 const orderController = container.get<IAgencyOrdersController>('IAgencyOrdersController')

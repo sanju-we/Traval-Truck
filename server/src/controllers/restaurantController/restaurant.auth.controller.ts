@@ -1,15 +1,15 @@
 import { Request, Response } from 'express';
-import { IRestaurantAuthController } from '../../core/interface/controllerInterface/restaurant/Irestaurant.auth.controller.js';
+import { IRestaurantAuthController } from '../../core/interface/controllerInterface/restaurant/Irestaurant.auth.controller';
 import { inject, injectable } from 'inversify';
-import { IJWT } from '../../core/interface/JWT/JWTInterface.js';
-import { IEmailService } from '../../core/interface/emailInterface/emailInterface.js';
-import { IGeneralService } from '../../core/interface/serivice/Igeneral.service.js';
-import { IRestaurantAuthService } from '../../core/interface/serivice/restaurant/Irestautant.auth.service.js';
+import { IJWT } from '../../core/interface/JWT/JWTInterface';
+import { IEmailService } from '../../core/interface/emailInterface/emailInterface';
+import { IGeneralService } from '../../core/interface/serivice/Igeneral.service';
+import { IRestaurantAuthService } from '../../core/interface/serivice/restaurant/Irestautant.auth.service';
 import z from 'zod';
-import { InvalidResetTokenError, NoAccessToken, sendResponse } from '../../utils/resAndErrors.js';
-import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
-import { MESSAGES } from '../../utils/responseMessaages.js';
-import { logger } from '../../utils/logger.js';
+import { InvalidResetTokenError, NoAccessToken, sendResponse } from '../../utils/resAndErrors';
+import { STATUS_CODE } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/responseMessaages';
+import { logger } from '../../utils/logger';
 
 @injectable()
 export class RestaurantAuthController implements IRestaurantAuthController {

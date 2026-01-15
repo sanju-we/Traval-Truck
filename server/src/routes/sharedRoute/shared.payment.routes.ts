@@ -1,8 +1,8 @@
 import express from 'express';
-import { IPaymentController } from '../../core/interface/controllerInterface/shared/Ishared.payment.controller.js';
-import { container } from '../../core/DI/container.js';
-import { asyncHandler } from '../../middleware/asyncHandler.js';
-import { IWebhookController } from '../../core/interface/controllerInterface/shared/Iwebhook.controller.js';
+import { IPaymentController } from '../../core/interface/controllerInterface/shared/Ishared.payment.controller';
+import { container } from '../../core/DI/container';
+import { asyncHandler } from '../../middleware/asyncHandler';
+import { IWebhookController } from '../../core/interface/controllerInterface/shared/Iwebhook.controller';
 
 const paymentRouter = express.Router();
 const paymentController = container.get<IPaymentController>('IPaymentController')

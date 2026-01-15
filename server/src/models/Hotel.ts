@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { IHotel } from '../core/interface/modelInterface/IHotel.js';
+import { IHotel } from '../core/interface/modelInterface/IHotel';
 
 const hotelSchema = new Schema<IHotel>({
   companyName: {

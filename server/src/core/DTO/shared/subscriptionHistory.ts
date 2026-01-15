@@ -1,4 +1,4 @@
-import { ISubscriptionHistory } from "../../../core/interface/modelInterface/ISubscriptionHistory.js";
+import { ISubscriptionHistory } from "../../../core/interface/modelInterface/ISubscriptionHistory";
 
 export interface subscriptionHistoryDTO{
   userId:string,

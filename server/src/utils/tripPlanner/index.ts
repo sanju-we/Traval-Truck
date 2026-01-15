@@ -1,4 +1,4 @@
 
-export * from "./distance.js";
-export * from "./routePlanner.js";
-export * from "./daySplitter.js";
+export * from "./distance";
+export * from "./routePlanner";
+export * from "./daySplitter";

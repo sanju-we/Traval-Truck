@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import Stripe from "stripe";
-import { logger } from "../../utils/logger.js";
+import { logger } from "../../utils/logger";
 import { inject, injectable } from "inversify";
-import { sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
-import { IWebhookController } from "../../core/interface/controllerInterface/shared/Iwebhook.controller.js";
-import { IWebhookService } from "../../core/interface/serivice/shared/IWebhook.service.js";
+import { sendResponse } from "../../utils/resAndErrors";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/responseMessaages";
+import { IWebhookController } from "../../core/interface/controllerInterface/shared/Iwebhook.controller";
+import { IWebhookService } from "../../core/interface/serivice/shared/IWebhook.service";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, { apiVersion: "2025-10-29.clover" });
 

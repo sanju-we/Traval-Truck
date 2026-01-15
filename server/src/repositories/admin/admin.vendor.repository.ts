@@ -1,16 +1,16 @@
-import { IAdminVendorRepository } from '../../core/interface/repositorie/admin/Iadmin.vendor.repository.js';
-import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository.js';
-import { IAgencyRespository } from '../../core/interface/repositorie/agency/Iagency.auth.repository.js';
-import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Ihotel.auth.repository.js';
-import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository.js';
+import { IAdminVendorRepository } from '../../core/interface/repositorie/admin/Iadmin.vendor.repository';
+import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository';
+import { IAgencyRespository } from '../../core/interface/repositorie/agency/Iagency.auth.repository';
+import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Ihotel.auth.repository';
+import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository';
 import { inject, injectable } from 'inversify';
-import { logger } from '../../utils/logger.js';
+import { logger } from '../../utils/logger';
 import {
   vendorRequestDTO,
   toVendorRequestDTO,
-} from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
+} from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto';
 import { userProfileDTO } from 'types';
-import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
+import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile';
 
 @injectable()
 export class AdminVendorRepository implements IAdminVendorRepository {

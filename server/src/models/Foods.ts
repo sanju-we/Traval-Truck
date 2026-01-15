@@ -1,4 +1,4 @@
-import { IFoods } from "../core/interface/modelInterface/IFoods.js";
+import { IFoods } from "../core/interface/modelInterface/IFoods";
 import mongoose, { Schema } from "mongoose";
 
 const FoodsSchema: Schema = new Schema({

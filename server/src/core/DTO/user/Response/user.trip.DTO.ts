@@ -1,10 +1,10 @@
 import { Types } from "mongoose"
-import { PackageDTO, toPackageDTO } from "../../../../core/DTO/agency/request/packageDTO.js"
-import { IOrders } from "../../../../core/interface/modelInterface/IOrders.js"
-import { IPackage } from "../../../../core/interface/modelInterface/Ipackage.js"
-import { TripPlan } from "../../../../types/index.js"
-import { RoomsDTO, toRoomsDTO } from "../../../../core/DTO/hotel/roomsDTO.js"
-import { IRooms } from "../../../../core/interface/modelInterface/IRooms.js"
+import { PackageDTO, toPackageDTO } from "../../../../core/DTO/agency/request/packageDTO"
+import { IOrders } from "../../../../core/interface/modelInterface/IOrders"
+import { IPackage } from "../../../../core/interface/modelInterface/Ipackage"
+import { TripPlan } from "../../../../types/index"
+import { RoomsDTO, toRoomsDTO } from "../../../../core/DTO/hotel/roomsDTO"
+import { IRooms } from "../../../../core/interface/modelInterface/IRooms"
 // import FoodsDTO later
 
 export type TripProductDTO =

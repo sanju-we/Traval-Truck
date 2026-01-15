@@ -1,12 +1,12 @@
-import { IRestaurantProfileService } from '../../core/interface/serivice/restaurant/IRestaurant.profile.service.js';
+import { IRestaurantProfileService } from '../../core/interface/serivice/restaurant/IRestaurant.profile.service';
 import { inject, injectable } from 'inversify';
-import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository.js';
-import { ImageDeleteInCloudinary, UserNotFoundError } from '../../utils/resAndErrors.js';
+import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository';
+import { ImageDeleteInCloudinary, UserNotFoundError } from '../../utils/resAndErrors';
 import {
   toVendorRequestDTO,
   vendorRequestDTO,
-} from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
-import { deleteImage, extractPublicId, singleUpload } from '../../utils/upload.cloudinary.js';
+} from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto';
+import { deleteImage, extractPublicId, singleUpload } from '../../utils/upload.cloudinary';
 
 @injectable()
 export class RestaurantProfileService implements IRestaurantProfileService {

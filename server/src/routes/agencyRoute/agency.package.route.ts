@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { asyncHandler } from "../../middleware/asyncHandler.js";
-import { IAgencyPackageController } from "../../core/interface/controllerInterface/agency/Iagencu.package.controller.js";
-import { container } from "../../core/DI/container.js";
-import upload from '../../middleware/multer.js'
+import { asyncHandler } from "../../middleware/asyncHandler";
+import { IAgencyPackageController } from "../../core/interface/controllerInterface/agency/Iagencu.package.controller";
+import { container } from "../../core/DI/container";
+import upload from '../../middleware/multer'
 
 const agencyPackage = Router()
 const packageController = container.get<IAgencyPackageController>('IAgencyPackageController');

@@ -1,5 +1,5 @@
-import { IWallet } from "../../../../core/interface/modelInterface/IWaller.js";
-import { WallterDTO } from "../../../../core/DTO/shared/wallet.dto.js";
+import { IWallet } from "../../../../core/interface/modelInterface/IWaller";
+import { WallterDTO } from "../../../../core/DTO/shared/wallet.dto";
 
 export interface IWalletService{
   getWallet(id:string):Promise<WallterDTO>;

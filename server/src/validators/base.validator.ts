@@ -1,5 +1,5 @@
-import { MindMapRequest } from "@core/DTO/user/Request/mindMap.js";
-import { IBaseValidator } from "../core/interface/validator/IBasic.validator.js";
+import { MindMapRequest } from "@core/DTO/user/Request/mindMap";
+import { IBaseValidator } from "../core/interface/validator/IBasic.validator";
 import z from "zod";
 
 export class BaseValidator implements IBaseValidator {

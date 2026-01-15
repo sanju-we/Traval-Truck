@@ -1,8 +1,8 @@
-import { IMindMapRepository } from "../../core/interface/repositorie/User/IMindMap.repository.js";
-import { BaseRepository } from "../../repositories/baseRepository.js";
+import { IMindMapRepository } from "../../core/interface/repositorie/User/IMindMap.repository";
+import { BaseRepository } from "../../repositories/baseRepository";
 import { IMindMap } from "../../core/interface/modelInterface/IMindMap";
-import { MindMap } from "../../models/MindMap.js";
-import { MindMapResDTO, toMindMapRes } from "../../core/DTO/user/Response/mindMap.res.js";
+import { MindMap } from "../../models/MindMap";
+import { MindMapResDTO, toMindMapRes } from "../../core/DTO/user/Response/mindMap.res";
 
 export class MindMapRepository extends BaseRepository<IMindMap> implements IMindMapRepository{
   constructor(){

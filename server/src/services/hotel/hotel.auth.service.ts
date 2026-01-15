@@ -1,21 +1,21 @@
 import { inject, injectable } from 'inversify';
-import { IJWT } from '../../core/interface/JWT/JWTInterface.js';
-import { IEmailService } from '../../core/interface/emailInterface/emailInterface.js';
-import { IRedisClient } from '../../core/interface/redis/IRedisClinet.js';
+import { IJWT } from '../../core/interface/JWT/JWTInterface';
+import { IEmailService } from '../../core/interface/emailInterface/emailInterface';
+import { IRedisClient } from '../../core/interface/redis/IRedisClinet';
 import bcrypt from 'bcryptjs';
-import { IHotelAuthService } from '../../core/interface/serivice/hotel/Ihotel.auth.service.js';
-import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Ihotel.auth.repository.js';
-import { vendorData } from 'types/index.js';
+import { IHotelAuthService } from '../../core/interface/serivice/hotel/Ihotel.auth.service';
+import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Ihotel.auth.repository';
+import { vendorData } from 'types/index';
 import {
   OtpExpiredError,
   InvalidCredentialsError,
   EmailAlreadyRegisteredError,
   UserNotFoundError,
   InvalidResetTokenError,
-} from '../../utils/resAndErrors.js';
-import { toHotelProfile, HotelProfileDTO } from '../../core/DTO/hotel/hotel.dto.js';
-import { logger } from '../../utils/logger.js';
-import { IAuthValidator } from '../../core/interface/validator/Iauth.validator.js';
+} from '../../utils/resAndErrors';
+import { toHotelProfile, HotelProfileDTO } from '../../core/DTO/hotel/hotel.dto';
+import { logger } from '../../utils/logger';
+import { IAuthValidator } from '../../core/interface/validator/Iauth.validator';
 
 @injectable()
 export class HotelAuthService implements IHotelAuthService {

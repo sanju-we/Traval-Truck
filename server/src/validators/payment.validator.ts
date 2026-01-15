@@ -1,5 +1,5 @@
 import z from "zod";
-import { IPaymentValidator } from "../core/interface/validator/Ipayment.validator.js";
+import { IPaymentValidator } from "../core/interface/validator/Ipayment.validator";
 
 export class PaymentValidator implements IPaymentValidator{
   async addMoneyValidator(paymentIntentId: string, amount: number): Promise<void> {

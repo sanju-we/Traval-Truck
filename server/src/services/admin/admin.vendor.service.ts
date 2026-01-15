@@ -1,11 +1,11 @@
-import { IAdminVendorService } from '../../core/interface/serivice/admin/IAdmin.vendor.service.js';
+import { IAdminVendorService } from '../../core/interface/serivice/admin/IAdmin.vendor.service';
 import { injectable, inject } from 'inversify';
-import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository.js';
-import { IAgencyRespository } from '../../core/interface/repositorie/agency/Iagency.auth.repository.js';
-import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Ihotel.auth.repository.js';
-import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository.js';
-import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors.js';
-import { ISubscriptionValidator } from '../../core/interface/validator/Isubscription.validator.js';
+import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository';
+import { IAgencyRespository } from '../../core/interface/repositorie/agency/Iagency.auth.repository';
+import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Ihotel.auth.repository';
+import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository';
+import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors';
+import { ISubscriptionValidator } from '../../core/interface/validator/Isubscription.validator';
 
 @injectable()
 export class AdminVendorService implements IAdminVendorService {

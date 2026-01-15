@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { IUserPackageController } from "../../core/interface/controllerInterface/user/Iuser.package.controller.js";
-import { container } from "../../core/DI/container.js";
-import { asyncHandler } from "../../middleware/asyncHandler.js";
+import { IUserPackageController } from "../../core/interface/controllerInterface/user/Iuser.package.controller";
+import { container } from "../../core/DI/container";
+import { asyncHandler } from "../../middleware/asyncHandler";
 
 const userPackageRouter = Router()
 const packageController = container.get<IUserPackageController>('IUserPackageController')

@@ -1,12 +1,12 @@
-import { IUserHotelsService } from "../../core/interface/serivice/user/IUser.hotels.service.js";
-import { IHotelRoomsRepository } from "../../core/interface/repositorie/Hotel/Ihotel.rooms.repository.js";
+import { IUserHotelsService } from "../../core/interface/serivice/user/IUser.hotels.service";
+import { IHotelRoomsRepository } from "../../core/interface/repositorie/Hotel/Ihotel.rooms.repository";
 import { inject, injectable } from "inversify";
-import { RoomsDTO } from "../../core/DTO/hotel/roomsDTO.js";
-import { DataNotFoundError, ROOM_ALREADY_OCCUPAID } from "../../utils/resAndErrors.js";
-import { ISubscriptionHistoryRepository } from "../../core/interface/repositorie/shared/ISubscription.hisroty.repository.js";
-import { IPaymentUtils } from "../../core/interface/PaymentInterface/Ipayment.utils.js";
-import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository.js";
-import { PaginationResponse } from "@core/DTO/pagination.DTO.js";
+import { RoomsDTO } from "../../core/DTO/hotel/roomsDTO";
+import { DataNotFoundError, ROOM_ALREADY_OCCUPAID } from "../../utils/resAndErrors";
+import { ISubscriptionHistoryRepository } from "../../core/interface/repositorie/shared/ISubscription.hisroty.repository";
+import { IPaymentUtils } from "../../core/interface/PaymentInterface/Ipayment.utils";
+import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository";
+import { PaginationResponse } from "@core/DTO/pagination.DTO";
 
 @injectable()
 export class UserHotelsService implements IUserHotelsService {

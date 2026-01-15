@@ -1,11 +1,11 @@
 import { injectable, inject } from 'inversify';
 import bcrypt from 'bcryptjs';
-import { IAuthService } from '../../core/interface/serivice/user/auth.interface.js';
-import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository.js';
-import { IRedisClient } from '../../core/interface/redis/IRedisClinet.js';
-import { IJWT } from '../../core/interface/JWT/JWTInterface.js';
-import { UserData, userProfileDTO } from '../../types/index.js';
-import { IEmailService } from '../../core/interface/emailInterface/emailInterface.js';
+import { IAuthService } from '../../core/interface/serivice/user/auth.interface';
+import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository';
+import { IRedisClient } from '../../core/interface/redis/IRedisClinet';
+import { IJWT } from '../../core/interface/JWT/JWTInterface';
+import { UserData, userProfileDTO } from '../../types/index';
+import { IEmailService } from '../../core/interface/emailInterface/emailInterface';
 import {
   OtpExpiredError,
   EmailAlreadyRegisteredError,
@@ -13,10 +13,10 @@ import {
   UserNotFoundError,
   InvalidCredentialsError,
   RESTRICTED_USER,
-} from '../../utils/resAndErrors.js';
-import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
+} from '../../utils/resAndErrors';
+import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile';
 import { z } from 'zod';
-import { logger } from '../../utils/logger.js';
+import { logger } from '../../utils/logger';
 
 @injectable()
 export class AuthService implements IAuthService {

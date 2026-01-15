@@ -1,14 +1,14 @@
-import { IAgencyOrderService } from "../../core/interface/serivice/agency/Iagency.orders.service.js";
-import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository.js";
+import { IAgencyOrderService } from "../../core/interface/serivice/agency/Iagency.orders.service";
+import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository";
 import { inject, injectable } from "inversify";
-import { logger } from "../../utils/logger.js";
-import { orderDTO, toOrderDTO } from "../../core/DTO/agency/response/agency.order.DTO.js";
-import { DataNotFoundError, DataUpdatingError, INVALID_STATUS_UPDATION, START_DATE_ERROR, TRIP_ALREADY_STARTED, TRIP_UPDATION_ERROR } from "../../utils/resAndErrors.js";
-import { IGenerateTrip } from "../../core/interface/utils/Igenerate.trip.js";
-import { IBaseValidator } from "../../core/interface/validator/IBasic.validator.js";
-import { IWalletRespository } from "../../core/interface/repositorie/shared/IWallet.repository.js";
-import { IPaymentRepository } from "../../core/interface/repositorie/shared/Ishared.payment.repository.js";
-import { IAgencyRespository } from "../../core/interface/repositorie/agency/Iagency.auth.repository.js";
+import { logger } from "../../utils/logger";
+import { orderDTO, toOrderDTO } from "../../core/DTO/agency/response/agency.order.DTO";
+import { DataNotFoundError, DataUpdatingError, INVALID_STATUS_UPDATION, START_DATE_ERROR, TRIP_ALREADY_STARTED, TRIP_UPDATION_ERROR } from "../../utils/resAndErrors";
+import { IGenerateTrip } from "../../core/interface/utils/Igenerate.trip";
+import { IBaseValidator } from "../../core/interface/validator/IBasic.validator";
+import { IWalletRespository } from "../../core/interface/repositorie/shared/IWallet.repository";
+import { IPaymentRepository } from "../../core/interface/repositorie/shared/Ishared.payment.repository";
+import { IAgencyRespository } from "../../core/interface/repositorie/agency/Iagency.auth.repository";
 
 @injectable()
 export class AgencyOrderService implements IAgencyOrderService {

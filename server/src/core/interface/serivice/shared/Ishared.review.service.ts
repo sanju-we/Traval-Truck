@@ -1,8 +1,8 @@
-import { PaginationResponse } from "@core/DTO/pagination.DTO.js";
-import { reviewDTO, reviewWithReplayDTO } from "../../../../core/DTO/shared/reviewDTO.js";
-import { IReviews } from "../../../../core/interface/modelInterface/IReviews.js";
-import { ReplayDTO } from "../../../../core/DTO/shared/Replay.js";
-import { IReplay } from "@core/interface/modelInterface/IReplay.js";
+import { PaginationResponse } from "@core/DTO/pagination.DTO";
+import { reviewDTO, reviewWithReplayDTO } from "../../../../core/DTO/shared/reviewDTO";
+import { IReviews } from "../../../../core/interface/modelInterface/IReviews";
+import { ReplayDTO } from "../../../../core/DTO/shared/Replay";
+import { IReplay } from "@core/interface/modelInterface/IReplay";
 
 export interface IReviewService{
   create(userId:string,data:{rating:number,comment:string,vendor:string,productId:string},orderId:string):Promise<reviewDTO>

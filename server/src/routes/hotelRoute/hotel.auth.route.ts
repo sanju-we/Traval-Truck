@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { IHotelAuthController } from '../../core/interface/controllerInterface/hotel/Ihotel.auth.controller.js';
-import { container } from '../../core/DI/container.js';
-import { asyncHandler } from '../../middleware/asyncHandler.js';
-import { verifyHotelToken } from '../../middleware/authMiddleware.js';
+import { IHotelAuthController } from '../../core/interface/controllerInterface/hotel/Ihotel.auth.controller';
+import { container } from '../../core/DI/container';
+import { asyncHandler } from '../../middleware/asyncHandler';
+import { verifyHotelToken } from '../../middleware/authMiddleware';
 
 const hotelAuthRoter = Router();
 const hotelAuthController = container.get<IHotelAuthController>('IHotelAuthController');

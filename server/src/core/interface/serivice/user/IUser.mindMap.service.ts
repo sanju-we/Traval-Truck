@@ -1,5 +1,5 @@
-import { MindMapResDTO } from "../../../../core/DTO/user/Response/mindMap.res.js";
-import { MindMapRequest } from "../../../../core/DTO/user/Request/mindMap.js";
+import { MindMapResDTO } from "../../../../core/DTO/user/Response/mindMap.res";
+import { MindMapRequest } from "../../../../core/DTO/user/Request/mindMap";
 
 export interface IUserMindMapService{
   createMap(data:MindMapRequest,userId:string):Promise<MindMapResDTO>;

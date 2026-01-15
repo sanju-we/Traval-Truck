@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { IHotelProfileController } from '../../core/interface/controllerInterface/hotel/Ihotel.profile.controller.js';
-import { container } from '../../core/DI/container.js';
-import { asyncHandler } from '../../middleware/asyncHandler.js';
-import upload from '../../middleware/multer.js';
-import { verifyHotelToken } from '../../middleware/authMiddleware.js';
+import { IHotelProfileController } from '../../core/interface/controllerInterface/hotel/Ihotel.profile.controller';
+import { container } from '../../core/DI/container';
+import { asyncHandler } from '../../middleware/asyncHandler';
+import upload from '../../middleware/multer';
+import { verifyHotelToken } from '../../middleware/authMiddleware';
 
 const hotelProfileRouter = Router();
 const hotelProfileController = container.get<IHotelProfileController>('IHotelProfileController');

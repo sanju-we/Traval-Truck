@@ -1,10 +1,10 @@
 import { Router } from "express";
 
-import walletRouter from "./sharedRoute/shared.wallet.routes.js";
-import { checkRole } from "../middleware/authMiddleware.js";
-import paymentRouter from "./sharedRoute/shared.payment.routes.js";
-import subscriptionRouter from "./sharedRoute/shared.subscription.routes.js";
-import reviewRouter from "./sharedRoute/shared.review.routes.js";
+import walletRouter from "./sharedRoute/shared.wallet.routes";
+import { checkRole } from "../middleware/authMiddleware";
+import paymentRouter from "./sharedRoute/shared.payment.routes";
+import subscriptionRouter from "./sharedRoute/shared.subscription.routes";
+import reviewRouter from "./sharedRoute/shared.review.routes";
 
 const sharedRouter = Router()
 

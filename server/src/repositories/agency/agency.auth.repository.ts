@@ -1,7 +1,7 @@
-import { Agency } from '../../models/Agency.js';
-import { IAgencyRespository } from '../../core/interface/repositorie/agency/Iagency.auth.repository.js';
-import { IAgency } from '../../core/interface/modelInterface/IAgency.js';
-import { BaseRepository } from '../../repositories/baseRepository.js';
+import { Agency } from '../../models/Agency';
+import { IAgencyRespository } from '../../core/interface/repositorie/agency/Iagency.auth.repository';
+import { IAgency } from '../../core/interface/modelInterface/IAgency';
+import { BaseRepository } from '../../repositories/baseRepository';
 
 export class agencyRepository extends BaseRepository<IAgency> implements IAgencyRespository {
   constructor() {

@@ -1,5 +1,5 @@
-import { foodDTO } from "../../../../core/DTO/restaurant/requestDTO.js";
-import { IFoods } from "../../../../core/interface/modelInterface/IFoods.js";
+import { foodDTO } from "../../../../core/DTO/restaurant/requestDTO";
+import { IFoods } from "../../../../core/interface/modelInterface/IFoods";
 import { IBaserepository } from "../IBaseRepositories";
 
 export interface IRestaurantFoodRespository extends IBaserepository<IFoods>{

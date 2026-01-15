@@ -1,5 +1,5 @@
-import { PaginationResponse } from "../../../../core/DTO/pagination.DTO.js";
-import { RoomsDTO } from "../../../../core/DTO/hotel/roomsDTO.js";
+import { PaginationResponse } from "../../../../core/DTO/pagination.DTO";
+import { RoomsDTO } from "../../../../core/DTO/hotel/roomsDTO";
 
 export interface IHotelRoomsService {
   addRoom(data:RoomsDTO,file:Express.Multer.File[]):Promise<RoomsDTO>;

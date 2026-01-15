@@ -1,9 +1,9 @@
-import { IUserFoodsService } from "../../core/interface/serivice/user/IUser.foods.service.js";
-import { IRestaurantFoodRespository } from "../../core/interface/repositorie/restaurant/Irestaurant.food.repository.js";
+import { IUserFoodsService } from "../../core/interface/serivice/user/IUser.foods.service";
+import { IRestaurantFoodRespository } from "../../core/interface/repositorie/restaurant/Irestaurant.food.repository";
 import { inject, injectable } from "inversify";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
-import { foodDTO } from "../../core/DTO/restaurant/requestDTO.js";
-import { ISubscriptionHistoryRepository } from "../../core/interface/repositorie/shared/ISubscription.hisroty.repository.js";
+import { DataNotFoundError } from "../../utils/resAndErrors";
+import { foodDTO } from "../../core/DTO/restaurant/requestDTO";
+import { ISubscriptionHistoryRepository } from "../../core/interface/repositorie/shared/ISubscription.hisroty.repository";
 
 @injectable()
 export class userFoodsService implements IUserFoodsService {

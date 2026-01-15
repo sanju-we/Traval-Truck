@@ -1,9 +1,9 @@
-import { IAdminCouponRepository } from "../../core/interface/repositorie/admin/Iadmin.coupon.repository.js";
-import { BaseRepository } from "../../repositories/baseRepository.js";
-import { Coupon } from "../../models/Coupons.js";
+import { IAdminCouponRepository } from "../../core/interface/repositorie/admin/Iadmin.coupon.repository";
+import { BaseRepository } from "../../repositories/baseRepository";
+import { Coupon } from "../../models/Coupons";
 import { ICoupons } from "../../core/interface/modelInterface/Icoupon";
-import { CouponDTO, toCouponDTO } from "../../core/DTO/admin/coupon/admin.coupon.response.js";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
+import { CouponDTO, toCouponDTO } from "../../core/DTO/admin/coupon/admin.coupon.response";
+import { DataNotFoundError } from "../../utils/resAndErrors";
 
 export class AdminCouponRepository extends BaseRepository<ICoupons> implements IAdminCouponRepository {
   constructor() {

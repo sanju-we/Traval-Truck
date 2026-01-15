@@ -1,10 +1,10 @@
-import { IAdminCouponController } from "../../core/interface/controllerInterface/admin/Iadmin.coupon.controller.js";
+import { IAdminCouponController } from "../../core/interface/controllerInterface/admin/Iadmin.coupon.controller";
 import { Request, Response } from "express";
-import { IAdminCouponService } from "../../core/interface/serivice/admin/IAdmin.coupon.service.js";
+import { IAdminCouponService } from "../../core/interface/serivice/admin/IAdmin.coupon.service";
 import { inject, injectable } from "inversify";
-import { sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
+import { sendResponse } from "../../utils/resAndErrors";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/responseMessaages";
 
 @injectable()
 export class AdminCouponController implements IAdminCouponController {

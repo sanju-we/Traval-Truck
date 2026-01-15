@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { ISharedWalletController } from "../../core/interface/controllerInterface/shared/Ishared.wallet.controller.js";
-import { logger } from "../../utils/logger.js";
-import { IWalletService } from "../../core/interface/serivice/shared/IWaller.service.js";
+import { ISharedWalletController } from "../../core/interface/controllerInterface/shared/Ishared.wallet.controller";
+import { logger } from "../../utils/logger";
+import { IWalletService } from "../../core/interface/serivice/shared/IWaller.service";
 import { inject, injectable } from "inversify";
-import { sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
+import { sendResponse } from "../../utils/resAndErrors";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/responseMessaages";
 
 @injectable()
 export class SharedWalletController implements ISharedWalletController {

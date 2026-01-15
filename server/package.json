@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "nodemon",
+    "dev": "nodemon --exec ts-node src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "lint": "eslint src --ext .ts,.tsx",
@@ -15,7 +15,6 @@
   "keywords": [],
   "author": "Sanju",
   "license": "ISC",
-  "type": "module",
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@types/chai": "^5.2.2",

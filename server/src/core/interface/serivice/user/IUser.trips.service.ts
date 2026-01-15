@@ -1,5 +1,5 @@
-import { orderDTO } from "../../../../core/DTO/agency/response/agency.order.DTO.js";
-import { TripDTO } from "../../../../core/DTO/user/Response/user.trip.DTO.js";
+import { orderDTO } from "../../../../core/DTO/agency/response/agency.order.DTO";
+import { TripDTO } from "../../../../core/DTO/user/Response/user.trip.DTO";
 
 export interface IUserTripService {
   history(userId:string):Promise<TripDTO[]>;

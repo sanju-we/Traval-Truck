@@ -1,13 +1,13 @@
-import { IUserTripService } from "../../core/interface/serivice/user/IUser.trips.service.js";
-import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository.js";
+import { IUserTripService } from "../../core/interface/serivice/user/IUser.trips.service";
+import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository";
 import { inject, injectable } from "inversify";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
-import { TripDTO } from "../../core/DTO/user/Response/user.trip.DTO.js";
-import { logger } from "../../utils/logger.js";
-import { orderDTO, toOrderDTO } from "../../core/DTO/agency/response/agency.order.DTO.js";
-import { IBaseValidator } from "../../core/interface/validator/IBasic.validator.js";
-import { IPaymentRepository } from "../../core/interface/repositorie/shared/Ishared.payment.repository.js";
-import { IWalletRespository } from "../../core/interface/repositorie/shared/IWallet.repository.js";
+import { DataNotFoundError } from "../../utils/resAndErrors";
+import { TripDTO } from "../../core/DTO/user/Response/user.trip.DTO";
+import { logger } from "../../utils/logger";
+import { orderDTO, toOrderDTO } from "../../core/DTO/agency/response/agency.order.DTO";
+import { IBaseValidator } from "../../core/interface/validator/IBasic.validator";
+import { IPaymentRepository } from "../../core/interface/repositorie/shared/Ishared.payment.repository";
+import { IWalletRespository } from "../../core/interface/repositorie/shared/IWallet.repository";
 
 @injectable()
 export class UserTripService implements IUserTripService {

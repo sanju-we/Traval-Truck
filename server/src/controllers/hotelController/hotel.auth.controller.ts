@@ -1,14 +1,14 @@
 import { inject, injectable } from 'inversify';
-import { logger } from '../../utils/logger.js';
-import { IHotelAuthController } from '../../core/interface/controllerInterface/hotel/Ihotel.auth.controller.js';
-import { IJWT } from '../../core/interface/JWT/JWTInterface.js';
-import { IGeneralService } from '../../core/interface/serivice/Igeneral.service.js';
-import { NoAccessToken, sendResponse } from '../../utils/resAndErrors.js';
-import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
-import { IEmailService } from '../../core/interface/emailInterface/emailInterface.js';
-import { IHotelAuthService } from '../../core/interface/serivice/hotel/Ihotel.auth.service.js';
+import { logger } from '../../utils/logger';
+import { IHotelAuthController } from '../../core/interface/controllerInterface/hotel/Ihotel.auth.controller';
+import { IJWT } from '../../core/interface/JWT/JWTInterface';
+import { IGeneralService } from '../../core/interface/serivice/Igeneral.service';
+import { NoAccessToken, sendResponse } from '../../utils/resAndErrors';
+import { STATUS_CODE } from '../../utils/HTTPStatusCode';
+import { IEmailService } from '../../core/interface/emailInterface/emailInterface';
+import { IHotelAuthService } from '../../core/interface/serivice/hotel/Ihotel.auth.service';
 import { Request, Response } from 'express';
-import { MESSAGES } from '../../utils/responseMessaages.js';
+import { MESSAGES } from '../../utils/responseMessaages';
 
 @injectable()
 export class HotelAuthController implements IHotelAuthController {

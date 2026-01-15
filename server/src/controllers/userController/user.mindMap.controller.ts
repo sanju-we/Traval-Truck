@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import { inject,injectable } from "inversify";
-import { IUserMindMapController } from "../../core/interface/controllerInterface/user/IUser.mindMap.controller.js";
-import { IUserMindMapService } from "../../core/interface/serivice/user/IUser.mindMap.service.js";
-import { sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
-import { MindMapRequest } from "../../core/DTO/user/Request/mindMap.js";
+import { IUserMindMapController } from "../../core/interface/controllerInterface/user/IUser.mindMap.controller";
+import { IUserMindMapService } from "../../core/interface/serivice/user/IUser.mindMap.service";
+import { sendResponse } from "../../utils/resAndErrors";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/responseMessaages";
+import { MindMapRequest } from "../../core/DTO/user/Request/mindMap";
 
 @injectable()
 export class UserMindMapController implements IUserMindMapController{

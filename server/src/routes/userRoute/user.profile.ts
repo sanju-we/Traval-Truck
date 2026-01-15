@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import upload from '../../middleware/multer.js';
-import { container } from '../../core/DI/container.js';
-import { asyncHandler } from '../../middleware/asyncHandler.js';
-import { IUserProfileController } from '../../core/interface/controllerInterface/user/userProfile.js';
+import upload from '../../middleware/multer';
+import { container } from '../../core/DI/container';
+import { asyncHandler } from '../../middleware/asyncHandler';
+import { IUserProfileController } from '../../core/interface/controllerInterface/user/userProfile';
 
 const profileRouter = Router();
 const profileController = container.get<IUserProfileController>('IUserProfileController');

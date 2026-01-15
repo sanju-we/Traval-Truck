@@ -1,12 +1,12 @@
-import { foodDTO, toFoodDTO } from "../../core/DTO/restaurant/requestDTO.js";
-import { foodType } from "../../types/restaurantType.js";
-import { IRestaurantFoodService } from "../../core/interface/serivice/restaurant/Irestaurant.food.service.js";
-import { IRestaurantFoodRespository } from "@core/interface/repositorie/restaurant/Irestaurant.food.repository.js";
+import { foodDTO, toFoodDTO } from "../../core/DTO/restaurant/requestDTO";
+import { foodType } from "../../types/restaurantType";
+import { IRestaurantFoodService } from "../../core/interface/serivice/restaurant/Irestaurant.food.service";
+import { IRestaurantFoodRespository } from "@core/interface/repositorie/restaurant/Irestaurant.food.repository";
 import z from "zod";
-import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.cloudinary.js";
+import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.cloudinary";
 import { inject, injectable } from "inversify";
-import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors.js";
-import { logger } from "../../utils/logger.js";
+import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors";
+import { logger } from "../../utils/logger";
 
 @injectable()
 export class RestaurantFoodService implements IRestaurantFoodService {

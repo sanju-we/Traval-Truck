@@ -1,16 +1,16 @@
 import express from 'express';
-import userRouter from './routes/userRouters.js';
-import adminRouter from './routes/adminRouters.js';
-import agencyRouter from './routes/agencyRouters.js';
-import hotelRouter from './routes/hotelRouters.js';
-import restaurantRouter from './routes/restaurant.js';
-import sharedRouter from './routes/sharedRouter.js';
+import userRouter from './routes/userRouters';
+import adminRouter from './routes/adminRouters';
+import agencyRouter from './routes/agencyRouters';
+import hotelRouter from './routes/hotelRouters';
+import restaurantRouter from './routes/restaurant';
+import sharedRouter from './routes/sharedRouter';
 import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import { errorHandler } from './middleware/errorHandler.js';
-import { IWebhookController } from './core/interface/controllerInterface/shared/Iwebhook.controller.js';
-import { container } from './core/DI/container.js';
+import { errorHandler } from './middleware/errorHandler';
+import { IWebhookController } from './core/interface/controllerInterface/shared/Iwebhook.controller';
+import { container } from './core/DI/container';
 
 const app = express();
 

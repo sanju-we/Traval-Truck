@@ -1,4 +1,4 @@
-import { IOrders } from "../core/interface/modelInterface/IOrders.js";
+import { IOrders } from "../core/interface/modelInterface/IOrders";
 import {Schema, model} from "mongoose";
 
 const planSchema = new Schema({

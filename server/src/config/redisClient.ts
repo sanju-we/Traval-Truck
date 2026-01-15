@@ -1,7 +1,7 @@
 import { createClient, RedisClientType } from 'redis';
 import { injectable } from 'inversify';
-import { IRedisClient } from '../core/interface/redis/IRedisClinet.js';
-import { logger } from '../utils/logger.js';
+import { IRedisClient } from '../core/interface/redis/IRedisClinet';
+import { logger } from '../utils/logger';
 
 class RedisError extends Error {
   constructor(message: string) {

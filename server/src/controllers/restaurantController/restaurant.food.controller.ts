@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { IRestaurantFoodController } from "../../core/interface/controllerInterface/restaurant/Irestaurant.food.controller.js";
-import { IRestaurantFoodService } from "../../core/interface/serivice/restaurant/Irestaurant.food.service.js";
+import { IRestaurantFoodController } from "../../core/interface/controllerInterface/restaurant/Irestaurant.food.controller";
+import { IRestaurantFoodService } from "../../core/interface/serivice/restaurant/Irestaurant.food.service";
 import { inject, injectable } from "inversify";
-import { Files_Missing, sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
-import { logger } from "../../utils/logger.js";
+import { Files_Missing, sendResponse } from "../../utils/resAndErrors";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/responseMessaages";
+import { logger } from "../../utils/logger";
 
 @injectable()
 export class RestaurantFoodController implements IRestaurantFoodController {

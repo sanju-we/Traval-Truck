@@ -1,12 +1,12 @@
-import { toWalletDTO, WallterDTO } from "@core/DTO/shared/wallet.dto.js";
-import { IWalletService } from "../../core/interface/serivice/shared/IWaller.service.js"
-import { IWalletRespository } from "../../core/interface/repositorie/shared/IWallet.repository.js";
+import { toWalletDTO, WallterDTO } from "@core/DTO/shared/wallet.dto";
+import { IWalletService } from "../../core/interface/serivice/shared/IWaller.service"
+import { IWalletRespository } from "../../core/interface/repositorie/shared/IWallet.repository";
 import { inject, injectable } from "inversify";
-import { IPaymentValidator } from "../../core/interface/validator/Ipayment.validator.js";
-import { IPaymentUtils } from "../../core/interface/PaymentInterface/Ipayment.utils.js";
-import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors.js";
-import { IWallet } from "../../core/interface/modelInterface/IWaller.js";
-import { logger } from "../../utils/logger.js";
+import { IPaymentValidator } from "../../core/interface/validator/Ipayment.validator";
+import { IPaymentUtils } from "../../core/interface/PaymentInterface/Ipayment.utils";
+import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors";
+import { IWallet } from "../../core/interface/modelInterface/IWaller";
+import { logger } from "../../utils/logger";
 
 @injectable()
 export class WalletService implements IWalletService {

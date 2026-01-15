@@ -1,7 +1,7 @@
-import { ISubscriptionRepository } from '../core/interface/repositorie/ISubscription.respository.js';
-import { BaseRepository } from '../repositories/baseRepository.js';
-import { ISubscriptions } from '../core/interface/modelInterface/Isubscription.js';
-import Subscription from '../models/Subscription.js';
+import { ISubscriptionRepository } from '../core/interface/repositorie/ISubscription.respository';
+import { BaseRepository } from '../repositories/baseRepository';
+import { ISubscriptions } from '../core/interface/modelInterface/Isubscription';
+import Subscription from '../models/Subscription';
 
 export class SubscriptionRepository
   extends BaseRepository<ISubscriptions>

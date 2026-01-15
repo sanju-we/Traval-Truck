@@ -1,14 +1,14 @@
-import { IRestaurantAuthService } from '../../core/interface/serivice/restaurant/Irestautant.auth.service.js';
+import { IRestaurantAuthService } from '../../core/interface/serivice/restaurant/Irestautant.auth.service';
 import { injectable, inject } from 'inversify';
-import { IJWT } from '../../core/interface/JWT/JWTInterface.js';
-import { IRedisClient } from '../../core/interface/redis/IRedisClinet.js';
-import { IEmailService } from '../../core/interface/emailInterface/emailInterface.js';
-import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository.js';
-import { vendorData } from 'types/index.js';
+import { IJWT } from '../../core/interface/JWT/JWTInterface';
+import { IRedisClient } from '../../core/interface/redis/IRedisClinet';
+import { IEmailService } from '../../core/interface/emailInterface/emailInterface';
+import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository';
+import { vendorData } from 'types/index';
 import {
   RestaurantProfileDTO,
   toRestaunrantProfile,
-} from '../../core/DTO/restaurant/response.dto.js';
+} from '../../core/DTO/restaurant/response.dto';
 import bcrypt from 'bcryptjs';
 import z from 'zod';
 import {
@@ -17,8 +17,8 @@ import {
   InvalidResetTokenError,
   OtpExpiredError,
   UserNotFoundError,
-} from '../../utils/resAndErrors.js';
-import { logger } from '../../utils/logger.js';
+} from '../../utils/resAndErrors';
+import { logger } from '../../utils/logger';
 
 @injectable()
 export class RestaurantAuthService implements IRestaurantAuthService {

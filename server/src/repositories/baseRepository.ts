@@ -1,7 +1,7 @@
 // src/core/repositories/BaseRepository.ts
 import { Model, Document, FilterQuery, UpdateQuery, QueryOptions } from 'mongoose';
-import { logger } from '../utils/logger.js';
-import { IBaserepository } from '../core/interface/repositorie/IBaseRepositories.js';
+import { logger } from '../utils/logger';
+import { IBaserepository } from '../core/interface/repositorie/IBaseRepositories';
 
 export class RepositoryError extends Error {
   constructor(message: string) {

@@ -1,4 +1,4 @@
-import { IWallet } from "../../../core/interface/modelInterface/IWaller.js";
+import { IWallet } from "../../../core/interface/modelInterface/IWaller";
 
 
 interface transactions{

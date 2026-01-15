@@ -1,4 +1,4 @@
-import { IRooms } from "../../../core/interface/modelInterface/IRooms.js";
+import { IRooms } from "../../../core/interface/modelInterface/IRooms";
 
 
 export interface reviews{

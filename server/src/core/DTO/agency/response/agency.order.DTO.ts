@@ -1,7 +1,7 @@
-import { TripPlan } from "../../../../types/index.js"
-import { IOrders } from "../../../../core/interface/modelInterface/IOrders.js"
-import { PackageDTO } from "../request/packageDTO.js"
-import { agencyProfileDTO } from "./agency.profile.js"
+import { TripPlan } from "../../../../types/index"
+import { IOrders } from "../../../../core/interface/modelInterface/IOrders"
+import { PackageDTO } from "../request/packageDTO"
+import { agencyProfileDTO } from "./agency.profile"
 
 export interface orderDTO {
   id:string,

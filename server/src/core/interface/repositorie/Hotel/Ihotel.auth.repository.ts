@@ -1,5 +1,5 @@
-import { IHotel } from '../../modelInterface/IHotel.js';
-import { IBaserepository } from '../IBaseRepositories.js';
+import { IHotel } from '../../modelInterface/IHotel';
+import { IBaserepository } from '../IBaseRepositories';
 
 export interface IHotelAuthRepository extends IBaserepository<IHotel> {
   updateHotelPasswordById(id: string, hashedPassword: string): Promise<void>;

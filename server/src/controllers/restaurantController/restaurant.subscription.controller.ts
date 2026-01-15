@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { IRestaurantSubscriptionController } from "../../core/interface/controllerInterface/restaurant/Irestaurant.subscription.controller.js";
-import { IRestaurantSubscriptionService } from "../../core/interface/serivice/restaurant/Irestaurant.subscription.service.js";
+import { IRestaurantSubscriptionController } from "../../core/interface/controllerInterface/restaurant/Irestaurant.subscription.controller";
+import { IRestaurantSubscriptionService } from "../../core/interface/serivice/restaurant/Irestaurant.subscription.service";
 import { inject, injectable } from "inversify";
-import { sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
+import { sendResponse } from "../../utils/resAndErrors";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/responseMessaages";
 
 @injectable()
 export class RestaurantSubscriptionController implements IRestaurantSubscriptionController {

@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { IAdminCouponController } from "../../core/interface/controllerInterface/admin/Iadmin.coupon.controller.js";
-import { container } from "../../core/DI/container.js";
-import { asyncHandler } from "../../middleware/asyncHandler.js";
+import { IAdminCouponController } from "../../core/interface/controllerInterface/admin/Iadmin.coupon.controller";
+import { container } from "../../core/DI/container";
+import { asyncHandler } from "../../middleware/asyncHandler";
 
 const couponRouter = Router()
 const couponController = container.get<IAdminCouponController>('IAdminCouponController')

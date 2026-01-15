@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { ISharedWalletController } from "../../core/interface/controllerInterface/shared/Ishared.wallet.controller.js";
-import { container } from "../../core/DI/container.js";
-import { asyncHandler } from "../../middleware/asyncHandler.js";
+import { ISharedWalletController } from "../../core/interface/controllerInterface/shared/Ishared.wallet.controller";
+import { container } from "../../core/DI/container";
+import { asyncHandler } from "../../middleware/asyncHandler";
 
 const walletRouter = Router()
 const WalletController = container.get<ISharedWalletController>('ISharedWalletController')

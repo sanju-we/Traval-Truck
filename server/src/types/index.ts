@@ -1,4 +1,4 @@
-import { PackageDTO } from "@core/DTO/agency/request/packageDTO";
+import { PackageDTO } from "../core/DTO/agency/request/packageDTO";
 
 // User Types
 export interface IUser {

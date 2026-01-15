@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { IAgencyPackageController } from "../../core/interface/controllerInterface/agency/Iagencu.package.controller.js";
-import { IAgencyPackageService } from "../../core/interface/serivice/agency/Iagency.package.service.js";
+import { IAgencyPackageController } from "../../core/interface/controllerInterface/agency/Iagencu.package.controller";
+import { IAgencyPackageService } from "../../core/interface/serivice/agency/Iagency.package.service";
 import { inject, injectable } from "inversify";
-import { BADREQUEST, sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
+import { BADREQUEST, sendResponse } from "../../utils/resAndErrors";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/responseMessaages";
 
 @injectable()
 export class agencyPackageController implements IAgencyPackageController {

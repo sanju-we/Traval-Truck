@@ -1,4 +1,4 @@
-import { subscriptionDTO } from '../../../../core/DTO/subscription.dto.js';
+import { subscriptionDTO } from '../../../../core/DTO/subscription.dto';
 import { subscriptionData } from 'types';
 
 export interface IAdminSubscriptionService {

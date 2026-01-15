@@ -1,14 +1,14 @@
 // src/repositories/restaurant/restaurant.auth.repository.ts
 import { injectable } from 'inversify';
-import { BaseRepository, RepositoryError } from '../../repositories/baseRepository.js';
-import { IRestaurant } from '../../core/interface/modelInterface/IRestaurant.js';
-import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository.js';
-import { Restaurant } from '../../models/Restaurant.js';
+import { BaseRepository, RepositoryError } from '../../repositories/baseRepository';
+import { IRestaurant } from '../../core/interface/modelInterface/IRestaurant';
+import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository';
+import { Restaurant } from '../../models/Restaurant';
 import {
   toVendorRequestDTO,
   vendorRequestDTO,
-} from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
-import { logger } from '../../utils/logger.js';
+} from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto';
+import { logger } from '../../utils/logger';
 
 @injectable()
 export class RestaurantAuthRepository

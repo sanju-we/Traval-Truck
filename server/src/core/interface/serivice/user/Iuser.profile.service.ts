@@ -1,4 +1,4 @@
-import { userProfileDTO } from '../../../DTO/user/Response/user.profile.js';
+import { userProfileDTO } from '../../../DTO/user/Response/user.profile';
 import { userEdit, Userauth, IUser } from 'types';
 
 export interface IUserProfileService {

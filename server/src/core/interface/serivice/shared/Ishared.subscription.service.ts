@@ -1,5 +1,5 @@
-import { subscriptionDTO } from "../../../../core/DTO/subscription.dto.js";
-import { subscriptionHistoryDTO } from "../../../DTO/shared/subscriptionHistory.js";
+import { subscriptionDTO } from "../../../../core/DTO/subscription.dto";
+import { subscriptionHistoryDTO } from "../../../DTO/shared/subscriptionHistory";
 
 export interface ISharedSubscriptionService {
   getAllSubscription(): Promise<subscriptionDTO[]>;

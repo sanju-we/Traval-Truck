@@ -1,12 +1,12 @@
-import { BADREQUEST, sendResponse, UserNotFoundError } from '../../utils/resAndErrors.js';
-import { IHotelProfileController } from '../../core/interface/controllerInterface/hotel/Ihotel.profile.controller.js';
+import { BADREQUEST, sendResponse, UserNotFoundError } from '../../utils/resAndErrors';
+import { IHotelProfileController } from '../../core/interface/controllerInterface/hotel/Ihotel.profile.controller';
 import { inject, injectable } from 'inversify';
-import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
-import { MESSAGES } from '../../utils/responseMessaages.js';
-import { IHotelProfileService } from '../../core/interface/serivice/hotel/Ihotel.profile.service.js';
+import { STATUS_CODE } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/responseMessaages';
+import { IHotelProfileService } from '../../core/interface/serivice/hotel/Ihotel.profile.service';
 import { Request, Response } from 'express';
-import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Ihotel.auth.repository.js';
-import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
+import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Ihotel.auth.repository';
+import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto';
 
 @injectable()
 export class HotelProfileCotroller implements IHotelProfileController {

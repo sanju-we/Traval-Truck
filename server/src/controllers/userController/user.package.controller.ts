@@ -1,10 +1,10 @@
-import { PackageDTO } from "@core/DTO/agency/request/packageDTO.js";
-import { IUserPackageController } from "../../core/interface/controllerInterface/user/Iuser.package.controller.js";
-import { IUserPackageService } from "../../core/interface/serivice/user/IUser.package.service.js";
+import { PackageDTO } from "@core/DTO/agency/request/packageDTO";
+import { IUserPackageController } from "../../core/interface/controllerInterface/user/Iuser.package.controller";
+import { IUserPackageService } from "../../core/interface/serivice/user/IUser.package.service";
 import { inject, injectable } from "inversify";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { BADREQUEST, sendResponse } from "../../utils/resAndErrors.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { BADREQUEST, sendResponse } from "../../utils/resAndErrors";
+import { MESSAGES } from "../../utils/responseMessaages";
 import { Request, Response } from "express";
 
 @injectable()

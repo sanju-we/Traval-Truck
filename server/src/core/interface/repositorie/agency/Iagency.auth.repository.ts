@@ -1,5 +1,5 @@
-import { IAgency } from '../../../../core/interface/modelInterface/IAgency.js';
-import { IBaserepository } from '../IBaseRepositories.js';
+import { IAgency } from '../../../../core/interface/modelInterface/IAgency';
+import { IBaserepository } from '../IBaseRepositories';
 
 export interface IAgencyRespository extends IBaserepository<IAgency> {
   updateAgencyPasswordById(id: string, hashedPassword: string): Promise<void>;

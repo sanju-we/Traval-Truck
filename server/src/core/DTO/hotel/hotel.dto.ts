@@ -1,4 +1,4 @@
-import { IHotel } from '../../../core/interface/modelInterface/IHotel.js';
+import { IHotel } from '../../../core/interface/modelInterface/IHotel';
 
 export interface HotelProfileDTO {
   id: string;

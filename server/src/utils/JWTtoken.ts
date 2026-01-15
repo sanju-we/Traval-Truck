@@ -1,18 +1,29 @@
 import { injectable } from 'inversify';
 import { Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { IJWT } from '../core/interface/JWT/JWTInterface.js';
-import { ResetToken } from '../types/index.js';
-import { InvalidResetTokenError } from '../utils/resAndErrors.js';
-import { logger } from '../utils/logger.js';
+import type { SignOptions } from 'jsonwebtoken';
+import { IJWT } from '../core/interface/JWT/JWTInterface';
+import { ResetToken } from '../types/index';
+import { InvalidResetTokenError } from '../utils/resAndErrors';
+import { logger } from '../utils/logger';
 
 @injectable()
 export class JWT implements IJWT {
-  private readonly JWT_SECRET = process.env.JWT_SECRET || 'your-secret';
-  private readonly ACCESS_TOKEN_EXPIRY = '15m';
-  private readonly REFRESH_TOKEN_EXPIRY = '7d';
-  private readonly RESET_TOKEN_EXPIRY = '1h';
-  private readonly jwt = jwt;
+  private readonly JWT_SECRET: string;
+  private readonly ACCESS_TOKEN_EXPIRY: SignOptions['expiresIn'];
+  private readonly REFRESH_TOKEN_EXPIRY: SignOptions['expiresIn'];
+  private readonly RESET_TOKEN_EXPIRY: SignOptions['expiresIn'];
+
+  constructor() {
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET is not defined');
+    }
+
+    this.JWT_SECRET = process.env.JWT_SECRET;
+    this.ACCESS_TOKEN_EXPIRY =  (process.env.ACCESS_TOKEN_EXPIRY ?? '15m') as SignOptions['expiresIn'];
+    this.REFRESH_TOKEN_EXPIRY = (process.env.REFRESH_TOKEN_EXPIRY ?? '7d') as SignOptions['expiresIn'];
+    this.RESET_TOKEN_EXPIRY = (process.env.RESET_TOKEN_EXPIRY ?? '1h') as SignOptions['expiresIn'];
+  }
 
   async setTokenInCookies(res: Response, accessToken: string, refreshToken: string): Promise<void> {
     res.cookie('accessToken', accessToken, {
@@ -33,10 +44,10 @@ export class JWT implements IJWT {
   }> {
     try {
       const accessToken = jwt.sign(payload, this.JWT_SECRET, {
-        expiresIn: this.ACCESS_TOKEN_EXPIRY,
+        expiresIn: this.ACCESS_TOKEN_EXPIRY as jwt.SignOptions['expiresIn'],
       });
       const refreshToken = jwt.sign(payload, this.JWT_SECRET, {
-        expiresIn: this.REFRESH_TOKEN_EXPIRY,
+        expiresIn: this.REFRESH_TOKEN_EXPIRY as jwt.SignOptions['expiresIn'],
       });
       logger.info(`accessToken from JWT->generateToken : ${accessToken}`);
       return { accessToken, refreshToken };
@@ -49,7 +60,7 @@ export class JWT implements IJWT {
   async generateResetToken(user: ResetToken): Promise<{ resetToken: string; resetLink: string }> {
     try {
       const resetToken = jwt.sign({ id: user.id, email: user.email }, this.JWT_SECRET, {
-        expiresIn: this.RESET_TOKEN_EXPIRY,
+        expiresIn: this.RESET_TOKEN_EXPIRY as jwt.SignOptions['expiresIn'],
       });
       const resetLink = `${process.env.FRONTEND_URL}/user/resetPassword?token=${resetToken}`;
       return { resetToken, resetLink };

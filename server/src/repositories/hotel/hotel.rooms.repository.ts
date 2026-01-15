@@ -1,11 +1,11 @@
-import Rooms from "../../models/Rooms.js";
-import { IRooms } from "../../core/interface/modelInterface/IRooms.js";
-import { IHotelRoomsRepository } from "../../core/interface/repositorie/Hotel/Ihotel.rooms.repository.js";
-import { BaseRepository } from "../../repositories/baseRepository.js";
-import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors.js";
-import { toRoomsDTO, RoomsDTO } from "../../core/DTO/hotel/roomsDTO.js";
-import { logger } from "../../utils/logger.js";
-import { PaginationResponse } from "../../core/DTO/pagination.DTO.js";
+import Rooms from "../../models/Rooms";
+import { IRooms } from "../../core/interface/modelInterface/IRooms";
+import { IHotelRoomsRepository } from "../../core/interface/repositorie/Hotel/Ihotel.rooms.repository";
+import { BaseRepository } from "../../repositories/baseRepository";
+import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors";
+import { toRoomsDTO, RoomsDTO } from "../../core/DTO/hotel/roomsDTO";
+import { logger } from "../../utils/logger";
+import { PaginationResponse } from "../../core/DTO/pagination.DTO";
 import mongoose from "mongoose";
 
 export class HotelRoomsRepository extends BaseRepository<IRooms> implements IHotelRoomsRepository {

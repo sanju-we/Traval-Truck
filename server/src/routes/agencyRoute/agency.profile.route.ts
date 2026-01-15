@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { asyncHandler } from '../../middleware/asyncHandler.js';
-import { IAgencyProfileController } from '../../core/interface/controllerInterface/agency/Iagency.profile.controller.js';
-import { container } from '../../core/DI/container.js';
-import upload from '../../middleware/multer.js';
-import { verifyAgencyToken } from '../../middleware/authMiddleware.js';
+import { asyncHandler } from '../../middleware/asyncHandler';
+import { IAgencyProfileController } from '../../core/interface/controllerInterface/agency/Iagency.profile.controller';
+import { container } from '../../core/DI/container';
+import upload from '../../middleware/multer';
+import { verifyAgencyToken } from '../../middleware/authMiddleware';
 
 const agencyProfileRouter = Router();
 const agencyProfileController = container.get<IAgencyProfileController>('IAgencyProfileController');

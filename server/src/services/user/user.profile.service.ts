@@ -1,12 +1,12 @@
-import { IUserProfileService } from '../../core/interface/serivice/user/Iuser.profile.service.js';
+import { IUserProfileService } from '../../core/interface/serivice/user/Iuser.profile.service';
 import { inject, injectable } from 'inversify';
-import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository.js';
+import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository';
 import z from 'zod';
-import { userEdit, Userauth } from 'types/index.js';
-import { UserNotFoundError } from '../../utils/resAndErrors.js';
+import { userEdit, Userauth } from 'types/index';
+import { UserNotFoundError } from '../../utils/resAndErrors';
 import { IUser } from 'types';
-import { singleUpload } from '../../utils/upload.cloudinary.js';
-import { toUserProfileDTO, userProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
+import { singleUpload } from '../../utils/upload.cloudinary';
+import { toUserProfileDTO, userProfileDTO } from '../../core/DTO/user/Response/user.profile';
 
 @injectable()
 export class UserProfileService implements IUserProfileService {

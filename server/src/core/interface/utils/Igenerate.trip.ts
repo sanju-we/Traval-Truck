@@ -1,4 +1,4 @@
-import { TripPlan } from "../../../types/index.js";
+import { TripPlan } from "../../../types/index";
 import { IPackage } from "../modelInterface/Ipackage";
 
 export interface IGenerateTrip {

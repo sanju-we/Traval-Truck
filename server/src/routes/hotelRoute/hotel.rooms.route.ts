@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { IHotelRoomsController } from "../../core/interface/controllerInterface/hotel/Ihotel.rooms.controller.js";
-import { container } from "../../core/DI/container.js";
-import { asyncHandler } from "../../middleware/asyncHandler.js";
-import upload from "../../middleware/multer.js";
+import { IHotelRoomsController } from "../../core/interface/controllerInterface/hotel/Ihotel.rooms.controller";
+import { container } from "../../core/DI/container";
+import { asyncHandler } from "../../middleware/asyncHandler";
+import upload from "../../middleware/multer";
 
 const roomsRouter = Router()
 const RoomsController = container.get<IHotelRoomsController>('IHotelRoomsController')

@@ -1,13 +1,13 @@
-import { IHotelProfileService } from '../../core/interface/serivice/hotel/Ihotel.profile.service.js';
+import { IHotelProfileService } from '../../core/interface/serivice/hotel/Ihotel.profile.service';
 import { inject, injectable } from 'inversify';
-import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Ihotel.auth.repository.js';
-import { ImageDeleteInCloudinary, UserNotFoundError } from '../../utils/resAndErrors.js';
+import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Ihotel.auth.repository';
+import { ImageDeleteInCloudinary, UserNotFoundError } from '../../utils/resAndErrors';
 import {
   toVendorRequestDTO,
   vendorRequestDTO,
-} from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
-import { deleteImage, extractPublicId, singleUpload } from '../../utils/upload.cloudinary.js';
-import { IAuthValidator } from '../../core/interface/validator/Iauth.validator.js';
+} from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto';
+import { deleteImage, extractPublicId, singleUpload } from '../../utils/upload.cloudinary';
+import { IAuthValidator } from '../../core/interface/validator/Iauth.validator';
 
 @injectable()
 export class HotelProfileService implements IHotelProfileService {

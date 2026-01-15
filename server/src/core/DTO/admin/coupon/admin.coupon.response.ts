@@ -1,4 +1,4 @@
-import { ICoupons } from "../../../interface/modelInterface/Icoupon.js";
+import { ICoupons } from "../../../interface/modelInterface/Icoupon";
 
 export interface CouponDTO{
   id:string,

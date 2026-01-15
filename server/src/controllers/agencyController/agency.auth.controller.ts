@@ -1,17 +1,17 @@
 import { Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
 import z from 'zod';
-import { NoAccessToken } from '../../utils/resAndErrors.js';
-import { sendResponse } from '../../utils/resAndErrors.js';
-import { IAgencyAuthService } from '../../core/interface/serivice/agency/Iagency.auth.service.js';
-import { IEmailService } from '../../core/interface/emailInterface/emailInterface.js';
-import { logger } from '../../utils/logger.js';
-import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
-import { MESSAGES } from '../../utils/responseMessaages.js';
-import { IGeneralService } from '../../core/interface/serivice/Igeneral.service.js';
-import { IJWT } from '../../core/interface/JWT/JWTInterface.js';
-import { IAgencyAuthController } from '../../core/interface/controllerInterface/agency/agency.Iauth.controller.js';
-import { IAuthValidator } from '../../core/interface/validator/Iauth.validator.js';
+import { NoAccessToken } from '../../utils/resAndErrors';
+import { sendResponse } from '../../utils/resAndErrors';
+import { IAgencyAuthService } from '../../core/interface/serivice/agency/Iagency.auth.service';
+import { IEmailService } from '../../core/interface/emailInterface/emailInterface';
+import { logger } from '../../utils/logger';
+import { STATUS_CODE } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/responseMessaages';
+import { IGeneralService } from '../../core/interface/serivice/Igeneral.service';
+import { IJWT } from '../../core/interface/JWT/JWTInterface';
+import { IAgencyAuthController } from '../../core/interface/controllerInterface/agency/agency.Iauth.controller';
+import { IAuthValidator } from '../../core/interface/validator/Iauth.validator';
 
 @injectable()
 export class AgencyAuthController implements IAgencyAuthController {

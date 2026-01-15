@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { IPaymentUtils } from '../../core/interface/PaymentInterface/Ipayment.utils.js';
-import { IPaymentController } from '../../core/interface/controllerInterface/shared/Ishared.payment.controller.js';
-import { sendResponse } from '../../utils/resAndErrors.js';
-import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
-import { MESSAGES } from '../../utils/responseMessaages.js';
+import { IPaymentUtils } from '../../core/interface/PaymentInterface/Ipayment.utils';
+import { IPaymentController } from '../../core/interface/controllerInterface/shared/Ishared.payment.controller';
+import { sendResponse } from '../../utils/resAndErrors';
+import { STATUS_CODE } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/responseMessaages';
 import { inject, injectable } from 'inversify';
 
 @injectable()

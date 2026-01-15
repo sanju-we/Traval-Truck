@@ -1,4 +1,4 @@
-import { MindMapRequest } from "../../../core/DTO/user/Request/mindMap.js";
+import { MindMapRequest } from "../../../core/DTO/user/Request/mindMap";
 
 export interface IBaseValidator{
   idValidator(id:string):Promise<void>;

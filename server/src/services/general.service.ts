@@ -1,7 +1,7 @@
-import { IGeneralService } from '../core/interface/serivice/Igeneral.service.js';
+import { IGeneralService } from '../core/interface/serivice/Igeneral.service';
 import z from 'zod';
-import { logger } from '../utils/logger.js';
-import { IRedisClient } from '../core/interface/redis/IRedisClinet.js';
+import { logger } from '../utils/logger';
+import { IRedisClient } from '../core/interface/redis/IRedisClinet';
 import { inject, injectable } from 'inversify';
 
 @injectable()

@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { IAdminSubscriptionController } from '../../core/interface/controllerInterface/admin/Iadmin.subscription.controller.js';
+import { IAdminSubscriptionController } from '../../core/interface/controllerInterface/admin/Iadmin.subscription.controller';
 import { inject, injectable } from 'inversify';
-import { IAdminSubscriptionService } from '../../core/interface/serivice/admin/IAdmin.subscription.service.js';
-import { sendResponse } from '../../utils/resAndErrors.js';
-import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
-import { MESSAGES } from '../../utils/responseMessaages.js';
+import { IAdminSubscriptionService } from '../../core/interface/serivice/admin/IAdmin.subscription.service';
+import { sendResponse } from '../../utils/resAndErrors';
+import { STATUS_CODE } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/responseMessaages';
 
 @injectable()
 export class AdminSubscriptionController implements IAdminSubscriptionController {

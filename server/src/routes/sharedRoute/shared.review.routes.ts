@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { IReviewController } from "../../core/interface/controllerInterface/shared/Ishared.review.controller.js";
-import { container } from "../../core/DI/container.js";
-import { asyncHandler } from "../../middleware/asyncHandler.js";
+import { IReviewController } from "../../core/interface/controllerInterface/shared/Ishared.review.controller";
+import { container } from "../../core/DI/container";
+import { asyncHandler } from "../../middleware/asyncHandler";
 
 const reviewRouter = Router()
 const reviewController = container.get<IReviewController>('IReviewController')

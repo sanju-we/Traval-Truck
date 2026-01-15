@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { IRestaurant } from '../core/interface/modelInterface/IRestaurant.js';
+import { IRestaurant } from '../core/interface/modelInterface/IRestaurant';
 
 const restaurantSchema = new Schema<IRestaurant>({
   companyName: {

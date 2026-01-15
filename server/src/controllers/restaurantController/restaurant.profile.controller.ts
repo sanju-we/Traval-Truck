@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
-import { IRestaurantProfileController } from '../../core/interface/controllerInterface/restaurant/Irestaurant.profile.controller.js';
-import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository.js';
+import { IRestaurantProfileController } from '../../core/interface/controllerInterface/restaurant/Irestaurant.profile.controller';
+import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository';
 import { inject, injectable } from 'inversify';
-import { BADREQUEST, DataUpdatingError, sendResponse, UserNotFoundError } from '../../utils/resAndErrors.js';
-import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
-import { MESSAGES } from '../../utils/responseMessaages.js';
-import { IRestaurantProfileService } from '../../core/interface/serivice/restaurant/IRestaurant.profile.service.js';
+import { BADREQUEST, DataUpdatingError, sendResponse, UserNotFoundError } from '../../utils/resAndErrors';
+import { STATUS_CODE } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/responseMessaages';
+import { IRestaurantProfileService } from '../../core/interface/serivice/restaurant/IRestaurant.profile.service';
 import z from 'zod';
-import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
+import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto';
 
 @injectable()
 export class RestaurantProfileController implements IRestaurantProfileController {

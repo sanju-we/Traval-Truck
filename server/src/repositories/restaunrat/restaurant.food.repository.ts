@@ -1,8 +1,8 @@
-import { IRestaurantFoodRespository } from "../../core/interface/repositorie/restaurant/Irestaurant.food.repository.js";
-import { BaseRepository } from "../../repositories/baseRepository.js";
-import Foods from "../../models/Foods.js";
+import { IRestaurantFoodRespository } from "../../core/interface/repositorie/restaurant/Irestaurant.food.repository";
+import { BaseRepository } from "../../repositories/baseRepository";
+import Foods from "../../models/Foods";
 import { IFoods } from "../../core/interface/modelInterface/IFoods";
-import { foodDTO, toFoodDTO } from "../../core/DTO/restaurant/requestDTO.js";
+import { foodDTO, toFoodDTO } from "../../core/DTO/restaurant/requestDTO";
 
 export class RestaurantFoodRepository extends BaseRepository<IFoods> implements IRestaurantFoodRespository{
   constructor(){

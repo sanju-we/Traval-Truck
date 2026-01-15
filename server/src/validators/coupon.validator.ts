@@ -1,5 +1,5 @@
-import { CouponDTO } from "@core/DTO/admin/coupon/admin.coupon.response.js";
-import { ICouponValidator } from "../core/interface/validator/Icoupon.validator.js";
+import { CouponDTO } from "../core/DTO/admin/coupon/admin.coupon.response";
+import { ICouponValidator } from "../core/interface/validator/Icoupon.validator";
 import z from "zod";
 
 export class CouponValidator implements ICouponValidator {

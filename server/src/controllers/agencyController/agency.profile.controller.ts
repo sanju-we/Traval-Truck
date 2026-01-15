@@ -1,12 +1,12 @@
-import { IAgencyProfileController } from '../../core/interface/controllerInterface/agency/Iagency.profile.controller.js';
+import { IAgencyProfileController } from '../../core/interface/controllerInterface/agency/Iagency.profile.controller';
 import { inject, injectable } from 'inversify';
-import { IAgencyRespository } from '../../core/interface/repositorie/agency/Iagency.auth.repository.js';
+import { IAgencyRespository } from '../../core/interface/repositorie/agency/Iagency.auth.repository';
 import { Request, Response } from 'express';
-import { BADREQUEST, sendResponse, UserNotFoundError } from '../../utils/resAndErrors.js';
-import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
-import { MESSAGES } from '../../utils/responseMessaages.js';
-import { IAgencyProfileService } from '../../core/interface/serivice/agency/Iagenc.profile.service.js';
-import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
+import { BADREQUEST, sendResponse, UserNotFoundError } from '../../utils/resAndErrors';
+import { STATUS_CODE } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/responseMessaages';
+import { IAgencyProfileService } from '../../core/interface/serivice/agency/Iagenc.profile.service';
+import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto';
 
 @injectable()
 export class AgencyProfileController implements IAgencyProfileController {

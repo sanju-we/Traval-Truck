@@ -1,12 +1,12 @@
-import { ISharedSubscriptionService } from "../../core/interface/serivice/shared/Ishared.subscription.service.js";
-import { ISubscriptionRepository } from "../../core/interface/repositorie/ISubscription.respository.js";
+import { ISharedSubscriptionService } from "../../core/interface/serivice/shared/Ishared.subscription.service";
+import { ISubscriptionRepository } from "../../core/interface/repositorie/ISubscription.respository";
 import { inject, injectable } from "inversify";
-import { subscriptionDTO, toSubdcriptionDTO } from "../../core/DTO/subscription.dto.js";
-import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors.js";
-import { IPaymentUtils } from "../../core/interface/PaymentInterface/Ipayment.utils.js";
-import { ISubscriptionHistoryRepository } from "../../core/interface/repositorie/shared/ISubscription.hisroty.repository.js";
-import { subscriptionHistoryDTO, toSubsctiptionHistoryDTO } from "../../core/DTO/shared/subscriptionHistory.js";
-import { logger } from "../../utils/logger.js";
+import { subscriptionDTO, toSubdcriptionDTO } from "../../core/DTO/subscription.dto";
+import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors";
+import { IPaymentUtils } from "../../core/interface/PaymentInterface/Ipayment.utils";
+import { ISubscriptionHistoryRepository } from "../../core/interface/repositorie/shared/ISubscription.hisroty.repository";
+import { subscriptionHistoryDTO, toSubsctiptionHistoryDTO } from "../../core/DTO/shared/subscriptionHistory";
+import { logger } from "../../utils/logger";
 
 @injectable()
 export class SharedSubscriptionService implements ISharedSubscriptionService {

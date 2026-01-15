@@ -1,5 +1,5 @@
 import mongoose,{ Schema } from "mongoose";
-import { IRooms } from "../core/interface/modelInterface/IRooms.js";
+import { IRooms } from "../core/interface/modelInterface/IRooms";
 
 const RoomsSchema: Schema = new Schema({
   RoomNumber: { type: Number },

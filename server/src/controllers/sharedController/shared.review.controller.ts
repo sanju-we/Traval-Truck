@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { inject, injectable } from "inversify";
-import { IReviewController } from "../../core/interface/controllerInterface/shared/Ishared.review.controller.js";
-import { IReviewService } from "../../core/interface/serivice/shared/Ishared.review.service.js";
-import { sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
+import { IReviewController } from "../../core/interface/controllerInterface/shared/Ishared.review.controller";
+import { IReviewService } from "../../core/interface/serivice/shared/Ishared.review.service";
+import { sendResponse } from "../../utils/resAndErrors";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/responseMessaages";
 
 @injectable()
 export class ReviewController implements IReviewController {

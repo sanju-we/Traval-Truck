@@ -1,11 +1,11 @@
 // src/repositories/user/auth.repository.ts
 import { injectable } from 'inversify';
-import { BaseRepository, RepositoryError } from '../../repositories/baseRepository.js';
-import { User } from '../../models/SUser.js';
-import { IUser } from '../../core/interface/modelInterface/IUser.js';
-import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository.js';
-import { userEdit } from '../../types/index.js';
-import { logger } from '../../utils/logger.js';
+import { BaseRepository, RepositoryError } from '../../repositories/baseRepository';
+import { User } from '../../models/SUser';
+import { IUser } from '../../core/interface/modelInterface/IUser';
+import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository';
+import { userEdit } from '../../types/index';
+import { logger } from '../../utils/logger';
 import z from 'zod';
 
 @injectable()
