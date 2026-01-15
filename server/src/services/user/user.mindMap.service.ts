@@ -111,7 +111,7 @@ export class UserMindMapService implements IUserMindMapService {
     if (!data.id) {
       mindMap = await this._mindMapRepo.create(MindMap)
     } else {
-      mindMap = await this._mindMapRepo.update(data.id, MindMap)
+      mindMap = await this._mindMapRepo.update(data.id, {...MindMap,orderId:data.orderId})
     }
     if (!mindMap) throw new DataNotFoundError();
     return toMindMapRes(mindMap)

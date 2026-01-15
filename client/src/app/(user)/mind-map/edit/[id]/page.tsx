@@ -134,6 +134,7 @@ export default function CreateMindMapPage() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [member, setMember] = useState('');
+  const [orderId, setOrderId] = useState('');
   const [vehicle, setVehicle] = useState('car');
   const [milage, setMilage] = useState('');
   const [food, setFood] = useState('veg');
@@ -188,18 +189,23 @@ export default function CreateMindMapPage() {
 
   useEffect(() => {
     if (!mindMap) return;
-    console.log(mindMap)
 
     setTitle(mindMap.title);
     setStartDate(mindMap.startDate);
     setEndDate(mindMap.endDate);
     setMember(String(mindMap.partners));
-    setId(ID)
+    setId(ID);
+
+    // ✅ SET ORDER ID
+    if (mindMap.orderId) {
+      setOrderId(mindMap.orderId);
+    }
 
     setFood(mindMap.budget?.foodAmount ? 'non-veg' : 'veg');
     setFoodAmount(String(mindMap.budget?.foodAmount ?? ''));
     setVehicle(mindMap.routeMetrics?.days ? 'car' : 'bike');
-    const fuelUsed = mindMap.routeMetrics?.fuelCost / 100
+
+    const fuelUsed = mindMap.routeMetrics?.fuelCost / 100;
     setMilage(String(mindMap.routeMetrics?.totalDistance / fuelUsed));
 
     setStartingLocation({
@@ -228,7 +234,6 @@ export default function CreateMindMapPage() {
         timePreference: place.timePreference ?? 'any',
       }))
     );
-
   }, [mindMap]);
 
 
@@ -394,10 +399,17 @@ export default function CreateMindMapPage() {
 
           {/* Trip Header */}
           <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-            <h1 className="text-3xl font-bold flex items-center gap-3 text-gray-800 mb-6">
+            <h1 className="text-3xl font-bold flex items-center gap-3 text-gray-800">
               <span className="text-emerald-600"><SparklesIcon /></span>
               Create Your Trip Mind-Map
             </h1>
+
+            {orderId && (
+              <p className="mt-2 text-sm text-gray-600">
+                <span className="font-medium text-gray-800">Order ID:</span>{' '}
+                <span className="font-mono text-emerald-700">{orderId}</span>
+              </p>
+            )}
             <div className="grid md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Trip Title</label>

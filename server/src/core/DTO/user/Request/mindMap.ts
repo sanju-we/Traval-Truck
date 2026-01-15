@@ -9,6 +9,7 @@ export interface places{
 
 export interface MindMapRequest{
   id?:string,
+  orderId?:string,
   startingPostition:string[],
   startDate:Date,
   endDate:Date,
