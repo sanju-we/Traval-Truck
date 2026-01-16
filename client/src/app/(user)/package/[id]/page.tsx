@@ -25,30 +25,7 @@ import TermsModal from '@/components/shared/TermsModal';
 import BookNowButton from '@/components/user/booking/bookNowButton';
 import toast from 'react-hot-toast';
 import PackageReviews from '@/components/shared/Reviews';
-
-interface PackageData {
-  _id: string;
-  title: string;
-  duration: string;
-  price: number;
-  description: string;
-  discoveries: string[];
-  availableFoods: string[];
-  itinerary: {
-    activities: string[];
-    day: number;
-    title: string;
-  }[];
-  reviews: {
-    Comment: string;
-    Date: string;
-    Rating: number;
-    UserName: string;
-  }[];
-  CreatedBy: string;
-  images: string[];
-  ownedBy: string;
-}
+import { PackageData } from '@/types/agency';
 
 export default function PackageDetailsPage() {
   const params = useParams();

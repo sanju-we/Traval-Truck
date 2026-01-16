@@ -10,32 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import api from "@/services/api";
 import toast from "react-hot-toast";
 import EditRoomModal from "@/components/hotel/EditRoomModal";
-
-export interface IRoom {
-  id: string;
-  RoomNumber: number;
-  Description: string;
-  PricePerNight: number;
-  Capacity: number;
-  Facilities: string[];
-  images: string[];
-  reviews: {
-    Comment: string;
-    CreatedAt: string;
-    Name: string;
-    Rating: string;
-    UserId: string;
-  }[];
-  rating: {
-    Average: number;
-    Count: number;
-  };
-  AvailableCount: number;
-  Status: string;
-  CreatedAt: string;
-  HotelId: string;
-  isBlocked: Boolean;
-}
+import { IRoom } from "@/types/hotel";
 
 export default function RoomDetails() {
   const { roomId } = useParams();

@@ -11,14 +11,7 @@ import {
   Loader2,
   Sparkles,
 } from "lucide-react";
-
-interface Subscription {
-  id: string;
-  name: string;
-  amount: number;
-  valid: number;
-  features: string[];
-}
+import { Subscription } from "@/types/agency";
 
 async function getSubscriptionById(id: string) {
   const res = await SHARED_API_METHODS.subscriptionDetails("hotel", id);

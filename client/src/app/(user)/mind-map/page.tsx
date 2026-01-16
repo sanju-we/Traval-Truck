@@ -26,30 +26,7 @@ import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
 import toast from 'react-hot-toast';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
-
-interface Place {
-  id: number;
-  name: string;
-  address: string;
-  lat: number;
-  lng: number;
-  description: string;
-  dayPreference?: number;
-  timePreference?: 'morning' | 'afternoon' | 'evening' | 'any';
-  selected: boolean;
-  placeId: string;
-}
-
-interface MindMapTrip {
-  id:string;
-  title: string;
-  orderId:string;
-  startDate?: string;
-  days: number;
-  places: Place[];
-  coverImage?: string;
-  status: 'Draft' | 'Planned' | 'Booked';
-}
+import { MindMapTrip } from '@/types/mind-map';
 
 export default function MindMapsPage() {
   const router = useRouter();

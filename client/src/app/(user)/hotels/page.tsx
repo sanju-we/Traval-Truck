@@ -6,15 +6,7 @@ import { Loader2, MapPin, Star } from 'lucide-react';
 import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
 import { useRouter } from 'next/navigation';
-
-interface Hotel {
-  id: string;
-  Description: string;
-  location: string;
-  rating?: number;
-  PricePerNight: number;
-  images?: [string];
-}
+import { Hotel } from '@/types/hotel/index';
 
 export default function HotelsPage() {
   const [hotels, setHotels] = useState<Hotel[]>([]);

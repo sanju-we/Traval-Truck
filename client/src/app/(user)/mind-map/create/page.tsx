@@ -6,40 +6,11 @@ import toast from 'react-hot-toast';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import { useRouter } from 'next/navigation';
 import MindMapDraftReview from '@/components/user/draft';
+import { PlaceSuggestion } from '@/types/mind-map';
+import { RecommendedPlace } from '@/types/mind-map';
+import { StartingLocation } from '@/types/mind-map';
+import { MindMapPlace } from '@/types/mind-map';
 
-interface Place {
-  id: number;
-  name: string;
-  address: string;
-  lat: number;
-  lng: number;
-  description: string;
-  dayPreference?: number;
-  timePreference?: 'morning' | 'afternoon' | 'evening' | 'any';
-  selected: boolean;
-  placeId: string;
-}
-
-interface PlaceSuggestion {
-  description: string;
-  place_id: string;
-}
-
-interface RecommendedPlace {
-  name: string;
-  description: string;
-  placeId: string;
-  lat: number;
-  lng: number;
-}
-
-interface StartingLocation {
-  name: string;
-  address: string;
-  lat: number;
-  lng: number;
-  placeId?: string;
-}
 
 const libraries: Array<"places"> = ["places"];
 
@@ -72,7 +43,7 @@ export default function CreateMindMapPage() {
   const [startingSuggestions, setStartingSuggestions] = useState<PlaceSuggestion[]>([]);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [placeInput, setPlaceInput] = useState('');
-  const [places, setPlaces] = useState<Place[]>([]);
+  const [places, setPlaces] = useState<MindMapPlace[]>([]);
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
   const [recommendedPlaces, setRecommendedPlaces] = useState<RecommendedPlace[]>([]);
   const [showRecommendations, setShowRecommendations] = useState(false);

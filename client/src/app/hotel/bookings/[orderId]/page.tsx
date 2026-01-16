@@ -19,31 +19,7 @@ import {
   Bed,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-
-interface HotelOrderDetails {
-  id: string;
-  orderId: string;
-  amount: number;
-  status: 'Upcoming' | 'Completed' | 'Cancelled' | 'Ongoing';
-  startDate?: string;
-  endDate?: string;
-  createdAt: string;
-  userId: {
-    name: string;
-    email: string;
-    phoneNumber?: string;
-  };
-  product: {
-    _id: string;
-    RoomNumber: number;
-    Capacity: number;
-    Description: string;
-    Facilities: string[];
-    PricePerNight: number;
-    Images: string[];
-    Status: string;
-  };
-}
+import { HotelOrderDetails } from '../../../../types/hotel';
 
 export default function HotelOrderDetailsPage() {
   const params = useParams();

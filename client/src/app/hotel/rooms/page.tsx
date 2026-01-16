@@ -24,16 +24,7 @@ import { useRouter } from "next/navigation";
 import SideNavbar from "@/components/hotel/SideNavbar";
 import AddRoomModal from "@/components/hotel/addRoomsModal";
 import { HOTEL_API_METHODS } from "@/services/APIs/hotel.api.service";
-
-interface Room {
-  id: string;
-  RoomNumber: number;
-  Capacity: number;
-  Description: string;
-  PricePerNight: number;
-  Status: string;
-  images?: string[];
-}
+import { Room } from "@/types/hotel";
 
 export default function RoomsPage() {
   const [rooms, setRooms] = useState<Room[]>([]);

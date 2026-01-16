@@ -15,26 +15,7 @@ import {
   Eye,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-
-/* ----------------------------- Types ----------------------------- */
-
-interface HotelOrder {
-  id: string;
-  orderId: string;
-  amount: number;
-  status: 'Upcoming' | 'Ongoing' | 'Completed' | 'Cancelled';
-  startDate?: string;
-  endDate?: string;
-  createdAt: string;
-  product: {
-    RoomNumber: number;
-    PricePerNight: number;
-    Capacity: number;
-    Images?: string[];
-  };
-}
-
-/* ----------------------------- Page ------------------------------ */
+import { HotelOrder } from '@/types/hotel';
 
 export default function HotelOrdersPage() {
   const router = useRouter();

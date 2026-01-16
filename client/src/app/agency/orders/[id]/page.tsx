@@ -28,56 +28,7 @@ import {
 import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
 import toast from 'react-hot-toast';
 import SetStartDateModal from '@/components/agency/SetStartDateModal';
-
-interface PlanDay {
-  date: string;
-  day: number;
-  title: string;
-  activities: string[];
-  completedActivities?: number[];
-  isCompleted?: boolean;
-}
-
-interface OrderDetails {
-  id: string;
-  orderId: string;
-  userId: {
-    _id: string;
-    name: string;
-    email: string;
-    phoneNumber?: string;
-    profilePicture?: string;
-  };
-  productType: 'Package' | 'Rooms' | 'Foods';
-  role: 'Agency' | 'Restaurant' | 'Hotel';
-  product: any;
-  amount: number;
-  ownedBy: {
-    _id: string;
-    name?: string;
-    agencyName?: string;
-    restaurantName?: string;
-    hotelName?: string;
-  };
-  startDate?: string;
-  endDate?: string;
-  status: 'Upcoming' | 'Ongoing' | 'Completed' | 'Cancelled';
-  plan?: PlanDay[];
-  tripProgress?: {
-    currentDay: number;
-    completedDays: number[];
-    startedAt?: string;
-    completedAt?: string;
-  };
-  paymentId: {
-    _id: string;
-    transactionId?: string;
-    paymentMethod?: string;
-    paymentStatus?: string;
-  };
-  createdAt: string;
-  updatedAt: string;
-}
+import { OrderDetails } from '@/types/agency';
 
 export default function OrderDetailsPage() {
   const [order, setOrder] = useState<OrderDetails | null>(null);
@@ -86,7 +37,7 @@ export default function OrderDetailsPage() {
   const [showStartModal, setShowStartModal] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
   const [completingActivity, setCompletingActivity] = useState<{day: number, activity: number} | null>(null);
-  const [testMode, setTestMode] = useState(false); // Test mode to bypass date checking
+  const [testMode, setTestMode] = useState(false);
   const router = useRouter();
   const params = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);

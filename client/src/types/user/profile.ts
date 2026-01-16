@@ -29,3 +29,23 @@ export interface UserProfile {
   gender?: string;
   interest?: string[];
 }
+
+export interface product {
+  availableFoods: string[];
+  description: string;
+  itinerary: string[];
+  price: number;
+  title: string;
+  images: string[];
+  duration?: string;
+}
+
+export interface Trip {
+  id: string;
+  orderId: string;
+  product: product;
+  status: 'Upcoming' | 'Ongoing' | 'Completed';
+  agencyId?: string;
+  amount: number;
+  createdAt?: string;
+}

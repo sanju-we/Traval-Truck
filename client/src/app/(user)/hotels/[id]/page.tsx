@@ -18,24 +18,7 @@ import {
   ArrowLeft,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-
-interface RoomData {
-  id: string;
-  RoomNumber: number;
-  Description: string;
-  PricePerNight: number;
-  Capacity: number;
-  Facilities: string[];
-  images: string[];
-  Status: string;
-  HotelId: {
-    companyName: string;
-    email: string;
-    phone: string;
-    ownerName: string;
-    documents?: { loeo?: string };
-  };
-}
+import { RoomData } from '@/types/hotel';
 
 export default function RoomDetailsPage() {
   const { id } = useParams();

@@ -7,26 +7,8 @@ import { useRouter } from 'next/navigation';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
-
-interface product {
-  availableFoods: string[];
-  description: string;
-  itinerary: string[];
-  price: number;
-  title: string;
-  images: string[];
-  duration?: string;
-}
-
-interface Trip {
-  id: string;
-  orderId: string;
-  product: product;
-  status: 'Upcoming' | 'Ongoing' | 'Completed';
-  agencyId?: string;
-  amount: number;
-  createdAt?: string;
-}
+import { product } from '@/types/user/profile';
+import { Trip } from '@/types/user/profile';
 
 export default function OrdersPage() {
   const [trips, setTrips] = useState<Trip[]>([]);

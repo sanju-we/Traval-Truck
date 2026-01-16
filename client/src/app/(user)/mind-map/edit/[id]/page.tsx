@@ -6,111 +6,11 @@ import toast from 'react-hot-toast';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import { useParams, useRouter } from 'next/navigation';
 import MindMapDraftReview from '@/components/user/draft';
-interface Place {
-  id: number;
-  name: string;
-  address: string;
-  lat: number;
-  lng: number;
-}
-
-interface StartingPosition {
-  address: string;
-  lat: number;
-  lng: number;
-}
-
-interface AIInsights {
-  feasibilityStatus: string;
-  feasibilityDetails: string;
-  dailyTravelDistanceReality: string;
-  dailyTravelDistanceDetails: string;
-  budgetReliability: string;
-  budgetReliabilityDetails: string;
-  risks: string[];
-  improvements: string[];
-}
-
-interface Budget {
-  fuelAmount: number;
-  foodAmount: number;
-  totalApproximateBudget: number;
-}
-
-interface TimeAllocation {
-  drivingHoursAllocatedPerDay: number;
-  estimatedActualDrivingTimeInVehicle: string;
-  timeForFoodAndActivities: string;
-}
-
-interface RouteMetrics {
-  totalDistance: number;
-  fuelCost: number;
-  days: number;
-}
-
-interface PlanLocation {
-  id: number;
-  name: string;
-  lat: number;
-  lng: number;
-}
-
-interface MindMapData {
-  id: string;
-  title: string;
-  startDate: string;
-  endDate: string;
-  places: Place[];
-  startingPosition: StartingPosition;
-  partners: number;
-  budget: Budget;
-  routeMetrics: RouteMetrics;
-  aiInsights: AIInsights;
-  timeAllocation: TimeAllocation;
-  userId: string;
-  orderId: string;
-  status: 'Draft' | 'Ongoing' | 'Completed';
-  plan: PlanLocation[][];
-  tripProgress: string[];
-  isPublic: boolean;
-  createdAt: string;
-  updateAt: string;
-}
-
-interface Place {
-  id: number;
-  name: string;
-  address: string;
-  lat: number;
-  lng: number;
-  description: string;
-  dayPreference?: number;
-  timePreference?: 'morning' | 'afternoon' | 'evening' | 'any';
-  selected: boolean;
-  placeId: string;
-}
-
-interface PlaceSuggestion {
-  description: string;
-  place_id: string;
-}
-
-interface RecommendedPlace {
-  name: string;
-  description: string;
-  placeId: string;
-  lat: number;
-  lng: number;
-}
-
-interface StartingLocation {
-  name: string;
-  address: string;
-  lat: number;
-  lng: number;
-  placeId?: string;
-}
+import { MindMapData } from '@/types/mind-map';
+import { MindMapPlace } from '@/types/mind-map';
+import { PlaceSuggestion } from '@/types/mind-map';
+import { RecommendedPlace } from '@/types/mind-map';
+import { StartingLocation } from '@/types/mind-map';
 
 const libraries: Array<"places"> = ["places"];
 
@@ -145,7 +45,7 @@ export default function CreateMindMapPage() {
   const [startingSuggestions, setStartingSuggestions] = useState<PlaceSuggestion[]>([]);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [placeInput, setPlaceInput] = useState('');
-  const [places, setPlaces] = useState<Place[]>([]);
+  const [places, setPlaces] = useState<MindMapPlace[]>([]);
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
   const [recommendedPlaces, setRecommendedPlaces] = useState<RecommendedPlace[]>([]);
   const [showRecommendations, setShowRecommendations] = useState(false);

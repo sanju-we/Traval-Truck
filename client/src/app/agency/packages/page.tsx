@@ -9,42 +9,18 @@ import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
 import SideNavbar from "@/components/agency/SideNavbar";
 import toast from "react-hot-toast";
 import EditPackageModal from "@/components/agency/editPackageModal";
-
-interface Itinerary {
-  activities: string[];
-  day: number;
-  title: string;
-}
-
-interface Review {
-  Comment: string;
-  Date: string;
-  Rating: number;
-  UserName?: string;
-}
-
-interface Package {
-  id: string;
-  title: string;
-  duration: string;
-  price: number;
-  description: string;
-  discoveries: string[];
-  availableFoods: string[];
-  itinerary: Itinerary[];
-  reviews: Review[];
-  CreatedBy: string;
-  images: string[]; // ✅ Added this field
-}
+import { Itinerary } from "@/types/agency";
+import { Review } from "@/types/agency";
+import { Packages } from "@/types/agency";
 
 export default function PackageListingPage() {
-  const [packages, setPackages] = useState<Package[]>([]);
+  const [packages, setPackages] = useState<Packages[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const limit = 6;
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
+  const [selectedPackage, setSelectedPackage] = useState<Packages | null>(null);
 
   const fetchPackages = async (pageNumber = 1) => {
     try {

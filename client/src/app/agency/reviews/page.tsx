@@ -5,23 +5,10 @@ import VendorRatings from "@/components/shared/VendorReviews";
 import ReplyModal from "@/components/shared/ReplayModal";
 import { SHARED_API_METHODS } from "@/services/APIs/shared.api.service";
 import toast from "react-hot-toast";
-
-interface Review {
-  _id: string;
-  rating: number;
-  comment: string;
-  userName?: string;
-  createdAt: string;
-  isReplayed?: boolean;
-  reply?: {
-    comment: string;
-    replayer: string;
-  };
-}
-
+import { ReviewType } from "@/types/agency";
 
 export default function Reviews() {
-  const [reviews, setReviews] = useState<Review[]>([])
+  const [reviews, setReviews] = useState<ReviewType[]>([])
   const [totalPages, setTotalPages] = useState(0)
   const [totalReviews, setTotalReviews] = useState(0)
   const [averageRating, setAverageRating] = useState(0)
@@ -31,7 +18,7 @@ export default function Reviews() {
 
   // Reply Modal State
   const [showReplyModal, setShowReplyModal] = useState(false)
-  const [selectedReview, setSelectedReview] = useState<Review | null>(null)
+  const [selectedReview, setSelectedReview] = useState<ReviewType | null>(null)
   const [replays, setReplays] = useState([])
 
   useEffect(() => {
@@ -54,7 +41,7 @@ export default function Reviews() {
           data.data.vendor
         );
 
-        const mergedReviews = data.data.data.map((review: Review) => {
+        const mergedReviews = data.data.data.map((review: ReviewType) => {
           const reply = replies.data.find(
             (r: any) => r.reviewId === review._id
           );
@@ -94,7 +81,7 @@ export default function Reviews() {
     setCurrentPage(1) // Reset to first page when filtering
   }
 
-  const handleReplyClick = (review: Review) => {
+  const handleReplyClick = (review: ReviewType) => {
     setSelectedReview(review)
     setShowReplyModal(true)
   }

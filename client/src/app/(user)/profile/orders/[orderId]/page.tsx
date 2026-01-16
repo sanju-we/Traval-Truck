@@ -25,50 +25,8 @@ import {
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import toast from 'react-hot-toast';
 import RatingCard from '@/components/user/orders/Rating';
-
-interface PlanDay {
-  date: string;
-  day: number;
-  title: string;
-  activities: string[];
-  completedActivities?: number[];
-  isCompleted?: boolean;
-}
-
-interface OrderDetails {
-  id: string;
-  orderId: string;
-  userId: string | {
-    _id: string;
-    name: string;
-    email: string;
-    phoneNumber?: string;
-  };
-  productType?: 'Package' | 'Rooms' | 'Foods';
-  product: any;
-  amount: number;
-  originalAmount?: number;
-  discount?: number;
-  couponId?: {
-    code: string;
-    discount: number;
-    type: string;
-  };
-  ownedBy?: any;
-  startDate?: string;
-  endDate?: string;
-  status: 'Upcoming' | 'Ongoing' | 'Completed' | 'Cancelled';
-  plan?: PlanDay[];
-  tripProgress?: {
-    currentDay: number;
-    completedDays: number[];
-    startedAt?: string;
-    completedAt?: string;
-  };
-  paymentId: any;
-  createdAt: string;
-  updatedAt?: string;
-}
+import { PlanDay } from '@/types/user/orders';
+import { OrderDetails } from '@/types/user/orders';
 
 const CANCEL_REASONS = [
   'Change of plans',

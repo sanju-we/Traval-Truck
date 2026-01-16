@@ -6,15 +6,7 @@ import SideNavbar from "@/components/hotel/SideNavbar";
 import { CheckCircle, AlertTriangle, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "@/services/api";
-
-interface Subscription {
-  id: string;
-  name: string;
-  amount: number;
-  valid: number;
-  endDate?: string;
-  features: string[];
-}
+import { Subscription } from "@/types/agency";
 
 export default function SubscriptionsPage() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);

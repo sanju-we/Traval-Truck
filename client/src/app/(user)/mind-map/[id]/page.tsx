@@ -29,78 +29,7 @@ import {
 import toast from 'react-hot-toast';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import RouteMap from '@/components/user/MindMapRoutes';
-
-interface Place {
-  id: number;
-  name: string;
-  address: string;
-  lat: number;
-  lng: number;
-}
-
-interface StartingPosition {
-  address: string;
-  lat: number;
-  lng: number;
-}
-
-interface AIInsights {
-  feasibilityStatus: string;
-  feasibilityDetails: string;
-  dailyTravelDistanceReality: string;
-  dailyTravelDistanceDetails: string;
-  budgetReliability: string;
-  budgetReliabilityDetails: string;
-  risks: string[];
-  improvements: string[];
-}
-
-interface Budget {
-  fuelAmount: number;
-  foodAmount: number;
-  totalApproximateBudget: number;
-}
-
-interface TimeAllocation {
-  drivingHoursAllocatedPerDay: number;
-  estimatedActualDrivingTimeInVehicle: string;
-  timeForFoodAndActivities: string;
-}
-
-interface RouteMetrics {
-  totalDistance: number;
-  fuelCost: number;
-  days: number;
-}
-
-interface PlanLocation {
-  id: number;
-  name: string;
-  lat: number;
-  lng: number;
-}
-
-interface MindMapData {
-  id: string;
-  title: string;
-  startDate: string;
-  endDate: string;
-  places: Place[];
-  startingPosition: StartingPosition;
-  partners: number;
-  budget: Budget;
-  routeMetrics: RouteMetrics;
-  aiInsights: AIInsights;
-  timeAllocation: TimeAllocation;
-  userId: string;
-  orderId: string;
-  status: 'Draft' | 'Ongoing' | 'Completed';
-  plan: PlanLocation[][];
-  tripProgress: string[];
-  isPublic: boolean;
-  createdAt: string;
-  updateAt: string;
-}
+import { MindMapData } from '@/types/mind-map';
 
 export default function MindMapDetailsPage() {
   const params = useParams();

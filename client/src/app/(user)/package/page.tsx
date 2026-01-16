@@ -6,15 +6,7 @@ import { Loader2 } from 'lucide-react';
 import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
 import { useRouter } from 'next/navigation';
-
-interface Package {
-  id: string;
-  title: string;
-  description: string;
-  duration: string;
-  price: number;
-  images: string[];
-}
+import { Package } from '@/types/agency';
 
 export default function PackagesPage() {
   const [packages, setPackages] = useState<Package[]>([]);

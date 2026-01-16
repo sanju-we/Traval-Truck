@@ -12,17 +12,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { RESTAURANT_API_METHODS } from '@/services/APIs/restaurant.api.service';
-
-/* ----------------------- Types ----------------------- */
-
-interface BillItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-}
-
-/* ----------------------- Page ------------------------ */
+import { BillItem } from '@/types/restaurant';
 
 export default function OfflineBillingPage() {
   const [items, setItems] = useState<BillItem[]>([]);
