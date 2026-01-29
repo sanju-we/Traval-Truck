@@ -36,7 +36,7 @@ export default function VendorProfilePage() {
   useEffect(() => {
     async function fetchVendor() {
       try {
-        const data  = await RESTAURANT_API_METHODS.getProfile();
+        const data = await RESTAURANT_API_METHODS.getProfile();
         if (!data.success) {
           toast.error(data.message);
           if (data.message === 'This user is Restricted by the admin') {
@@ -167,7 +167,7 @@ export default function VendorProfilePage() {
         });
       }
 
-      const data = await RESTAURANT_API_METHODS.updateDocument({formPayload});
+      const data = await RESTAURANT_API_METHODS.updateDocument({ formPayload });
 
       if (!data.success) {
         toast.error(data.message || 'Update failed');
@@ -219,7 +219,7 @@ export default function VendorProfilePage() {
         toast.error(data.message || 'Upload failed');
         return;
       }
-      if(data.message === 'Re-submission request send') setIsResubmitting(true)
+      if (data.message === 'Re-submission request send') setIsResubmitting(true)
       toast.success(data.message);
       if (data.data !== null) {
         setVendor(data.data);
@@ -292,9 +292,59 @@ export default function VendorProfilePage() {
       <SideNavbar />
 
       <div className="flex-1 px-6 py-10">
-          {vendor.reason != "" && (
-            <RestrictionBanner reason={vendor.reason}/>
-          )}
+        {vendor.reason != "" && (
+          <RestrictionBanner reason={vendor.reason} />
+        )}
+        {!vendor.isApproved && (
+          <div className="mb-6 rounded-xl border border-yellow-300 bg-yellow-50 p-4 shadow-sm">
+            <div className="flex items-start gap-3">
+              <div className="mt-1">
+                <svg
+                  className="w-6 h-6 text-yellow-600"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 9v2m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.34 16c-.77 1.33.19 3 1.73 3z"
+                  />
+                </svg>
+              </div>
+
+              <div className="flex-1">
+                <h4 className="font-semibold text-yellow-800">
+                  Profile Not Approved
+                </h4>
+                <p className="text-sm text-yellow-700 mt-1">
+                  Your profile is not completed yet. Please update your KYC details,
+                  complete your profile, and submit the required documents to send a
+                  request to the admin for approval.
+                </p>
+
+                <div className="mt-3 flex gap-3">
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="px-4 py-2 text-sm bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition"
+                  >
+                    Complete Profile
+                  </button>
+
+                  {!vendor.isRestricted && (
+                    <button
+                      onClick={() => setIsUpload(true)}
+                      className="px-4 py-2 text-sm border border-yellow-600 text-yellow-700 rounded-lg hover:bg-yellow-100 transition"
+                    >
+                      Upload Documents
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="bg-white p-6 rounded-2xl shadow-md flex flex-col md:flex-row items-center gap-6">
           <div className="relative w-[120px] h-[120px] flex-shrink-0">
             <Image
@@ -321,7 +371,7 @@ export default function VendorProfilePage() {
                 disabled={isResubmitting ? true : false}
               >
                 {!vendor.isRestricted ? "Attach Documents" : "Resubmit Documents"}
-              </button> }
+              </button>}
             </div>
           </div>
         </div>
