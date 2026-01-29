@@ -20,17 +20,14 @@ export class HotelRoomsRepository extends BaseRepository<IRooms> implements IHot
   search?: number,
   hotelID?: string
 ): Promise<PaginationResponse<RoomsDTO>> {
-  if (!hotelID) {
-    throw new Data_Creation_Error();
-  }
 
   page = Math.max(page, 1);
   lim = Math.max(lim, 1);
   const skip = (page - 1) * lim;
 
-  const filter: any = {
+  const filter: any = hotelID ? {
     HotelId: hotelID,
-  };
+  } : {};
 
   if (search !== undefined && search !== null && search != 0) {
     filter.RoomNumber = search;

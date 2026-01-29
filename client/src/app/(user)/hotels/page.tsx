@@ -27,7 +27,6 @@ export default function HotelsPage() {
     try {
       const limit = 6
       const data = await USER_API_METHODS.getAllHotel('',page,limit);
-      console.log('fucking',data.data)
       setHotels(data.data.data || []);
       setTotalPages(data.totalPages || 1);
     } catch (error) {

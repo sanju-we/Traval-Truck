@@ -10,6 +10,7 @@ import { MindMapData, PlaceSuggestion } from '@/types/mind-map';
 import { RecommendedPlace } from '@/types/mind-map';
 import { StartingLocation } from '@/types/mind-map';
 import { MindMapPlace } from '@/types/mind-map';
+import { Header } from '@/components/user/header/page';
 
 
 const libraries: Array<"places"> = ["places"];
@@ -207,9 +208,9 @@ export default function CreateMindMapPage() {
 
 
   const handleOnSubmit = async () => {
-    if(!draft){
+    if (!draft) {
       toast.error('Data not available, Please try again later')
-      return 
+      return
     }
     const data = await USER_API_METHODS.submitTheMindmap(draft.id)
     if (data.success) {
@@ -225,7 +226,8 @@ export default function CreateMindMapPage() {
   return (
     <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!} libraries={libraries}>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50">
-        <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+        <Header/>
+        {!created && (<div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
 
           {/* Trip Header */}
           <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
@@ -411,38 +413,6 @@ export default function CreateMindMapPage() {
                 </div>
               )}
 
-              {/* Recommendations */}
-              {showRecommendations && (
-                <div className="bg-gradient-to-br from-purple-50 to-blue-50 p-6 rounded-2xl shadow-lg border border-purple-200">
-                  <h4 className="font-bold text-lg mb-3 flex items-center gap-2 text-purple-900">
-                    <span className="text-purple-600"><SparklesIcon /></span>
-                    Recommended Nearby Places
-                  </h4>
-                  {isLoadingRecommendations ? (
-                    <div className="text-center py-4">
-                      <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-purple-200 border-t-purple-600"></div>
-                      <p className="text-sm text-purple-700 mt-2">Finding attractions...</p>
-                    </div>
-                  ) : recommendedPlaces.length > 0 ? (
-                    <div className="space-y-2">
-                      {recommendedPlaces.map((rec, i) => (
-                        <div key={i} className="flex items-center justify-between bg-white px-4 py-3 rounded-lg shadow-sm hover:shadow-md transition">
-                          <div>
-                            <p className="font-medium text-gray-800">{rec.name}</p>
-                            <p className="text-xs text-gray-600 capitalize">{rec.description}</p>
-                          </div>
-                          <button onClick={() => addRecommendedPlace(rec)} className="text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1 ml-4">
-                            <PlusIcon />Add
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-purple-700 text-center py-4">No nearby attractions found</p>
-                  )}
-                </div>
-              )}
-
               {/* Trip Summary */}
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                 <h3 className="font-bold text-lg mb-4 text-gray-800">Trip Summary</h3>
@@ -491,22 +461,55 @@ export default function CreateMindMapPage() {
 
             {/* Right Panel - Map */}
             <div className="space-y-6">
+              {showRecommendations && (
+                <div className="bg-gradient-to-br from-purple-50 to-blue-50 p-6 rounded-2xl shadow-lg border border-purple-200">
+                  <h4 className="font-bold text-lg mb-3 flex items-center gap-2 text-purple-900">
+                    <span className="text-purple-600"><SparklesIcon /></span>
+                    Recommended Nearby Places
+                  </h4>
+
+                  {isLoadingRecommendations ? (
+                    <div className="text-center py-4">
+                      <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-purple-200 border-t-purple-600"></div>
+                      <p className="text-sm text-purple-700 mt-2">Finding attractions...</p>
+                    </div>
+                  ) : recommendedPlaces.length > 0 ? (
+                    <div className="space-y-2">
+                      {recommendedPlaces.map((rec, i) => (
+                        <div
+                          key={i}
+                          className="flex items-center justify-between bg-white px-4 py-3 rounded-lg shadow-sm hover:shadow-md transition"
+                        >
+                          <div>
+                            <p className="font-medium text-gray-800">{rec.name}</p>
+                            <p className="text-xs text-gray-600 capitalize">{rec.description}</p>
+                          </div>
+                          <button
+                            onClick={() => {
+                              addRecommendedPlace(rec);
+                              fetchNearbyPlaces(rec.lat, rec.lng, rec.placeId);
+                            }}
+                            className="text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1 ml-4"
+                          >
+                            <PlusIcon /> Add
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-purple-700 text-center py-4">
+                      No nearby attractions found
+                    </p>
+                  )}
+                </div>
+              )}
               <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden sticky top-6">
                 <MapSection mapCenter={mapCenter} places={places} startingLocation={startingLocation} />
               </div>
-              <div className="bg-blue-50 p-5 rounded-xl border border-blue-200">
-                <h4 className="font-semibold text-blue-900 mb-2">💡 Tips</h4>
-                <ul className="text-sm text-blue-800 space-y-1">
-                  <li>• Set your starting location first</li>
-                  <li>• Search and select places to visit</li>
-                  <li>• Set day/time preferences (optional)</li>
-                  <li>• Blue pin = starting point</li>
-                  <li>• AI optimizes your route automatically</li>
-                </ul>
-              </div>
+              
             </div>
           </div>
-        </div>
+        </div>)}
         {created && draft && (
           <div ref={draftRef} className="scroll-mt-24">
             <MindMapDraftReview draft={draft} onAccept={handleOnSubmit} />
