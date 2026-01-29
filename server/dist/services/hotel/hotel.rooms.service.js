@@ -11,11 +11,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import z from "zod";
-import { toRoomsDTO } from "../../core/DTO/hotel/roomsDTO.js";
-import { logger } from "../../utils/logger.js";
-import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.cloudinary.js";
+import { toRoomsDTO } from "../../core/DTO/hotel/roomsDTO";
+import { logger } from "../../utils/logger";
+import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.cloudinary";
 import { inject, injectable } from "inversify";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
+import { DataNotFoundError } from "../../utils/resAndErrors";
 let HotelRoomsService = class HotelRoomsService {
     _roomsRepo;
     _authValidator;

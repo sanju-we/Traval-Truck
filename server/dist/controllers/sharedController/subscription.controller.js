@@ -11,10 +11,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from "inversify";
-import { sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
-import { logger } from "../../utils/logger.js";
+import { sendResponse } from "../../utils/resAndErrors";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/responseMessaages";
+import { logger } from "../../utils/logger";
 let SharedSubscriptionController = class SharedSubscriptionController {
     _subscriptionService;
     constructor(_subscriptionService) {

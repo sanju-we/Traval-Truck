@@ -1,13 +1,13 @@
-import { IAgencyProfileService } from '../../core/interface/serivice/agency/Iagenc.profile.service.js';
+import { IAgencyProfileService } from '../../core/interface/serivice/agency/Iagenc.profile.service';
 import { inject, injectable } from 'inversify';
-import { IAgencyRespository } from '../../core/interface/repositorie/agency/Iagency.auth.repository.js';
-import { ImageDeleteInCloudinary, UserNotFoundError } from '../../utils/resAndErrors.js';
+import { IAgencyRespository } from '../../core/interface/repositorie/agency/Iagency.auth.repository';
+import { ImageDeleteInCloudinary, UserNotFoundError } from '../../utils/resAndErrors';
 import {
   toVendorRequestDTO,
   vendorRequestDTO,
-} from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
-import { deleteImage, extractPublicId, singleUpload } from '../../utils/upload.cloudinary.js';
-import { IAuthValidator } from '../../core/interface/validator/Iauth.validator.js';
+} from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto';
+import { deleteImage, extractPublicId, singleUpload } from '../../utils/upload.cloudinary';
+import { IAuthValidator } from '../../core/interface/validator/Iauth.validator';
 
 @injectable()
 export class AgencyProfileService implements IAgencyProfileService {

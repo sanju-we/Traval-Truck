@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { asyncHandler } from "../../middleware/asyncHandler.js";
-import { container } from "../../core/DI/container.js";
-import upload from '../../middleware/multer.js';
+import { asyncHandler } from "../../middleware/asyncHandler";
+import { container } from "../../core/DI/container";
+import upload from '../../middleware/multer';
 const agencyPackage = Router();
 const packageController = container.get('IAgencyPackageController');
 agencyPackage

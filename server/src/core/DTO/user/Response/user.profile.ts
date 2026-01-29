@@ -1,4 +1,4 @@
-import { IUser } from '../../../interface/modelInterface/IUser.js';
+import { IUser } from '../../../interface/modelInterface/IUser';
 
 export interface userProfileDTO {
   id: string;

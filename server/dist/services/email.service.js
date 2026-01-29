@@ -6,7 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { injectable } from 'inversify';
 import nodemailer from 'nodemailer';
-import { logger } from '../utils/logger.js';
+import { logger } from '../utils/logger';
 let EmailService = class EmailService {
     transporter = nodemailer.createTransport({
         host: process.env.EMAIL_HOST || 'smtp.example.com',

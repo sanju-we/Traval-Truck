@@ -10,11 +10,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { logger } from "../../utils/logger.js";
+import { logger } from "../../utils/logger";
 import { inject, injectable } from "inversify";
-import { sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
+import { sendResponse } from "../../utils/resAndErrors";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/responseMessaages";
 let SharedWalletController = class SharedWalletController {
     _walletService;
     constructor(_walletService) {

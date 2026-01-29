@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { IUserFoodsController } from "../../core/interface/controllerInterface/user/IUser.foods.controller.js";
-import { container } from "../../core/DI/container.js";
-import { asyncHandler } from "../../middleware/asyncHandler.js";
+import { IUserFoodsController } from "../../core/interface/controllerInterface/user/IUser.foods.controller";
+import { container } from "../../core/DI/container";
+import { asyncHandler } from "../../middleware/asyncHandler";
 
 const userFoodsRouter = Router()
 const userFoodController = container.get<IUserFoodsController>('IUserFoodsController')

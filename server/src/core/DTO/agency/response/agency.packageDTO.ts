@@ -1,4 +1,4 @@
-import { IPackage } from "../../../interface/modelInterface/Ipackage.js";
+import { IPackage } from "../../../interface/modelInterface/Ipackage";
 
 
 interface ItineraryDTO {

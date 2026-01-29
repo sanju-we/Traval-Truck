@@ -1,4 +1,4 @@
-import { ISubscriptions } from '../modelInterface/Isubscription.js';
-import { IBaserepository } from './IBaseRepositories.js';
+import { ISubscriptions } from '../modelInterface/Isubscription';
+import { IBaserepository } from './IBaseRepositories';
 
 export interface ISubscriptionRepository extends IBaserepository<ISubscriptions> {}

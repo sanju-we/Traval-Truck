@@ -1,6 +1,6 @@
-import { PackageResDTO } from "../../../../core/DTO/agency/response/agency.packageDTO.js";
-import { PackageDTO } from "../../../../core/DTO/agency/request/packageDTO.js";
-import { CouponDTO } from "../../../../core/DTO/admin/coupon/admin.coupon.response.js";
+import { PackageResDTO } from "../../../../core/DTO/agency/response/agency.packageDTO";
+import { PackageDTO } from "../../../../core/DTO/agency/request/packageDTO";
+import { CouponDTO } from "../../../../core/DTO/admin/coupon/admin.coupon.response";
 
 export interface IUserPackageService {
   getLatestPackage(): Promise<PackageResDTO[]>;

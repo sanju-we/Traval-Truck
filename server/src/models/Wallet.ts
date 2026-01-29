@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { IWallet } from "../core/interface/modelInterface/IWaller.js";
+import { IWallet } from "../core/interface/modelInterface/IWaller";
 
 const WalletSchema: Schema = new Schema({
   UserId: { type: Schema.Types.ObjectId },

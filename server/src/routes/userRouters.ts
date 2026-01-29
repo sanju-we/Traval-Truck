@@ -1,13 +1,13 @@
 import { Router } from 'express';
-import { verifyToken } from '../middleware/authMiddleware.js';
+import { verifyToken } from '../middleware/authMiddleware';
 
-import authRouter from './userRoute/user.auth.js';
-import profileRouter from './userRoute/user.profile.js';
-import userPackageRouter from './userRoute/user.package.routes.js';
-import UserHotelsRouter from './userRoute/user.hotels.routes.js';
-import userFoodsRouter from './userRoute/user.foods.routes.js';
-import tripRouter from './userRoute/user.trip.routes.js';
-import mindMapRouter from './userRoute/user.mindMap.routes.js';
+import authRouter from './userRoute/user.auth';
+import profileRouter from './userRoute/user.profile';
+import userPackageRouter from './userRoute/user.package.routes';
+import UserHotelsRouter from './userRoute/user.hotels.routes';
+import userFoodsRouter from './userRoute/user.foods.routes';
+import tripRouter from './userRoute/user.trip.routes';
+import mindMapRouter from './userRoute/user.mindMap.routes';
 
 const userRouter = Router();
 

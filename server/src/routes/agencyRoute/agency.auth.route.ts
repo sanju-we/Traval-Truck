@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { container } from '../../core/DI/container.js';
-import { asyncHandler } from '../../middleware/asyncHandler.js';
-import { IAgencyAuthController } from '../../core/interface/controllerInterface/agency/agency.Iauth.controller.js';
-import { verifyAgencyToken } from '../../middleware/authMiddleware.js';
+import { container } from '../../core/DI/container';
+import { asyncHandler } from '../../middleware/asyncHandler';
+import { IAgencyAuthController } from '../../core/interface/controllerInterface/agency/agency.Iauth.controller';
+import { verifyAgencyToken } from '../../middleware/authMiddleware';
 
 const agencyAuthRoute = Router();
 const agencyController = container.get<IAgencyAuthController>('IAgencyAuthController');

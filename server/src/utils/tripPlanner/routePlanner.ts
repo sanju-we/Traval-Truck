@@ -1,4 +1,4 @@
-import { getDistanceInKm } from "./distance.js";
+import { getDistanceInKm } from "./distance";
 
 export interface PlaceNode {
   id: number;

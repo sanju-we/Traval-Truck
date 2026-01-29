@@ -1,7 +1,7 @@
-import { BaseRepository } from "../../repositories/baseRepository.js";
-import { Coupon } from "../../models/Coupons.js";
-import { toCouponDTO } from "../../core/DTO/admin/coupon/admin.coupon.response.js";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
+import { BaseRepository } from "../../repositories/baseRepository";
+import { Coupon } from "../../models/Coupons";
+import { toCouponDTO } from "../../core/DTO/admin/coupon/admin.coupon.response";
+import { DataNotFoundError } from "../../utils/resAndErrors";
 export class AdminCouponRepository extends BaseRepository {
     constructor() {
         super(Coupon);

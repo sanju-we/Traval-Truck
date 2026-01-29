@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { IUserHotelsController } from "../../core/interface/controllerInterface/user/Iuser.hotels.controller.js";
-import { container } from "../../core/DI/container.js";
-import { asyncHandler } from "../../middleware/asyncHandler.js";
+import { IUserHotelsController } from "../../core/interface/controllerInterface/user/Iuser.hotels.controller";
+import { container } from "../../core/DI/container";
+import { asyncHandler } from "../../middleware/asyncHandler";
 
 const UserHotelsRouter = Router()
 const userHotelsController = container.get<IUserHotelsController>('IUserHotelsController')

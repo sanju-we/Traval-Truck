@@ -1,4 +1,4 @@
-import { HotelProfileDTO } from '../../../../core/DTO/hotel/hotel.dto.js';
+import { HotelProfileDTO } from '../../../../core/DTO/hotel/hotel.dto';
 import { vendorData } from 'types';
 
 export interface IHotelAuthService {

@@ -1,4 +1,4 @@
-import { logger } from '../utils/logger.js';
+import { logger } from '../utils/logger';
 export class RepositoryError extends Error {
     constructor(message) {
         super(message);

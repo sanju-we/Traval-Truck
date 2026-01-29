@@ -1,4 +1,4 @@
-import { CouponDTO } from "../../../../core/DTO/admin/coupon/admin.coupon.response.js";
+import { CouponDTO } from "../../../../core/DTO/admin/coupon/admin.coupon.response";
 
 export interface IAdminCouponService{
   getAllCoupon(page?:number):Promise<{ data: CouponDTO[]; total: number; page: number; totalPages: number; }>

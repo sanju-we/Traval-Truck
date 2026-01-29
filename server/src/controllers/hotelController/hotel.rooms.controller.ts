@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { IHotelRoomsController } from "../../core/interface/controllerInterface/hotel/Ihotel.rooms.controller.js";
-import { IHotelRoomsService } from "../../core/interface/serivice/hotel/Ihotel.rooms.service.js";
+import { IHotelRoomsController } from "../../core/interface/controllerInterface/hotel/Ihotel.rooms.controller";
+import { IHotelRoomsService } from "../../core/interface/serivice/hotel/Ihotel.rooms.service";
 import { inject, injectable } from "inversify";
-import { logger } from "../../utils/logger.js";
-import { Data_Creation_Error, DataNotFoundError, Files_Missing, sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
+import { logger } from "../../utils/logger";
+import { Data_Creation_Error, DataNotFoundError, Files_Missing, sendResponse } from "../../utils/resAndErrors";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/responseMessaages";
 
 @injectable()
 export class HotelRoomsController implements IHotelRoomsController {

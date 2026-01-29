@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { asyncHandler } from '../../middleware/asyncHandler.js';
-import { container } from '../../core/DI/container.js';
-import { verifyRestaurantToken } from '../../middleware/authMiddleware.js';
-import upload from '../../middleware/multer.js';
+import { asyncHandler } from '../../middleware/asyncHandler';
+import { container } from '../../core/DI/container';
+import { verifyRestaurantToken } from '../../middleware/authMiddleware';
+import upload from '../../middleware/multer';
 const restaurantProfileRouter = Router();
 const restaurantProfileController = container.get('IRestaurantProfileController');
 restaurantProfileRouter

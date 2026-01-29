@@ -1,5 +1,5 @@
-import { toPackageDTO } from "../../../../core/DTO/agency/request/packageDTO.js";
-import { toRoomsDTO } from "../../../../core/DTO/hotel/roomsDTO.js";
+import { toPackageDTO } from "../../../../core/DTO/agency/request/packageDTO";
+import { toRoomsDTO } from "../../../../core/DTO/hotel/roomsDTO";
 export const mapTripProduct = (order) => {
     switch (order.productType) {
         case "Package":

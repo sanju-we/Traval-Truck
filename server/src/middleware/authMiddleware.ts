@@ -4,17 +4,17 @@ import {
   sendResponse,
   UNAUTHORIZEDUserFounf,
   RESTRICTED_USER,
-} from '../utils/resAndErrors.js';
-import { STATUS_CODE } from '../utils/HTTPStatusCode.js';
-import { User } from '../models/SUser.js';
-import { Restaurant } from '../models/Restaurant.js';
-import { Agency } from '../models/Agency.js';
+} from '../utils/resAndErrors';
+import { STATUS_CODE } from '../utils/HTTPStatusCode';
+import { User } from '../models/SUser';
+import { Restaurant } from '../models/Restaurant';
+import { Agency } from '../models/Agency';
 import jwt from 'jsonwebtoken';
-import { logger } from '../utils/logger.js';
-import { Hotel } from '../models/Hotel.js';
-import { JWT } from '../utils/JWTtoken.js';
-import { userSignupDTO } from '../core/DTO/user/Request/user.sign.js';
-import { toVendorAuth } from '../core/DTO/agency/request/requestDTO.js';
+import { logger } from '../utils/logger';
+import { Hotel } from '../models/Hotel';
+import { JWT } from '../utils/JWTtoken';
+import { userSignupDTO } from '../core/DTO/user/Request/user.sign';
+import { toVendorAuth } from '../core/DTO/agency/request/requestDTO';
 
 const ijwt = new JWT();
 const secret = process.env.JWT_SECRET || 'Travel_Truck_@321';

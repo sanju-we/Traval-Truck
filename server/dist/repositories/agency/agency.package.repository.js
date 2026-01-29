@@ -1,8 +1,8 @@
-import { BaseRepository } from "../../repositories/baseRepository.js";
-import { Package } from "../../models/Package.js";
-import { logger } from "../../utils/logger.js";
-import { toPackageResDTO } from "../../core/DTO/agency/response/agency.packageDTO.js";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
+import { BaseRepository } from "../../repositories/baseRepository";
+import { Package } from "../../models/Package";
+import { logger } from "../../utils/logger";
+import { toPackageResDTO } from "../../core/DTO/agency/response/agency.packageDTO";
+import { DataNotFoundError } from "../../utils/resAndErrors";
 export class AgencyPackageRepository extends BaseRepository {
     constructor() {
         super(Package);

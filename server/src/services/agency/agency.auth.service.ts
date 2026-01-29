@@ -1,22 +1,22 @@
-import { logger } from '../../utils/logger.js';
-import { IAgencyAuthService } from '../../core/interface/serivice/agency/Iagency.auth.service.js';
-import { IRedisClient } from '../../core/interface/redis/IRedisClinet.js';
-import { IAgencyRespository } from '../../core/interface/repositorie/agency/Iagency.auth.repository.js';
+import { logger } from '../../utils/logger';
+import { IAgencyAuthService } from '../../core/interface/serivice/agency/Iagency.auth.service';
+import { IRedisClient } from '../../core/interface/redis/IRedisClinet';
+import { IAgencyRespository } from '../../core/interface/repositorie/agency/Iagency.auth.repository';
 import { inject, injectable } from 'inversify';
-import { vendorData } from 'types/index.js';
+import { vendorData } from 'types/index';
 import {
   toAgencyProfileDTO,
   agencyProfileDTO,
-} from '../../core/DTO/agency/response/agency.profile.js';
-import { IJWT } from '../../core/interface/JWT/JWTInterface.js';
-import { IEmailService } from '../../core/interface/emailInterface/emailInterface.js';
+} from '../../core/DTO/agency/response/agency.profile';
+import { IJWT } from '../../core/interface/JWT/JWTInterface';
+import { IEmailService } from '../../core/interface/emailInterface/emailInterface';
 import {
   OtpExpiredError,
   InvalidOtpError,
   EmailAlreadyRegisteredError,
   UserNotFoundError,
   InvalidCredentialsError,
-} from '../../utils/resAndErrors.js';
+} from '../../utils/resAndErrors';
 import { IAuthValidator } from '../../core/interface/validator/Iauth.validator.js';
 import bcrypt from 'bcryptjs';
 

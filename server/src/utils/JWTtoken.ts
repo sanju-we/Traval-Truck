@@ -1,10 +1,10 @@
 import { injectable } from 'inversify';
 import { Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { IJWT } from '../core/interface/JWT/JWTInterface.js';
-import { ResetToken } from '../types/index.js';
-import { InvalidResetTokenError } from '../utils/resAndErrors.js';
-import { logger } from '../utils/logger.js';
+import { IJWT } from '../core/interface/JWT/JWTInterface';
+import { ResetToken } from '../types/index';
+import { InvalidResetTokenError } from '../utils/resAndErrors';
+import { logger } from '../utils/logger';
 
 @injectable()
 export class JWT implements IJWT {

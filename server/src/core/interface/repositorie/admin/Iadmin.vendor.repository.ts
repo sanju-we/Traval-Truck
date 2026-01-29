@@ -1,4 +1,4 @@
-import { vendorRequestDTO } from '../../../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
+import { vendorRequestDTO } from '../../../../core/DTO/admin/vendor.response.dto/vendor.response.dto';
 import { userProfileDTO } from 'types';
 
 export interface IAdminVendorRepository {

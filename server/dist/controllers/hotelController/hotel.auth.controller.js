@@ -11,10 +11,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from 'inversify';
-import { logger } from '../../utils/logger.js';
-import { NoAccessToken, sendResponse } from '../../utils/resAndErrors.js';
-import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
-import { MESSAGES } from '../../utils/responseMessaages.js';
+import { logger } from '../../utils/logger';
+import { NoAccessToken, sendResponse } from '../../utils/resAndErrors';
+import { STATUS_CODE } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/responseMessaages';
 let HotelAuthController = class HotelAuthController {
     _ijwt;
     _generalService;

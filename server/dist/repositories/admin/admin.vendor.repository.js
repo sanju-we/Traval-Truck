@@ -11,9 +11,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from 'inversify';
-import { logger } from '../../utils/logger.js';
-import { toVendorRequestDTO, } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
-import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
+import { logger } from '../../utils/logger';
+import { toVendorRequestDTO, } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto';
+import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile';
 let AdminVendorRepository = class AdminVendorRepository {
     _restaurantRepository;
     _hotelRepository;

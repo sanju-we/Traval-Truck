@@ -11,10 +11,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from "inversify";
-import { Files_Missing, sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
-import { logger } from "../../utils/logger.js";
+import { Files_Missing, sendResponse } from "../../utils/resAndErrors";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/responseMessaages";
+import { logger } from "../../utils/logger";
 let RestaurantFoodController = class RestaurantFoodController {
     _foodService;
     constructor(_foodService) {
@@ -42,6 +42,13 @@ let RestaurantFoodController = class RestaurantFoodController {
             throw new Files_Missing();
         const updateData = await this._foodService.update({ ...data, Price: Number(data.Price), AvailableQuantity: Number(data.AvailableQuantity) }, files);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updateData);
+    }
+    async deleteImage(req, res) {
+        const index = req.body.index;
+        const restaurantId = req.user.id;
+        const foodId = req.body.foodId;
+        const data = await this._foodService.delete(foodId, index);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DELETED, data);
     }
 };
 RestaurantFoodController = __decorate([

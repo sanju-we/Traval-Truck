@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { container } from '../../core/DI/container.js';
-import { IController } from '../../core/interface/controllerInterface/user/user.Interface.js';
-import { asyncHandler } from '../../middleware/asyncHandler.js';
+import { container } from '../../core/DI/container';
+import { IController } from '../../core/interface/controllerInterface/user/user.Interface';
+import { asyncHandler } from '../../middleware/asyncHandler';
 import rateLimit from 'express-rate-limit';
-import { googleCallback } from '../../utils/googleAuth.js';
+import { googleCallback } from '../../utils/googleAuth';
 
 const authRouter = Router();
 const authController = container.get<IController>('IController');

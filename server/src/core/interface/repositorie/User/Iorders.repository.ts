@@ -1,7 +1,7 @@
-import { orderDTO } from "../../../../core/DTO/agency/response/agency.order.DTO.js";
-import { TripDTO } from "../../../../core/DTO/user/Response/user.trip.DTO.js";
-import { IOrders } from "../../../../core/interface/modelInterface/IOrders.js";
-import { IBaserepository } from "../IBaseRepositories.js";
+import { orderDTO } from "../../../../core/DTO/agency/response/agency.order.DTO";
+import { TripDTO } from "../../../../core/DTO/user/Response/user.trip.DTO";
+import { IOrders } from "../../../../core/interface/modelInterface/IOrders";
+import { IBaserepository } from "../IBaseRepositories";
 
 export interface IOrdersRepository extends IBaserepository<IOrders>{
   findAllByProduct(userId:string):Promise<TripDTO[]>;

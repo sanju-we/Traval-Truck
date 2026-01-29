@@ -11,8 +11,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from "inversify";
-import { toCouponDTO } from "../../core/DTO/admin/coupon/admin.coupon.response.js";
-import { Data_Creation_Error, DataNotFoundError, DataUpdatingError } from "../../utils/resAndErrors.js";
+import { toCouponDTO } from "../../core/DTO/admin/coupon/admin.coupon.response";
+import { Data_Creation_Error, DataNotFoundError, DataUpdatingError } from "../../utils/resAndErrors";
 let AdminCouponService = class AdminCouponService {
     _couponValidator;
     _couponRepository;

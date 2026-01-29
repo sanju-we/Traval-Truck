@@ -1,8 +1,8 @@
-import { subscriptionDTO, toSubdcriptionDTO } from "../../core/DTO/subscription.dto.js";
-import { IRestaurantSubscriptionService } from "../../core/interface/serivice/restaurant/Irestaurant.subscription.service.js";
-import { ISubscriptionRepository } from "../../core/interface/repositorie/ISubscription.respository.js";
+import { subscriptionDTO, toSubdcriptionDTO } from "../../core/DTO/subscription.dto";
+import { IRestaurantSubscriptionService } from "../../core/interface/serivice/restaurant/Irestaurant.subscription.service";
+import { ISubscriptionRepository } from "../../core/interface/repositorie/ISubscription.respository";
 import { inject, injectable } from "inversify";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
+import { DataNotFoundError } from "../../utils/resAndErrors";
 
 @injectable()
 export class RestaurantSubscriptionService implements IRestaurantSubscriptionService {

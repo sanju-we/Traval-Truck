@@ -11,10 +11,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from "inversify";
-import { toSubdcriptionDTO } from "../../core/DTO/subscription.dto.js";
-import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors.js";
-import { toSubsctiptionHistoryDTO } from "../../core/DTO/shared/subscriptionHistory.js";
-import { logger } from "../../utils/logger.js";
+import { toSubdcriptionDTO } from "../../core/DTO/subscription.dto";
+import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors";
+import { toSubsctiptionHistoryDTO } from "../../core/DTO/shared/subscriptionHistory";
+import { logger } from "../../utils/logger";
 let SharedSubscriptionService = class SharedSubscriptionService {
     _subscriptionRepo;
     _paymentUtils;

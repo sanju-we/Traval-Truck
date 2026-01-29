@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
-import { IPaymentUtils } from '../core/interface/PaymentInterface/Ipayment.utils.js';
-import { IPaymentRepository } from '../core/interface/repositorie/shared/Ishared.payment.repository.js';
+import { IPaymentUtils } from '../core/interface/PaymentInterface/Ipayment.utils';
+import { IPaymentRepository } from '../core/interface/repositorie/shared/Ishared.payment.repository';
 import { inject, injectable } from 'inversify';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {

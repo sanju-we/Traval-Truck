@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { IRestaurantAuthController } from '../../core/interface/controllerInterface/restaurant/Irestaurant.auth.controller.js';
-import { container } from '../../core/DI/container.js';
-import { asyncHandler } from '../../middleware/asyncHandler.js';
-import { verifyRestaurantToken } from '../../middleware/authMiddleware.js';
+import { IRestaurantAuthController } from '../../core/interface/controllerInterface/restaurant/Irestaurant.auth.controller';
+import { container } from '../../core/DI/container';
+import { asyncHandler } from '../../middleware/asyncHandler';
+import { verifyRestaurantToken } from '../../middleware/authMiddleware';
 
 const restaurantAuthRouter = Router();
 const restaurantAuthController = container.get<IRestaurantAuthController>(

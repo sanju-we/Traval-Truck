@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { IPayment } from "../core/interface/modelInterface/IPayment.js";
+import { IPayment } from "../core/interface/modelInterface/IPayment";
 
 const PaymentSchema = new Schema<IPayment>({
   userId: { type: Schema.Types.ObjectId, ref: "User", required: false },

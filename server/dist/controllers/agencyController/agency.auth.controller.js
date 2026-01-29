@@ -11,11 +11,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from 'inversify';
-import { NoAccessToken } from '../../utils/resAndErrors.js';
-import { sendResponse } from '../../utils/resAndErrors.js';
-import { logger } from '../../utils/logger.js';
-import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
-import { MESSAGES } from '../../utils/responseMessaages.js';
+import { NoAccessToken } from '../../utils/resAndErrors';
+import { sendResponse } from '../../utils/resAndErrors';
+import { logger } from '../../utils/logger';
+import { STATUS_CODE } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/responseMessaages';
 let AgencyAuthController = class AgencyAuthController {
     _IJWT;
     _agencyAuthService;

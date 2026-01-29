@@ -1,7 +1,7 @@
-import { BaseRepository } from "../../repositories/baseRepository.js";
-import { Wallet } from "../../models/Wallet.js";
-import { toWalletDTO } from "../../core/DTO/shared/wallet.dto.js";
-import { logger } from "../../utils/logger.js";
+import { BaseRepository } from "../../repositories/baseRepository";
+import { Wallet } from "../../models/Wallet";
+import { toWalletDTO } from "../../core/DTO/shared/wallet.dto";
+import { logger } from "../../utils/logger";
 export class WalletRespository extends BaseRepository {
     constructor() {
         super(Wallet);

@@ -10,10 +10,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { logger } from '../../utils/logger.js';
+import { logger } from '../../utils/logger';
 import { inject, injectable } from 'inversify';
-import { toAgencyProfileDTO, } from '../../core/DTO/agency/response/agency.profile.js';
-import { OtpExpiredError, InvalidOtpError, EmailAlreadyRegisteredError, UserNotFoundError, InvalidCredentialsError, } from '../../utils/resAndErrors.js';
+import { toAgencyProfileDTO, } from '../../core/DTO/agency/response/agency.profile';
+import { OtpExpiredError, InvalidOtpError, EmailAlreadyRegisteredError, UserNotFoundError, InvalidCredentialsError, } from '../../utils/resAndErrors';
 import bcrypt from 'bcryptjs';
 let agencyAuthService = class agencyAuthService {
     _redisClient;

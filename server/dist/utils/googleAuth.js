@@ -1,7 +1,7 @@
 import { OAuth2Client } from 'google-auth-library';
-import { container } from '../core/DI/container.js';
-import { User } from '../models/SUser.js';
-import { logger } from '../utils/logger.js';
+import { container } from '../core/DI/container';
+import { User } from '../models/SUser';
+import { logger } from '../utils/logger';
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, process.env.GOOGLE_REDIRECT_URL);
 const jwtService = container.get('IJWT');
 export const googleCallback = async (req, res) => {

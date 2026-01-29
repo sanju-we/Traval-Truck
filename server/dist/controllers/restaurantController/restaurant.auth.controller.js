@@ -12,10 +12,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { inject, injectable } from 'inversify';
 import z from 'zod';
-import { NoAccessToken, sendResponse } from '../../utils/resAndErrors.js';
-import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
-import { MESSAGES } from '../../utils/responseMessaages.js';
-import { logger } from '../../utils/logger.js';
+import { NoAccessToken, sendResponse } from '../../utils/resAndErrors';
+import { STATUS_CODE } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/responseMessaages';
+import { logger } from '../../utils/logger';
 let RestaurantAuthController = class RestaurantAuthController {
     _IJWT;
     _generalService;
@@ -31,6 +31,7 @@ let RestaurantAuthController = class RestaurantAuthController {
         const schema = z.object({
             email: z.email(),
         });
+        // logger.info()
         const { email } = schema.parse(req.body);
         const otp = await this._generalService.generateOtp();
         await this._generalService.storeOtp(email, otp);

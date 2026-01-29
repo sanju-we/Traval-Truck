@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { IAgency } from '../core/interface/modelInterface/IAgency.js';
+import { IAgency } from '../core/interface/modelInterface/IAgency';
 
 const agencySchema = new Schema<IAgency>({
   companyName: {

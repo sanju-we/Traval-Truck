@@ -1,13 +1,13 @@
-import { MindMapRequest } from "../../core/DTO/user/Request/mindMap.js";
-import { IUserMindMapService } from "../../core/interface/serivice/user/IUser.mindMap.service.js";
-import { IBaseValidator } from "../../core/interface/validator/IBasic.validator.js";
+import { MindMapRequest } from "../../core/DTO/user/Request/mindMap";
+import { IUserMindMapService } from "../../core/interface/serivice/user/IUser.mindMap.service";
+import { IBaseValidator } from "../../core/interface/validator/IBasic.validator";
 import { inject, injectable } from "inversify";
-import { IAuthRepository } from "../../core/interface/repositorie/User/IAuth.Repository.js";
-import { BADREQUEST, DataNotFoundError, DataUpdatingError } from "../../utils/resAndErrors.js";
-import { buildOptimizedRoute, splitIntoDays, PlaceNode, getDistanceInKm, } from "../../utils/tripPlanner/index.js";
-import { IMindMapRepository } from "../../core/interface/repositorie/User/IMindMap.repository.js";
-import { MindMapResDTO, toMindMapRes } from "../../core/DTO/user/Response/mindMap.res.js";
-import { validateTripPlan } from "../../services/Ai.service.js";
+import { IAuthRepository } from "../../core/interface/repositorie/User/IAuth.Repository";
+import { BADREQUEST, DataNotFoundError, DataUpdatingError } from "../../utils/resAndErrors";
+import { buildOptimizedRoute, splitIntoDays, PlaceNode, getDistanceInKm, } from "../../utils/tripPlanner/index";
+import { IMindMapRepository } from "../../core/interface/repositorie/User/IMindMap.repository";
+import { MindMapResDTO, toMindMapRes } from "../../core/DTO/user/Response/mindMap.res";
+import { validateTripPlan } from "../../services/Ai.service";
 
 @injectable()
 export class UserMindMapService implements IUserMindMapService {

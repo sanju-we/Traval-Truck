@@ -1,11 +1,11 @@
-import { IHotelOrderService } from "../../core/interface/serivice/hotel/Ihotel.order.service.js";
+import { IHotelOrderService } from "../../core/interface/serivice/hotel/Ihotel.order.service";
 import { inject, injectable } from "inversify";
-import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository.js";
-import { orderDTO, toOrderDTO } from "../../core/DTO/agency/response/agency.order.DTO.js";
-import { DataNotFoundError, DataUpdatingError, PAYMENT_VERIFICATOIN_FAILED, ROOM_VACATING_EARLY } from "../../utils/resAndErrors.js";
-import { IBaseValidator } from "../../core/interface/validator/IBasic.validator.js";
-import { IWalletRespository } from "../../core/interface/repositorie/shared/IWallet.repository.js";
-import { IPaymentRepository } from "../../core/interface/repositorie/shared/Ishared.payment.repository.js";
+import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository";
+import { orderDTO, toOrderDTO } from "../../core/DTO/agency/response/agency.order.DTO";
+import { DataNotFoundError, DataUpdatingError, PAYMENT_VERIFICATOIN_FAILED, ROOM_VACATING_EARLY } from "../../utils/resAndErrors";
+import { IBaseValidator } from "../../core/interface/validator/IBasic.validator";
+import { IWalletRespository } from "../../core/interface/repositorie/shared/IWallet.repository";
+import { IPaymentRepository } from "../../core/interface/repositorie/shared/Ishared.payment.repository";
 
 @injectable()
 export class HotelOrderService implements IHotelOrderService {

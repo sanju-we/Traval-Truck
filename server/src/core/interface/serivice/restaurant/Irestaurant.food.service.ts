@@ -1,5 +1,5 @@
-import { foodType } from "../../../../types/restaurantType.js";
-import { foodDTO } from "../../../../core/DTO/restaurant/requestDTO.js";
+import { foodType } from "../../../../types/restaurantType";
+import { foodDTO } from "../../../../core/DTO/restaurant/requestDTO";
 
 export interface IRestaurantFoodService{
   getAllData(id:string):Promise<foodDTO[]>

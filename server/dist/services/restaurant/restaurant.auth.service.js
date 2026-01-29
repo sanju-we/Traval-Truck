@@ -11,11 +11,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { injectable, inject } from 'inversify';
-import { toRestaunrantProfile, } from '../../core/DTO/restaurant/response.dto.js';
+import { toRestaunrantProfile, } from '../../core/DTO/restaurant/response.dto';
 import bcrypt from 'bcryptjs';
 import z from 'zod';
-import { EmailAlreadyRegisteredError, InvalidCredentialsError, InvalidResetTokenError, OtpExpiredError, UserNotFoundError, } from '../../utils/resAndErrors.js';
-import { logger } from '../../utils/logger.js';
+import { EmailAlreadyRegisteredError, InvalidCredentialsError, InvalidResetTokenError, OtpExpiredError, UserNotFoundError, } from '../../utils/resAndErrors';
+import { logger } from '../../utils/logger';
 let RestaurantAuthService = class RestaurantAuthService {
     _ijwt;
     _redisClient;

@@ -9,9 +9,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 // src/repositories/user/auth.repository.ts
 import { injectable } from 'inversify';
-import { BaseRepository, RepositoryError } from '../../repositories/baseRepository.js';
-import { User } from '../../models/SUser.js';
-import { logger } from '../../utils/logger.js';
+import { BaseRepository, RepositoryError } from '../../repositories/baseRepository';
+import { User } from '../../models/SUser';
+import { logger } from '../../utils/logger';
 import z from 'zod';
 let AuthRepository = class AuthRepository extends BaseRepository {
     constructor() {

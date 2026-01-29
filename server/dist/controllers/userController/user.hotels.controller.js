@@ -11,9 +11,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from "inversify";
-import { BADREQUEST, sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
+import { BADREQUEST, sendResponse } from "../../utils/resAndErrors";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/responseMessaages";
 let UserHotelsController = class UserHotelsController {
     _userHotelService;
     constructor(_userHotelService) {

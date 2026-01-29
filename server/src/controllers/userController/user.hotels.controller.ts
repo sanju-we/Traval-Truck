@@ -1,10 +1,10 @@
-import { IUserHotelsController } from "../../core/interface/controllerInterface/user/Iuser.hotels.controller.js";
+import { IUserHotelsController } from "../../core/interface/controllerInterface/user/Iuser.hotels.controller";
 import { Request, Response } from "express";
-import { IUserHotelsService } from "../../core/interface/serivice/user/IUser.hotels.service.js";
+import { IUserHotelsService } from "../../core/interface/serivice/user/IUser.hotels.service";
 import { inject, injectable } from "inversify";
-import { BADREQUEST, sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
+import { BADREQUEST, sendResponse } from "../../utils/resAndErrors";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/responseMessaages";
 
 @injectable()
 export class UserHotelsController implements IUserHotelsController {

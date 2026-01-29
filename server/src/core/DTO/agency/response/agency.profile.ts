@@ -1,4 +1,4 @@
-import { IAgency } from '../../../../core/interface/modelInterface/IAgency.js';
+import { IAgency } from '../../../../core/interface/modelInterface/IAgency';
 
 export interface agencyProfileDTO {
   id: string;

@@ -1,5 +1,5 @@
 import { IBaserepository } from "../IBaseRepositories";
-import { IReviews } from "../../../../core/interface/modelInterface/IReviews.js";
+import { IReviews } from "../../../../core/interface/modelInterface/IReviews";
 import { PaginationResponse } from "../../../../core/DTO/pagination.DTO";
 
 export interface IReviewRepository extends IBaserepository<IReviews>{

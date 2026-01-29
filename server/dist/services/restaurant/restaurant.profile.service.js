@@ -11,9 +11,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from 'inversify';
-import { ImageDeleteInCloudinary, UserNotFoundError } from '../../utils/resAndErrors.js';
-import { toVendorRequestDTO, } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
-import { deleteImage, extractPublicId, singleUpload } from '../../utils/upload.cloudinary.js';
+import { ImageDeleteInCloudinary, UserNotFoundError } from '../../utils/resAndErrors';
+import { toVendorRequestDTO, } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto';
+import { deleteImage, extractPublicId, singleUpload } from '../../utils/upload.cloudinary';
 let RestaurantProfileService = class RestaurantProfileService {
     _restaurantAuthRepo;
     constructor(_restaurantAuthRepo) {
@@ -30,8 +30,10 @@ let RestaurantProfileService = class RestaurantProfileService {
     }
     async updateDocuments(id, files) {
         let update;
+        console.log('asdkfjasld;fj', files);
         for (const fileName in files) {
             const file = files[fileName][0];
+            console.log(file);
             const result = await singleUpload(file, 'Travel-Truck-Vendor-Document');
             update = await this._restaurantAuthRepo.update(id, { [`documents.${fileName}`]: result });
         }

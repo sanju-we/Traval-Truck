@@ -1,6 +1,6 @@
-import { PackageDTO } from "../../DTO/agency/request/packageDTO.js";
-import { vendorData } from "types/index.js";
-import { RoomsDTO } from "../../../core/DTO/hotel/roomsDTO.js";
+import { PackageDTO } from "../../DTO/agency/request/packageDTO";
+import { vendorData } from "types/index";
+import { RoomsDTO } from "../../../core/DTO/hotel/roomsDTO";
 
 export interface IAuthValidator {
   signUpValidator(enteredEmail: string, enteredOtp: string, agencyData: vendorData): Promise<void>;

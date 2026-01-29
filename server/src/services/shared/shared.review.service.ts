@@ -1,16 +1,16 @@
-import { IReviewService } from "../../core/interface/serivice/shared/Ishared.review.service.js";
+import { IReviewService } from "../../core/interface/serivice/shared/Ishared.review.service";
 import { inject, injectable } from "inversify";
-import { IReviewRepository } from "../../core/interface/repositorie/shared/Ishare.review.repository.js";
-import { IBaseValidator } from "../../core/interface/validator/IBasic.validator.js";
-import { toReviewDTO, reviewDTO, toReviewWithReplayDTO, reviewWithReplayDTO } from "../../core/DTO/shared/reviewDTO.js";
-import { BADREQUEST, DataNotFoundError } from "../../utils/resAndErrors.js";
-import { PaginationResponse } from "../../core/DTO/pagination.DTO.js";
-import { IReplayRepository } from "../../core/interface/repositorie/shared/Ireplay.repository.js";
-import { IReviews } from "../../core/interface/modelInterface/IReviews.js";
-import { IAgencyRespository } from "../../core/interface/repositorie/agency/Iagency.auth.repository.js";
-import { IHotelAuthRepository } from "../../core/interface/repositorie/Hotel/Ihotel.auth.repository.js";
-import { ReplayDTO, toReplayDTO } from "../../core/DTO/shared/Replay.js";
-import { IReplay } from "@core/interface/modelInterface/IReplay.js";
+import { IReviewRepository } from "../../core/interface/repositorie/shared/Ishare.review.repository";
+import { IBaseValidator } from "../../core/interface/validator/IBasic.validator";
+import { toReviewDTO, reviewDTO, toReviewWithReplayDTO, reviewWithReplayDTO } from "../../core/DTO/shared/reviewDTO";
+import { BADREQUEST, DataNotFoundError } from "../../utils/resAndErrors";
+import { PaginationResponse } from "../../core/DTO/pagination.DTO";
+import { IReplayRepository } from "../../core/interface/repositorie/shared/Ireplay.repository";
+import { IReviews } from "../../core/interface/modelInterface/IReviews";
+import { IAgencyRespository } from "../../core/interface/repositorie/agency/Iagency.auth.repository";
+import { IHotelAuthRepository } from "../../core/interface/repositorie/Hotel/Ihotel.auth.repository";
+import { ReplayDTO, toReplayDTO } from "../../core/DTO/shared/Replay";
+import { IReplay } from "@core/interface/modelInterface/IReplay";
 
 @injectable()
 export class ReviewService implements IReviewService {

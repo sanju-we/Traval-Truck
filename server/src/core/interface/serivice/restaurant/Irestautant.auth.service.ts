@@ -1,5 +1,5 @@
 import { vendorData } from 'types';
-import { RestaurantProfileDTO } from '../../../../core/DTO/restaurant/response.dto.js';
+import { RestaurantProfileDTO } from '../../../../core/DTO/restaurant/response.dto';
 
 export interface IRestaurantAuthService {
   verifyRestaurantSignup(

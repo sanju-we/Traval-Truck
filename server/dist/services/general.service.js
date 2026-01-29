@@ -11,7 +11,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import z from 'zod';
-import { logger } from '../utils/logger.js';
+import { logger } from '../utils/logger';
 import { inject, injectable } from 'inversify';
 let GeneralService = class GeneralService {
     _redisClient;

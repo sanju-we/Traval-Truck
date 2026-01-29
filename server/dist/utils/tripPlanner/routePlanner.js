@@ -1,10 +1,11 @@
-// core/utils/tripPlanner/routePlanner.util.ts
-import { getDistanceInKm } from "./distance.js";
+import { getDistanceInKm } from "./distance";
 export function buildOptimizedRoute(startLat, startLng, places) {
     const unvisited = [...places];
     const route = [];
     let currentLat = startLat;
     let currentLng = startLng;
+    let totalDistance = 0;
+    // Visit all places
     while (unvisited.length > 0) {
         let nearestIndex = 0;
         let nearestDistance = Infinity;
@@ -16,9 +17,18 @@ export function buildOptimizedRoute(startLat, startLng, places) {
             }
         }
         const next = unvisited.splice(nearestIndex, 1)[0];
+        totalDistance += nearestDistance;
         route.push(next);
         currentLat = next.lat;
         currentLng = next.lng;
     }
-    return route;
+    if (route.length > 0) {
+        const returnDistance = getDistanceInKm(currentLat, currentLng, startLat, startLng);
+        totalDistance += returnDistance;
+    }
+    console.log('totalDistance:', totalDistance);
+    return {
+        route,
+        totalDistance
+    };
 }

@@ -1,4 +1,4 @@
-import { userProfileDTO } from '../../../../types/index.js';
+import { userProfileDTO } from '../../../../types/index';
 
 export interface IAdminAuthService {
   verifyAdminEmail(

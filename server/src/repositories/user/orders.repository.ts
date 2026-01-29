@@ -1,11 +1,11 @@
-import { IOrders } from "../../core/interface/modelInterface/IOrders.js";
-import { BaseRepository } from "../../repositories/baseRepository.js";
-import { Order } from "../../models/Orders.js";
-import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository.js";
-import { logger } from "../../utils/logger.js";
-import { IOrderWithProduct, toTripDTO, TripDTO } from "../../core/DTO/user/Response/user.trip.DTO.js";
-import { IPackage } from "../../core/interface/modelInterface/Ipackage.js";
-import { IRooms } from "../../core/interface/modelInterface/IRooms.js";
+import { IOrders } from "../../core/interface/modelInterface/IOrders";
+import { BaseRepository } from "../../repositories/baseRepository";
+import { Order } from "../../models/Orders";
+import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository";
+import { logger } from "../../utils/logger";
+import { IOrderWithProduct, toTripDTO, TripDTO } from "../../core/DTO/user/Response/user.trip.DTO";
+import { IPackage } from "../../core/interface/modelInterface/Ipackage";
+import { IRooms } from "../../core/interface/modelInterface/IRooms";
 
 export class OrderRepository extends BaseRepository<IOrders> implements IOrdersRepository{
   constructor(){

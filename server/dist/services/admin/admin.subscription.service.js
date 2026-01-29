@@ -11,9 +11,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from 'inversify';
-import { toSubdcriptionDTO } from '../../core/DTO/subscription.dto.js';
-import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors.js';
-import { logger } from '../../utils/logger.js';
+import { toSubdcriptionDTO } from '../../core/DTO/subscription.dto';
+import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors';
+import { logger } from '../../utils/logger';
 let AdminSubscriptionService = class AdminSubscriptionService {
     _adminSubscriptionRepo;
     _subscriptionValidator;

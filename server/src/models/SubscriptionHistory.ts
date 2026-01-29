@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { ISubscriptionHistory } from "../core/interface/modelInterface/ISubscriptionHistory.js";
+import { ISubscriptionHistory } from "../core/interface/modelInterface/ISubscriptionHistory";
 
 const subscriptionHistorySchema = new Schema({
   userId: { type: String, required: true },

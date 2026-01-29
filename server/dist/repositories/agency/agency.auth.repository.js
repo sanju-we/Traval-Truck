@@ -1,5 +1,5 @@
-import { Agency } from '../../models/Agency.js';
-import { BaseRepository } from '../../repositories/baseRepository.js';
+import { Agency } from '../../models/Agency';
+import { BaseRepository } from '../../repositories/baseRepository';
 export class agencyRepository extends BaseRepository {
     constructor() {
         super(Agency);

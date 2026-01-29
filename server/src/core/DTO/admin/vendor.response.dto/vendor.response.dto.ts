@@ -1,6 +1,6 @@
-import { IAgency } from '../../../../core/interface/modelInterface/IAgency.js';
-import { IHotel } from '../../../../core/interface/modelInterface/IHotel.js';
-import { IRestaurant } from '../../../../core/interface/modelInterface/IRestaurant.js';
+import { IAgency } from '../../../../core/interface/modelInterface/IAgency';
+import { IHotel } from '../../../../core/interface/modelInterface/IHotel';
+import { IRestaurant } from '../../../../core/interface/modelInterface/IRestaurant';
 
 export interface vendorRequestDTO {
   id: string;

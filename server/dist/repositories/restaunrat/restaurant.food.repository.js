@@ -1,6 +1,6 @@
-import { BaseRepository } from "../../repositories/baseRepository.js";
-import Foods from "../../models/Foods.js";
-import { toFoodDTO } from "../../core/DTO/restaurant/requestDTO.js";
+import { BaseRepository } from "../../repositories/baseRepository";
+import Foods from "../../models/Foods";
+import { toFoodDTO } from "../../core/DTO/restaurant/requestDTO";
 export class RestaurantFoodRepository extends BaseRepository {
     constructor() {
         super(Foods);

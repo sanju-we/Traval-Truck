@@ -1,5 +1,5 @@
-import { BaseRepository } from "../../repositories/baseRepository.js";
-import SubscriptionHistory from "../../models/SubscriptionHistory.js";
+import { BaseRepository } from "../../repositories/baseRepository";
+import SubscriptionHistory from "../../models/SubscriptionHistory";
 export class subscriptionHistoryRepository extends BaseRepository {
     constructor() {
         super(SubscriptionHistory);

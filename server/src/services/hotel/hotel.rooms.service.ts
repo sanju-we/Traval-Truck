@@ -1,13 +1,13 @@
 import z from "zod";
-import { RoomsDTO, toRoomsDTO } from "../../core/DTO/hotel/roomsDTO.js";
-import { IHotelRoomsService } from "../../core/interface/serivice/hotel/Ihotel.rooms.service.js";
-import { logger } from "../../utils/logger.js";
-import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.cloudinary.js";
-import { IHotelRoomsRepository } from "../../core/interface/repositorie/Hotel/Ihotel.rooms.repository.js";
+import { RoomsDTO, toRoomsDTO } from "../../core/DTO/hotel/roomsDTO";
+import { IHotelRoomsService } from "../../core/interface/serivice/hotel/Ihotel.rooms.service";
+import { logger } from "../../utils/logger";
+import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.cloudinary";
+import { IHotelRoomsRepository } from "../../core/interface/repositorie/Hotel/Ihotel.rooms.repository";
 import { inject, injectable } from "inversify";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
-import { IAuthValidator } from "../../core/interface/validator/Iauth.validator.js";
-import { IRoomValidator } from "../../core/interface/validator/Iroom.validator.js";
+import { DataNotFoundError } from "../../utils/resAndErrors";
+import { IAuthValidator } from "../../core/interface/validator/Iauth.validator";
+import { IRoomValidator } from "../../core/interface/validator/Iroom.validator";
 
 @injectable()
 export class HotelRoomsService implements IHotelRoomsService {

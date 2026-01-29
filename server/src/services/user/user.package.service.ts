@@ -1,13 +1,13 @@
-import { IUserPackageService } from "../../core/interface/serivice/user/IUser.package.service.js";
-import { IAgencyPackageRepository } from "../../core/interface/repositorie/agency/Iagency.package.repository.js";
+import { IUserPackageService } from "../../core/interface/serivice/user/IUser.package.service";
+import { IAgencyPackageRepository } from "../../core/interface/repositorie/agency/Iagency.package.repository";
 import { inject, injectable } from "inversify";
-import { PackageResDTO } from "../../core/DTO/agency/response/agency.packageDTO.js";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
-import { logger } from "../../utils/logger.js";
-import { ISubscriptionHistoryRepository } from "../../core/interface/repositorie/shared/ISubscription.hisroty.repository.js";
-import { IPaymentUtils } from "../../core/interface/PaymentInterface/Ipayment.utils.js";
-import { IAdminCouponRepository } from "../../core/interface/repositorie/admin/Iadmin.coupon.repository.js";
-import { CouponDTO, toCouponDTO } from "../../core/DTO/admin/coupon/admin.coupon.response.js";
+import { PackageResDTO } from "../../core/DTO/agency/response/agency.packageDTO";
+import { DataNotFoundError } from "../../utils/resAndErrors";
+import { logger } from "../../utils/logger";
+import { ISubscriptionHistoryRepository } from "../../core/interface/repositorie/shared/ISubscription.hisroty.repository";
+import { IPaymentUtils } from "../../core/interface/PaymentInterface/Ipayment.utils";
+import { IAdminCouponRepository } from "../../core/interface/repositorie/admin/Iadmin.coupon.repository";
+import { CouponDTO, toCouponDTO } from "../../core/DTO/admin/coupon/admin.coupon.response";
 
 @injectable()
 export class UserPackageSerivce implements IUserPackageService {

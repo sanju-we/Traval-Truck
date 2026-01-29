@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { container } from '../../core/DI/container.js';
-import { asyncHandler } from '../../middleware/asyncHandler.js';
-import { verifyRestaurantToken } from '../../middleware/authMiddleware.js';
+import { container } from '../../core/DI/container';
+import { asyncHandler } from '../../middleware/asyncHandler';
+import { verifyRestaurantToken } from '../../middleware/authMiddleware';
 const restaurantAuthRouter = Router();
 const restaurantAuthController = container.get('IRestaurantAuthController');
 restaurantAuthRouter

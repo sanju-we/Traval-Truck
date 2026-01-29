@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { container } from '../../core/DI/container.js';
-import { asyncHandler } from '../../middleware/asyncHandler.js';
+import { container } from '../../core/DI/container';
+import { asyncHandler } from '../../middleware/asyncHandler';
 const adminSubscriptionRouter = Router();
 const AdminSubscription = container.get('IAdminSubscriptionController');
 adminSubscriptionRouter

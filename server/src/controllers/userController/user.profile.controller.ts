@@ -1,14 +1,14 @@
 import { Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
-import { IJWT } from '../../core/interface/JWT/JWTInterface.js';
-import { BADREQUEST, sendResponse } from '../../utils/resAndErrors.js';
-import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
-import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository.js';
+import { IJWT } from '../../core/interface/JWT/JWTInterface';
+import { BADREQUEST, sendResponse } from '../../utils/resAndErrors';
+import { STATUS_CODE } from '../../utils/HTTPStatusCode';
+import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository';
 import z from 'zod';
-import { IUserProfileController } from '../../core/interface/controllerInterface/user/userProfile.js';
-import { IUserProfileService } from '../../core/interface/serivice/user/Iuser.profile.service.js';
-import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
-import { MESSAGES } from '../../utils/responseMessaages.js';
+import { IUserProfileController } from '../../core/interface/controllerInterface/user/userProfile';
+import { IUserProfileService } from '../../core/interface/serivice/user/Iuser.profile.service';
+import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile';
+import { MESSAGES } from '../../utils/responseMessaages';
 
 @injectable()
 export class ProfileController implements IUserProfileController {

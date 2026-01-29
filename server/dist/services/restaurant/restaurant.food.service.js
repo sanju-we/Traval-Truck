@@ -10,12 +10,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { toFoodDTO } from "../../core/DTO/restaurant/requestDTO.js";
+import { toFoodDTO } from "../../core/DTO/restaurant/requestDTO";
 import z from "zod";
-import { singleUpload } from "../../utils/upload.cloudinary.js";
+import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.cloudinary";
 import { inject, injectable } from "inversify";
-import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors.js";
-import { logger } from "../../utils/logger.js";
+import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors";
+import { logger } from "../../utils/logger";
 let RestaurantFoodService = class RestaurantFoodService {
     _foodRepo;
     constructor(_foodRepo) {
@@ -70,6 +70,16 @@ let RestaurantFoodService = class RestaurantFoodService {
         if (updateData)
             return toFoodDTO(updateData);
         throw new DataNotFoundError();
+    }
+    async delete(productId, index) {
+        const data = await this._foodRepo.findById(productId);
+        if (!data)
+            throw new DataNotFoundError();
+        const publicId = extractPublicId(data.Image[index]);
+        const deleted = await deleteImage(publicId);
+        deleted && data.Image.splice(index, 1);
+        await this._foodRepo.update(productId, data);
+        return toFoodDTO(data);
     }
 };
 RestaurantFoodService = __decorate([

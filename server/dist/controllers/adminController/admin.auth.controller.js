@@ -11,9 +11,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from 'inversify';
-import { HttpError } from '../../utils/resAndErrors.js';
-import { sendResponse } from '../../utils/resAndErrors.js';
-import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
+import { HttpError } from '../../utils/resAndErrors';
+import { sendResponse } from '../../utils/resAndErrors';
+import { STATUS_CODE } from '../../utils/HTTPStatusCode';
 let AdminAuthController = class AdminAuthController {
     _IJWT;
     _adminauthService;

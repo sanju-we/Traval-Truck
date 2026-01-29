@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { ISharedSubscriptionController } from "../../core/interface/controllerInterface/shared/Ishared.subscription.controller.js";
-import { container } from "../../core/DI/container.js";
-import { asyncHandler } from "../../middleware/asyncHandler.js";
+import { ISharedSubscriptionController } from "../../core/interface/controllerInterface/shared/Ishared.subscription.controller";
+import { container } from "../../core/DI/container";
+import { asyncHandler } from "../../middleware/asyncHandler";
 
 const subscriptionRouter = Router()
 const subscrtiptionController = container.get<ISharedSubscriptionController>('ISharedSubscriptionController')

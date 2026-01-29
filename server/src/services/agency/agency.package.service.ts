@@ -1,13 +1,13 @@
-import { PackageDTO } from "../../core/DTO/agency/request/packageDTO.js";
-import { IAgencyPackageService } from "../../core/interface/serivice/agency/Iagency.package.service.js";
-import { IAgencyPackageRepository } from "../../core/interface/repositorie/agency/Iagency.package.repository.js";
+import { PackageDTO } from "../../core/DTO/agency/request/packageDTO";
+import { IAgencyPackageService } from "../../core/interface/serivice/agency/Iagency.package.service";
+import { IAgencyPackageRepository } from "../../core/interface/repositorie/agency/Iagency.package.repository";
 import { inject, injectable } from "inversify";
-import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors.js";
-import { PackageResDTO, toPackageResDTO } from "../../core/DTO/agency/response/agency.packageDTO.js";
-import { IAuthValidator } from '../../core/interface/validator/Iauth.validator.js'
-import { logger } from "../../utils/logger.js";
-import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.cloudinary.js";
-import { IAgencyRespository } from "../../core/interface/repositorie/agency/Iagency.auth.repository.js";
+import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors";
+import { PackageResDTO, toPackageResDTO } from "../../core/DTO/agency/response/agency.packageDTO";
+import { IAuthValidator } from '../../core/interface/validator/Iauth.validator'
+import { logger } from "../../utils/logger";
+import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.cloudinary";
+import { IAgencyRespository } from "../../core/interface/repositorie/agency/Iagency.auth.repository";
 
 @injectable()
 export class AgencyPackageService implements IAgencyPackageService {

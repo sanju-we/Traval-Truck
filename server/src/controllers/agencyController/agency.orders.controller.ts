@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { IAgencyOrdersController } from "../../core/interface/controllerInterface/agency/Iagency.orders.controller.js";
-import { IAgencyOrderService } from "../../core/interface/serivice/agency/Iagency.orders.service.js";
+import { IAgencyOrdersController } from "../../core/interface/controllerInterface/agency/Iagency.orders.controller";
+import { IAgencyOrderService } from "../../core/interface/serivice/agency/Iagency.orders.service";
 import { inject, injectable } from "inversify";
-import { sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
+import { sendResponse } from "../../utils/resAndErrors";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/responseMessaages";
 
 @injectable()
 export class AgencyOrdersController implements IAgencyOrdersController {

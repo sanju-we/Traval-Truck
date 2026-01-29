@@ -11,8 +11,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from "inversify";
-import { logger } from "../../utils/logger.js";
-import { DataNotFoundError, PAYMENT_VALIDATION_FAILED, PAYMENT_VERIFICATOIN_FAILED } from "../../utils/resAndErrors.js";
+import { logger } from "../../utils/logger";
+import { DataNotFoundError, PAYMENT_VALIDATION_FAILED, PAYMENT_VERIFICATOIN_FAILED } from "../../utils/resAndErrors";
 let WebhookService = class WebhookService {
     _paymentRepo;
     _walletRepo;

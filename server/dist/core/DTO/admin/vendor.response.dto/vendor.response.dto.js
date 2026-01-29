@@ -8,6 +8,7 @@ export const toVendorRequestDTO = (vendor) => ({
     email: vendor.email,
     role: vendor.role,
     isApproved: vendor.isApproved,
+    address: vendor.address,
     phone: vendor.phone,
     isRestricted: vendor.isRestricted,
     reason: vendor.reason,

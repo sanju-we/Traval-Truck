@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
-import { container } from '../core/DI/container.js';
-import { IJWT } from '../core/interface/JWT/JWTInterface.js';
-import { User } from '../models/SUser.js';
-import { logger } from '../utils/logger.js';
+import { container } from '../core/DI/container';
+import { IJWT } from '../core/interface/JWT/JWTInterface';
+import { User } from '../models/SUser';
+import { logger } from '../utils/logger';
 
 const client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,

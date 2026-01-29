@@ -11,7 +11,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from "inversify";
-import { DataNotFoundError, ROOM_ALREADY_OCCUPAID } from "../../utils/resAndErrors.js";
+import { DataNotFoundError, ROOM_ALREADY_OCCUPAID } from "../../utils/resAndErrors";
 let UserHotelsService = class UserHotelsService {
     _hotelRoomRepo;
     _subscriptionHistoryRepo;

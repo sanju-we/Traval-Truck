@@ -1,5 +1,5 @@
-import { BaseRepository } from '../../repositories/baseRepository.js';
-import { Hotel } from '../../models/Hotel.js';
+import { BaseRepository } from '../../repositories/baseRepository';
+import { Hotel } from '../../models/Hotel';
 export class HotelAuthRepository extends BaseRepository {
     constructor() {
         super(Hotel);

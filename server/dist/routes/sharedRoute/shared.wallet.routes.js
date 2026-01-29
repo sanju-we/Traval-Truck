@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { container } from "../../core/DI/container.js";
-import { asyncHandler } from "../../middleware/asyncHandler.js";
+import { container } from "../../core/DI/container";
+import { asyncHandler } from "../../middleware/asyncHandler";
 const walletRouter = Router();
 const WalletController = container.get('ISharedWalletController');
 walletRouter.get("/", asyncHandler(WalletController.getWallet.bind(WalletController)))

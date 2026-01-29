@@ -1,8 +1,8 @@
-import Rooms from "../../models/Rooms.js";
-import { BaseRepository } from "../../repositories/baseRepository.js";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
-import { toRoomsDTO } from "../../core/DTO/hotel/roomsDTO.js";
-import { logger } from "../../utils/logger.js";
+import Rooms from "../../models/Rooms";
+import { BaseRepository } from "../../repositories/baseRepository";
+import { DataNotFoundError } from "../../utils/resAndErrors";
+import { toRoomsDTO } from "../../core/DTO/hotel/roomsDTO";
+import { logger } from "../../utils/logger";
 export class HotelRoomsRepository extends BaseRepository {
     constructor() {
         super(Rooms);

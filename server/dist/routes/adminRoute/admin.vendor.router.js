@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { container } from '../../core/DI/container.js';
-import { asyncHandler } from '../../middleware/asyncHandler.js';
-import { verifyAdminToken } from '../../middleware/authMiddleware.js';
+import { container } from '../../core/DI/container';
+import { asyncHandler } from '../../middleware/asyncHandler';
+import { verifyAdminToken } from '../../middleware/authMiddleware';
 const adminVendorRoute = Router();
 const adminVendorController = container.get('IAdminVendorController');
 adminVendorRoute

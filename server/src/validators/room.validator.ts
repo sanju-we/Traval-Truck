@@ -1,6 +1,6 @@
 import z from "zod";
-import { IRoomValidator } from "../core/interface/validator/Iroom.validator.js";
-import { RoomsDTO } from "@core/DTO/hotel/roomsDTO.js";
+import { IRoomValidator } from "../core/interface/validator/Iroom.validator";
+import { RoomsDTO } from "@core/DTO/hotel/roomsDTO";
 
 export class RoomValidator implements IRoomValidator {
   async roomValidator(data: Partial<RoomsDTO>): Promise<void> {

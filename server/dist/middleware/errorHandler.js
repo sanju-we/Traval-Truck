@@ -1,7 +1,7 @@
 import { ZodError } from 'zod';
 import mongoose from 'mongoose';
-import { HttpError } from '../utils/resAndErrors.js';
-import { logger } from '../utils/logger.js';
+import { HttpError } from '../utils/resAndErrors';
+import { logger } from '../utils/logger';
 export function errorHandler(err, req, res, next) {
     let status = err.statusCode || 500;
     let message = 'Something went wrong. Please try again later.';

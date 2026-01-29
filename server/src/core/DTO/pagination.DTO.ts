@@ -1,4 +1,4 @@
-import { IReplay } from "../../core/interface/modelInterface/IReplay.js"
+import { IReplay } from "../../core/interface/modelInterface/IReplay"
 
 export interface PaginationResponse<T>{
   data:T[],

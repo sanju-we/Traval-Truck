@@ -1,6 +1,6 @@
-import { BaseRepository } from "../../repositories/baseRepository.js";
-import { MindMap } from "../../models/MindMap.js";
-import { toMindMapRes } from "../../core/DTO/user/Response/mindMap.res.js";
+import { BaseRepository } from "../../repositories/baseRepository";
+import { MindMap } from "../../models/MindMap";
+import { toMindMapRes } from "../../core/DTO/user/Response/mindMap.res";
 export class MindMapRepository extends BaseRepository {
     constructor() {
         super(MindMap);

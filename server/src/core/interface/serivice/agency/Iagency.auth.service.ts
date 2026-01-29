@@ -1,5 +1,5 @@
 import { vendorData } from 'types';
-import { agencyProfileDTO } from '../../../../core/DTO/agency/response/agency.profile.js';
+import { agencyProfileDTO } from '../../../../core/DTO/agency/response/agency.profile';
 
 export interface IAgencyAuthService {
   verifyAgencySignup(

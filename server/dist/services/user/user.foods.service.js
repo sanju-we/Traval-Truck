@@ -11,7 +11,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from "inversify";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
+import { DataNotFoundError } from "../../utils/resAndErrors";
 let userFoodsService = class userFoodsService {
     _foodRepository;
     _subscriptionHistoryRepo;

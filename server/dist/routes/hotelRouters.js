@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import hotelAuthRoter from './hotelRoute/hotel.auth.route.js';
-import hotelProfileRouter from './hotelRoute/hote.profile.route.js';
-import { verifyHotelToken } from '../middleware/authMiddleware.js';
-import roomsRouter from './hotelRoute/hotel.rooms.route.js';
-import ordersRouter from './hotelRoute/hotel.orders.routes.js';
+import hotelAuthRoter from './hotelRoute/hotel.auth.route';
+import hotelProfileRouter from './hotelRoute/hote.profile.route';
+import { verifyHotelToken } from '../middleware/authMiddleware';
+import roomsRouter from './hotelRoute/hotel.rooms.route';
+import ordersRouter from './hotelRoute/hotel.orders.routes';
 const hotelRouter = Router();
 hotelRouter
     .use('/auth', hotelAuthRoter)

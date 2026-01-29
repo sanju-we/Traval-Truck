@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { IReplay } from "../core/interface/modelInterface/IReplay.js";
+import { IReplay } from "../core/interface/modelInterface/IReplay";
 
 const replaySchema = new Schema<IReplay>({
   comment:{type:String},

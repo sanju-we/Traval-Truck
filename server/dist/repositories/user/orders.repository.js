@@ -1,6 +1,6 @@
-import { BaseRepository } from "../../repositories/baseRepository.js";
-import { Order } from "../../models/Orders.js";
-import { toTripDTO } from "../../core/DTO/user/Response/user.trip.DTO.js";
+import { BaseRepository } from "../../repositories/baseRepository";
+import { Order } from "../../models/Orders";
+import { toTripDTO } from "../../core/DTO/user/Response/user.trip.DTO";
 export class OrderRepository extends BaseRepository {
     constructor() {
         super(Order);

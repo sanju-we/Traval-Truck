@@ -1,11 +1,11 @@
-import { subscriptionData } from 'types/index.js';
-import { IAdminSubscriptionService } from '../../core/interface/serivice/admin/IAdmin.subscription.service.js';
+import { subscriptionData } from 'types/index';
+import { IAdminSubscriptionService } from '../../core/interface/serivice/admin/IAdmin.subscription.service';
 import { inject, injectable } from 'inversify';
-import { ISubscriptionRepository } from '../../core/interface/repositorie/ISubscription.respository.js';
-import { subscriptionDTO, toSubdcriptionDTO } from '../../core/DTO/subscription.dto.js';
-import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors.js';
-import { logger } from '../../utils/logger.js';
-import { ISubscriptionValidator } from '../../core/interface/validator/Isubscription.validator.js';
+import { ISubscriptionRepository } from '../../core/interface/repositorie/ISubscription.respository';
+import { subscriptionDTO, toSubdcriptionDTO } from '../../core/DTO/subscription.dto';
+import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors';
+import { logger } from '../../utils/logger';
+import { ISubscriptionValidator } from '../../core/interface/validator/Isubscription.validator';
 
 @injectable()
 export class AdminSubscriptionService implements IAdminSubscriptionService {

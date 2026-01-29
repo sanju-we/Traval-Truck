@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { IAdminAuthController } from '../../core/interface/controllerInterface/admin/IAuth.controller.js';
-import { asyncHandler } from '../../middleware/asyncHandler.js';
-import { container } from '../../core/DI/container.js';
+import { IAdminAuthController } from '../../core/interface/controllerInterface/admin/IAuth.controller';
+import { asyncHandler } from '../../middleware/asyncHandler';
+import { container } from '../../core/DI/container';
 
 const adminAuthRoute = Router();
 const adminAuthController = container.get<IAdminAuthController>('IAdminAuthController');

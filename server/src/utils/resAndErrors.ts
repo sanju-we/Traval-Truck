@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { STATUS_CODE } from './HTTPStatusCode.js';
+import { STATUS_CODE } from './HTTPStatusCode';
 
 export function sendResponse<T = unknown>(
   res: Response,

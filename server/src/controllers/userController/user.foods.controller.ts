@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { IUserFoodsController } from "../../core/interface/controllerInterface/user/IUser.foods.controller.js";
-import { BADREQUEST, sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
-import { IUserFoodsService } from "../../core/interface/serivice/user/IUser.foods.service.js";
+import { IUserFoodsController } from "../../core/interface/controllerInterface/user/IUser.foods.controller";
+import { BADREQUEST, sendResponse } from "../../utils/resAndErrors";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/responseMessaages";
+import { IUserFoodsService } from "../../core/interface/serivice/user/IUser.foods.service";
 import { inject,injectable } from "inversify";
 
 @injectable()

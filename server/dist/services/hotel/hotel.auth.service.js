@@ -12,9 +12,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { inject, injectable } from 'inversify';
 import bcrypt from 'bcryptjs';
-import { OtpExpiredError, InvalidCredentialsError, EmailAlreadyRegisteredError, UserNotFoundError, InvalidResetTokenError, } from '../../utils/resAndErrors.js';
-import { toHotelProfile } from '../../core/DTO/hotel/hotel.dto.js';
-import { logger } from '../../utils/logger.js';
+import { OtpExpiredError, InvalidCredentialsError, EmailAlreadyRegisteredError, UserNotFoundError, InvalidResetTokenError, } from '../../utils/resAndErrors';
+import { toHotelProfile } from '../../core/DTO/hotel/hotel.dto';
+import { logger } from '../../utils/logger';
 let HotelAuthService = class HotelAuthService {
     _ijwt;
     _redisClient;

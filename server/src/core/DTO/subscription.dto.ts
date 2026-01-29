@@ -1,5 +1,5 @@
-import { ISubscriptions } from '../../core/interface/modelInterface/Isubscription.js';
-import { IDuration } from '../../core/interface/modelInterface/Isubscription.js';
+import { ISubscriptions } from '../../core/interface/modelInterface/Isubscription';
+import { IDuration } from '../../core/interface/modelInterface/Isubscription';
 
 export interface subscriptionDTO {
   id: string;

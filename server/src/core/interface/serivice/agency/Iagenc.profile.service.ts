@@ -1,4 +1,4 @@
-import { vendorRequestDTO } from '../../../DTO/admin/vendor.response.dto/vendor.response.dto.js';
+import { vendorRequestDTO } from '../../../DTO/admin/vendor.response.dto/vendor.response.dto';
 
 export interface IAgencyProfileService {
   updateProfile(

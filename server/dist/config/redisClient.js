@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { createClient } from 'redis';
 import { injectable } from 'inversify';
-import { logger } from '../utils/logger.js';
+import { logger } from '../utils/logger';
 class RedisError extends Error {
     constructor(message) {
         super(message);

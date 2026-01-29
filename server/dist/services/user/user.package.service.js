@@ -11,8 +11,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from "inversify";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
-import { toCouponDTO } from "../../core/DTO/admin/coupon/admin.coupon.response.js";
+import { DataNotFoundError } from "../../utils/resAndErrors";
+import { toCouponDTO } from "../../core/DTO/admin/coupon/admin.coupon.response";
 let UserPackageSerivce = class UserPackageSerivce {
     _packageRepo;
     _subscriptionHistoryRepo;

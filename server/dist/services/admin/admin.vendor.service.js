@@ -11,7 +11,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { injectable, inject } from 'inversify';
-import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors.js';
+import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors';
 let AdminVendorService = class AdminVendorService {
     _userRepository;
     _agencyrepository;

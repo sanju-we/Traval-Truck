@@ -1,9 +1,9 @@
 import { inject, injectable } from "inversify";
-import { CouponDTO, toCouponDTO } from "../../core/DTO/admin/coupon/admin.coupon.response.js";
-import { IAdminCouponService } from "../../core/interface/serivice/admin/IAdmin.coupon.service.js";
-import { ICouponValidator } from "../../core/interface/validator/Icoupon.validator.js";
-import { IAdminCouponRepository } from "../../core/interface/repositorie/admin/Iadmin.coupon.repository.js";
-import { Data_Creation_Error, DataNotFoundError, DataUpdatingError } from "../../utils/resAndErrors.js";
+import { CouponDTO, toCouponDTO } from "../../core/DTO/admin/coupon/admin.coupon.response";
+import { IAdminCouponService } from "../../core/interface/serivice/admin/IAdmin.coupon.service";
+import { ICouponValidator } from "../../core/interface/validator/Icoupon.validator";
+import { IAdminCouponRepository } from "../../core/interface/repositorie/admin/Iadmin.coupon.repository";
+import { Data_Creation_Error, DataNotFoundError, DataUpdatingError } from "../../utils/resAndErrors";
 
 @injectable()
 export class AdminCouponService implements IAdminCouponService {

@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { container } from "../../core/DI/container.js";
-import { asyncHandler } from "../../middleware/asyncHandler.js";
+import { container } from "../../core/DI/container";
+import { asyncHandler } from "../../middleware/asyncHandler";
 const userPackageRouter = Router();
 const packageController = container.get('IUserPackageController');
 userPackageRouter.get('/', asyncHandler(packageController.getLatestPackage.bind(packageController)))

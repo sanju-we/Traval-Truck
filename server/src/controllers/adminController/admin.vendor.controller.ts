@@ -1,13 +1,13 @@
-import { IAdminVendorController } from '../../core/interface/controllerInterface/admin/Iadmin.vendor.controller.js';
-import { sendResponse } from '../../utils/resAndErrors.js';
-import { HttpError } from '../../utils/resAndErrors.js';
-import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
-import { IJWT } from '../../core/interface/JWT/JWTInterface.js';
-import { IAdminVendorRepository } from '../../core/interface/repositorie/admin/Iadmin.vendor.repository.js';
-import { IAdminVendorService } from '../../core/interface/serivice/admin/IAdmin.vendor.service.js';
+import { IAdminVendorController } from '../../core/interface/controllerInterface/admin/Iadmin.vendor.controller';
+import { sendResponse } from '../../utils/resAndErrors';
+import { HttpError } from '../../utils/resAndErrors';
+import { STATUS_CODE } from '../../utils/HTTPStatusCode';
+import { IJWT } from '../../core/interface/JWT/JWTInterface';
+import { IAdminVendorRepository } from '../../core/interface/repositorie/admin/Iadmin.vendor.repository';
+import { IAdminVendorService } from '../../core/interface/serivice/admin/IAdmin.vendor.service';
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
-import { MESSAGES } from '../../utils/responseMessaages.js';
+import { MESSAGES } from '../../utils/responseMessaages';
 
 @injectable()
 export class AdminVendorController implements IAdminVendorController {

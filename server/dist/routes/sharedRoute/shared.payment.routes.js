@@ -1,6 +1,6 @@
 import express from 'express';
-import { container } from '../../core/DI/container.js';
-import { asyncHandler } from '../../middleware/asyncHandler.js';
+import { container } from '../../core/DI/container';
+import { asyncHandler } from '../../middleware/asyncHandler';
 const paymentRouter = express.Router();
 const paymentController = container.get('IPaymentController');
 const webhook = container.get('IWebhookController');

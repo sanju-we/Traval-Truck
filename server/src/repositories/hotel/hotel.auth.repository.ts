@@ -1,7 +1,7 @@
-import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Ihotel.auth.repository.js';
-import { BaseRepository, RepositoryError } from '../../repositories/baseRepository.js';
-import { Hotel } from '../../models/Hotel.js';
-import { IHotel } from '../../core/interface/modelInterface/IHotel.js';
+import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Ihotel.auth.repository';
+import { BaseRepository, RepositoryError } from '../../repositories/baseRepository';
+import { Hotel } from '../../models/Hotel';
+import { IHotel } from '../../core/interface/modelInterface/IHotel';
 import z from 'zod';
 
 export class HotelAuthRepository extends BaseRepository<IHotel> implements IHotelAuthRepository {

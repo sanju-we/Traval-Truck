@@ -22,6 +22,7 @@ const agencySchema = new Schema({
         type: Number,
         default: 0,
     },
+    address: { type: String, },
     packages: [
         {
             type: String,

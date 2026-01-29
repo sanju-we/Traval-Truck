@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { ISharedSubscriptionController } from "../../core/interface/controllerInterface/shared/Ishared.subscription.controller.js";
-import { ISharedSubscriptionService } from "../../core/interface/serivice/shared/Ishared.subscription.service.js";
+import { ISharedSubscriptionController } from "../../core/interface/controllerInterface/shared/Ishared.subscription.controller";
+import { ISharedSubscriptionService } from "../../core/interface/serivice/shared/Ishared.subscription.service";
 import { inject, injectable } from "inversify";
-import { sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
-import { logger } from "../../utils/logger.js";
+import { sendResponse } from "../../utils/resAndErrors";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/responseMessaages";
+import { logger } from "../../utils/logger";
 
 @injectable()
 export class SharedSubscriptionController implements ISharedSubscriptionController {

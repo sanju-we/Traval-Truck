@@ -1,4 +1,4 @@
-import { IRestaurant } from '../../../core/interface/modelInterface/IRestaurant.js';
+import { IRestaurant } from '../../../core/interface/modelInterface/IRestaurant';
 
 export interface RestaurantProfileDTO {
   id: string;

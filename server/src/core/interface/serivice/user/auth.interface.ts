@@ -1,4 +1,4 @@
-import { UserData, userProfileDTO } from '../../../../types/index.js';
+import { UserData, userProfileDTO } from '../../../../types/index';
 
 export interface IAuthService {
   verify(

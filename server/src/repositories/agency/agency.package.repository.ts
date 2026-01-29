@@ -1,10 +1,10 @@
-import { IAgencyPackageRepository } from "../../core/interface/repositorie/agency/Iagency.package.repository.js";
-import { BaseRepository } from "../../repositories/baseRepository.js";
-import { Package } from "../../models/Package.js";
-import { IPackage } from "../../core/interface/modelInterface/Ipackage.js";
-import { logger } from "../../utils/logger.js";
-import { PackageResDTO, toPackageResDTO } from "../../core/DTO/agency/response/agency.packageDTO.js";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
+import { IAgencyPackageRepository } from "../../core/interface/repositorie/agency/Iagency.package.repository";
+import { BaseRepository } from "../../repositories/baseRepository";
+import { Package } from "../../models/Package";
+import { IPackage } from "../../core/interface/modelInterface/Ipackage";
+import { logger } from "../../utils/logger";
+import { PackageResDTO, toPackageResDTO } from "../../core/DTO/agency/response/agency.packageDTO";
+import { DataNotFoundError } from "../../utils/resAndErrors";
 
 export class AgencyPackageRepository extends BaseRepository<IPackage> implements IAgencyPackageRepository {
   constructor() {

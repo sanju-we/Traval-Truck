@@ -11,9 +11,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from "inversify";
-import { sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
+import { sendResponse } from "../../utils/resAndErrors";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/responseMessaages";
 let UserMindMapController = class UserMindMapController {
     _mindMapService;
     constructor(_mindMapService) {
@@ -30,6 +30,16 @@ let UserMindMapController = class UserMindMapController {
         const userId = req.user.id;
         const mindMaps = await this._mindMapService.getMaps(Number(page), userId);
         sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, mindMaps);
+    }
+    async mindMap(req, res) {
+        const mapId = req.query.id;
+        const mindMap = await this._mindMapService.getMap(mapId);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, mindMap);
+    }
+    async confirmMap(req, res) {
+        const mapId = req.body.id;
+        const updated = await this._mindMapService.confirmMap(mapId);
+        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updated);
     }
 };
 UserMindMapController = __decorate([

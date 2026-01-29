@@ -1,5 +1,5 @@
-import { WallterDTO } from "../../../../core/DTO/shared/wallet.dto.js";
-import { IWallet } from "../../../../core/interface/modelInterface/IWaller.js";
+import { WallterDTO } from "../../../../core/DTO/shared/wallet.dto";
+import { IWallet } from "../../../../core/interface/modelInterface/IWaller";
 import { IBaserepository } from "../IBaseRepositories";
 
 export interface IWalletRespository extends IBaserepository<IWallet> {

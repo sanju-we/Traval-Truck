@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import agencyAuthRoute from './agencyRoute/agency.auth.route.js';
-import agencyProfileRouter from './agencyRoute/agency.profile.route.js';
-import { verifyAgencyToken } from '../middleware/authMiddleware.js';
-import agencyPackage from './agencyRoute/agency.package.route.js';
-import orderRouter from './agencyRoute/agency.order.route.js';
+import agencyAuthRoute from './agencyRoute/agency.auth.route';
+import agencyProfileRouter from './agencyRoute/agency.profile.route';
+import { verifyAgencyToken } from '../middleware/authMiddleware';
+import agencyPackage from './agencyRoute/agency.package.route';
+import orderRouter from './agencyRoute/agency.order.route';
 
 const agencyRouter = Router();
 

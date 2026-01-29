@@ -11,9 +11,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from 'inversify';
-import { ImageDeleteInCloudinary, UserNotFoundError } from '../../utils/resAndErrors.js';
-import { toVendorRequestDTO, } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto.js';
-import { deleteImage, extractPublicId, singleUpload } from '../../utils/upload.cloudinary.js';
+import { ImageDeleteInCloudinary, UserNotFoundError } from '../../utils/resAndErrors';
+import { toVendorRequestDTO, } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto';
+import { deleteImage, extractPublicId, singleUpload } from '../../utils/upload.cloudinary';
 let HotelProfileService = class HotelProfileService {
     _hotelAuthRepo;
     _authValidator;

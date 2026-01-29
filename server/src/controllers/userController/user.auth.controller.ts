@@ -1,21 +1,21 @@
 import { Request, Response } from 'express';
 import { injectable, inject } from 'inversify';
-import { IController } from '../../core/interface/controllerInterface/user/user.Interface.js';
-import { IAuthService } from '../../core/interface/serivice/user/auth.interface.js';
-import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository.js';
-import { IJWT } from '../../core/interface/JWT/JWTInterface.js';
-import { IEmailService } from '../../core/interface/emailInterface/emailInterface.js';
-import { sendResponse } from '../../utils/resAndErrors.js';
-import { IGeneralService } from '../../core/interface/serivice/Igeneral.service.js';
-import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
+import { IController } from '../../core/interface/controllerInterface/user/user.Interface';
+import { IAuthService } from '../../core/interface/serivice/user/auth.interface';
+import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository';
+import { IJWT } from '../../core/interface/JWT/JWTInterface';
+import { IEmailService } from '../../core/interface/emailInterface/emailInterface';
+import { sendResponse } from '../../utils/resAndErrors';
+import { IGeneralService } from '../../core/interface/serivice/Igeneral.service';
+import { STATUS_CODE } from '../../utils/HTTPStatusCode';
 import { z } from 'zod';
-import { logger } from '../../utils/logger.js';
+import { logger } from '../../utils/logger';
 import {
   HttpError,
   UserNotFoundError,
   InvalidCredentialsError,
   InvalidResetTokenError,
-} from '../../utils/resAndErrors.js';
+} from '../../utils/resAndErrors';
 
 @injectable()
 export class AuthController implements IController {

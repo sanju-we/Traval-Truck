@@ -12,9 +12,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { inject, injectable } from 'inversify';
 import z from 'zod';
-import { UserNotFoundError } from '../../utils/resAndErrors.js';
-import { singleUpload } from '../../utils/upload.cloudinary.js';
-import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
+import { UserNotFoundError } from '../../utils/resAndErrors';
+import { singleUpload } from '../../utils/upload.cloudinary';
+import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile';
 let UserProfileService = class UserProfileService {
     _authRespository;
     constructor(_authRespository) {

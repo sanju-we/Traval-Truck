@@ -11,8 +11,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from "inversify";
-import { toOrderDTO } from "../../core/DTO/agency/response/agency.order.DTO.js";
-import { DataNotFoundError, PAYMENT_VERIFICATOIN_FAILED, ROOM_VACATING_EARLY } from "../../utils/resAndErrors.js";
+import { toOrderDTO } from "../../core/DTO/agency/response/agency.order.DTO";
+import { DataNotFoundError, PAYMENT_VERIFICATOIN_FAILED, ROOM_VACATING_EARLY } from "../../utils/resAndErrors";
 let HotelOrderService = class HotelOrderService {
     _orderRepo;
     _baseValidator;

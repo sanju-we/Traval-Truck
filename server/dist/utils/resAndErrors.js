@@ -1,4 +1,4 @@
-import { STATUS_CODE } from './HTTPStatusCode.js';
+import { STATUS_CODE } from './HTTPStatusCode';
 export function sendResponse(res, status, success, message, data) {
     res.status(status).json({ success, message, data });
 }

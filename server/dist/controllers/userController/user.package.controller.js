@@ -11,9 +11,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from "inversify";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { BADREQUEST, sendResponse } from "../../utils/resAndErrors.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
+import { STATUS_CODE } from "../../utils/HTTPStatusCode";
+import { BADREQUEST, sendResponse } from "../../utils/resAndErrors";
+import { MESSAGES } from "../../utils/responseMessaages";
 let UserPackageController = class UserPackageController {
     _userPackageService;
     constructor(_userPackageService) {

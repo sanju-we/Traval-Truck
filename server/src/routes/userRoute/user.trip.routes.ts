@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { IUserTripController } from "../../core/interface/controllerInterface/user/IUser.trip.controller.js";
-import { container } from "../../core/DI/container.js";
-import { asyncHandler } from "../../middleware/asyncHandler.js";
+import { IUserTripController } from "../../core/interface/controllerInterface/user/IUser.trip.controller";
+import { container } from "../../core/DI/container";
+import { asyncHandler } from "../../middleware/asyncHandler";
 
 const tripRouter = Router()
 const tripController = container.get<IUserTripController>('IUserTripController')

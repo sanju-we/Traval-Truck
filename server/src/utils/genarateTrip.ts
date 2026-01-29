@@ -1,6 +1,6 @@
-import { TripPlan } from "../types/index.js";
-import { IPackage } from "../core/interface/modelInterface/Ipackage.js";
-import { IGenerateTrip } from "../core/interface/utils/Igenerate.trip.js";
+import { TripPlan } from "../types/index";
+import { IPackage } from "../core/interface/modelInterface/Ipackage";
+import { IGenerateTrip } from "../core/interface/utils/Igenerate.trip";
 
 export class TripGenerator implements IGenerateTrip {
   async generatePlanFromItinerary(itineray: IPackage["itinerary"], date: Date): Promise<TripPlan[]> {

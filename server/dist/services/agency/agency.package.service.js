@@ -11,10 +11,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { inject, injectable } from "inversify";
-import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors.js";
-import { toPackageResDTO } from "../../core/DTO/agency/response/agency.packageDTO.js";
-import { logger } from "../../utils/logger.js";
-import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.cloudinary.js";
+import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors";
+import { toPackageResDTO } from "../../core/DTO/agency/response/agency.packageDTO";
+import { logger } from "../../utils/logger";
+import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.cloudinary";
 let AgencyPackageService = class AgencyPackageService {
     _agencyPackeageRepository;
     _authValidator;

@@ -1,5 +1,5 @@
-import { Payment } from "../../models/Payment.js";
-import { BaseRepository } from "../../repositories/baseRepository.js";
+import { Payment } from "../../models/Payment";
+import { BaseRepository } from "../../repositories/baseRepository";
 export class PaymentRepository extends BaseRepository {
     constructor() {
         super(Payment);

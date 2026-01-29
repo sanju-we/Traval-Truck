@@ -6,6 +6,36 @@ const placeSchema = new Schema({
     lat: { type: Number, required: true },
     lng: { type: Number, required: true },
 }, { _id: false });
+const startingPosition = new Schema({
+    address: { type: String },
+    lat: { type: Number },
+    lng: { type: Number }
+});
+const aiInsightsSchema = new Schema({
+    feasibilityStatus: { type: String },
+    feasibilityDetails: { type: String },
+    dailyTravelDistanceReality: { type: String },
+    dailyTravelDistanceDetails: { type: String },
+    budgetReliability: { type: String },
+    budgetReliabilityDetails: { type: String },
+    risks: { type: [String] },
+    improvements: { type: [String] },
+});
+const budget = new Schema({
+    fuelAmount: { type: Number },
+    foodAmount: { type: Number },
+    totalApproximateBudget: { type: Number }
+});
+const timeAllocation = new Schema({
+    drivingHoursAllocatedPerDay: { type: Number },
+    estimatedActualDrivingTimeInVehicle: { type: String },
+    timeForFoodAndActivities: { type: String }
+});
+const routeSchema = new Schema({
+    totalDistance: { type: Number },
+    fuelCost: { type: Number },
+    days: { type: Number }
+});
 const planSchema = new Schema({
     id: { type: Number },
     name: { type: String },
@@ -17,16 +47,19 @@ const mindMapSchema = new Schema({
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     places: { type: [placeSchema], required: true },
-    startingPosition: { type: [String], required: true },
+    startingPosition: { type: startingPosition, required: true },
     partners: { type: Number },
-    budget: { type: Number },
+    budget: { type: budget },
+    routeMetrics: { type: routeSchema },
+    aiInsights: { type: aiInsightsSchema },
     userId: { type: String, ref: 'User', required: true },
+    timeAllocation: { type: timeAllocation },
     orderId: { type: String, required: true, unique: true },
-    status: { type: String, enum: ['Pending', 'Ongoing', 'Completed'], default: 'Pending' },
+    status: { type: String, enum: ['Draft', 'Ongoing', 'Completed', 'Confirm'], default: 'Draft' },
     plan: { type: [[planSchema]] },
     tripProgress: { type: [String] },
     isPublic: { type: Boolean, default: false },
     createdAt: { type: Date },
     updatedAt: { type: Date }
-});
+}, { timestamps: true });
 export const MindMap = model('MindMap', mindMapSchema);

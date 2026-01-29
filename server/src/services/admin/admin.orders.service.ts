@@ -1,8 +1,8 @@
-import { IAdminOrderService } from "../../core/interface/serivice/admin/Iadmin.orders.service.js";
+import { IAdminOrderService } from "../../core/interface/serivice/admin/Iadmin.orders.service";
 import { inject, injectable } from "inversify";
-import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository.js";
-import { DataNotFoundError } from "../../utils/resAndErrors.js";
-import { TripDTO } from "../../core/DTO/user/Response/user.trip.DTO.js";
+import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository";
+import { DataNotFoundError } from "../../utils/resAndErrors";
+import { TripDTO } from "../../core/DTO/user/Response/user.trip.DTO";
 
 injectable()
 export class AdminOrderService implements IAdminOrderService {

@@ -1,4 +1,4 @@
-import { RoomsDTO } from "../../../../core/DTO/hotel/roomsDTO.js";
+import { RoomsDTO } from "../../../../core/DTO/hotel/roomsDTO";
 
 export interface IUserHotelsService {
   getAllHotels(page: number, limit: number,search?:string): Promise<{

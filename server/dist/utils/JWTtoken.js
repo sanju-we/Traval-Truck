@@ -6,8 +6,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { injectable } from 'inversify';
 import jwt from 'jsonwebtoken';
-import { InvalidResetTokenError } from '../utils/resAndErrors.js';
-import { logger } from '../utils/logger.js';
+import { InvalidResetTokenError } from '../utils/resAndErrors';
+import { logger } from '../utils/logger';
 let JWT = class JWT {
     JWT_SECRET = process.env.JWT_SECRET || 'your-secret';
     ACCESS_TOKEN_EXPIRY = '15m';
