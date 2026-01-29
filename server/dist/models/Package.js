@@ -1,16 +1,19 @@
-import { Schema, model } from 'mongoose';
-export const itinerary = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Package = exports.reviews = exports.itinerary = void 0;
+const mongoose_1 = require("mongoose");
+exports.itinerary = {
     activities: [String],
     day: Number,
     title: String,
 };
-export const reviews = {
+exports.reviews = {
     Comment: String,
     Date: Date,
     Rating: Number,
     userID: String,
 };
-const packageSchema = new Schema({
+const packageSchema = new mongoose_1.Schema({
     title: {
         type: String,
         required: true,
@@ -28,10 +31,10 @@ const packageSchema = new Schema({
     },
     availableFoods: { type: [String] },
     discoveries: { type: [String], required: true },
-    itinerary: { type: [itinerary] },
-    reviews: { type: [reviews] },
+    itinerary: { type: [exports.itinerary] },
+    reviews: { type: [exports.reviews] },
     CreatedBy: { type: Date, default: new Date() },
     images: { type: [String], required: true },
     ownedBy: { type: String, ref: 'Agency' }
 });
-export const Package = model('Package', packageSchema);
+exports.Package = (0, mongoose_1.model)('Package', packageSchema);

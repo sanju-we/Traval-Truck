@@ -1,4 +1,7 @@
-export const toReviewWithReplayDTO = (review, replays) => ({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.toReviewDTO = exports.toReviewWithReplayDTO = void 0;
+const toReviewWithReplayDTO = (review, replays) => ({
     userId: review.userId,
     comment: review.comment,
     rate: review.rating,
@@ -7,8 +10,10 @@ export const toReviewWithReplayDTO = (review, replays) => ({
         replayer: r.replayer
     }))
 });
-export const toReviewDTO = (review) => ({
+exports.toReviewWithReplayDTO = toReviewWithReplayDTO;
+const toReviewDTO = (review) => ({
     userId: review.userId,
     comment: review.comment,
     rate: review.rating
 });
+exports.toReviewDTO = toReviewDTO;

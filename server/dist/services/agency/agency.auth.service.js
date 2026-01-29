@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,17 +11,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { logger } from '../../utils/logger';
-import { inject, injectable } from 'inversify';
-import { toAgencyProfileDTO, } from '../../core/DTO/agency/response/agency.profile';
-import { OtpExpiredError, InvalidOtpError, EmailAlreadyRegisteredError, UserNotFoundError, InvalidCredentialsError, } from '../../utils/resAndErrors';
-import bcrypt from 'bcryptjs';
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.agencyAuthService = void 0;
+const logger_1 = require("../../utils/logger");
+const inversify_1 = require("inversify");
+const agency_profile_1 = require("../../core/DTO/agency/response/agency.profile");
+const resAndErrors_1 = require("../../utils/resAndErrors");
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 let agencyAuthService = class agencyAuthService {
-    _redisClient;
-    _agencyRepository;
-    _ijwt;
-    _emailService;
-    _authValidator;
     constructor(_redisClient, _agencyRepository, _ijwt, _emailService, _authValidator) {
         this._redisClient = _redisClient;
         this._agencyRepository = _agencyRepository;
@@ -32,14 +33,14 @@ let agencyAuthService = class agencyAuthService {
         await this._authValidator.signUpValidator(enteredEmail, enteredOtp, agencyData);
         const pending = await this._redisClient.get(`pending:${enteredEmail}`);
         if (!pending)
-            throw new OtpExpiredError();
+            throw new resAndErrors_1.OtpExpiredError();
         const { otp, email } = JSON.parse(pending);
         if (otp !== enteredOtp || email !== enteredEmail)
-            throw new InvalidOtpError();
+            throw new resAndErrors_1.InvalidOtpError();
         const existingAgency = await this._agencyRepository.findByEmail(email);
         if (existingAgency)
-            throw new EmailAlreadyRegisteredError();
-        const hashedPassword = await bcrypt.hash(agencyData.password, 10);
+            throw new resAndErrors_1.EmailAlreadyRegisteredError();
+        const hashedPassword = await bcryptjs_1.default.hash(agencyData.password, 10);
         const agencyDoc = await this._agencyRepository.create({
             ownerName: agencyData.ownerName,
             companyName: agencyData.companyName,
@@ -54,48 +55,48 @@ let agencyAuthService = class agencyAuthService {
             role: agencyDoc.role,
         });
         await this._redisClient.del(`pending:${email}`);
-        logger.info(`${agencyDoc.companyName} ragistered successfully`);
-        return { agencyData: toAgencyProfileDTO(agencyDoc), accessToken, refreshToken };
+        logger_1.logger.info(`${agencyDoc.companyName} ragistered successfully`);
+        return { agencyData: (0, agency_profile_1.toAgencyProfileDTO)(agencyDoc), accessToken, refreshToken };
     }
     async verifyAgencyLogin(email, password) {
         await this._authValidator.loginValidator(email, password);
         const agency = await this._agencyRepository.findByEmail(email);
         if (!agency)
-            throw new UserNotFoundError();
-        const match = await bcrypt.compare(password, agency.password);
+            throw new resAndErrors_1.UserNotFoundError();
+        const match = await bcryptjs_1.default.compare(password, agency.password);
         if (!match)
-            throw new InvalidCredentialsError();
+            throw new resAndErrors_1.InvalidCredentialsError();
         const { accessToken, refreshToken } = await this._ijwt.generateToken({
             id: agency.id,
             role: agency.role,
         });
-        return { agencyData: toAgencyProfileDTO(agency), accessToken, refreshToken };
+        return { agencyData: (0, agency_profile_1.toAgencyProfileDTO)(agency), accessToken, refreshToken };
     }
     async sendAgencyResetLink(email) {
         await this._authValidator.emailValidator(email);
         const agencyData = await this._agencyRepository.findByEmail(email);
         if (!agencyData)
-            throw new UserNotFoundError();
+            throw new resAndErrors_1.UserNotFoundError();
         const agency = { id: agencyData.id, email: agencyData.email };
         const { resetLink } = await this._ijwt.generateResetToken(agency);
         await this._emailService.sendEmail(email, 'Password Reset', `Reset your password: ${resetLink}`);
-        logger.info(`From agencyAuth->sendLink:- Password reset link sent to ${email}`);
+        logger_1.logger.info(`From agencyAuth->sendLink:- Password reset link sent to ${email}`);
     }
     async resetPassword(token, newPassword) {
         await this._authValidator.resetPasswordValidator(token, newPassword);
         const payload = await this._ijwt.verifyResetToken(token);
         const agency = await this._agencyRepository.findById(payload.id);
         if (!agency)
-            throw new UserNotFoundError();
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
+            throw new resAndErrors_1.UserNotFoundError();
+        const hashedPassword = await bcryptjs_1.default.hash(newPassword, 10);
         await this._agencyRepository.updateAgencyPasswordById(payload.id, hashedPassword);
-        logger.info(`${agency.companyName} password updated`);
+        logger_1.logger.info(`${agency.companyName} password updated`);
         return;
     }
     async updatepartner(id, partnerId) {
         const agency = await this._agencyRepository.findById(id);
         if (!agency)
-            throw new UserNotFoundError();
+            throw new resAndErrors_1.UserNotFoundError();
         agency.partners.push(partnerId);
         const done = await agency.save();
         if (done)
@@ -104,13 +105,13 @@ let agencyAuthService = class agencyAuthService {
             return false;
     }
 };
-agencyAuthService = __decorate([
-    injectable(),
-    __param(0, inject('IRedisClient')),
-    __param(1, inject('IAgencyRespository')),
-    __param(2, inject('IJWT')),
-    __param(3, inject('IEmailService')),
-    __param(4, inject('IAuthValidator')),
+exports.agencyAuthService = agencyAuthService;
+exports.agencyAuthService = agencyAuthService = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)('IRedisClient')),
+    __param(1, (0, inversify_1.inject)('IAgencyRespository')),
+    __param(2, (0, inversify_1.inject)('IJWT')),
+    __param(3, (0, inversify_1.inject)('IEmailService')),
+    __param(4, (0, inversify_1.inject)('IAuthValidator')),
     __metadata("design:paramtypes", [Object, Object, Object, Object, Object])
 ], agencyAuthService);
-export { agencyAuthService };

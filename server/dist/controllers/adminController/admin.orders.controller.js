@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,23 +11,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { inject, injectable } from "inversify";
-import { sendResponse } from "../../utils/resAndErrors";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode";
-import { MESSAGES } from "../../utils/responseMessaages";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AdminOrdersController = void 0;
+const inversify_1 = require("inversify");
+const resAndErrors_1 = require("../../utils/resAndErrors");
+const HTTPStatusCode_1 = require("../../utils/HTTPStatusCode");
+const responseMessaages_1 = require("../../utils/responseMessaages");
 let AdminOrdersController = class AdminOrdersController {
-    _orderService;
     constructor(_orderService) {
         this._orderService = _orderService;
     }
     async getAllOrders(req, res) {
         const orders = await this._orderService.getAllOrders();
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, orders);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.ALL_DATA_FOUND, orders);
     }
 };
-AdminOrdersController = __decorate([
-    injectable(),
-    __param(0, inject('IAdminOrderService')),
+exports.AdminOrdersController = AdminOrdersController;
+exports.AdminOrdersController = AdminOrdersController = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)('IAdminOrderService')),
     __metadata("design:paramtypes", [Object])
 ], AdminOrdersController);
-export { AdminOrdersController };

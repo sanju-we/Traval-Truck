@@ -1,4 +1,7 @@
-export function splitIntoDays(route, totalDays) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.splitIntoDays = splitIntoDays;
+function splitIntoDays(route, totalDays) {
     console.log(totalDays);
     const perDay = Math.ceil(route.length / totalDays);
     const result = [];

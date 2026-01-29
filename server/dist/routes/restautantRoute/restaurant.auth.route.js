@@ -1,14 +1,16 @@
-import { Router } from 'express';
-import { container } from '../../core/DI/container';
-import { asyncHandler } from '../../middleware/asyncHandler';
-import { verifyRestaurantToken } from '../../middleware/authMiddleware';
-const restaurantAuthRouter = Router();
-const restaurantAuthController = container.get('IRestaurantAuthController');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const container_1 = require("../../core/DI/container");
+const asyncHandler_1 = require("../../middleware/asyncHandler");
+const authMiddleware_1 = require("../../middleware/authMiddleware");
+const restaurantAuthRouter = (0, express_1.Router)();
+const restaurantAuthController = container_1.container.get('IRestaurantAuthController');
 restaurantAuthRouter
-    .post('/sendOtp', asyncHandler(restaurantAuthController.sendOtp.bind(restaurantAuthController)))
-    .post('/verify', asyncHandler(restaurantAuthController.verifyRestaurantSignup.bind(restaurantAuthController)))
-    .post('/login', asyncHandler(restaurantAuthController.verifyRestaurantLogin.bind(restaurantAuthController)))
-    .post('/logout', verifyRestaurantToken, asyncHandler(restaurantAuthController.restaurantLogout.bind(restaurantAuthController)))
-    .post('/forgot-password', asyncHandler(restaurantAuthController.forgotPassword.bind(restaurantAuthController)))
-    .post('/reset-password', asyncHandler(restaurantAuthController.resetPassword.bind(restaurantAuthController)));
-export default restaurantAuthRouter;
+    .post('/sendOtp', (0, asyncHandler_1.asyncHandler)(restaurantAuthController.sendOtp.bind(restaurantAuthController)))
+    .post('/verify', (0, asyncHandler_1.asyncHandler)(restaurantAuthController.verifyRestaurantSignup.bind(restaurantAuthController)))
+    .post('/login', (0, asyncHandler_1.asyncHandler)(restaurantAuthController.verifyRestaurantLogin.bind(restaurantAuthController)))
+    .post('/logout', authMiddleware_1.verifyRestaurantToken, (0, asyncHandler_1.asyncHandler)(restaurantAuthController.restaurantLogout.bind(restaurantAuthController)))
+    .post('/forgot-password', (0, asyncHandler_1.asyncHandler)(restaurantAuthController.forgotPassword.bind(restaurantAuthController)))
+    .post('/reset-password', (0, asyncHandler_1.asyncHandler)(restaurantAuthController.resetPassword.bind(restaurantAuthController)));
+exports.default = restaurantAuthRouter;

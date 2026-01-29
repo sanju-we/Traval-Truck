@@ -1,4 +1,3 @@
-// src/repositories/restaurant/restaurant.auth.repository.ts
 import { injectable } from 'inversify';
 import { BaseRepository, RepositoryError } from '../../repositories/baseRepository';
 import { IRestaurant } from '../../core/interface/modelInterface/IRestaurant';

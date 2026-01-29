@@ -1,14 +1,16 @@
-import { Router } from 'express';
-import { container } from '../../core/DI/container';
-import { asyncHandler } from '../../middleware/asyncHandler';
-import { verifyAgencyToken } from '../../middleware/authMiddleware';
-const agencyAuthRoute = Router();
-const agencyController = container.get('IAgencyAuthController');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const container_1 = require("../../core/DI/container");
+const asyncHandler_1 = require("../../middleware/asyncHandler");
+const authMiddleware_1 = require("../../middleware/authMiddleware");
+const agencyAuthRoute = (0, express_1.Router)();
+const agencyController = container_1.container.get('IAgencyAuthController');
 agencyAuthRoute
-    .post('/sendOtp', asyncHandler(agencyController.sendAgencyOTP.bind(agencyController)))
-    .post('/verify', asyncHandler(agencyController.verifyAgencySignup.bind(agencyController)))
-    .post('/login', asyncHandler(agencyController.verifyAgencyLogin.bind(agencyController)))
-    .post('/logout', verifyAgencyToken, asyncHandler(agencyController.agencyLogout.bind(agencyController)))
-    .post('/forgot-password', asyncHandler(agencyController.forgotPassword.bind(agencyController)))
-    .post('/resetPassword', asyncHandler(agencyController.resetPassword.bind(agencyController)));
-export default agencyAuthRoute;
+    .post('/sendOtp', (0, asyncHandler_1.asyncHandler)(agencyController.sendAgencyOTP.bind(agencyController)))
+    .post('/verify', (0, asyncHandler_1.asyncHandler)(agencyController.verifyAgencySignup.bind(agencyController)))
+    .post('/login', (0, asyncHandler_1.asyncHandler)(agencyController.verifyAgencyLogin.bind(agencyController)))
+    .post('/logout', authMiddleware_1.verifyAgencyToken, (0, asyncHandler_1.asyncHandler)(agencyController.agencyLogout.bind(agencyController)))
+    .post('/forgot-password', (0, asyncHandler_1.asyncHandler)(agencyController.forgotPassword.bind(agencyController)))
+    .post('/resetPassword', (0, asyncHandler_1.asyncHandler)(agencyController.resetPassword.bind(agencyController)));
+exports.default = agencyAuthRoute;

@@ -1,4 +1,7 @@
-export const toSubdcriptionDTO = (subscription) => ({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.toSubdcriptionDTO = void 0;
+const toSubdcriptionDTO = (subscription) => ({
     id: subscription._id.toString(),
     name: subscription.Name,
     category: subscription.Category,
@@ -9,3 +12,4 @@ export const toSubdcriptionDTO = (subscription) => ({
     features: subscription.Features,
     isActive: subscription.IsActive,
 });
+exports.toSubdcriptionDTO = toSubdcriptionDTO;

@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,17 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { inject, injectable } from "inversify";
-import { logger } from "../../utils/logger";
-import { toOrderDTO } from "../../core/DTO/agency/response/agency.order.DTO";
-import { DataNotFoundError, DataUpdatingError, INVALID_STATUS_UPDATION, START_DATE_ERROR, TRIP_ALREADY_STARTED, TRIP_UPDATION_ERROR } from "../../utils/resAndErrors";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AgencyOrderService = void 0;
+const inversify_1 = require("inversify");
+const logger_1 = require("../../utils/logger");
+const agency_order_DTO_1 = require("../../core/DTO/agency/response/agency.order.DTO");
+const resAndErrors_1 = require("../../utils/resAndErrors");
 let AgencyOrderService = class AgencyOrderService {
-    _orderRepo;
-    _tripGenerator;
-    _baseValidator;
-    _walletRepo;
-    _paymentRepo;
-    _agencyRepo;
     constructor(_orderRepo, _tripGenerator, _baseValidator, _walletRepo, _paymentRepo, _agencyRepo) {
         this._orderRepo = _orderRepo;
         this._tripGenerator = _tripGenerator;
@@ -31,34 +28,34 @@ let AgencyOrderService = class AgencyOrderService {
     }
     async getAllOrder(userId) {
         const orders = await this._orderRepo.findAll({ ownedBy: userId }, {});
-        logger.info(`saj${orders}`);
-        return orders.map(toOrderDTO);
+        logger_1.logger.info(`saj${orders}`);
+        return orders.map(agency_order_DTO_1.toOrderDTO);
     }
     async setStartDate(orderId, date) {
         const order = await this._orderRepo.findOrderWithProduct(orderId);
         if (!order)
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         const plan = await this._tripGenerator.generatePlanFromItinerary(order.product.itinerary, new Date(date));
         const updated = await this._orderRepo.update(order.id, { startDate: date, plan: plan, endDate: plan[plan.length - 1].date.toString() });
         if (!updated)
-            throw new DataUpdatingError();
-        return toOrderDTO(updated);
+            throw new resAndErrors_1.DataUpdatingError();
+        return (0, agency_order_DTO_1.toOrderDTO)(updated);
     }
     async getOrder(orderId) {
         const order = await this._orderRepo.findOrderWithProduct(orderId);
         if (!order)
-            throw new DataNotFoundError();
-        return toOrderDTO(order);
+            throw new resAndErrors_1.DataNotFoundError();
+        return (0, agency_order_DTO_1.toOrderDTO)(order);
     }
     async startTrip(orderId) {
         await this._baseValidator.idValidator(orderId);
         const order = await this._orderRepo.findById(orderId);
         if (!order)
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         if (!order.startDate)
-            throw new START_DATE_ERROR();
+            throw new resAndErrors_1.START_DATE_ERROR();
         if (order.status !== 'Upcoming')
-            throw new TRIP_ALREADY_STARTED();
+            throw new resAndErrors_1.TRIP_ALREADY_STARTED();
         order.status = 'Ongoing';
         order.tripProgress = {
             currentDay: 1,
@@ -67,18 +64,18 @@ let AgencyOrderService = class AgencyOrderService {
         };
         const updated = await this._orderRepo.update(order._id.toString(), order);
         if (!updated)
-            throw new DataUpdatingError();
-        return toOrderDTO(updated);
+            throw new resAndErrors_1.DataUpdatingError();
+        return (0, agency_order_DTO_1.toOrderDTO)(updated);
     }
     async completeActivity(orderId, day, activityIndex) {
         await this._baseValidator.idValidator(orderId);
         const order = await this._orderRepo.findOrderWithProduct(orderId);
         if (!order || order.status !== "Ongoing" || !order.plan)
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         const planDay = order.plan.find((p) => p.day == day);
         if (!planDay)
-            throw new TRIP_UPDATION_ERROR();
-        planDay.completedActivities ??= [];
+            throw new resAndErrors_1.TRIP_UPDATION_ERROR();
+        planDay.completedActivities ?? (planDay.completedActivities = []);
         if (!planDay.completedActivities.includes(activityIndex)) {
             planDay.completedActivities.push(activityIndex);
         }
@@ -88,50 +85,50 @@ let AgencyOrderService = class AgencyOrderService {
             }
         });
         await this._orderRepo.update(order._id.toString(), { plan: order.plan, tripProgress: order.tripProgress });
-        return toOrderDTO(order);
+        return (0, agency_order_DTO_1.toOrderDTO)(order);
     }
     async completeDay(orderId, day) {
         await this._baseValidator.idValidator(orderId);
         const order = await this._orderRepo.findOrderWithProduct(orderId);
         if (!order || order.status !== "Ongoing" || !order.plan || !order.tripProgress)
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         const planDay = order.plan.find(p => p.day == day);
         if (!planDay)
-            throw new TRIP_UPDATION_ERROR();
+            throw new resAndErrors_1.TRIP_UPDATION_ERROR();
         if (planDay.completedActivities.length != planDay.activities.length)
-            throw new TRIP_UPDATION_ERROR();
+            throw new resAndErrors_1.TRIP_UPDATION_ERROR();
         planDay.isCompleted = true;
         order.tripProgress.completedDays.push(day);
         const nextDay = order.plan.find(p => !p.isCompleted);
         order.tripProgress.currentDay = nextDay ? nextDay.day : day;
         await this._orderRepo.update(order._id.toString(), { plan: order.plan, tripProgress: order.tripProgress });
-        return toOrderDTO(order);
+        return (0, agency_order_DTO_1.toOrderDTO)(order);
     }
     async completeTrip(orderId) {
         await this._baseValidator.idValidator(orderId);
         const order = await this._orderRepo.findOrderWithProduct(orderId);
         if (!order || !order.plan || !order.tripProgress || order.status != 'Ongoing')
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         const allCompleted = order.plan.every(p => p.isCompleted);
         if (!allCompleted)
-            throw new INVALID_STATUS_UPDATION();
+            throw new resAndErrors_1.INVALID_STATUS_UPDATION();
         order.status = 'Completed';
         order.tripProgress.completedAt = new Date();
         const adminWallet = await this._walletRepo.findOne({ role: 'admin' });
         if (!adminWallet)
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         const agency = await this._agencyRepo.findById(order.ownedBy);
         if (!agency)
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         const agencyWallet = await this._walletRepo.findOne({ UserId: order.ownedBy });
         if (!agencyWallet)
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         const paymentHistory = await this._paymentRepo.findById(order.paymentId.toString());
         if (!paymentHistory)
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         const walletHistory = adminWallet.Transaction.find(T => T.paymentIntentId == paymentHistory.paymentIntentId);
         if (!walletHistory)
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         const agencyRevenue = walletHistory.Amount - (walletHistory.Amount * 0.30);
         const adminTransaction = {
             Type: 'debit',
@@ -154,17 +151,17 @@ let AgencyOrderService = class AgencyOrderService {
         await this._walletRepo.update(adminWallet._id.toString(), adminWallet);
         await this._walletRepo.update(agencyWallet._id.toString(), agencyWallet);
         await this._orderRepo.update(order._id.toString(), { status: order.status, tripProgress: order.tripProgress });
-        return toOrderDTO(order);
+        return (0, agency_order_DTO_1.toOrderDTO)(order);
     }
 };
-AgencyOrderService = __decorate([
-    injectable(),
-    __param(0, inject('IOrdersRepository')),
-    __param(1, inject('IGenerateTrip')),
-    __param(2, inject('IBaseValidator')),
-    __param(3, inject('IWalletRespository')),
-    __param(4, inject('IPaymentRepository')),
-    __param(5, inject('IAgencyRespository')),
+exports.AgencyOrderService = AgencyOrderService;
+exports.AgencyOrderService = AgencyOrderService = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)('IOrdersRepository')),
+    __param(1, (0, inversify_1.inject)('IGenerateTrip')),
+    __param(2, (0, inversify_1.inject)('IBaseValidator')),
+    __param(3, (0, inversify_1.inject)('IWalletRespository')),
+    __param(4, (0, inversify_1.inject)('IPaymentRepository')),
+    __param(5, (0, inversify_1.inject)('IAgencyRespository')),
     __metadata("design:paramtypes", [Object, Object, Object, Object, Object, Object])
 ], AgencyOrderService);
-export { AgencyOrderService };

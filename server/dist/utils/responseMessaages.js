@@ -1,4 +1,7 @@
-export var MESSAGES;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MESSAGES = void 0;
+var MESSAGES;
 (function (MESSAGES) {
     // -------------------- GENERAL --------------------
     MESSAGES["ACCOUNT_BLOCKED"] = "Account is blocked";
@@ -77,4 +80,4 @@ export var MESSAGES;
     MESSAGES["TRIP_ACTIVITY"] = "Trip activity complete successfully";
     MESSAGES["TRIP_DAY"] = "Trip Day complete successfully";
     MESSAGES["TRIP_COMPLETED"] = "Trip completed successfully";
-})(MESSAGES || (MESSAGES = {}));
+})(MESSAGES || (exports.MESSAGES = MESSAGES = {}));

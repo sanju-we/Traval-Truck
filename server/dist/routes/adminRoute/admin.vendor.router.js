@@ -1,12 +1,14 @@
-import { Router } from 'express';
-import { container } from '../../core/DI/container';
-import { asyncHandler } from '../../middleware/asyncHandler';
-import { verifyAdminToken } from '../../middleware/authMiddleware';
-const adminVendorRoute = Router();
-const adminVendorController = container.get('IAdminVendorController');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const container_1 = require("../../core/DI/container");
+const asyncHandler_1 = require("../../middleware/asyncHandler");
+const authMiddleware_1 = require("../../middleware/authMiddleware");
+const adminVendorRoute = (0, express_1.Router)();
+const adminVendorController = container_1.container.get('IAdminVendorController');
 adminVendorRoute
-    .get('/allRequests', verifyAdminToken, asyncHandler(adminVendorController.showAllRequsestes.bind(adminVendorController)))
-    .get('/allUsers', verifyAdminToken, asyncHandler(adminVendorController.showAllUsers.bind(adminVendorController)))
-    .patch('/block-toggle/:id/:role', asyncHandler(adminVendorController.blockTongle.bind(adminVendorController)))
-    .patch('/:id/:action/:role', verifyAdminToken, asyncHandler(adminVendorController.updateStatus.bind(adminVendorController)));
-export default adminVendorRoute;
+    .get('/allRequests', authMiddleware_1.verifyAdminToken, (0, asyncHandler_1.asyncHandler)(adminVendorController.showAllRequsestes.bind(adminVendorController)))
+    .get('/allUsers', authMiddleware_1.verifyAdminToken, (0, asyncHandler_1.asyncHandler)(adminVendorController.showAllUsers.bind(adminVendorController)))
+    .patch('/block-toggle/:id/:role', (0, asyncHandler_1.asyncHandler)(adminVendorController.blockTongle.bind(adminVendorController)))
+    .patch('/:id/:action/:role', authMiddleware_1.verifyAdminToken, (0, asyncHandler_1.asyncHandler)(adminVendorController.updateStatus.bind(adminVendorController)));
+exports.default = adminVendorRoute;

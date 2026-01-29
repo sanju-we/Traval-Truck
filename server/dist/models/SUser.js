@@ -1,6 +1,9 @@
-import { Schema, model } from 'mongoose';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.User = void 0;
+const mongoose_1 = require("mongoose");
 // inferASchemaType and hyderatedDocument
-const userSchema = new Schema({
+const userSchema = new mongoose_1.Schema({
     name: {
         type: String,
         required: true,
@@ -54,4 +57,4 @@ const userSchema = new Schema({
         required: true,
     },
 });
-export const User = model('User', userSchema);
+exports.User = (0, mongoose_1.model)('User', userSchema);

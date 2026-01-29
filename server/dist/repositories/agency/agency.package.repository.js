@@ -1,11 +1,14 @@
-import { BaseRepository } from "../../repositories/baseRepository";
-import { Package } from "../../models/Package";
-import { logger } from "../../utils/logger";
-import { toPackageResDTO } from "../../core/DTO/agency/response/agency.packageDTO";
-import { DataNotFoundError } from "../../utils/resAndErrors";
-export class AgencyPackageRepository extends BaseRepository {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AgencyPackageRepository = void 0;
+const baseRepository_1 = require("../../repositories/baseRepository");
+const Package_1 = require("../../models/Package");
+const logger_1 = require("../../utils/logger");
+const agency_packageDTO_1 = require("../../core/DTO/agency/response/agency.packageDTO");
+const resAndErrors_1 = require("../../utils/resAndErrors");
+class AgencyPackageRepository extends baseRepository_1.BaseRepository {
     constructor() {
-        super(Package);
+        super(Package_1.Package);
     }
     async findAllPackageWithPartners(page = 1, lim, search) {
         const limit = lim || 6;
@@ -13,27 +16,28 @@ export class AgencyPackageRepository extends BaseRepository {
         const searchFilter = search
             ? { title: { $regex: search, $options: 'i' } }
             : {};
-        logger.info(searchFilter);
+        logger_1.logger.info(searchFilter);
         const [packages, total] = await Promise.all([
-            Package.find(searchFilter)
+            Package_1.Package.find(searchFilter)
                 .skip(skip)
                 .limit(limit)
                 .lean(),
-            Package.countDocuments()
+            Package_1.Package.countDocuments()
         ]);
         // if (!packages.length) throw new DataNotFoundError();
-        logger.debug('package', packages);
+        logger_1.logger.debug('package', packages);
         return {
-            data: packages.map(toPackageResDTO),
+            data: packages.map(agency_packageDTO_1.toPackageResDTO),
             total,
             page,
             totalPages: Math.ceil(total / limit)
         };
     }
     async findPackageWithPartner(id) {
-        const data = await Package.findById(id);
+        const data = await Package_1.Package.findById(id);
         if (data)
-            return toPackageResDTO(data);
-        throw new DataNotFoundError();
+            return (0, agency_packageDTO_1.toPackageResDTO)(data);
+        throw new resAndErrors_1.DataNotFoundError();
     }
 }
+exports.AgencyPackageRepository = AgencyPackageRepository;

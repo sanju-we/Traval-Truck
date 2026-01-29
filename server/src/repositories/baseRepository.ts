@@ -1,4 +1,3 @@
-// src/core/repositories/BaseRepository.ts
 import { Model, Document, FilterQuery, UpdateQuery, QueryOptions } from 'mongoose';
 import { logger } from '../utils/logger';
 import { IBaserepository } from '../core/interface/repositorie/IBaseRepositories';

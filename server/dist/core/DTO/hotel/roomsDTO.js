@@ -1,4 +1,7 @@
-export const toRoomsDTO = (Room) => ({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.toRoomsDTO = void 0;
+const toRoomsDTO = (Room) => ({
     id: Room._id.toString(),
     RoomNumber: Room.RoomNumber,
     roomType: Room.roomType,
@@ -14,3 +17,4 @@ export const toRoomsDTO = (Room) => ({
     HotelId: Room.HotelId,
     isBlocked: Room.isBlocked
 });
+exports.toRoomsDTO = toRoomsDTO;

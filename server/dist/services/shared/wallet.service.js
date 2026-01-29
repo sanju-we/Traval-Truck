@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,12 +11,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { inject, injectable } from "inversify";
-import { DataNotFoundError } from "../../utils/resAndErrors";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WalletService = void 0;
+const inversify_1 = require("inversify");
+const resAndErrors_1 = require("../../utils/resAndErrors");
 let WalletService = class WalletService {
-    _walletRepo;
-    _paymentValidator;
-    _paymentUtils;
     constructor(_walletRepo, _paymentValidator, _paymentUtils) {
         this._walletRepo = _walletRepo;
         this._paymentValidator = _paymentValidator;
@@ -24,7 +24,7 @@ let WalletService = class WalletService {
     async getWallet(id) {
         const wallet = await this._walletRepo.FindByUserId(id);
         if (!wallet)
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         return wallet;
     }
     async initiateAddMoney(amount, userId) {
@@ -66,11 +66,11 @@ let WalletService = class WalletService {
         });
     }
 };
-WalletService = __decorate([
-    injectable(),
-    __param(0, inject('IWalletRespository')),
-    __param(1, inject('IPaymentValidator')),
-    __param(2, inject('IPaymentUtils')),
+exports.WalletService = WalletService;
+exports.WalletService = WalletService = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)('IWalletRespository')),
+    __param(1, (0, inversify_1.inject)('IPaymentValidator')),
+    __param(2, (0, inversify_1.inject)('IPaymentUtils')),
     __metadata("design:paramtypes", [Object, Object, Object])
 ], WalletService);
-export { WalletService };

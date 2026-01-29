@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,11 +11,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { inject, injectable } from "inversify";
-import { DataNotFoundError } from "../../utils/resAndErrors";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.userFoodsService = void 0;
+const inversify_1 = require("inversify");
+const resAndErrors_1 = require("../../utils/resAndErrors");
 let userFoodsService = class userFoodsService {
-    _foodRepository;
-    _subscriptionHistoryRepo;
     constructor(_foodRepository, _subscriptionHistoryRepo) {
         this._foodRepository = _foodRepository;
         this._subscriptionHistoryRepo = _subscriptionHistoryRepo;
@@ -31,13 +32,13 @@ let userFoodsService = class userFoodsService {
         data.data = result;
         if (data)
             return data;
-        throw new DataNotFoundError();
+        throw new resAndErrors_1.DataNotFoundError();
     }
 };
-userFoodsService = __decorate([
-    injectable(),
-    __param(0, inject('IRestaurantFoodRespository')),
-    __param(1, inject('ISubscriptionHistoryRepository')),
+exports.userFoodsService = userFoodsService;
+exports.userFoodsService = userFoodsService = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)('IRestaurantFoodRespository')),
+    __param(1, (0, inversify_1.inject)('ISubscriptionHistoryRepository')),
     __metadata("design:paramtypes", [Object, Object])
 ], userFoodsService);
-export { userFoodsService };

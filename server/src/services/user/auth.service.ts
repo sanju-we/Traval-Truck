@@ -13,10 +13,10 @@ import {
   UserNotFoundError,
   InvalidCredentialsError,
   RESTRICTED_USER,
-} from '../../utils/resAndErrors.js';
-import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile.js';
+} from '../../utils/resAndErrors';
+import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile';
 import { z } from 'zod';
-import { logger } from '../../utils/logger.js';
+import { logger } from '../../utils/logger';
 
 @injectable()
 export class AuthService implements IAuthService {

@@ -1,6 +1,9 @@
-import { model, Schema } from "mongoose";
-const PaymentSchema = new Schema({
-    userId: { type: Schema.Types.ObjectId, ref: "User", required: false },
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Payment = void 0;
+const mongoose_1 = require("mongoose");
+const PaymentSchema = new mongoose_1.Schema({
+    userId: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: false },
     role: { type: String, required: false },
     type: { type: String, required: true },
     amount: { type: Number, required: true },
@@ -9,6 +12,6 @@ const PaymentSchema = new Schema({
     sessionId: { type: String, index: true },
     paymentIntentId: { type: String },
     stripeCustomerId: { type: String },
-    metadata: { type: Schema.Types.Mixed },
+    metadata: { type: mongoose_1.Schema.Types.Mixed },
 }, { timestamps: true });
-export const Payment = model('Payments', PaymentSchema);
+exports.Payment = (0, mongoose_1.model)('Payments', PaymentSchema);

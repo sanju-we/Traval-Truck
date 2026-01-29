@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,13 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { inject, injectable } from "inversify";
-import { Files_Missing, sendResponse } from "../../utils/resAndErrors";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode";
-import { MESSAGES } from "../../utils/responseMessaages";
-import { logger } from "../../utils/logger";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RestaurantFoodController = void 0;
+const inversify_1 = require("inversify");
+const resAndErrors_1 = require("../../utils/resAndErrors");
+const HTTPStatusCode_1 = require("../../utils/HTTPStatusCode");
+const responseMessaages_1 = require("../../utils/responseMessaages");
+const logger_1 = require("../../utils/logger");
 let RestaurantFoodController = class RestaurantFoodController {
-    _foodService;
     constructor(_foodService) {
         this._foodService = _foodService;
     }
@@ -25,35 +27,35 @@ let RestaurantFoodController = class RestaurantFoodController {
         const id = req.user.id;
         const files = req.files;
         if (!files)
-            throw new Files_Missing();
-        logger.info(req.files);
+            throw new resAndErrors_1.Files_Missing();
+        logger_1.logger.info(req.files);
         const created = await this._foodService.addFood({ ...data, Price: Number(data.Price), AvailableQuantity: Number(data.AvailableQuantity) }, files, id);
-        sendResponse(res, STATUS_CODE.CREATED, true, MESSAGES.CREATED, created);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.CREATED, true, responseMessaages_1.MESSAGES.CREATED, created);
     }
     async getAllFoods(req, res) {
         const id = req.user.id;
         const allFoods = await this._foodService.getAllData(id);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, allFoods);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.ALL_DATA_FOUND, allFoods);
     }
     async update(req, res) {
         const data = req.body;
         const files = req.files;
         if (!files)
-            throw new Files_Missing();
+            throw new resAndErrors_1.Files_Missing();
         const updateData = await this._foodService.update({ ...data, Price: Number(data.Price), AvailableQuantity: Number(data.AvailableQuantity) }, files);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updateData);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.UPDATED, updateData);
     }
     async deleteImage(req, res) {
         const index = req.body.index;
         const restaurantId = req.user.id;
         const foodId = req.body.foodId;
         const data = await this._foodService.delete(foodId, index);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DELETED, data);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.DELETED, data);
     }
 };
-RestaurantFoodController = __decorate([
-    injectable(),
-    __param(0, inject('IRestaurantFoodService')),
+exports.RestaurantFoodController = RestaurantFoodController;
+exports.RestaurantFoodController = RestaurantFoodController = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)('IRestaurantFoodService')),
     __metadata("design:paramtypes", [Object])
 ], RestaurantFoodController);
-export { RestaurantFoodController };

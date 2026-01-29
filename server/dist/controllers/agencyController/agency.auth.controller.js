@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,18 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { inject, injectable } from 'inversify';
-import { NoAccessToken } from '../../utils/resAndErrors';
-import { sendResponse } from '../../utils/resAndErrors';
-import { logger } from '../../utils/logger';
-import { STATUS_CODE } from '../../utils/HTTPStatusCode';
-import { MESSAGES } from '../../utils/responseMessaages';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AgencyAuthController = void 0;
+const inversify_1 = require("inversify");
+const resAndErrors_1 = require("../../utils/resAndErrors");
+const resAndErrors_2 = require("../../utils/resAndErrors");
+const logger_1 = require("../../utils/logger");
+const HTTPStatusCode_1 = require("../../utils/HTTPStatusCode");
+const responseMessaages_1 = require("../../utils/responseMessaages");
 let AgencyAuthController = class AgencyAuthController {
-    _IJWT;
-    _agencyAuthService;
-    _emailService;
-    _generalService;
-    _authValidator;
     constructor(_IJWT, _agencyAuthService, _emailService, _generalService, _authValidator) {
         this._IJWT = _IJWT;
         this._agencyAuthService = _agencyAuthService;
@@ -35,47 +33,47 @@ let AgencyAuthController = class AgencyAuthController {
         const otp = await this._generalService.generateOtp();
         await this._generalService.storeOtp(email, otp);
         await this._emailService.otpSend(email, otp);
-        logger.info(`${otp} send to the email ${email}`);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.OTP_SENT);
+        logger_1.logger.info(`${otp} send to the email ${email}`);
+        (0, resAndErrors_2.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.OTP_SENT);
     }
     async verifyAgencySignup(req, res) {
         const { email, otp, restaurantData } = req.body;
         const { agencyData, accessToken, refreshToken } = await this._agencyAuthService.verifyAgencySignup(email, otp, restaurantData);
         await this._IJWT.setTokenInCookies(res, accessToken, refreshToken);
-        sendResponse(res, STATUS_CODE.CREATED, true, MESSAGES.CREATED);
+        (0, resAndErrors_2.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.CREATED, true, responseMessaages_1.MESSAGES.CREATED);
     }
     async verifyAgencyLogin(req, res) {
         const { email, password } = req.body;
         const result = await this._agencyAuthService.verifyAgencyLogin(email, password);
         await this._IJWT.setTokenInCookies(res, result.accessToken, result.refreshToken);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.LOGIN_SUCCESS);
+        (0, resAndErrors_2.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.LOGIN_SUCCESS);
     }
     async agencyLogout(req, res) {
         if (!req.cookies || !req.cookies.accessToken)
-            throw new NoAccessToken();
+            throw new resAndErrors_1.NoAccessToken();
         await this._IJWT.blacklistRefreshToken(res);
         res.clearCookie('accessToken', { httpOnly: true, secure: false, sameSite: 'lax' });
-        sendResponse(res, STATUS_CODE.OK, true, 'Logged out successfully');
+        (0, resAndErrors_2.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, 'Logged out successfully');
     }
     async forgotPassword(req, res) {
         const { email } = req.body;
         await this._agencyAuthService.sendAgencyResetLink(email);
-        logger.info(`Reset email send to the email ${email}`);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.RESET_PASSWORD_SENDED);
+        logger_1.logger.info(`Reset email send to the email ${email}`);
+        (0, resAndErrors_2.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.RESET_PASSWORD_SENDED);
     }
     async resetPassword(req, res) {
         const { token, newPassword } = req.body;
         await this._agencyAuthService.resetPassword(token, newPassword);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.PASSWORD_CHANGED);
+        (0, resAndErrors_2.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.PASSWORD_CHANGED);
     }
 };
-AgencyAuthController = __decorate([
-    injectable(),
-    __param(0, inject('IJWT')),
-    __param(1, inject('IAgencyAuthService')),
-    __param(2, inject('IEmailService')),
-    __param(3, inject('IGeneralService')),
-    __param(4, inject('IAuthValidator')),
+exports.AgencyAuthController = AgencyAuthController;
+exports.AgencyAuthController = AgencyAuthController = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)('IJWT')),
+    __param(1, (0, inversify_1.inject)('IAgencyAuthService')),
+    __param(2, (0, inversify_1.inject)('IEmailService')),
+    __param(3, (0, inversify_1.inject)('IGeneralService')),
+    __param(4, (0, inversify_1.inject)('IAuthValidator')),
     __metadata("design:paramtypes", [Object, Object, Object, Object, Object])
 ], AgencyAuthController);
-export { AgencyAuthController };

@@ -1,4 +1,3 @@
-// core/utils/tripPlanner/distance.util.ts
 
 export function getDistanceInKm(
   lat1: number,

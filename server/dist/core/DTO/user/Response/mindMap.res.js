@@ -1,4 +1,7 @@
-export const toMindMapRes = (mindMap) => ({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.toMindMapRes = void 0;
+const toMindMapRes = (mindMap) => ({
     id: mindMap._id.toString(),
     orderId: mindMap.orderId,
     title: mindMap.title,
@@ -17,3 +20,4 @@ export const toMindMapRes = (mindMap) => ({
     createdAt: mindMap.createdAt,
     updateAt: mindMap.updatedAt
 });
+exports.toMindMapRes = toMindMapRes;

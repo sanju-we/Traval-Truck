@@ -1,4 +1,7 @@
-export const toPackageResDTO = (pkg) => ({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.toPackageResDTO = void 0;
+const toPackageResDTO = (pkg) => ({
     id: pkg._id.toString(),
     availableFoods: pkg.availableFoods || [],
     description: pkg.description || "",
@@ -10,3 +13,4 @@ export const toPackageResDTO = (pkg) => ({
     images: pkg.images || [],
     ownedBy: pkg.ownedBy
 });
+exports.toPackageResDTO = toPackageResDTO;

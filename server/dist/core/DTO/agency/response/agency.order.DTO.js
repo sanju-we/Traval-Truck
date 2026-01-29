@@ -1,4 +1,7 @@
-export const toOrderDTO = (order) => ({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.toOrderDTO = void 0;
+const toOrderDTO = (order) => ({
     id: order._id.toString(),
     userId: order.userId.toString(),
     orderId: order.orderId,
@@ -14,3 +17,4 @@ export const toOrderDTO = (order) => ({
     plan: order.plan,
     productType: order.productType
 });
+exports.toOrderDTO = toOrderDTO;

@@ -1,8 +1,11 @@
-import { BaseRepository } from "../../repositories/baseRepository";
-import { Reviews } from "../../models/Review";
-export class ReviewRepository extends BaseRepository {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ReviewRepository = void 0;
+const baseRepository_1 = require("../../repositories/baseRepository");
+const Review_1 = require("../../models/Review");
+class ReviewRepository extends baseRepository_1.BaseRepository {
     constructor() {
-        super(Reviews);
+        super(Review_1.Reviews);
     }
     async ReviewsWithPagination(curr, limit, packageId, filterRating) {
         let filter;
@@ -11,8 +14,8 @@ export class ReviewRepository extends BaseRepository {
         else
             filter = { productId: packageId };
         const skip = (curr - 1) * limit;
-        const reviews = await Reviews.find(filter).lean().skip(skip).limit(limit);
-        const count = await Reviews.countDocuments(filter);
+        const reviews = await Review_1.Reviews.find(filter).lean().skip(skip).limit(limit);
+        const count = await Review_1.Reviews.countDocuments(filter);
         const totalPage = Math.ceil(count / limit);
         return {
             data: reviews,
@@ -21,7 +24,7 @@ export class ReviewRepository extends BaseRepository {
         };
     }
     async averageRating(productId) {
-        const result = await Reviews.aggregate([
+        const result = await Review_1.Reviews.aggregate([
             { $match: { productId: productId } },
             { $group: { _id: '$productId', averageRating: { $avg: '$rating' } } }
         ]);
@@ -31,8 +34,8 @@ export class ReviewRepository extends BaseRepository {
     }
     async ReviewsForVendors(curr, limit, vendorId) {
         const skip = (curr - 1) * limit;
-        const reviews = await Reviews.find({ vendor: vendorId }).lean().skip(skip).limit(limit).populate('userId');
-        const totalCount = await Reviews.countDocuments({ vendor: vendorId });
+        const reviews = await Review_1.Reviews.find({ vendor: vendorId }).lean().skip(skip).limit(limit).populate('userId');
+        const totalCount = await Review_1.Reviews.countDocuments({ vendor: vendorId });
         const totalPage = Math.ceil(totalCount / limit);
         return {
             data: reviews,
@@ -41,7 +44,7 @@ export class ReviewRepository extends BaseRepository {
         };
     }
     async averageRatingForVendor(vendorId) {
-        const avg = await Reviews.aggregate([
+        const avg = await Review_1.Reviews.aggregate([
             { $match: { vendor: vendorId } },
             { $group: { _id: '$vendor', avg: { $avg: '$rating' } } }
         ]);
@@ -50,3 +53,4 @@ export class ReviewRepository extends BaseRepository {
         return { averageRating: avg[0].avg.toFixed(1) };
     }
 }
+exports.ReviewRepository = ReviewRepository;

@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,15 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { inject, injectable } from "inversify";
-import { DataNotFoundError } from "../../utils/resAndErrors";
-import { logger } from "../../utils/logger";
-import { toOrderDTO } from "../../core/DTO/agency/response/agency.order.DTO";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserTripService = void 0;
+const inversify_1 = require("inversify");
+const resAndErrors_1 = require("../../utils/resAndErrors");
+const logger_1 = require("../../utils/logger");
+const agency_order_DTO_1 = require("../../core/DTO/agency/response/agency.order.DTO");
 let UserTripService = class UserTripService {
-    _ordersRepo;
-    _validator;
-    _paymentRepo;
-    _walletRepo;
     constructor(_ordersRepo, _validator, _paymentRepo, _walletRepo) {
         this._ordersRepo = _ordersRepo;
         this._validator = _validator;
@@ -28,36 +27,36 @@ let UserTripService = class UserTripService {
     async history(userId) {
         await this._validator.idValidator(userId);
         const history = await this._ordersRepo.findAllByProduct(userId);
-        logger.info(`charle ${history}`);
+        logger_1.logger.info(`charle ${history}`);
         if (!history)
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         return history;
     }
     async getOrder(orderId) {
         await this._validator.idValidator(orderId);
         const order = await this._ordersRepo.findOrderWithProduct(orderId);
         if (!order)
-            throw new DataNotFoundError();
-        return toOrderDTO(order);
+            throw new resAndErrors_1.DataNotFoundError();
+        return (0, agency_order_DTO_1.toOrderDTO)(order);
     }
     async orderCancellation(orderId, reason) {
-        logger.info(`orderId ${orderId}`);
+        logger_1.logger.info(`orderId ${orderId}`);
         await this._validator.idValidator(orderId);
         const order = await this._ordersRepo.findById(orderId);
         if (!order)
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         const Transaction = await this._paymentRepo.findById(order.paymentId.toString());
         if (!Transaction)
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         const today = new Date();
-        logger.info(`date difference : ${today.getDate() - order.createdAt.getDate()}`);
+        logger_1.logger.info(`date difference : ${today.getDate() - order.createdAt.getDate()}`);
         const diff = (order.createdAt.getDate()) - (today.getDate());
         const userWallet = await this._walletRepo.findOne({ UserId: order.userId });
         if (!userWallet)
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         const adminWallet = await this._walletRepo.findOne({ role: 'admin' });
         if (!adminWallet)
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         if (order.status == 'Upcoming' && !order.startDate && diff < 7) {
             userWallet.Balance += Transaction.amount;
             await this._walletRepo.update(userWallet._id.toString(), userWallet);
@@ -101,15 +100,15 @@ let UserTripService = class UserTripService {
             adminWallet.Transaction.push(adminTransaction);
             await this._walletRepo.update(adminWallet._id.toString(), adminWallet);
         }
-        return toOrderDTO(order);
+        return (0, agency_order_DTO_1.toOrderDTO)(order);
     }
 };
-UserTripService = __decorate([
-    injectable(),
-    __param(0, inject('IOrdersRepository')),
-    __param(1, inject('IBaseValidator')),
-    __param(2, inject('IPaymentRepository')),
-    __param(3, inject('IWalletRespository')),
+exports.UserTripService = UserTripService;
+exports.UserTripService = UserTripService = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)('IOrdersRepository')),
+    __param(1, (0, inversify_1.inject)('IBaseValidator')),
+    __param(2, (0, inversify_1.inject)('IPaymentRepository')),
+    __param(3, (0, inversify_1.inject)('IWalletRespository')),
     __metadata("design:paramtypes", [Object, Object, Object, Object])
 ], UserTripService);
-export { UserTripService };

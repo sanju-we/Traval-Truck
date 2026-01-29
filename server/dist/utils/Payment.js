@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,13 +11,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import Stripe from 'stripe';
-import { inject, injectable } from 'inversify';
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PaymentUtils = void 0;
+const stripe_1 = __importDefault(require("stripe"));
+const inversify_1 = require("inversify");
+const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY, {
     apiVersion: '2025-10-29.clover',
 });
 let PaymentUtils = class PaymentUtils {
-    _paymentRepo;
     constructor(_paymentRepo) {
         this._paymentRepo = _paymentRepo;
     }
@@ -68,9 +73,9 @@ let PaymentUtils = class PaymentUtils {
         return stripe.checkout.sessions.retrieve(sessionId, { expand: ["payment_intent"] });
     }
 };
-PaymentUtils = __decorate([
-    injectable(),
-    __param(0, inject("IPaymentRepository")),
+exports.PaymentUtils = PaymentUtils;
+exports.PaymentUtils = PaymentUtils = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)("IPaymentRepository")),
     __metadata("design:paramtypes", [Object])
 ], PaymentUtils);
-export { PaymentUtils };
