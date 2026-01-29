@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import { useRouter } from 'next/navigation';
 import MindMapDraftReview from '@/components/user/draft';
-import { PlaceSuggestion } from '@/types/mind-map';
+import { MindMapData, PlaceSuggestion } from '@/types/mind-map';
 import { RecommendedPlace } from '@/types/mind-map';
 import { StartingLocation } from '@/types/mind-map';
 import { MindMapPlace } from '@/types/mind-map';
@@ -50,10 +50,9 @@ export default function CreateMindMapPage() {
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false);
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>({ lat: 10.8505, lng: 76.2711 });
   const [created, setCreated] = useState(false);
-  const [draft, setDraft] = useState()
+  const [draft, setDraft] = useState<MindMapData | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const draftRef = useRef<HTMLDivElement | null>(null);
-
   const tomorrow = new Date();
   const formattedTomorrow = tomorrow.toISOString().split('T')[0];
 
@@ -208,6 +207,10 @@ export default function CreateMindMapPage() {
 
 
   const handleOnSubmit = async () => {
+    if(!draft){
+      toast.error('Data not available, Please try again later')
+      return 
+    }
     const data = await USER_API_METHODS.submitTheMindmap(draft.id)
     if (data.success) {
       toast.success('Mind Map confirmed')

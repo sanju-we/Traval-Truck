@@ -2,6 +2,7 @@ const RESTAURANT = '/restaurant'
 const RESTAURANT_AUTH = `${RESTAURANT}/auth`
 const RESTAURANT_PROFILE = `${RESTAURANT}/profile`
 const RESTAURANT_FOODS = `${RESTAURANT}/food`
+const RESTAURANT_BILL = `${RESTAURANT}/bill`
 
 export const RESTAURANT_ROUTES = {
   auth: {
@@ -35,5 +36,9 @@ export const RESTAURANT_ROUTES = {
 
   subscription: {
     purchase: `/shared/subscriptions/restaurant/purchase`
+  },
+
+  bill : {
+    craeteBill : `${RESTAURANT_BILL}/create`
   },
 }

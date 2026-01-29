@@ -1,6 +1,5 @@
 // agency api methods
 
-import { start } from "repl";
 import { getRequest, postRequest, putRequest, patchRequest, deleteRequest } from "../api.service";
 import { AGENCY_ROUTES } from "../Constant Routes/agency.constant.routes";
 import api from "../api";

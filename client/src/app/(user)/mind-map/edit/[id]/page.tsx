@@ -29,7 +29,7 @@ export default function CreateMindMapPage() {
   const params = useParams();
   const router = useRouter();
   const googeApi = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-
+  
   const [title, setTitle] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -59,20 +59,17 @@ export default function CreateMindMapPage() {
   const draftRef = useRef<HTMLDivElement | null>(null);
   console.log(typeof params.id)
   const ID = typeof params.id === 'string' ? params.id : params.id?.[0];
-  if (!ID) return (
-    <h1>Invalid URL</h1>
-  )
-
+  
   const tomorrow = new Date();
   const formattedTomorrow = tomorrow.toISOString().split('T')[0];
-
+  
   const getTotalDays = () => {
     if (!startDate || !endDate) return 0;
     const start = new Date(startDate);
     const end = new Date(endDate);
     return Math.ceil(Math.abs(end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
   };
-
+  
   const fetchStartingPlaceSuggestion = (input: string) => {
     if (!input || !window.google) { setStartingSuggestions([]); return; }
     const service = new window.google.maps.places.AutocompleteService();
@@ -82,29 +79,29 @@ export default function CreateMindMapPage() {
       } else { setStartingSuggestions([]); }
     });
   };
-
+  
   useEffect(() => {
     fetchMindMap()
   }, [])
-
+  
   useEffect(() => {
     if (!mindMap) return;
-
+    
     setTitle(mindMap.title);
     setStartDate(mindMap.startDate);
     setEndDate(mindMap.endDate);
     setMember(String(mindMap.partners));
-    setId(ID);
-
+    if(ID) setId(ID);
+    
     // ✅ SET ORDER ID
     if (mindMap.orderId) {
       setOrderId(mindMap.orderId);
     }
-
+    
     setFood(mindMap.budget?.foodAmount ? 'non-veg' : 'veg');
     setFoodAmount(String(mindMap.budget?.foodAmount ?? ''));
     setVehicle(mindMap.routeMetrics?.days ? 'car' : 'bike');
-
+    
     const fuelUsed = mindMap.routeMetrics?.fuelCost / 100;
     setMilage(String(mindMap.routeMetrics?.totalDistance / fuelUsed));
 
@@ -114,12 +111,12 @@ export default function CreateMindMapPage() {
       lat: mindMap.startingPosition.lat,
       lng: mindMap.startingPosition.lng,
     });
-
+    
     setMapCenter({
       lat: mindMap.startingPosition.lat,
       lng: mindMap.startingPosition.lng,
     });
-
+    
     setPlaces(
       mindMap.places.map((place) => ({
         id: place.id,
@@ -136,7 +133,10 @@ export default function CreateMindMapPage() {
     );
   }, [mindMap]);
 
-
+  if (!ID) return (
+    <h1>Invalid URL</h1>
+  )
+  
   const fetchMindMap = async () => {
     const map = await USER_API_METHODS.MindMapDetails(ID);
     if (map.success) {
@@ -227,7 +227,7 @@ export default function CreateMindMapPage() {
 
   const generateTrip = async () => {
     const selectedPlaces = places.filter(p => p.selected);
-
+    
     if (!startingLocation) {
       toast.error('Set starting location!');
       return;

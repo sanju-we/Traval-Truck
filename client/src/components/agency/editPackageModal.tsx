@@ -200,7 +200,7 @@ export default function EditPackageModal({
           form.append('newImages', blob, 'package.jpg');
         }
       }
-      for (let i of form) {
+      for (const i of form) {
         console.log(i)
       }
       const res = await AGENCY_API_METHODS.editPackage(pkg.id, form);

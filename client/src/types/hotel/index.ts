@@ -99,5 +99,5 @@ export interface IRoom {
   Status: string;
   CreatedAt: string;
   HotelId: string;
-  isBlocked: Boolean;
+  isBlocked: boolean;
 }

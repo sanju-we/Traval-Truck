@@ -33,7 +33,7 @@ export const USER_API_METHODS = {
     GetAllCoupon : () => get(USER_ROUTES.packages.GetAllCoupon),
 
     // hotel api requests
-    getAllHotel: (page?: number,limit?: number) => get(USER_ROUTES.hotel.getAllHotel, {page,limit}),
+    getAllHotel: (query:string,page?: number,limit?: number) => get(USER_ROUTES.hotel.getAllHotel, {page,limit,query}),
     getRoomDetails: (id: string) => get(USER_ROUTES.hotel.getRoomDetails(id)),
     purchaseRoom:(data:{roomId:string,role:string,amount:number,couponId?:string,startDate:string})=> post(USER_ROUTES.hotel.purchaseRoom,data),
 

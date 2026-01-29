@@ -1,5 +1,3 @@
-import api from "@/services/api";
-import toast from "react-hot-toast";
 import { createServerAxios } from "@/services/serverApi";
 
 export async function getWalletData( role: string) {

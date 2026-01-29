@@ -44,7 +44,7 @@ export const RESTAURANT_API_METHODS = {
 
     // payment api requests
     createPayment: (data: any) => post(RESTAURANT_ROUTES.payment.create, data),
-    // createOfflineBill : ()=> post(RESTAURANT_ROUTES.)
+    createOfflineBill : (data:any)=> post(RESTAURANT_ROUTES.bill.craeteBill,{data}),
 
     // subscription api requests
     purchaseSubscription: (data: any) => post(RESTAURANT_ROUTES.subscription.purchase, data),

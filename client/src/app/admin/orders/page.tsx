@@ -151,7 +151,7 @@ export default function AdminOrdersPage() {
                       </TableCell>
 
                       <TableCell>
-                        {new Date(order.endDate).toLocaleDateString()}
+                        {order.endDate ? new Date(order.endDate).toLocaleDateString() : 'N/A'}
                       </TableCell>
                     </TableRow>
                   ))}

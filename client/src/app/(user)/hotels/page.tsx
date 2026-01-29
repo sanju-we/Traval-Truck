@@ -25,8 +25,8 @@ export default function HotelsPage() {
   const fetchHotels = async (page: number) => {
     setLoading(true);
     try {
-      let limit = 6
-      const data = await USER_API_METHODS.getAllHotel(page,limit);
+      const limit = 6
+      const data = await USER_API_METHODS.getAllHotel('',page,limit);
       console.log('fucking',data.data)
       setHotels(data.data.data || []);
       setTotalPages(data.totalPages || 1);
@@ -74,7 +74,7 @@ export default function HotelsPage() {
                 className="border rounded-lg p-4 shadow hover:shadow-md transition duration-200"
               >
                 <img
-                  src={hotel?.images[0] || '/images/default-hotel.jpg'}
+                  src={hotel?.images ? hotel?.images[0] : '/images/default-hotel.jpg'}
                   alt={hotel.Description}
                   className="w-full h-40 object-cover rounded-lg mb-3"
                 />

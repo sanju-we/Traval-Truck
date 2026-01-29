@@ -5,7 +5,7 @@ import { Button } from '@/components/shared/ui/button';
 import { Input } from '@/components/shared/ui/input';
 import { Label } from '@/components/shared/ui/label';
 import getCroppedImg from '../utils/UserCropImage';
-import { IRoom } from '@/app/hotel/rooms/[roomId]/page';
+import { IRoom } from '@/types/hotel';
 import { ImageCropperModal } from './ImageCropperModal';
 import { X, Crop } from 'lucide-react';
 import api from '@/services/api';

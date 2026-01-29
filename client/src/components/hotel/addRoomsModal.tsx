@@ -129,7 +129,7 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
       formData.images.forEach((img) => {
         data.append("images", img);
       });
-      for (let da of data) {
+      for (const da of data) {
         console.log(da)
       }
       const res = await api.post("/hotel/rooms/addRooms", data, {

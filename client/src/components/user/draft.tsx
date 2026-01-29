@@ -61,7 +61,7 @@ interface Props {
   draft: MindMapDraft;
   onModify?: () => void;
   onAccept?: () => void;
-  isEditMode?: Boolean;
+  isEditMode?: boolean;
 }
 
 /* ---------------- Component ---------------- */

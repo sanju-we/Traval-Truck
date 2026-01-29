@@ -137,7 +137,7 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
         form.append("images", blob, "package.jpg");
       }
 
-      for (let i of form) {
+      for (const i of form) {
         console.log(i)
       }
       const res = await AGENCY_API_METHODS.create(form);
