@@ -9,6 +9,7 @@ import {
   BarChart3,
   Settings,
   LogOut,
+  Plane,
 } from 'lucide-react';
 import { ADMIN_API_METHODS } from '@/services/APIs/admin.api.service';
 import { useState } from 'react';
@@ -44,17 +45,30 @@ export function SideNavbar({ active }: SideNavbarProps) {
 
   return (
     <aside className="w-64 bg-gray-900 text-white shadow-md min-h-screen">
-      <div className="p-4 text-xl font-bold text-white">🚚 Travel Truck</div>
+      <div
+        onClick={() => router.push('/admin')}
+        className="flex items-center gap-3 px-5 py-4 border-b border-gray-800 cursor-pointer group"
+      >
+        <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gray-800 group-hover:bg-gray-700 transition">
+          <Plane className="w-5 h-5 text-emerald-400" />
+        </div>
+
+        <div className="leading-tight">
+          <h1 className="text-lg font-semibold text-white tracking-wide">
+            Travel Truck
+          </h1>
+          <p className="text-xs text-gray-400">Admin Panel</p>
+        </div>
+      </div>
       <nav className="mt-6">
         <ul className="space-y-2">
           {menuItems.map((item) => (
             <li
               key={item.label}
-              className={`flex items-center p-3 rounded-md cursor-pointer transition-all duration-150 ${
-                active === item.label
-                  ? 'bg-purple-600 text-white font-semibold'
-                  : 'hover:bg-gray-800 text-gray-300'
-              }`}
+              className={`flex items-center p-3 rounded-md cursor-pointer transition-all duration-150 ${active === item.label
+                ? 'bg-purple-600 text-white font-semibold'
+                : 'hover:bg-gray-800 text-gray-300'
+                }`}
               onClick={() => router.push(item.path)}
             >
               {item.icon}

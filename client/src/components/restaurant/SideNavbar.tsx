@@ -10,6 +10,7 @@ import {
   IndianRupee,
   Inbox,
   BarChart,
+  Plane,
 } from 'lucide-react';
 import { useState } from 'react';
 import api from '@/services/api';
@@ -33,7 +34,17 @@ function SideNavbar() {
     <>
       <div className="w-64 bg-white shadow-lg p-6">
         <div className="flex flex-col space-y-4">
-          <h1 className="text-2xl font-semibold text-gray-800">Travel Agency</h1>
+          <div
+            onClick={() => router.push('/restaurant/profile')}
+            className="flex items-center space-x-2 cursor-pointer group"
+          >
+            <div className="bg-gradient-to-br from-emerald-500 to-teal-500 p-2 rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-md">
+              <Plane className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            </div>
+            <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+              Travel Truck
+            </span>
+          </div>
           <div className="space-y-2 ">
             <div className='hover:bg-gray-200 rounded'>
               <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">

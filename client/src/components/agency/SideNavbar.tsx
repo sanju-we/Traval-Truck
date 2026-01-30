@@ -5,10 +5,11 @@ import {
   FlagTriangleRightIcon,
   Rss,
   PersonStanding,
-  List ,
+  List,
   IndianRupee,
   Inbox,
   BarChart,
+  Plane,
 } from 'lucide-react';
 import { useState } from 'react';
 import api from '@/services/api';
@@ -32,52 +33,62 @@ function SideNavbar() {
     <>
       <div className="w-64 bg-white shadow-lg p-6">
         <div className="flex flex-col space-y-4">
-          <h1 className="text-2xl font-semibold text-gray-800">Travel Agency</h1>
+          <div
+            onClick={() => router.push('/agency/profile')}
+            className="flex items-center space-x-2 cursor-pointer group"
+          >
+            <div className="bg-gradient-to-br from-emerald-500 to-teal-500 p-2 rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-md">
+              <Plane className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            </div>
+            <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+              Travel Truck
+            </span>
+          </div>
           <div className="space-y-2">
             <div className='hover:bg-gray-200 rounded-md' onClick={() => router.push('/agency')}>
               <button
-              className="flex items-center space-x-2 p-2 text-black-600  rounded"
-            >
-              <Home className="material-icons">home</Home>
-              <span>Dashboard</span>
-            </button>
+                className="flex items-center space-x-2 p-2 text-black-600  rounded"
+              >
+                <Home className="material-icons">home</Home>
+                <span>Dashboard</span>
+              </button>
             </div>
             <div className='hover:bg-gray-200 rounded-md'
               onClick={() => router.push('/agency/packages')}>
               <button className="flex items-center space-x-2 p-2 text-black-600  rounded">
-              <FlagTriangleRightIcon />
-              Packages
-            </button>
+                <FlagTriangleRightIcon />
+                Packages
+              </button>
             </div>
             <div className='hover:bg-gray-200 rounded-md' onClick={() => router.push('/agency/subscriptions')}>
               <button className="flex items-center space-x-2 p-2 text-black-600 rounded">
-              <Rss className="material-icons">person</Rss>
-              <span>Subscriptions</span>
-            </button>
+                <Rss className="material-icons">person</Rss>
+                <span>Subscriptions</span>
+              </button>
             </div>
             <div className='hover:bg-gray-200 rounded-md' onClick={() => router.push('/agency/orders')}>
               <button className="flex items-center space-x-2 p-2 text-black-600 rounded">
-              <List  className="material-icons">Order</List >
-              <span>Orders</span>
-            </button>
+                <List className="material-icons">Order</List >
+                <span>Orders</span>
+              </button>
             </div>
             <div className='hover:bg-gray-200 rounded-md' onClick={() => router.push('/agency/reviews')}>
               <button className="flex items-center space-x-2 p-2 text-black-600 rounded">
-              <List  className="material-icons">Review</List >
-              <span>Reviews</span>
-            </button>
+                <List className="material-icons">Review</List >
+                <span>Reviews</span>
+              </button>
             </div>
             <div className='hover:bg-gray-200 rounded-md' onClick={() => router.push('/agency/wallet')}>
               <button className="flex items-center space-x-2 p-2 text-black-600  rounded" >
-              <IndianRupee className="material-icons">payment</IndianRupee>
-              <span>Wallet</span>
-            </button>
+                <IndianRupee className="material-icons">payment</IndianRupee>
+                <span>Wallet</span>
+              </button>
             </div>
             <div className='hover:bg-gray-200 rounded-md'>
               <button className="flex items-center space-x-2 p-2 text-black-600  rounded">
-              <Inbox className="material-icons">chat</Inbox>
-              <span>Chat</span>
-            </button>
+                <Inbox className="material-icons">chat</Inbox>
+                <span>Chat</span>
+              </button>
             </div>
             <div className='hover:bg-gray-200 rounded-md'>
               <button className="flex items-center space-x-2 p-2 text-black-600 rounded">
@@ -87,19 +98,19 @@ function SideNavbar() {
             </div>
             <div className='hover:bg-gray-200 rounded-md'>
               <button className="flex items-center space-x-2 p-2 text-black-600 rounded"
-              onClick={() => router.push('/agency/profile')}>
+                onClick={() => router.push('/agency/profile')}>
                 <BarChart className="material-icons">bar_chart</BarChart>
                 <span>Profile</span>
               </button>
             </div>
             <div className='hover:bg-red-600 rounded-md'>
               <button
-              className="flex items-center space-x-2 p-2 text-gray-60 rounded"
-              onClick={() => setShowModal(!showModal)}
-            >
-              <LogOut className="material-icons">LogOut</LogOut>
-              <span>Logout</span>
-            </button>
+                className="flex items-center space-x-2 p-2 text-gray-60 rounded"
+                onClick={() => setShowModal(!showModal)}
+              >
+                <LogOut className="material-icons">LogOut</LogOut>
+                <span>Logout</span>
+              </button>
             </div>
           </div>
         </div>

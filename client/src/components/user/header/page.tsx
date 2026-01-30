@@ -74,7 +74,7 @@ export function Header() {
           <div className="flex justify-between items-center h-16 sm:h-20">
             {/* Logo */}
             <div 
-              onClick={() => router.push('/')} 
+              onClick={() => router.push('/home')} 
               className="flex items-center space-x-2 cursor-pointer group"
             >
               <div className="bg-gradient-to-br from-emerald-500 to-teal-500 p-2 rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-md">
