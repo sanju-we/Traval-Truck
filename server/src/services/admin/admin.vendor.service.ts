@@ -14,8 +14,8 @@ export class AdminVendorService implements IAdminVendorService {
     @inject('IAgencyRespository') private readonly _agencyrepository: IAgencyRespository,
     @inject('IHotelAuthRepository') private readonly _hotelRepository: IHotelAuthRepository,
     @inject('IRestaurantAuthRepository') private readonly _restaurantRepository: IRestaurantAuthRepository,
-    @inject('ISubscriptionValidator') private readonly _subscriptionValidator : ISubscriptionValidator
-  ) {}
+    @inject('ISubscriptionValidator') private readonly _subscriptionValidator: ISubscriptionValidator
+  ) { }
 
   async updateStatus(
     id: string,
@@ -56,7 +56,7 @@ export class AdminVendorService implements IAdminVendorService {
   }
 
   async updateBlock(id: string, role: string): Promise<void> {
-    await this._subscriptionValidator.updateBlockValidator( id, role );
+    await this._subscriptionValidator.updateBlockValidator(id, role);
     let user;
     if (role === 'user') {
       user = await this._userRepository.findById(id);
@@ -75,5 +75,79 @@ export class AdminVendorService implements IAdminVendorService {
       if (!user) throw new UserNotFoundError();
       await this._restaurantRepository.findByIdAndUpdateAction(id, !user.isApproved, 'isApproved');
     }
+  }
+
+  async getAllAgency(page: number, limit: number, search: string, status: string): Promise<any> {
+    const query = {
+      status: status,
+      search: search
+    }
+
+    const { data, total, totalPages } = await this._agencyrepository.findAllWithpagination(query, limit, page);
+
+    // Map to vendorRequestDTO
+    const mappedData = data.map(agency => ({
+      id: agency._id.toString(),
+      companyName: agency.companyName,
+      ownerName: agency.ownerName,
+      email: agency.email,
+      role: 'agency', // Hardcode or derive
+      logo: agency.logo,
+      address: agency.address,
+      bankDetails: agency.bankDetails,
+      documents: agency.documents,
+      isApproved: agency.isApproved,
+      phone: agency.phone,
+      isRestricted: agency.isRestricted,
+      reason: agency.reason || ''
+    }));
+
+    return { data: mappedData, total, totalPages };
+  }
+
+  async getAllHotels(page: number, limit: number, search: string, status: string): Promise<any> {
+    const query = { status, search };
+    const { data, total, totalPages } = await this._hotelRepository.findAllWithpagination(query, limit, page);
+
+    const mappedData = data.map(hotel => ({
+      id: hotel._id.toString(),
+      companyName: hotel.companyName,
+      ownerName: hotel.ownerName,
+      email: hotel.email,
+      role: 'hotel',
+      logo: hotel.logo,
+      address: hotel.address,
+      bankDetails: hotel.bankDetails,
+      documents: hotel.documents,
+      isApproved: hotel.isApproved,
+      phone: hotel.phone,
+      isRestricted: hotel.isRestricted,
+      reason: hotel.reason || ''
+    }));
+
+    return { data: mappedData, total, totalPages };
+  }
+
+  async getAllRestaurants(page: number, limit: number, search: string, status: string): Promise<any> {
+    const query = { status, search };
+    const { data, total, totalPages } = await this._restaurantRepository.findAllWithpagination(query, limit, page);
+
+    const mappedData = data.map(restaurant => ({
+      id: restaurant._id.toString(),
+      companyName: restaurant.companyName,
+      ownerName: restaurant.ownerName,
+      email: restaurant.email,
+      role: 'restaurant',
+      logo: restaurant.logo,
+      address: restaurant.address,
+      bankDetails: restaurant.bankDetails,
+      documents: restaurant.documents,
+      isApproved: restaurant.isApproved,
+      phone: restaurant.phone,
+      isRestricted: restaurant.isRestricted,
+      reason: restaurant.reason || ''
+    }));
+
+    return { data: mappedData, total, totalPages };
   }
 }

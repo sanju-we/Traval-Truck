@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { HotelOrder } from '@/types/hotel';
+import VendorFooter from '@/components/shared/Footer';
 
 export default function HotelOrdersPage() {
   const router = useRouter();
@@ -73,12 +74,9 @@ export default function HotelOrdersPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
+    <div className="min-h-screen flex bg-gray-50">
       <SideNavbar />
-
-      {/* Main */}
-      <div className="flex-1 p-6 md:p-10">
+      <div className="flex-1 flex flex-col">
         <div className="max-w-7xl mx-auto space-y-6">
 
           {/* Header */}
@@ -180,6 +178,7 @@ export default function HotelOrdersPage() {
           )}
 
         </div>
+        <VendorFooter/>
       </div>
     </div>
   );

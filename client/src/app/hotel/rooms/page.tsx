@@ -25,6 +25,7 @@ import SideNavbar from "@/components/hotel/SideNavbar";
 import AddRoomModal from "@/components/hotel/addRoomsModal";
 import { HOTEL_API_METHODS } from "@/services/APIs/hotel.api.service";
 import { Room } from "@/types/hotel";
+import VendorFooter from "@/components/shared/Footer";
 
 export default function RoomsPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -62,12 +63,9 @@ export default function RoomsPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
+    <div className="min-h-screen flex bg-gray-50">
       <SideNavbar />
-
-      {/* Main */}
-      <div className="flex-1 p-8 space-y-6">
+      <div className="flex-1 flex flex-col p-8 space-y-6">
         {/* Header */}
         <div className="flex flex-wrap justify-between items-center gap-4">
           <div>
@@ -289,6 +287,7 @@ export default function RoomsPage() {
           </div>
         )}
       </div>
+        <VendorFooter/>
 
       {/* Add Room Modal */}
       {showAddModal && (

@@ -6,6 +6,7 @@ import ReplyModal from "@/components/shared/ReplayModal";
 import { SHARED_API_METHODS } from "@/services/APIs/shared.api.service";
 import toast from "react-hot-toast";
 import { ReviewType } from "@/types/agency";
+import VendorFooter from "@/components/shared/Footer";
 
 export default function Reviews() {
   const [reviews, setReviews] = useState<ReviewType[]>([])
@@ -120,10 +121,9 @@ export default function Reviews() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="min-h-screen flex bg-gray-50">
       <SideNavbar />
-
-      <div className="flex-1 p-8">
+      <div className="flex-1 flex flex-col">
         <VendorRatings
           title="Customer Feedback"
           totalPages={totalPages}
@@ -137,6 +137,7 @@ export default function Reviews() {
           onFilterChange={handleFilterChange}
           onReplyClick={handleReplyClick}
         />
+        <VendorFooter/>
       </div>
 
       {/* Reply Modal */}

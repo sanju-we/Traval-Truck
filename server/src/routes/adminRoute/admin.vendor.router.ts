@@ -18,6 +18,9 @@ adminVendorRoute
     verifyAdminToken,
     asyncHandler(adminVendorController.showAllUsers.bind(adminVendorController)),
   )
+  .get('/allAgencies', asyncHandler(adminVendorController.getAllAgency.bind(adminVendorController)))
+  .get('/allHotels', asyncHandler(adminVendorController.getAllHotels.bind(adminVendorController)))
+  .get('/allRestaurants', asyncHandler(adminVendorController.getAllRestaurants.bind(adminVendorController)))
   .patch(
     '/block-toggle/:id/:role',
     asyncHandler(adminVendorController.blockTongle.bind(adminVendorController)),

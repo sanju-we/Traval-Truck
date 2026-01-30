@@ -29,6 +29,7 @@ import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
 import toast from 'react-hot-toast';
 import SetStartDateModal from '@/components/agency/SetStartDateModal';
 import { OrderDetails } from '@/types/agency';
+import VendorFooter from '@/components/shared/Footer';
 
 export default function OrderDetailsPage() {
   const [order, setOrder] = useState<OrderDetails | null>(null);
@@ -36,7 +37,7 @@ export default function OrderDetailsPage() {
   const [actionLoading, setActionLoading] = useState(false);
   const [showStartModal, setShowStartModal] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
-  const [completingActivity, setCompletingActivity] = useState<{day: number, activity: number} | null>(null);
+  const [completingActivity, setCompletingActivity] = useState<{ day: number, activity: number } | null>(null);
   const [testMode, setTestMode] = useState(false);
   const router = useRouter();
   const params = useParams();
@@ -81,7 +82,7 @@ export default function OrderDetailsPage() {
     try {
       setActionLoading(true);
       if (!order?.startDate) return toast.error('Start date is not set');
-      
+
       const response = await AGENCY_API_METHODS.startTrip(orderId);
 
       if (response.success) {
@@ -103,7 +104,7 @@ export default function OrderDetailsPage() {
     try {
       setCompletingActivity({ day, activity: activityIndex });
       setActionLoading(true);
-      
+
       const response = await AGENCY_API_METHODS.completeActivity(orderId, day, activityIndex);
 
       if (response.success) {
@@ -219,13 +220,13 @@ export default function OrderDetailsPage() {
     if (order?.status !== 'Ongoing') return false;
     // const planDay = order?.plan?.find(p => p.day === day);
     // if (!planDay) return false;
-    
+
     // Check if this is the current day
     // if (!isCurrentDay(day)) return false;
-    
+
     // Check if already completed
     if (isActivityCompleted(day, activityIndex)) return false;
-    
+
     // Check if previous activity is completed (or this is the first activity)
     if (activityIndex === 0) return true;
     return isActivityCompleted(day, activityIndex - 1);
@@ -235,7 +236,7 @@ export default function OrderDetailsPage() {
     if (order?.status !== 'Ongoing') return false;
     const planDay = order?.plan?.find(p => p.day === day);
     if (!planDay || planDay.isCompleted) return false;
-    
+
     // All activities must be completed
     const totalActivities = planDay.activities.length;
     const completedCount = planDay.completedActivities?.length || 0;
@@ -271,9 +272,9 @@ export default function OrderDetailsPage() {
 
   if (!order) {
     return (
-      <div className="bg-gray-50 min-h-screen">
+      <div className="min-h-screen flex bg-gray-50">
         <SideNavbar />
-        <div className="p-6 md:p-10">
+        <div className="flex-1 flex flex-col">
           <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-xl p-12 text-center shadow-sm border border-gray-100">
               <AlertCircle className="mx-auto text-red-400 mb-4" size={64} />
@@ -287,6 +288,7 @@ export default function OrderDetailsPage() {
               </button>
             </div>
           </div>
+          <VendorFooter/>
         </div>
       </div>
     );
@@ -296,10 +298,9 @@ export default function OrderDetailsPage() {
   const hasPlan = order.plan && order.plan.length > 0;
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="min-h-screen flex bg-gray-50">
       <SideNavbar />
-
-      <div className="p-8 flex-1">
+      <div className="flex-1 flex flex-col">
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Back Button */}
           <button
@@ -455,26 +456,24 @@ export default function OrderDetailsPage() {
                           return (
                             <div
                               key={idx}
-                              className={`relative border-2 rounded-xl overflow-hidden transition-all ${
-                                dayCompleted
+                              className={`relative border-2 rounded-xl overflow-hidden transition-all ${dayCompleted
                                   ? 'border-green-300 bg-green-50'
                                   : current
-                                  ? 'border-blue-400 bg-blue-50 shadow-lg'
-                                  : 'border-gray-200 bg-white opacity-75'
-                              }`}
+                                    ? 'border-blue-400 bg-blue-50 shadow-lg'
+                                    : 'border-gray-200 bg-white opacity-75'
+                                }`}
                             >
                               {/* Day Header */}
                               <div className="p-5 border-b border-gray-200">
                                 <div className="flex items-start justify-between gap-4">
                                   <div className="flex items-start gap-4 flex-1">
                                     <div
-                                      className={`flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center font-bold text-lg shadow-md ${
-                                        dayCompleted
+                                      className={`flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center font-bold text-lg shadow-md ${dayCompleted
                                           ? 'bg-green-500 text-white'
                                           : current
-                                          ? 'bg-blue-500 text-white'
-                                          : 'bg-gray-200 text-gray-600'
-                                      }`}
+                                            ? 'bg-blue-500 text-white'
+                                            : 'bg-gray-200 text-gray-600'
+                                        }`}
                                     >
                                       {dayCompleted ? <CheckCircle size={28} /> : dayNumber}
                                     </div>
@@ -543,20 +542,19 @@ export default function OrderDetailsPage() {
                                   {planDay.activities.map((activity, actIdx) => {
                                     const activityCompleted = isActivityCompleted(dayNumber, actIdx);
                                     const canComplete = canCompleteActivity(dayNumber, actIdx);
-                                    const isCompletingThis = 
-                                      completingActivity?.day === dayNumber && 
+                                    const isCompletingThis =
+                                      completingActivity?.day === dayNumber &&
                                       completingActivity?.activity === actIdx;
 
                                     return (
                                       <div
                                         key={actIdx}
-                                        className={`group flex items-start gap-3 p-4 rounded-lg transition-all duration-300 ${
-                                          activityCompleted
+                                        className={`group flex items-start gap-3 p-4 rounded-lg transition-all duration-300 ${activityCompleted
                                             ? 'bg-green-100 border-2 border-green-300'
                                             : canComplete
-                                            ? 'bg-white border-2 border-blue-200 hover:border-blue-400 hover:shadow-md'
-                                            : 'bg-gray-50 border-2 border-gray-200'
-                                        }`}
+                                              ? 'bg-white border-2 border-blue-200 hover:border-blue-400 hover:shadow-md'
+                                              : 'bg-gray-50 border-2 border-gray-200'
+                                          }`}
                                       >
                                         <div className="flex-shrink-0 mt-0.5">
                                           {activityCompleted ? (
@@ -572,13 +570,12 @@ export default function OrderDetailsPage() {
 
                                         <div className="flex-1">
                                           <p
-                                            className={`text-sm ${
-                                              activityCompleted
+                                            className={`text-sm ${activityCompleted
                                                 ? 'text-green-800 font-medium line-through decoration-2'
                                                 : canComplete
-                                                ? 'text-gray-800'
-                                                : 'text-gray-500'
-                                            }`}
+                                                  ? 'text-gray-800'
+                                                  : 'text-gray-500'
+                                              }`}
                                           >
                                             {activity}
                                           </p>
@@ -651,10 +648,10 @@ export default function OrderDetailsPage() {
                         <p className="font-semibold text-gray-800">
                           {order.startDate
                             ? new Date(order.startDate).toLocaleDateString('en-US', {
-                                month: 'long',
-                                day: 'numeric',
-                                year: 'numeric',
-                              })
+                              month: 'long',
+                              day: 'numeric',
+                              year: 'numeric',
+                            })
                             : 'Not set'}
                         </p>
                       </div>
@@ -815,6 +812,7 @@ export default function OrderDetailsPage() {
             </div>
           </div>
         </div>
+        <VendorFooter/>
       </div>
 
       {/* Start Trip Modal */}

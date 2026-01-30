@@ -13,8 +13,7 @@ import { logger } from '../../utils/logger';
 @injectable()
 export class RestaurantAuthRepository
   extends BaseRepository<IRestaurant>
-  implements IRestaurantAuthRepository
-{
+  implements IRestaurantAuthRepository {
   constructor() {
     super(Restaurant);
   }
@@ -55,5 +54,38 @@ export class RestaurantAuthRepository
       logger.error(`Failed to find restaurants by status ${status}: ${err.message}`);
       throw new RepositoryError(`Failed to find restaurants by status: ${err.message}`);
     }
+  }
+
+  async findAllWithpagination(
+    query: { search: string; status: string },
+    limit: number,
+    page: number,
+  ): Promise<{ data: IRestaurant[]; total: number; totalPages: number }> {
+    const skip = (page - 1) * limit;
+    const filter: any = {};
+
+    if (query.search) {
+      filter['$or'] = [
+        { companyName: { $regex: query.search, $options: 'i' } },
+        { email: { $regex: query.search, $options: 'i' } },
+      ];
+    }
+
+    if (query.status) {
+      if (query.status === 'Activity') {
+        filter.isApproved = true;
+      } else if (query.status === 'Blocked') {
+        filter.isRestricted = true;
+      } else if (query.status === 'Pending') {
+        filter.isApproved = false;
+        filter.isRestricted = false;
+      }
+    }
+
+    const data = await Restaurant.find(filter).skip(skip).limit(limit).exec();
+    const total = await Restaurant.countDocuments(filter).exec();
+    const totalPages = Math.ceil(total / limit);
+
+    return { data, total, totalPages };
   }
 }

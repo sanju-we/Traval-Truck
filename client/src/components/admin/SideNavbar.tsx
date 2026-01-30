@@ -36,6 +36,9 @@ export function SideNavbar({ active }: SideNavbarProps) {
   const menuItems = [
     { label: 'Dashboard', icon: <Home className="w-5 h-5 mr-3" />, path: '/admin' },
     { label: 'Users', icon: <Users className="w-5 h-5 mr-3" />, path: '/admin/users' },
+    { label: 'Agencies', icon: <Users className="w-5 h-5 mr-3" />, path: '/admin/agencys' },
+    { label: 'Hotels', icon: <Users className="w-5 h-5 mr-3" />, path: '/admin/hotels' },
+    { label: 'Restaurants', icon: <Users className="w-5 h-5 mr-3" />, path: '/admin/restaurants' },
     { label: 'Requests', icon: <List className="w-5 h-5 mr-3" />, path: '/admin/requestes' },
     { label: 'Subscriptions', icon: <IndianRupee className="w-5 h-5 mr-3" />, path: '/admin/subscription' },
     { label: 'Orders', icon: <ShoppingBag className="w-5 h-5 mr-3" />, path: '/admin/orders' },

@@ -9,4 +9,5 @@ export interface IAgencyRespository extends IBaserepository<IAgency> {
     field: string,
     reason?: string,
   ): Promise<void>;
+  findAllWithpagination(query: { search: string; status: string }, limit: number, page: number): Promise<{ data: IAgency[]; total: number; totalPages: number }>;
 }

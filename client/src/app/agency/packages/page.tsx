@@ -12,6 +12,7 @@ import EditPackageModal from "@/components/agency/editPackageModal";
 import { Itinerary } from "@/types/agency";
 import { Review } from "@/types/agency";
 import { Packages } from "@/types/agency";
+import VendorFooter from "@/components/shared/Footer";
 
 export default function PackageListingPage() {
   const [packages, setPackages] = useState<Packages[]>([]);
@@ -48,10 +49,9 @@ export default function PackageListingPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="min-h-screen flex bg-gray-50">
       <SideNavbar />
-
-      <div className="flex-1 p-8">
+      <div className="flex-1 flex flex-col">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-semibold text-gray-900">Travel Packages</h1>
@@ -198,6 +198,7 @@ export default function PackageListingPage() {
             </Button>
           </div>
         )}
+        <VendorFooter/>
       </div>
 
       {/* ✅ Add Package Modal */}

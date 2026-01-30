@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import User from '@/types/user/profile';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/shared/ui/button';
+import { ADMIN_API_METHODS } from '@/services/APIs/admin.api.service';
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -19,21 +20,20 @@ export default function UsersPage() {
   const [limit] = useState(5);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState('');
+  const [role, setRole] = useState('');
 
   const dispatch = useDispatch();
   const router = useRouter();
 
   // ✅ Fetch users from backend
-  const fetchUsers = async (currentPage = 1, searchTerm = '', statusFilter = '') => {
+  const fetchUsers = async (currentPage = 1, searchTerm = '', roleFilter = '', statusFilter = '') => {
     setLoading(true);
     try {
-      const res = await api.get(
-        `/admin/vendor/allUsers?page=${currentPage}&limit=${limit}${searchTerm ? `&search=${encodeURIComponent(searchTerm)}` : ''
-        }${statusFilter ? `&status=${statusFilter}` : ''}`
-      );
-
-      const { data, totalPages } = res.data.data;
+      const res = await ADMIN_API_METHODS.getAllAgencies();
+      console.log('sdfasdfszd')
+      const data = res.data;
       setUsers(data);
+      const totalPages = res.totalPages
       setTotalPages(totalPages);
       setPage(currentPage);
     } catch (err) {
@@ -50,19 +50,26 @@ export default function UsersPage() {
   // ✅ Handle search submit
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchUsers(1, search, status);
+    fetchUsers(1, search, role, status);
+  };
+
+  // ✅ Handle role filter
+  const handleRoleSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedRole = e.target.value;
+    setRole(selectedRole);
+    fetchUsers(1, search, selectedRole, status);
   };
 
   // ✅ Handle status filter
   const handleStatusSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedStatus = e.target.value;
     setStatus(selectedStatus);
-    fetchUsers(1, search, selectedStatus);
+    fetchUsers(1, search, role, selectedStatus);
   };
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
-      fetchUsers(newPage, search, status);
+      fetchUsers(newPage, search, role, status);
     }
   };
 
@@ -104,6 +111,18 @@ export default function UsersPage() {
             <div className="flex gap-4">
               <select
                 className="px-4 py-2 border rounded-lg text-sm text-gray-700"
+                value={role}
+                onChange={handleRoleSort}
+              >
+                <option value="">Role</option>
+                <option value="User">User</option>
+                <option value="Restaurant Owner">Restaurant</option>
+                <option value="Hotel Owner">Hotel</option>
+                <option value="Agency Owner">Agency</option>
+              </select>
+
+              <select
+                className="px-4 py-2 border rounded-lg text-sm text-gray-700"
                 value={status}
                 onChange={handleStatusSort}
               >
@@ -134,7 +153,7 @@ export default function UsersPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {users.length === 0 ? (
+                  {users?.length === 0 ? (
                     <tr>
                       <td colSpan={6} className="text-center py-8 text-gray-500">
                         No users found.
@@ -163,24 +182,26 @@ export default function UsersPage() {
                         <td className="px-4 py-3">{user.email}</td>
                         <td className="px-4 py-3">
                           <span
-                            className={`text-xs px-3 py-1 rounded-full font-medium ${user.role === 'admin'
-                              ? 'bg-purple-100 text-purple-600'
-                              : user.role === 'Restaurant Owner'
+                            className={`text-xs px-3 py-1 rounded-full font-medium ${
+                              user.role === 'admin'
+                                ? 'bg-purple-100 text-purple-600'
+                                : user.role === 'Restaurant Owner'
                                 ? 'bg-yellow-100 text-yellow-700'
                                 : user.role === 'Hotel Owner'
-                                  ? 'bg-blue-100 text-blue-700'
-                                  : 'bg-green-100 text-green-700'
-                              }`}
+                                ? 'bg-blue-100 text-blue-700'
+                                : 'bg-green-100 text-green-700'
+                            }`}
                           >
                             {user.role}
                           </span>
                         </td>
                         <td className="px-4 py-3">
                           <span
-                            className={`text-xs px-3 py-1 rounded-full font-medium ${user.isBlocked
-                              ? 'bg-red-100 text-red-600'
-                              : 'bg-green-100 text-green-700'
-                              }`}
+                            className={`text-xs px-3 py-1 rounded-full font-medium ${
+                              user.isBlocked
+                                ? 'bg-red-100 text-red-600'
+                                : 'bg-green-100 text-green-700'
+                            }`}
                           >
                             {user.isBlocked ? 'Blocked' : 'Active'}
                           </span>
@@ -214,10 +235,11 @@ export default function UsersPage() {
               {Array.from({ length: totalPages }, (_, i) => (
                 <button
                   key={i + 1}
-                  className={`px-3 py-1 rounded-md ${page === i + 1
-                    ? 'bg-purple-600 text-white'
-                    : 'border text-gray-600 hover:bg-gray-100'
-                    }`}
+                  className={`px-3 py-1 rounded-md ${
+                    page === i + 1
+                      ? 'bg-purple-600 text-white'
+                      : 'border text-gray-600 hover:bg-gray-100'
+                  }`}
                   onClick={() => handlePageChange(i + 1)}
                 >
                   {i + 1}

@@ -9,6 +9,7 @@ import FoodModal from "@/components/restaurant/addFoodModal";
 import { RESTAURANT_API_METHODS } from "@/services/APIs/restaurant.api.service";
 import toast from "react-hot-toast";
 import { FoodData } from "@/components/restaurant/addFoodModal";
+import VendorFooter from "@/components/shared/Footer";
 
 export default function FoodList() {
   const [foods, setFoods] = useState<any[]>([]);
@@ -91,9 +92,9 @@ export default function FoodList() {
 
   console.log(foods)
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="min-h-screen flex bg-gray-50">
       <SideNavbar />
-      <div className="flex-1 p-8">
+      <div className="flex-1 flex flex-col">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-semibold">🍴 Food Items</h1>
           <Button onClick={() => {
@@ -143,6 +144,7 @@ export default function FoodList() {
           onSave={handleSave}
           editingFood={editingFood} // ✅
         />
+        <VendorFooter/>
       </div>
     </div>
   );

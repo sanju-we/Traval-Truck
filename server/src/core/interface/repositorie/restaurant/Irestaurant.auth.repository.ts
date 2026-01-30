@@ -13,4 +13,9 @@ export interface IRestaurantAuthRepository extends IBaserepository<IRestaurant> 
     reason?: string,
   ): Promise<void>;
   findByStatus(status: boolean): Promise<vendorRequestDTO[]>;
+  findAllWithpagination(
+    query: { search: string; status: string },
+    limit: number,
+    page: number,
+  ): Promise<{ data: IRestaurant[]; total: number; totalPages: number }>;
 }

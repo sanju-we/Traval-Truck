@@ -2,6 +2,7 @@ import Link from "next/link";
 import SideNavbar from "@/components/agency/SideNavbar";
 import { createServerAxios } from "@/services/serverApi";
 import { CheckCircle, AlertTriangle } from "lucide-react";
+import VendorFooter from "@/components/shared/Footer";
 
 export const dynamic = "force-dynamic";
 
@@ -24,12 +25,9 @@ export default async function SubscriptionsPage() {
   ]);
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <div className="flex min-h-screen bg-gray-50">
-        <SideNavbar />
-      </div>
-
-      <div className="flex-1 p-6 md:p-10">
+    <div className="min-h-screen flex bg-gray-50">
+      <SideNavbar />
+      <div className="flex-1 flex flex-col">
         <div className="max-w-7xl mx-auto space-y-10">
 
           {/* Page Header */}
@@ -146,6 +144,7 @@ export default async function SubscriptionsPage() {
             )}
           </section>
         </div>
+        <VendorFooter/>
       </div>
     </div>
   );

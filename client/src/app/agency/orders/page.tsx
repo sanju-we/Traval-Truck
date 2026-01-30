@@ -8,6 +8,7 @@ import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
 import SetStartDateModal from '@/components/agency/SetStartDateModal';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import VendorFooter from '@/components/shared/Footer';
 
 export default function PackageOrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -79,12 +80,11 @@ export default function PackageOrdersPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="min-h-screen flex bg-gray-50">
       <SideNavbar />
-      
-      <div className="p-8 flex-1">
+      <div className="flex-1 flex flex-col">
         <div className="max-w-7xl mx-auto space-y-6">
-          
+
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
@@ -160,21 +160,20 @@ export default function PackageOrdersPage() {
                 >
                   <div className="p-6">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                      
+
                       {/* Left Section - Order Info */}
                       <div className="flex-1 space-y-3">
                         <div className="flex items-center gap-3 flex-wrap">
-                          <span className="font-mono text-sm bg-gray-100 px-3 py-1 rounded-md text-gray-700" onClick={()=>router.push(`/agency/orders/${order.id}`)}>
+                          <span className="font-mono text-sm bg-gray-100 px-3 py-1 rounded-md text-gray-700" onClick={() => router.push(`/agency/orders/${order.id}`)}>
                             #{order.orderId}
                           </span>
                           <span
-                            className={`px-3 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1 ${
-                              order.status === 'Ongoing'
+                            className={`px-3 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1 ${order.status === 'Ongoing'
                                 ? 'bg-blue-100 text-blue-700'
                                 : order.status === 'Completed'
-                                ? 'bg-green-100 text-green-700'
-                                : 'bg-yellow-100 text-yellow-700'
-                            }`}
+                                  ? 'bg-green-100 text-green-700'
+                                  : 'bg-yellow-100 text-yellow-700'
+                              }`}
                           >
                             {order.status === 'Ongoing' && <AlertCircle size={14} />}
                             {order.status === 'Completed' && <CheckCircle size={14} />}
@@ -208,10 +207,10 @@ export default function PackageOrdersPage() {
                               <span className="font-medium">
                                 {order.startDate
                                   ? new Date(order.startDate).toLocaleDateString('en-US', {
-                                      month: 'short',
-                                      day: 'numeric',
-                                      year: 'numeric',
-                                    })
+                                    month: 'short',
+                                    day: 'numeric',
+                                    year: 'numeric',
+                                  })
                                   : 'Not set'}
                               </span>
                             </span>
@@ -254,6 +253,7 @@ export default function PackageOrdersPage() {
             </div>
           )}
         </div>
+      <VendorFooter />
       </div>
 
       {/* Modal */}

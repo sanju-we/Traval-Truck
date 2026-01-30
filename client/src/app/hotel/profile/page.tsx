@@ -15,6 +15,7 @@ import VendorProfile from '@/types/vendor/profile';
 import DocumentUploadWithPreview from '@/components/utils/DocumentUploadWithPreview';
 import RestrictionBanner from '@/components/vendor/RestrictionBanner';
 import { HOTEL_API_METHODS } from '@/services/APIs/hotel.api.service';
+import VendorFooter from '@/components/shared/Footer';
 
 export default function VendorProfilePage() {
   const [vendor, setVendor] = useState<VendorProfile | null>(null);
@@ -293,10 +294,9 @@ export default function VendorProfilePage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="min-h-screen flex bg-gray-50">
       <SideNavbar />
-
-      <div className="flex-1 px-6 py-10">
+      <div className="flex-1 flex flex-col">
         {vendor.reason != "" && (
           <RestrictionBanner reason={vendor.reason} />
         )}
@@ -451,6 +451,7 @@ export default function VendorProfilePage() {
             </div>
           </TabsContent>
         </Tabs>
+        <VendorFooter/>
       </div>
 
       <AnimatePresence>

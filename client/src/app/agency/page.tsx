@@ -4,6 +4,7 @@ import React from 'react';
 import SideNavbar from '@/components/agency/SideNavbar';
 import { useEffect } from 'react';
 import api from '@/services/api';
+import VendorFooter from '@/components/shared/Footer';
 
 const Dashboard = () => {
   useEffect(() => {
@@ -13,12 +14,9 @@ const Dashboard = () => {
     fetchData();
   }, []);
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
+    <div className="min-h-screen flex bg-gray-50">
       <SideNavbar />
-
-      {/* Main Content */}
-      <div className="flex-1 bg-gray-50 p-6">
+      <div className="flex-1 flex flex-col">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-semibold text-gray-800">Welcome, Travel Agency 👋</h2>
           <div className="flex items-center space-x-4">
@@ -144,6 +142,7 @@ const Dashboard = () => {
 
           <button className="mt-4 text-blue-600">Go to Chat</button>
         </div>
+        <VendorFooter/>
       </div>
     </div>
   );

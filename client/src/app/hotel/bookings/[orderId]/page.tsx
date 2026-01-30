@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { HotelOrderDetails } from '../../../../types/hotel';
+import VendorFooter from '@/components/shared/Footer';
 
 export default function HotelOrderDetailsPage() {
   const params = useParams();
@@ -160,10 +161,9 @@ export default function HotelOrderDetailsPage() {
   /* ----------------------------- UI ----------------------------- */
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="min-h-screen flex bg-gray-50">
       <SideNavbar />
-
-      <div className="flex-1 p-6 md:p-10">
+      <div className="flex-1 flex flex-col">
         <div className="max-w-7xl mx-auto space-y-6">
 
           {/* Back */}
@@ -385,6 +385,7 @@ export default function HotelOrderDetailsPage() {
             </div>
           </div>
         </div>
+        <VendorFooter/>
       </div>
     </div>
   );

@@ -19,7 +19,7 @@ export class AdminVendorController implements IAdminVendorController {
 
   async showAllRequsestes(req: Request, res: Response): Promise<void> {
     const search = req.query.search
-    const allReq = await this._adminVenderRepo.findAllRequests(search!=undefined ? String(search) : undefined);
+    const allReq = await this._adminVenderRepo.findAllRequests(search != undefined ? String(search) : undefined);
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, allReq);
   }
 
@@ -30,9 +30,10 @@ export class AdminVendorController implements IAdminVendorController {
 
       const search = (req.query.search as string) || '';
       const status = (req.query.status as string) || '';
-      const role = (req.query.role as string) || '';
+      // Force role 'user' for this endpoint as per requirement
+      const role = 'user';
 
-      const { data, total, totalPages } = await this._adminVenderRepo.findAllUsers(page,limit,status,role,search);
+      const { data, total, totalPages } = await this._adminVenderRepo.findAllUsers(page, limit, status, role, search);
 
       sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, {
         data,
@@ -42,6 +43,70 @@ export class AdminVendorController implements IAdminVendorController {
       });
     } catch (error) {
       console.error('Error fetching users:', error);
+      sendResponse(res, STATUS_CODE.INTERNAL_SERVER_ERROR, false, 'Something went wrong.');
+    }
+  }
+
+  async getAllAgency(req: Request, res: Response): Promise<void> {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 5;
+
+      const search = (req.query.search as string) || '';
+      const status = (req.query.status as string) || '';
+
+      const { data, total, totalPages } = await this._adminVenderService.getAllAgency(page, limit, search, status)
+
+      sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, {
+        data,
+        total,
+        page,
+        totalPages
+      })
+    } catch (error) {
+      console.error('Error fetching agencies:', error);
+      sendResponse(res, STATUS_CODE.INTERNAL_SERVER_ERROR, false, 'Something went wrong.');
+    }
+  }
+
+  async getAllHotels(req: Request, res: Response): Promise<void> {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 5;
+      const search = (req.query.search as string) || '';
+      const status = (req.query.status as string) || '';
+
+      const { data, total, totalPages } = await this._adminVenderService.getAllHotels(page, limit, search, status)
+
+      sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, {
+        data,
+        total,
+        page,
+        totalPages
+      })
+    } catch (error) {
+      console.error('Error fetching hotels:', error);
+      sendResponse(res, STATUS_CODE.INTERNAL_SERVER_ERROR, false, 'Something went wrong.');
+    }
+  }
+
+  async getAllRestaurants(req: Request, res: Response): Promise<void> {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 5;
+      const search = (req.query.search as string) || '';
+      const status = (req.query.status as string) || '';
+
+      const { data, total, totalPages } = await this._adminVenderService.getAllRestaurants(page, limit, search, status)
+
+      sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, {
+        data,
+        total,
+        page,
+        totalPages
+      })
+    } catch (error) {
+      console.error('Error fetching restaurants:', error);
       sendResponse(res, STATUS_CODE.INTERNAL_SERVER_ERROR, false, 'Something went wrong.');
     }
   }

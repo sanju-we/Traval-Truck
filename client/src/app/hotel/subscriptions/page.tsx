@@ -7,6 +7,7 @@ import { CheckCircle, AlertTriangle, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "@/services/api";
 import { Subscription } from "@/types/agency";
+import VendorFooter from "@/components/shared/Footer";
 
 export default function SubscriptionsPage() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
@@ -60,12 +61,9 @@ export default function SubscriptionsPage() {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
+    <div className="min-h-screen flex bg-gray-50">
       <SideNavbar />
-
-      {/* Main Content */}
-      <div className="flex-1 p-6 md:p-10">
+      <div className="flex-1 flex flex-col p-6 md:p-10">
         <div className="max-w-7xl mx-auto space-y-10">
 
           {/* Page Header */}
@@ -194,6 +192,7 @@ export default function SubscriptionsPage() {
             </>
           )}
         </div>
+        <VendorFooter/>
       </div>
     </div>
   );
