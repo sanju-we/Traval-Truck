@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,12 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { BADREQUEST, sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
-import { inject, injectable } from "inversify";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.userFoodsController = void 0;
+const resAndErrors_1 = require("../../utils/resAndErrors");
+const HTTPStatusCode_1 = require("../../utils/HTTPStatusCode");
+const responseMessaages_1 = require("../../utils/responseMessaages");
+const inversify_1 = require("inversify");
 let userFoodsController = class userFoodsController {
-    _foodsService;
     constructor(_foodsService) {
         this._foodsService = _foodsService;
     }
@@ -23,14 +25,14 @@ let userFoodsController = class userFoodsController {
         const { page, limit } = req.query;
         const search = req.query.search;
         if (!page || !limit)
-            throw new BADREQUEST();
+            throw new resAndErrors_1.BADREQUEST();
         const data = await this._foodsService.getAllRooms(Number(page), Number(limit), search != undefined ? String(search) : '');
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, data);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.ALL_DATA_FOUND, data);
     }
 };
-userFoodsController = __decorate([
-    injectable(),
-    __param(0, inject('IUserFoodsService')),
+exports.userFoodsController = userFoodsController;
+exports.userFoodsController = userFoodsController = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)('IUserFoodsService')),
     __metadata("design:paramtypes", [Object])
 ], userFoodsController);
-export { userFoodsController };

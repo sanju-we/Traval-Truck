@@ -1,5 +1,8 @@
-import { model, Schema } from 'mongoose';
-const reviewSchema = new Schema({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Reviews = void 0;
+const mongoose_1 = require("mongoose");
+const reviewSchema = new mongoose_1.Schema({
     vendor: {
         type: String,
         required: true,
@@ -35,4 +38,4 @@ const reviewSchema = new Schema({
         default: new Date()
     }
 });
-export const Reviews = model('Reviews', reviewSchema);
+exports.Reviews = (0, mongoose_1.model)('Reviews', reviewSchema);

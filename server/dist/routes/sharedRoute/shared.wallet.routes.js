@@ -1,8 +1,10 @@
-import { Router } from "express";
-import { container } from "../../core/DI/container.js";
-import { asyncHandler } from "../../middleware/asyncHandler.js";
-const walletRouter = Router();
-const WalletController = container.get('ISharedWalletController');
-walletRouter.get("/", asyncHandler(WalletController.getWallet.bind(WalletController)))
-    .post('/add-money', asyncHandler(WalletController.addMoney.bind(WalletController)));
-export default walletRouter;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const container_1 = require("../../core/DI/container");
+const asyncHandler_1 = require("../../middleware/asyncHandler");
+const walletRouter = (0, express_1.Router)();
+const WalletController = container_1.container.get('ISharedWalletController');
+walletRouter.get("/", (0, asyncHandler_1.asyncHandler)(WalletController.getWallet.bind(WalletController)))
+    .post('/add-money', (0, asyncHandler_1.asyncHandler)(WalletController.addMoney.bind(WalletController)));
+exports.default = walletRouter;

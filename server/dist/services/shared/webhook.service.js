@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,18 +11,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { inject, injectable } from "inversify";
-import { logger } from "../../utils/logger.js";
-import { DataNotFoundError, PAYMENT_VALIDATION_FAILED, PAYMENT_VERIFICATOIN_FAILED } from "../../utils/resAndErrors.js";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WebhookService = void 0;
+const inversify_1 = require("inversify");
+const logger_1 = require("../../utils/logger");
+const resAndErrors_1 = require("../../utils/resAndErrors");
 let WebhookService = class WebhookService {
-    _paymentRepo;
-    _walletRepo;
-    _subscriptionHistoryRepo;
-    _subscriptionRepo;
-    _packageRepo;
-    _orderRepo;
-    _couponRepo;
-    _roomRepo;
     constructor(_paymentRepo, _walletRepo, _subscriptionHistoryRepo, _subscriptionRepo, _packageRepo, _orderRepo, _couponRepo, _roomRepo) {
         this._paymentRepo = _paymentRepo;
         this._walletRepo = _walletRepo;
@@ -43,7 +38,7 @@ let WebhookService = class WebhookService {
             await this._paymentRepo.update(paymentDoc.id, paymentDoc);
         }
         const type = metadata.type;
-        logger.info(`dasappan ${type}`);
+        logger_1.logger.info(`dasappan ${type}`);
         switch (type) {
             case 'wallet':
                 await this._handleWalletTopup(session, metadata, paymentIntentId);
@@ -58,7 +53,7 @@ let WebhookService = class WebhookService {
                 await this._handleBookingPurchase(metadata, paymentIntentId);
                 break;
             default:
-                logger.warn("Unknown payment metadata.type: " + metadata.type);
+                logger_1.logger.warn("Unknown payment metadata.type: " + metadata.type);
         }
     }
     async handlePaymentFailed(sessionId) {
@@ -67,24 +62,24 @@ let WebhookService = class WebhookService {
             paymentDoc.status = 'failed';
             await this._paymentRepo.update(paymentDoc.id, paymentDoc);
         }
-        logger.error("Payment failed for session: " + sessionId);
+        logger_1.logger.error("Payment failed for session: " + sessionId);
     }
     async handleInvoicePaymentSucceeded(invoice) {
         const subscriptionId = invoice.subscription;
         const plan = await this._subscriptionRepo.findById(subscriptionId);
         if (!plan) {
-            logger.error(`Plan not found for subscription: ${subscriptionId}`);
-            throw new DataNotFoundError();
+            logger_1.logger.error(`Plan not found for subscription: ${subscriptionId}`);
+            throw new resAndErrors_1.DataNotFoundError();
         }
         const durationMs = plan.Valid * 24 * 60 * 60 * 1000;
         const endDate = new Date(Date.now() + durationMs);
         await this._subscriptionHistoryRepo.update(subscriptionId, { endDate });
-        logger.info("Invoice paid for subscription: " + subscriptionId);
+        logger_1.logger.info("Invoice paid for subscription: " + subscriptionId);
     }
     // Private helper methods
     async _handleWalletTopup(session, metadata, paymentIntentId) {
         const userId = metadata.userId;
-        logger.info(`meta`);
+        logger_1.logger.info(`meta`);
         const amount = (session.amount_total || 0) / 100;
         const wallet = await this._walletRepo.findOne({ UserId: userId });
         const transaction = {
@@ -107,7 +102,7 @@ let WebhookService = class WebhookService {
                 Transaction: [transaction]
             });
         }
-        logger.info(`Wallet credited for ${userId}: ${amount}`);
+        logger_1.logger.info(`Wallet credited for ${userId}: ${amount}`);
     }
     async _handleSubscriptionPurchase(session, metadata, paymentIntentId) {
         const userId = metadata.userId;
@@ -115,8 +110,8 @@ let WebhookService = class WebhookService {
         const role = metadata.role;
         const plan = await this._subscriptionRepo.findById(planId);
         if (!plan) {
-            logger.error(`Plan not found: ${planId}`);
-            throw new DataNotFoundError();
+            logger_1.logger.error(`Plan not found: ${planId}`);
+            throw new resAndErrors_1.DataNotFoundError();
         }
         const durationMs = plan.Valid * 24 * 60 * 60 * 1000;
         const endDate = new Date(Date.now() + durationMs);
@@ -129,7 +124,7 @@ let WebhookService = class WebhookService {
             status: 'active',
             endDate
         });
-        logger.info(`Subscription purchase recorded for ${userId}, plan ${planId}`);
+        logger_1.logger.info(`Subscription purchase recorded for ${userId}, plan ${planId}`);
     }
     async _handlePackagePurchase(metadata, paymentIntentId) {
         const packageId = metadata.packageId;
@@ -138,7 +133,7 @@ let WebhookService = class WebhookService {
         const role = metadata.role;
         const pack = await this._packageRepo.findById(packageId);
         if (!pack)
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         let discountAmount = 0;
         let coupon = 'none';
         let totalAmount = pack.price;
@@ -157,7 +152,7 @@ let WebhookService = class WebhookService {
         }
         const transaction = await this._paymentRepo.findOne({ paymentIntentId: paymentIntentId });
         if (!transaction)
-            throw new PAYMENT_VERIFICATOIN_FAILED();
+            throw new resAndErrors_1.PAYMENT_VERIFICATOIN_FAILED();
         const pad = (n) => n.toString().padStart(2, '0');
         const count = (await this._orderRepo.countDocuments() + 1).toString().padStart(6, '0');
         const date = new Date();
@@ -176,8 +171,8 @@ let WebhookService = class WebhookService {
         });
         const adminWallet = await this._walletRepo.findOne({ role: 'admin' });
         if (!adminWallet)
-            throw new PAYMENT_VALIDATION_FAILED();
-        logger.info(`adminWallet : ${adminWallet}`);
+            throw new resAndErrors_1.PAYMENT_VALIDATION_FAILED();
+        logger_1.logger.info(`adminWallet : ${adminWallet}`);
         const adminTransaction = {
             Type: 'credit',
             Amount: orderData.amount,
@@ -189,7 +184,7 @@ let WebhookService = class WebhookService {
         adminWallet.Transaction.push(adminTransaction);
         adminWallet.Balance += orderData.amount;
         await this._walletRepo.update(adminWallet.id, { Transaction: adminWallet.Transaction, Balance: adminWallet.Balance });
-        logger.info(`metadata da kunja ${JSON.stringify(metadata)}`);
+        logger_1.logger.info(`metadata da kunja ${JSON.stringify(metadata)}`);
     }
     async _handleBookingPurchase(metadata, paymentIntentId) {
         const roomId = metadata.roomId;
@@ -199,10 +194,10 @@ let WebhookService = class WebhookService {
         const couponId = metadata.couponId;
         const room = await this._roomRepo.findById(roomId);
         if (!room)
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         const transaction = await this._paymentRepo.findOne({ paymentIntentId: paymentIntentId });
         if (!transaction)
-            throw new PAYMENT_VERIFICATOIN_FAILED();
+            throw new resAndErrors_1.PAYMENT_VERIFICATOIN_FAILED();
         const discountAmount = 0;
         const coupon = 'none';
         const totalAmount = amount;
@@ -229,7 +224,7 @@ let WebhookService = class WebhookService {
         });
         const adminWallet = await this._walletRepo.findOne({ role: 'admin' });
         if (!adminWallet)
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         const adminTransaction = {
             Type: 'credit',
             Amount: orderData.amount,
@@ -245,16 +240,16 @@ let WebhookService = class WebhookService {
         await this._roomRepo.update(room._id.toString(), room);
     }
 };
-WebhookService = __decorate([
-    injectable(),
-    __param(0, inject('IPaymentRepository')),
-    __param(1, inject('IWalletRespository')),
-    __param(2, inject('ISubscriptionHistoryRepository')),
-    __param(3, inject('ISubscriptionRepository')),
-    __param(4, inject('IAgencyPackageRepository')),
-    __param(5, inject('IOrdersRepository')),
-    __param(6, inject('IAdminCouponRepository')),
-    __param(7, inject('IHotelRoomsRepository')),
+exports.WebhookService = WebhookService;
+exports.WebhookService = WebhookService = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)('IPaymentRepository')),
+    __param(1, (0, inversify_1.inject)('IWalletRespository')),
+    __param(2, (0, inversify_1.inject)('ISubscriptionHistoryRepository')),
+    __param(3, (0, inversify_1.inject)('ISubscriptionRepository')),
+    __param(4, (0, inversify_1.inject)('IAgencyPackageRepository')),
+    __param(5, (0, inversify_1.inject)('IOrdersRepository')),
+    __param(6, (0, inversify_1.inject)('IAdminCouponRepository')),
+    __param(7, (0, inversify_1.inject)('IHotelRoomsRepository')),
     __metadata("design:paramtypes", [Object, Object, Object, Object, Object, Object, Object, Object])
 ], WebhookService);
-export { WebhookService };

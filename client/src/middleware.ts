@@ -26,7 +26,7 @@ export function middleware(req: NextRequest) {
 
     '/restaurant/login',
     '/restaurant/signup',
-    '/restaurant/forgetpassword',
+    '/restaurant/forgetPassword',
     '/restaurant/resetpassword',
   ];
 

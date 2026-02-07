@@ -18,14 +18,13 @@ export default function ForgotPasswordPage() {
 
     setIsLoading(true);
     try {
-      const res = await RESTAURANT_API_METHODS.forgotPassword(email);
-      const data = res.data;
-
+      console.log('sanju')
+      const data = await RESTAURANT_API_METHODS.forgotPassword(email);
       if (data.success) {
         toast.success(`success`);
         router.push('/restaurant/forgetPassword/sent');
       } else {
-        toast.error(`${data.error}`);
+        toast.error(`${data.message}`);
       }
     } catch (err) {
       console.error('Forgot password error:', err);

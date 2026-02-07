@@ -26,8 +26,8 @@ export function SideNavbar({ active }: SideNavbarProps) {
   const router = useRouter();
 
   const handleLogout = async () => {
-    const res = await ADMIN_API_METHODS.logout();
-    if (res.data.success) {
+    const data = await ADMIN_API_METHODS.logout();
+    if (data.success) {
       toast.success('Log-out successfully');
       router.push('/admin/login');
     }

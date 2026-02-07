@@ -1,5 +1,8 @@
-import { Schema, model } from "mongoose";
-const couponSchema = new Schema({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Coupon = void 0;
+const mongoose_1 = require("mongoose");
+const couponSchema = new mongoose_1.Schema({
     couponCode: { type: String, unique: true },
     discountType: { type: String, enum: ['percentage', 'flat'] },
     discountValue: { type: Number, required: true },
@@ -9,4 +12,4 @@ const couponSchema = new Schema({
     createdAt: { type: Date },
     usedBy: { type: [String] }
 });
-export const Coupon = model('Coupon', couponSchema);
+exports.Coupon = (0, mongoose_1.model)('Coupon', couponSchema);

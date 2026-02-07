@@ -104,12 +104,11 @@ export default function SignUpPage() {
     setIsResendingOtp(true);
 
     try {
-      const res = await HOTEL_API_METHODS.sendOtp({
+      console.log('sunny')
+      const data = await HOTEL_API_METHODS.sendOtp({
         email: formData.email,
       });
-
-      const data = res.data;
-
+      console.log(data)
       if (data.success) {
         toast.success('OTP resent to your email');
         setTimer(60);
@@ -129,10 +128,9 @@ export default function SignUpPage() {
 
     setIsOtpLoading(true);
     try {
-      const res = await HOTEL_API_METHODS.sendOtp({
+      const data = await HOTEL_API_METHODS.sendOtp({
         email: formData.email,
       });
-      const data = res.data;
 
       if (data.success) {
         setShowOtpInput(true);
@@ -160,7 +158,7 @@ export default function SignUpPage() {
 
     setIsVerifyingOtp(true);
     try {
-      const res = await HOTEL_API_METHODS.verifyOtp({
+      const data = await HOTEL_API_METHODS.verifyOtp({
         email: formData.email,
         otp: otpCode,
         hotelData: {
@@ -171,7 +169,6 @@ export default function SignUpPage() {
           phone: Number(formData.phone),
         },
       });
-      const data = res.data;
       console.log('Error verifying OTP: ');
 
       if (data.success) {

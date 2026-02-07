@@ -1,9 +1,11 @@
-import { Router } from "express";
-import { container } from "../../core/DI/container.js";
-import { asyncHandler } from "../../middleware/asyncHandler.js";
-const UserHotelsRouter = Router();
-const userHotelsController = container.get('IUserHotelsController');
-UserHotelsRouter.get('/getAll', asyncHandler(userHotelsController.getAllHotels.bind(userHotelsController)))
-    .get('/getRoom/:id', asyncHandler(userHotelsController.getRoom.bind(userHotelsController)))
-    .post('/purchase', asyncHandler(userHotelsController.purchaseRoom.bind(userHotelsController)));
-export default UserHotelsRouter;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const container_1 = require("../../core/DI/container");
+const asyncHandler_1 = require("../../middleware/asyncHandler");
+const UserHotelsRouter = (0, express_1.Router)();
+const userHotelsController = container_1.container.get('IUserHotelsController');
+UserHotelsRouter.get('/getAll', (0, asyncHandler_1.asyncHandler)(userHotelsController.getAllHotels.bind(userHotelsController)))
+    .get('/getRoom/:id', (0, asyncHandler_1.asyncHandler)(userHotelsController.getRoom.bind(userHotelsController)))
+    .post('/purchase', (0, asyncHandler_1.asyncHandler)(userHotelsController.purchaseRoom.bind(userHotelsController)));
+exports.default = UserHotelsRouter;

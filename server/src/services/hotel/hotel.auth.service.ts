@@ -96,6 +96,7 @@ export class HotelAuthService implements IHotelAuthService {
       id: hotelData.id,
       email: hotelData.email,
     });
+    logger.info(`resetLink :- ${resetLink}`)
     await this._emailService.sendEmail(
       email,
       `Password Rest Link`,

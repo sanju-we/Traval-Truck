@@ -1,4 +1,7 @@
-export class TripGenerator {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TripGenerator = void 0;
+class TripGenerator {
     async generatePlanFromItinerary(itineray, date) {
         const plan = [];
         for (let item of itineray) {
@@ -16,3 +19,4 @@ export class TripGenerator {
         return plan;
     }
 }
+exports.TripGenerator = TripGenerator;

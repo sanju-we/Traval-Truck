@@ -1,19 +1,24 @@
-import { Router } from 'express';
-import { verifyToken } from '../middleware/authMiddleware.js';
-import authRouter from './userRoute/user.auth.js';
-import profileRouter from './userRoute/user.profile.js';
-import userPackageRouter from './userRoute/user.package.routes.js';
-import UserHotelsRouter from './userRoute/user.hotels.routes.js';
-import userFoodsRouter from './userRoute/user.foods.routes.js';
-import tripRouter from './userRoute/user.trip.routes.js';
-import mindMapRouter from './userRoute/user.mindMap.routes.js';
-const userRouter = Router();
-userRouter.use('/auth', authRouter)
-    .use('/refresh', authRouter)
-    .use('/profile', verifyToken, profileRouter)
-    .use('/packages', verifyToken, userPackageRouter)
-    .use('/hotels', verifyToken, UserHotelsRouter)
-    .use('/foods', verifyToken, userFoodsRouter)
-    .use('/trip', verifyToken, tripRouter)
-    .use('/mind-map', verifyToken, mindMapRouter);
-export default userRouter;
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const authMiddleware_1 = require("../middleware/authMiddleware");
+const user_auth_1 = __importDefault(require("./userRoute/user.auth"));
+const user_profile_1 = __importDefault(require("./userRoute/user.profile"));
+const user_package_routes_1 = __importDefault(require("./userRoute/user.package.routes"));
+const user_hotels_routes_1 = __importDefault(require("./userRoute/user.hotels.routes"));
+const user_foods_routes_1 = __importDefault(require("./userRoute/user.foods.routes"));
+const user_trip_routes_1 = __importDefault(require("./userRoute/user.trip.routes"));
+const user_mindMap_routes_1 = __importDefault(require("./userRoute/user.mindMap.routes"));
+const userRouter = (0, express_1.Router)();
+userRouter.use('/auth', user_auth_1.default)
+    .use('/refresh', user_auth_1.default)
+    .use('/profile', authMiddleware_1.verifyToken, user_profile_1.default)
+    .use('/packages', authMiddleware_1.verifyToken, user_package_routes_1.default)
+    .use('/hotels', authMiddleware_1.verifyToken, user_hotels_routes_1.default)
+    .use('/foods', authMiddleware_1.verifyToken, user_foods_routes_1.default)
+    .use('/trip', authMiddleware_1.verifyToken, user_trip_routes_1.default)
+    .use('/mind-map', authMiddleware_1.verifyToken, user_mindMap_routes_1.default);
+exports.default = userRouter;

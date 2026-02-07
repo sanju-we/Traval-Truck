@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,48 +11,49 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { inject, injectable } from "inversify";
-import { BADREQUEST, sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.agencyPackageController = void 0;
+const inversify_1 = require("inversify");
+const resAndErrors_1 = require("../../utils/resAndErrors");
+const HTTPStatusCode_1 = require("../../utils/HTTPStatusCode");
+const responseMessaages_1 = require("../../utils/responseMessaages");
 let agencyPackageController = class agencyPackageController {
-    _packageService;
     constructor(_packageService) {
         this._packageService = _packageService;
     }
     async getAllPackages(req, res) {
         const { page } = req.query;
         const allPackage = await this._packageService.getAllPackage(Number(page));
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, allPackage);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.ALL_DATA_FOUND, allPackage);
     }
     async addPackage(req, res) {
         const data = req.body;
         const id = req.user.id;
         const files = req.files;
         if (!files)
-            throw new BADREQUEST();
+            throw new resAndErrors_1.BADREQUEST();
         const createdData = await this._packageService.addPackage(data, files, id);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.CREATED, createdData);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.CREATED, createdData);
     }
     async updatePackage(req, res) {
         const data = req.body;
         const id = req.params.id;
         const files = req.files;
         if (!files)
-            throw new BADREQUEST();
+            throw new resAndErrors_1.BADREQUEST();
         const updateData = await this._packageService.updatePackage(id, data, files);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updateData);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.UPDATED, updateData);
     }
     async deleteSingleImage(req, res) {
         const index = req.body.index;
         const id = req.params.id;
         const updated = await this._packageService.deleteImage(id, index);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DELETED, updated);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.DELETED, updated);
     }
 };
-agencyPackageController = __decorate([
-    injectable(),
-    __param(0, inject('IAgencyPackageService')),
+exports.agencyPackageController = agencyPackageController;
+exports.agencyPackageController = agencyPackageController = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)('IAgencyPackageService')),
     __metadata("design:paramtypes", [Object])
 ], agencyPackageController);
-export { agencyPackageController };

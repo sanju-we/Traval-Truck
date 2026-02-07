@@ -1,13 +1,18 @@
-import { Router } from 'express';
-import restaurantAuthRouter from './restautantRoute/restaurant.auth.route.js';
-import restaurantProfileRouter from './restautantRoute/restaurant.profile.routes.js';
-import foodRouter from './restautantRoute/restaurant.food.routes.js';
-import { verifyRestaurantToken } from '../middleware/authMiddleware.js';
-import subscriptionRouter from './restautantRoute/restaurant.subscription.route.js';
-const restaurantRouter = Router();
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const restaurant_auth_route_1 = __importDefault(require("./restautantRoute/restaurant.auth.route"));
+const restaurant_profile_routes_1 = __importDefault(require("./restautantRoute/restaurant.profile.routes"));
+const restaurant_food_routes_1 = __importDefault(require("./restautantRoute/restaurant.food.routes"));
+const authMiddleware_1 = require("../middleware/authMiddleware");
+const restaurant_subscription_route_1 = __importDefault(require("./restautantRoute/restaurant.subscription.route"));
+const restaurantRouter = (0, express_1.Router)();
 restaurantRouter
-    .use('/auth', restaurantAuthRouter)
-    .use('/profile', verifyRestaurantToken, restaurantProfileRouter)
-    .use('/food', verifyRestaurantToken, foodRouter)
-    .use('/subscription', verifyRestaurantToken, subscriptionRouter);
-export default restaurantRouter;
+    .use('/auth', restaurant_auth_route_1.default)
+    .use('/profile', authMiddleware_1.verifyRestaurantToken, restaurant_profile_routes_1.default)
+    .use('/food', authMiddleware_1.verifyRestaurantToken, restaurant_food_routes_1.default)
+    .use('/subscription', authMiddleware_1.verifyRestaurantToken, restaurant_subscription_route_1.default);
+exports.default = restaurantRouter;

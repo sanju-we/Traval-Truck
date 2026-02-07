@@ -1,4 +1,7 @@
-export const toSubsctiptionHistoryDTO = (history) => ({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.toSubsctiptionHistoryDTO = void 0;
+const toSubsctiptionHistoryDTO = (history) => ({
     userId: history.userId,
     role: history.role,
     amount: history.amount,
@@ -8,3 +11,4 @@ export const toSubsctiptionHistoryDTO = (history) => ({
     startDate: history.startDate,
     endDate: history.endDate
 });
+exports.toSubsctiptionHistoryDTO = toSubsctiptionHistoryDTO;

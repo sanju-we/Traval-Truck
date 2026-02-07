@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,13 +11,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { inject, injectable } from "inversify";
-import { DataNotFoundError, ROOM_ALREADY_OCCUPAID } from "../../utils/resAndErrors.js";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserHotelsService = void 0;
+const inversify_1 = require("inversify");
+const resAndErrors_1 = require("../../utils/resAndErrors");
 let UserHotelsService = class UserHotelsService {
-    _hotelRoomRepo;
-    _subscriptionHistoryRepo;
-    _paymentUtils;
-    _orderRepo;
     constructor(_hotelRoomRepo, _subscriptionHistoryRepo, _paymentUtils, _orderRepo) {
         this._hotelRoomRepo = _hotelRoomRepo;
         this._subscriptionHistoryRepo = _subscriptionHistoryRepo;
@@ -36,7 +35,7 @@ let UserHotelsService = class UserHotelsService {
         data.data = result;
         if (data)
             return data;
-        throw new DataNotFoundError();
+        throw new resAndErrors_1.DataNotFoundError();
     }
     async getRoom(id) {
         const data = await this._hotelRoomRepo.findPackageWithPartner(id);
@@ -45,12 +44,12 @@ let UserHotelsService = class UserHotelsService {
         });
         if (room)
             return data;
-        throw new DataNotFoundError();
+        throw new resAndErrors_1.DataNotFoundError();
     }
     async initializeSession(roomId, role, userId, amount, couponId, startDate) {
         const room = await this._hotelRoomRepo.findById(roomId);
         if (!room)
-            throw new DataNotFoundError();
+            throw new resAndErrors_1.DataNotFoundError();
         const orders = await this._orderRepo.findAll({ product: roomId, status: { $in: ['Upcoming', 'Ongoing'] } }, {});
         console.log(orders);
         if (orders.length > 0) {
@@ -66,7 +65,7 @@ let UserHotelsService = class UserHotelsService {
                     continue;
                 const isOverlap = isDateRangeOverlapping(date, endDate, new Date(order.startDate), new Date(order.endDate));
                 if (isOverlap)
-                    throw new ROOM_ALREADY_OCCUPAID();
+                    throw new resAndErrors_1.ROOM_ALREADY_OCCUPAID();
             }
         }
         return this._paymentUtils.createCheckoutSession({
@@ -87,12 +86,12 @@ let UserHotelsService = class UserHotelsService {
         });
     }
 };
-UserHotelsService = __decorate([
-    injectable(),
-    __param(0, inject('IHotelRoomsRepository')),
-    __param(1, inject('ISubscriptionHistoryRepository')),
-    __param(2, inject('IPaymentUtils')),
-    __param(3, inject('IOrdersRepository')),
+exports.UserHotelsService = UserHotelsService;
+exports.UserHotelsService = UserHotelsService = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)('IHotelRoomsRepository')),
+    __param(1, (0, inversify_1.inject)('ISubscriptionHistoryRepository')),
+    __param(2, (0, inversify_1.inject)('IPaymentUtils')),
+    __param(3, (0, inversify_1.inject)('IOrdersRepository')),
     __metadata("design:paramtypes", [Object, Object, Object, Object])
 ], UserHotelsService);
-export { UserHotelsService };

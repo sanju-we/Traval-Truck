@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,17 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { injectable, inject } from 'inversify';
-import { sendResponse } from '../../utils/resAndErrors.js';
-import { STATUS_CODE } from '../../utils/HTTPStatusCode.js';
-import { z } from 'zod';
-import { logger } from '../../utils/logger.js';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AuthController = void 0;
+const inversify_1 = require("inversify");
+const resAndErrors_1 = require("../../utils/resAndErrors");
+const HTTPStatusCode_1 = require("../../utils/HTTPStatusCode");
+const zod_1 = require("zod");
+const logger_1 = require("../../utils/logger");
 let AuthController = class AuthController {
-    _emailService;
-    _authService;
-    _authRepository;
-    _jwtUtil;
-    _generalService;
     constructor(_emailService, _authService, _authRepository, _jwtUtil, _generalService) {
         this._emailService = _emailService;
         this._authService = _authService;
@@ -29,110 +27,110 @@ let AuthController = class AuthController {
         this._generalService = _generalService;
     }
     async sendOtp(req, res) {
-        const schema = z.object({
-            email: z.string().email(),
+        const schema = zod_1.z.object({
+            email: zod_1.z.string().email(),
         });
         const { email } = schema.parse(req.body);
-        logger.info(`OTP sent to ${email}`);
+        logger_1.logger.info(`OTP sent to ${email}`);
         const otp = await this._generalService.generateOtp();
         await this._generalService.storeOtp(email, otp);
         await this._emailService.otpSend(email, otp);
-        sendResponse(res, STATUS_CODE.OK, true, 'OTP sent successfully');
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, 'OTP sent successfully');
     }
     async verify(req, res) {
-        const schema = z.object({
-            email: z.email(),
-            otp: z.string().length(6),
-            userData: z.object({
-                name: z.string().min(1),
-                email: z.email(),
-                password: z.string().min(8),
-                phoneNumber: z.number(),
+        const schema = zod_1.z.object({
+            email: zod_1.z.email(),
+            otp: zod_1.z.string().length(6),
+            userData: zod_1.z.object({
+                name: zod_1.z.string().min(1),
+                email: zod_1.z.email(),
+                password: zod_1.z.string().min(8),
+                phoneNumber: zod_1.z.number(),
             }),
         });
         const { email, otp, userData } = schema.parse(req.body);
-        logger.info(req.body);
+        logger_1.logger.info(req.body);
         const { user, accessToken, refreshToken } = await this._authService.verify(email, otp, userData);
         await this._jwtUtil.setTokenInCookies(res, accessToken, refreshToken);
-        logger.info(`User ${email} verified successfully`);
-        sendResponse(res, STATUS_CODE.CREATED, true, 'User verified successfully', {
+        logger_1.logger.info(`User ${email} verified successfully`);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.CREATED, true, 'User verified successfully', {
             user,
             accessToken,
             refreshToken,
         });
     }
     async login(req, res) {
-        const schema = z.object({
-            email: z.email(),
-            password: z.string().min(8),
+        const schema = zod_1.z.object({
+            email: zod_1.z.email(),
+            password: zod_1.z.string().min(8),
         });
         const { email, password } = schema.parse(req.body);
         const result = await this._authService.verifyLogin(email, password);
         await this._jwtUtil.setTokenInCookies(res, result.accessToken, result.refreshToken);
-        logger.info(`User ${email} logged in successfully`);
-        sendResponse(res, STATUS_CODE.OK, true, 'Login successful', result);
+        logger_1.logger.info(`User ${email} logged in successfully`);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, 'Login successful', result);
     }
     async forgotPassword(req, res) {
-        const schema = z.object({
-            email: z.string().email(),
+        const schema = zod_1.z.object({
+            email: zod_1.z.string().email(),
         });
         const { email } = schema.parse(req.body);
         await this._authService.sendLink(email);
-        logger.info(`Password reset link sent to ${email}`);
-        sendResponse(res, STATUS_CODE.OK, true, 'Password reset link sent');
+        logger_1.logger.info(`Password reset link sent to ${email}`);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, 'Password reset link sent');
     }
     async resetPassword(req, res) {
-        const schema = z.object({
-            token: z.string().min(1),
-            newPassword: z.string().min(8),
+        const schema = zod_1.z.object({
+            token: zod_1.z.string().min(1),
+            newPassword: zod_1.z.string().min(8),
         });
-        logger.info(`recieved body:${req.body.token}`);
+        logger_1.logger.info(`recieved body:${req.body.token}`);
         const { token, newPassword } = schema.parse(req.body);
         await this._authService.resetPassword(token, newPassword);
-        logger.info(`Password reset for token`);
-        sendResponse(res, STATUS_CODE.OK, true, 'Password reset successfully');
+        logger_1.logger.info(`Password reset for token`);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, 'Password reset successfully');
     }
     async logout(req, res) {
-        const schema = z.object({
-            accessToken: z.string(),
+        const schema = zod_1.z.object({
+            accessToken: zod_1.z.string(),
         });
-        logger.info(`req.cookies ${JSON.stringify(req.cookies)}`);
+        logger_1.logger.info(`req.cookies ${JSON.stringify(req.cookies)}`);
         if (!req.cookies || !req.cookies.accessToken) {
-            logger.info('User logged out Failed not found the cookie in the req:');
-            return sendResponse(res, STATUS_CODE.BAD_REQUEST, false, 'No refresh token found');
+            logger_1.logger.info('User logged out Failed not found the cookie in the req:');
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.BAD_REQUEST, false, 'No refresh token found');
         }
         const { accessToken } = schema.parse(req.cookies);
         await this._jwtUtil.blacklistRefreshToken(res);
         res.clearCookie('accessToken', { httpOnly: true, secure: false, sameSite: 'lax' });
-        sendResponse(res, STATUS_CODE.OK, true, 'Logged out successfully');
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, 'Logged out successfully');
     }
     async refreshToken(req, res) {
-        logger.info(`from refresh token req.body : ${JSON.stringify(req.cookies)}`);
-        const schema = z.object({
-            refreshToken: z.string().optional(),
-            accessToken: z.string().optional(),
+        logger_1.logger.info(`from refresh token req.body : ${JSON.stringify(req.cookies)}`);
+        const schema = zod_1.z.object({
+            refreshToken: zod_1.z.string().optional(),
+            accessToken: zod_1.z.string().optional(),
         });
         const { refreshToken } = schema.parse(req.cookies);
         if (!refreshToken)
-            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Refresh Token is not found');
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.UNAUTHORIZED, false, 'Refresh Token is not found');
         const decodedData = await this._jwtUtil.verifyRefreshToken(refreshToken);
         const result = await this._jwtUtil.generateToken({
             id: decodedData.id,
             role: decodedData.role,
         });
         await this._jwtUtil.setTokenInCookies(res, result.accessToken, result.refreshToken);
-        logger.info(`User accessToken successfully recreated`);
-        sendResponse(res, STATUS_CODE.OK, true, 'accessToken recreated', result.accessToken);
+        logger_1.logger.info(`User accessToken successfully recreated`);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, 'accessToken recreated', result.accessToken);
         return;
     }
 };
-AuthController = __decorate([
-    injectable(),
-    __param(0, inject('IEmailService')),
-    __param(1, inject('IAuthService')),
-    __param(2, inject('IAuthRepository')),
-    __param(3, inject('IJWT')),
-    __param(4, inject('IGeneralService')),
+exports.AuthController = AuthController;
+exports.AuthController = AuthController = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)('IEmailService')),
+    __param(1, (0, inversify_1.inject)('IAuthService')),
+    __param(2, (0, inversify_1.inject)('IAuthRepository')),
+    __param(3, (0, inversify_1.inject)('IJWT')),
+    __param(4, (0, inversify_1.inject)('IGeneralService')),
     __metadata("design:paramtypes", [Object, Object, Object, Object, Object])
 ], AuthController);
-export { AuthController };

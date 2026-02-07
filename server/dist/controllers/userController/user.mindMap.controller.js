@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,12 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { inject, injectable } from "inversify";
-import { sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserMindMapController = void 0;
+const inversify_1 = require("inversify");
+const resAndErrors_1 = require("../../utils/resAndErrors");
+const HTTPStatusCode_1 = require("../../utils/HTTPStatusCode");
+const responseMessaages_1 = require("../../utils/responseMessaages");
 let UserMindMapController = class UserMindMapController {
-    _mindMapService;
     constructor(_mindMapService) {
         this._mindMapService = _mindMapService;
     }
@@ -23,28 +25,28 @@ let UserMindMapController = class UserMindMapController {
         const body = req.body;
         const userId = req.user.id;
         const map = await this._mindMapService.createMap(body, userId);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.CREATED, map);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.CREATED, map);
     }
     async getmap(req, res) {
         const page = req.query.page;
         const userId = req.user.id;
         const mindMaps = await this._mindMapService.getMaps(Number(page), userId);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, mindMaps);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.ALL_DATA_FOUND, mindMaps);
     }
     async mindMap(req, res) {
         const mapId = req.query.id;
         const mindMap = await this._mindMapService.getMap(mapId);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, mindMap);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.DATA_FOUND, mindMap);
     }
     async confirmMap(req, res) {
         const mapId = req.body.id;
         const updated = await this._mindMapService.confirmMap(mapId);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updated);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.UPDATED, updated);
     }
 };
-UserMindMapController = __decorate([
-    injectable(),
-    __param(0, inject('IUserMindMapService')),
+exports.UserMindMapController = UserMindMapController;
+exports.UserMindMapController = UserMindMapController = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)('IUserMindMapService')),
     __metadata("design:paramtypes", [Object])
 ], UserMindMapController);
-export { UserMindMapController };

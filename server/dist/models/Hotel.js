@@ -1,5 +1,8 @@
-import { Schema, model } from 'mongoose';
-const hotelSchema = new Schema({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Hotel = void 0;
+const mongoose_1 = require("mongoose");
+const hotelSchema = new mongoose_1.Schema({
     companyName: {
         type: String,
         required: true,
@@ -33,14 +36,14 @@ const hotelSchema = new Schema({
     address: { type: String, },
     packages: [
         {
-            type: Schema.Types.ObjectId,
+            type: mongoose_1.Schema.Types.ObjectId,
             ref: 'Package',
             required: false,
         },
     ],
     reviews: [
         {
-            type: Schema.Types.ObjectId,
+            type: mongoose_1.Schema.Types.ObjectId,
             ref: 'Reviews',
         },
     ],
@@ -107,4 +110,4 @@ const hotelSchema = new Schema({
         default: '',
     },
 });
-export const Hotel = model('Hotel', hotelSchema);
+exports.Hotel = (0, mongoose_1.model)('Hotel', hotelSchema);

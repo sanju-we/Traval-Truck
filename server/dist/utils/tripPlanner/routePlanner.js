@@ -1,5 +1,8 @@
-import { getDistanceInKm } from "./distance.js";
-export function buildOptimizedRoute(startLat, startLng, places) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.buildOptimizedRoute = buildOptimizedRoute;
+const distance_1 = require("./distance");
+function buildOptimizedRoute(startLat, startLng, places) {
     const unvisited = [...places];
     const route = [];
     let currentLat = startLat;
@@ -10,7 +13,7 @@ export function buildOptimizedRoute(startLat, startLng, places) {
         let nearestIndex = 0;
         let nearestDistance = Infinity;
         for (let i = 0; i < unvisited.length; i++) {
-            const d = getDistanceInKm(currentLat, currentLng, unvisited[i].lat, unvisited[i].lng);
+            const d = (0, distance_1.getDistanceInKm)(currentLat, currentLng, unvisited[i].lat, unvisited[i].lng);
             if (d < nearestDistance) {
                 nearestDistance = d;
                 nearestIndex = i;
@@ -23,7 +26,7 @@ export function buildOptimizedRoute(startLat, startLng, places) {
         currentLng = next.lng;
     }
     if (route.length > 0) {
-        const returnDistance = getDistanceInKm(currentLat, currentLng, startLat, startLng);
+        const returnDistance = (0, distance_1.getDistanceInKm)(currentLat, currentLng, startLat, startLng);
         totalDistance += returnDistance;
     }
     console.log('totalDistance:', totalDistance);

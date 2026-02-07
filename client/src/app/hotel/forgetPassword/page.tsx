@@ -18,14 +18,15 @@ export default function ForgotPasswordPage() {
 
     setIsLoading(true);
     try {
-      const res = await HOTEL_API_METHODS.forgotPassword({ email });
-      const data = res.data;
+      const data = await HOTEL_API_METHODS.forgotPassword({ email });
+      console.log('suss')
 
       if (data.success) {
         toast.success(`success`);
         router.push('/hotel/forgetPassword/sent');
       } else {
-        toast.error(`${data.error}`);
+        console.log('dfjsdlfjsdlfjsdkfjsdflksdjf')
+        toast.error(`${data.message}`);
       }
     } catch (err) {
       console.error('Forgot password error:', err);

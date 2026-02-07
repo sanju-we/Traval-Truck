@@ -1,7 +1,9 @@
-import { Router } from "express";
-import { container } from "../../core/DI/container.js";
-import { asyncHandler } from "../../middleware/asyncHandler.js";
-const subscriptionRouter = Router();
-const subscriptionController = container.get('IRestaurantSubscriptionController');
-subscriptionRouter.get('/getAll', asyncHandler(subscriptionController.getAll.bind(subscriptionController)));
-export default subscriptionRouter;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const container_1 = require("../../core/DI/container");
+const asyncHandler_1 = require("../../middleware/asyncHandler");
+const subscriptionRouter = (0, express_1.Router)();
+const subscriptionController = container_1.container.get('IRestaurantSubscriptionController');
+subscriptionRouter.get('/getAll', (0, asyncHandler_1.asyncHandler)(subscriptionController.getAll.bind(subscriptionController)));
+exports.default = subscriptionRouter;

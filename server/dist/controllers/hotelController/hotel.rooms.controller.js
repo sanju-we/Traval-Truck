@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,13 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { inject, injectable } from "inversify";
-import { logger } from "../../utils/logger.js";
-import { Data_Creation_Error, DataNotFoundError, Files_Missing, sendResponse } from "../../utils/resAndErrors.js";
-import { STATUS_CODE } from "../../utils/HTTPStatusCode.js";
-import { MESSAGES } from "../../utils/responseMessaages.js";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.HotelRoomsController = void 0;
+const inversify_1 = require("inversify");
+const logger_1 = require("../../utils/logger");
+const resAndErrors_1 = require("../../utils/resAndErrors");
+const HTTPStatusCode_1 = require("../../utils/HTTPStatusCode");
+const responseMessaages_1 = require("../../utils/responseMessaages");
 let HotelRoomsController = class HotelRoomsController {
-    _roomService;
     constructor(_roomService) {
         this._roomService = _roomService;
     }
@@ -26,65 +28,66 @@ let HotelRoomsController = class HotelRoomsController {
         const search = req.query.Description;
         const Description = req.query.Description;
         const roomNum = isNaN(Number(search)) ? 0 : Number(search);
-        const allRooms = await this._roomService.getAllRooms(hotelID, Number(page), roomNum, Description);
-        logger.info(allRooms);
+        const pageNum = isNaN(Number(page)) ? 0 : Number(page);
+        const allRooms = await this._roomService.getAllRooms(hotelID, pageNum, roomNum, Description);
+        logger_1.logger.info(allRooms);
         if (allRooms)
-            return sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, allRooms);
-        throw new DataNotFoundError();
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.ALL_DATA_FOUND, allRooms);
+        throw new resAndErrors_1.DataNotFoundError();
     }
     async addRooms(req, res) {
         const data = req.body;
         const files = req.files;
         const hotelId = req.user.id;
         if (!files || Object.keys(files).length === 0)
-            throw new Files_Missing();
+            throw new resAndErrors_1.Files_Missing();
         const allFiles = Object.values(files).flat();
         const addedData = await this._roomService.addRoom({ ...data, HotelId: hotelId }, allFiles);
         if (addedData)
-            return sendResponse(res, STATUS_CODE.CREATED, true, MESSAGES.CREATED, addedData);
-        throw new Data_Creation_Error();
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.CREATED, true, responseMessaages_1.MESSAGES.CREATED, addedData);
+        throw new resAndErrors_1.Data_Creation_Error();
     }
     async getRoom(req, res) {
         const roomId = req.params.id;
         const room = await this._roomService.getRoom(roomId);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS, room);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.SUCCESS, room);
     }
     async updateRoomStatus(req, res) {
         const data = req.body;
         const updatedData = await this._roomService.updateStatus(data);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updatedData);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.UPDATED, updatedData);
     }
     async updateBlock(req, res) {
         const data = req.body;
         const updateData = await this._roomService.updateBlock(data);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updateData);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.UPDATED, updateData);
     }
     async getEditRoom(req, res) {
         const id = req.params.id;
         const updatedRoom = await this._roomService.getEditRoom(id);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS, updatedRoom);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.SUCCESS, updatedRoom);
     }
     async updateRoom(req, res) {
         const data = req.body;
         const id = req.params.id;
         const files = req.files;
         if (!files)
-            throw new Files_Missing();
-        logger.info(files);
+            throw new resAndErrors_1.Files_Missing();
+        logger_1.logger.info(files);
         const allFiles = Object.values(files).flat();
         const updatedRoom = await this._roomService.updateRoom(data, id, allFiles);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updatedRoom);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.UPDATED, updatedRoom);
     }
     async deleteSingleImage(req, res) {
         const index = req.body.index;
         const id = req.params.id;
         const updated = await this._roomService.deleteSingleImage(id, index);
-        sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DELETED, updated);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.DELETED, updated);
     }
 };
-HotelRoomsController = __decorate([
-    injectable(),
-    __param(0, inject('IHotelRoomsService')),
+exports.HotelRoomsController = HotelRoomsController;
+exports.HotelRoomsController = HotelRoomsController = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)('IHotelRoomsService')),
     __metadata("design:paramtypes", [Object])
 ], HotelRoomsController);
-export { HotelRoomsController };

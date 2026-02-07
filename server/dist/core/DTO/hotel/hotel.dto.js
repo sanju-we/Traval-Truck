@@ -1,4 +1,7 @@
-export const toHotelProfile = (hotel) => ({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.toHotelProfile = void 0;
+const toHotelProfile = (hotel) => ({
     id: hotel._id.toString(),
     companyName: hotel.companyName,
     ownerName: hotel.ownerName,
@@ -10,3 +13,4 @@ export const toHotelProfile = (hotel) => ({
     rating: hotel.rating,
     totalReviews: hotel.totalReviews,
 });
+exports.toHotelProfile = toHotelProfile;

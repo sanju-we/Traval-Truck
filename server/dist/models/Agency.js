@@ -1,5 +1,8 @@
-import { Schema, model } from 'mongoose';
-const agencySchema = new Schema({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Agency = void 0;
+const mongoose_1 = require("mongoose");
+const agencySchema = new mongoose_1.Schema({
     companyName: {
         type: String,
         required: true,
@@ -31,7 +34,7 @@ const agencySchema = new Schema({
     ],
     reviews: [
         {
-            type: Schema.Types.ObjectId,
+            type: mongoose_1.Schema.Types.ObjectId,
         },
     ],
     images: [
@@ -100,4 +103,4 @@ const agencySchema = new Schema({
         required: false
     }
 });
-export const Agency = model('Agency', agencySchema);
+exports.Agency = (0, mongoose_1.model)('Agency', agencySchema);

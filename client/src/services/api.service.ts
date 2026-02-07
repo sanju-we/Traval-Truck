@@ -15,12 +15,6 @@ const handleAPIerror = (error: any, options: ApiOption) => {
 
   const message = error.data.message || error.response.data.message || error.message || 'Request failed';
   console.log('Api request error', message)
-
-  if (error.status == 401) {
-    toast.error(message)
-  } else {
-    toast.error(message)
-  }
 }
 
 export const postRequest = async < T = any> (url: string, body: object | FormData, options: ApiOption = defaultOptions) : Promise<T | null> => {

@@ -47,7 +47,7 @@ export default function LoginPage() {
       <header className="w-full flex justify-between items-center px-6 py-4 shadow-sm">
         <h1 className="text-lg font-bold">Travel Truck</h1>
         <button
-          onClick={() => router.push('/agency/signup')}
+          onClick={() => router.push('/hotel/signup')}
           className="px-4 py-2 text-sm font-medium border rounded-lg hover:bg-gray-100"
         >
           Sign up
@@ -97,7 +97,7 @@ export default function LoginPage() {
 
           {/* Forgot password */}
           <p className="text-sm text-gray-500 hover:text-gray-700 cursor-pointer">
-            <a href="/agency/forgetPassword" className="text-purple-600 hover:underline">
+            <a href="/hotel/forgetPassword" className="text-purple-600 hover:underline">
               Forgot password?
             </a>
           </p>

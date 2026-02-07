@@ -1,4 +1,7 @@
-export const toFoodDTO = (food) => ({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.toFoodDTO = void 0;
+const toFoodDTO = (food) => ({
     id: food._id.toString(),
     name: food.Name,
     description: food.Description,
@@ -9,3 +12,4 @@ export const toFoodDTO = (food) => ({
     status: food.Status,
     restaurant: food.Restaurant
 });
+exports.toFoodDTO = toFoodDTO;

@@ -1,10 +1,13 @@
-import { OAuth2Client } from 'google-auth-library';
-import { container } from '../core/DI/container.js';
-import { User } from '../models/SUser.js';
-import { logger } from '../utils/logger.js';
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, process.env.GOOGLE_REDIRECT_URL);
-const jwtService = container.get('IJWT');
-export const googleCallback = async (req, res) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.googleCallback = void 0;
+const google_auth_library_1 = require("google-auth-library");
+const container_1 = require("../core/DI/container");
+const SUser_1 = require("../models/SUser");
+const logger_1 = require("../utils/logger");
+const client = new google_auth_library_1.OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, process.env.GOOGLE_REDIRECT_URL);
+const jwtService = container_1.container.get('IJWT');
+const googleCallback = async (req, res) => {
     const code = req.query.code;
     try {
         const { tokens } = await client.getToken(code);
@@ -16,10 +19,10 @@ export const googleCallback = async (req, res) => {
         const payload = ticket.getPayload();
         if (!payload)
             throw new Error('No user info from Google');
-        logger.info(`got it here ${payload.picture}`);
-        let user = await User.findOne({ email: payload.email });
+        logger_1.logger.info(`got it here ${payload.picture}`);
+        let user = await SUser_1.User.findOne({ email: payload.email });
         if (!user) {
-            user = new User({
+            user = new SUser_1.User({
                 googleId: payload.sub,
                 email: payload.email,
                 name: payload.name,
@@ -41,7 +44,8 @@ export const googleCallback = async (req, res) => {
         res.redirect('http://localhost:3000');
     }
     catch (err) {
-        logger.error(`Google Auth Failed: ${err.message}`);
+        logger_1.logger.error(`Google Auth Failed: ${err.message}`);
         res.status(500).json({ success: false, message: 'Google Authentication failed' });
     }
 };
+exports.googleCallback = googleCallback;

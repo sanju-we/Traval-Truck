@@ -1,4 +1,7 @@
-export const toVendorRequestDTO = (vendor) => ({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.toVendorRequestDTO = void 0;
+const toVendorRequestDTO = (vendor) => ({
     id: vendor._id.toString(),
     companyName: vendor.companyName,
     ownerName: vendor.ownerName,
@@ -13,3 +16,4 @@ export const toVendorRequestDTO = (vendor) => ({
     isRestricted: vendor.isRestricted,
     reason: vendor.reason,
 });
+exports.toVendorRequestDTO = toVendorRequestDTO;

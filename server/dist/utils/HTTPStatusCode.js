@@ -1,4 +1,7 @@
-export var STATUS_CODE;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.STATUS_CODE = void 0;
+var STATUS_CODE;
 (function (STATUS_CODE) {
     STATUS_CODE[STATUS_CODE["OK"] = 200] = "OK";
     STATUS_CODE[STATUS_CODE["CREATED"] = 201] = "CREATED";
@@ -7,4 +10,4 @@ export var STATUS_CODE;
     STATUS_CODE[STATUS_CODE["FORBIDDEN"] = 403] = "FORBIDDEN";
     STATUS_CODE[STATUS_CODE["NOT_FOUND"] = 404] = "NOT_FOUND";
     STATUS_CODE[STATUS_CODE["INTERNAL_SERVER_ERROR"] = 500] = "INTERNAL_SERVER_ERROR";
-})(STATUS_CODE || (STATUS_CODE = {}));
+})(STATUS_CODE || (exports.STATUS_CODE = STATUS_CODE = {}));

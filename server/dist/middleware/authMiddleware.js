@@ -1,193 +1,204 @@
-import { HttpError, sendResponse, UNAUTHORIZEDUserFounf, RESTRICTED_USER, } from '../utils/resAndErrors.js';
-import { STATUS_CODE } from '../utils/HTTPStatusCode.js';
-import { User } from '../models/SUser.js';
-import { Restaurant } from '../models/Restaurant.js';
-import { Agency } from '../models/Agency.js';
-import jwt from 'jsonwebtoken';
-import { logger } from '../utils/logger.js';
-import { Hotel } from '../models/Hotel.js';
-import { JWT } from '../utils/JWTtoken.js';
-import { userSignupDTO } from '../core/DTO/user/Request/user.sign.js';
-import { toVendorAuth } from '../core/DTO/agency/request/requestDTO.js';
-const ijwt = new JWT();
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.verifyToken = verifyToken;
+exports.verifyHotelToken = verifyHotelToken;
+exports.verifyAgencyToken = verifyAgencyToken;
+exports.verifyRestaurantToken = verifyRestaurantToken;
+exports.verifyAdminToken = verifyAdminToken;
+exports.checkRole = checkRole;
+const resAndErrors_1 = require("../utils/resAndErrors");
+const HTTPStatusCode_1 = require("../utils/HTTPStatusCode");
+const SUser_1 = require("../models/SUser");
+const Restaurant_1 = require("../models/Restaurant");
+const Agency_1 = require("../models/Agency");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const logger_1 = require("../utils/logger");
+const Hotel_1 = require("../models/Hotel");
+const JWTtoken_1 = require("../utils/JWTtoken");
+const user_sign_1 = require("../core/DTO/user/Request/user.sign");
+const requestDTO_1 = require("../core/DTO/agency/request/requestDTO");
+const ijwt = new JWTtoken_1.JWT();
 const secret = process.env.JWT_SECRET || 'Travel_Truck_@321';
-export async function verifyToken(req, res, next) {
+async function verifyToken(req, res, next) {
     try {
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.startsWith('Bearer ')
             ? authHeader.split(' ')[1]
             : req.cookies?.accessToken;
         if (!token) {
-            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
         }
-        const payload = jwt.verify(token, secret);
+        const payload = jsonwebtoken_1.default.verify(token, secret);
         if (!payload)
-            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
-        const user = await User.findById(payload.id);
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.FORBIDDEN, false, 'Token expired');
+        const user = await SUser_1.User.findById(payload.id);
         if (!user) {
             ijwt.blacklistRefreshToken(res);
-            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'User not found');
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.UNAUTHORIZED, false, 'User not found');
         }
         if (payload.role !== 'user') {
-            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
         }
         if (user.isBlocked) {
             res.clearCookie('accessToken', { httpOnly: true, secure: false, sameSite: 'lax' });
-            throw new RESTRICTED_USER();
+            throw new resAndErrors_1.RESTRICTED_USER();
         }
-        req.user = userSignupDTO(user);
+        req.user = (0, user_sign_1.userSignupDTO)(user);
         next();
     }
     catch (error) {
-        const status = error instanceof HttpError ? error.statusCode : STATUS_CODE.FORBIDDEN;
+        const status = error instanceof resAndErrors_1.HttpError ? error.statusCode : HTTPStatusCode_1.STATUS_CODE.FORBIDDEN;
         const message = error instanceof Error ? error.message : 'Unknown error';
-        logger.error(`Failed to verify token: ${message}`);
-        sendResponse(res, status, false, message);
+        logger_1.logger.error(`Failed to verify token: ${message}`);
+        (0, resAndErrors_1.sendResponse)(res, status, false, message);
     }
 }
-export async function verifyHotelToken(req, res, next) {
+async function verifyHotelToken(req, res, next) {
     try {
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.startsWith('Bearer ')
             ? authHeader.split(' ')[1]
             : req.cookies?.accessToken;
         if (!token) {
-            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
         }
-        const payload = jwt.verify(token, secret);
+        const payload = jsonwebtoken_1.default.verify(token, secret);
         if (!payload) {
             ijwt.blacklistRefreshToken(res);
-            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.FORBIDDEN, false, 'Token expired');
         }
-        const hotel = await Hotel.findById(payload.id);
+        const hotel = await Hotel_1.Hotel.findById(payload.id);
         if (!hotel) {
-            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Hotel not found');
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.UNAUTHORIZED, false, 'Hotel not found');
         }
         if (hotel.role !== 'hotel') {
-            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
         }
         if (hotel.isRestricted) {
             if (req.url !== '/profile' && req.url == '/update-documents') {
                 if (!hotel.isApproved)
-                    throw new UNAUTHORIZEDUserFounf();
+                    throw new resAndErrors_1.UNAUTHORIZEDUserFounf();
             }
         }
-        req.user = toVendorAuth(hotel);
+        req.user = (0, requestDTO_1.toVendorAuth)(hotel);
         next();
     }
     catch (error) {
-        const status = error instanceof HttpError ? error.statusCode : STATUS_CODE.FORBIDDEN;
+        const status = error instanceof resAndErrors_1.HttpError ? error.statusCode : HTTPStatusCode_1.STATUS_CODE.FORBIDDEN;
         const message = error instanceof Error ? error.message : 'Unknown error';
-        logger.error(`Failed to verify token: ${message}`);
-        sendResponse(res, status, false, message);
+        logger_1.logger.error(`Failed to verify token: ${message}`);
+        (0, resAndErrors_1.sendResponse)(res, status, false, message);
     }
 }
-export async function verifyAgencyToken(req, res, next) {
+async function verifyAgencyToken(req, res, next) {
     try {
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.startsWith('Bearer ')
             ? authHeader.split(' ')[1]
             : req.cookies?.accessToken;
         if (!token) {
-            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
         }
-        const payload = jwt.verify(token, secret);
+        const payload = jsonwebtoken_1.default.verify(token, secret);
         if (!payload)
-            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
-        const agency = await Agency.findById(payload.id);
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.FORBIDDEN, false, 'Token expired');
+        const agency = await Agency_1.Agency.findById(payload.id);
         if (!agency) {
-            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Hotel not found');
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.UNAUTHORIZED, false, 'Hotel not found');
         }
         if (agency.role !== 'agency') {
-            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
         }
         if (agency.isRestricted || !agency.isApproved) {
             if (req.url !== '/profile' && req.url !== '/update-documents' && req.url !== '/logout' && req.url !== '/update') {
                 if (!agency.isApproved)
-                    throw new UNAUTHORIZEDUserFounf();
+                    throw new resAndErrors_1.UNAUTHORIZEDUserFounf();
             }
         }
-        req.user = toVendorAuth(agency);
+        req.user = (0, requestDTO_1.toVendorAuth)(agency);
         next();
     }
     catch (error) {
-        const status = error instanceof HttpError ? error.statusCode : STATUS_CODE.FORBIDDEN;
+        const status = error instanceof resAndErrors_1.HttpError ? error.statusCode : HTTPStatusCode_1.STATUS_CODE.FORBIDDEN;
         const message = error instanceof Error ? error.message : 'Unknown error';
-        logger.error(`Failed to verify token: ${message}`);
-        sendResponse(res, status, false, message);
+        logger_1.logger.error(`Failed to verify token: ${message}`);
+        (0, resAndErrors_1.sendResponse)(res, status, false, message);
     }
 }
-export async function verifyRestaurantToken(req, res, next) {
+async function verifyRestaurantToken(req, res, next) {
     try {
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.startsWith('Bearer ')
             ? authHeader.split(' ')[1]
             : req.cookies?.accessToken;
         if (!token) {
-            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
         }
-        const payload = jwt.verify(token, secret);
+        const payload = jsonwebtoken_1.default.verify(token, secret);
         if (!payload)
-            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
-        const restaurant = await Restaurant.findById(payload.id);
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.FORBIDDEN, false, 'Token expired');
+        const restaurant = await Restaurant_1.Restaurant.findById(payload.id);
         if (!restaurant) {
-            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Hotel not found');
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.UNAUTHORIZED, false, 'Hotel not found');
         }
         if (restaurant.role !== 'restaurant') {
-            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
         }
         if (restaurant.isRestricted || !restaurant.isApproved) {
             if (req.url !== '/profile' && req.url !== '/update-documents' && req.url !== '/update') {
                 if (!restaurant.isApproved) {
                     console.log('in here', req.url);
-                    throw new UNAUTHORIZEDUserFounf();
+                    throw new resAndErrors_1.UNAUTHORIZEDUserFounf();
                 }
                 ;
             }
         }
-        req.user = toVendorAuth(restaurant);
+        req.user = (0, requestDTO_1.toVendorAuth)(restaurant);
         next();
     }
     catch (error) {
-        const status = error instanceof HttpError ? error.statusCode : STATUS_CODE.FORBIDDEN;
+        const status = error instanceof resAndErrors_1.HttpError ? error.statusCode : HTTPStatusCode_1.STATUS_CODE.FORBIDDEN;
         const message = error instanceof Error ? error.message : 'Unknown error';
-        logger.error(`Failed to verify token: ${message}`);
-        sendResponse(res, status, false, message);
+        logger_1.logger.error(`Failed to verify token: ${message}`);
+        (0, resAndErrors_1.sendResponse)(res, status, false, message);
     }
 }
-export async function verifyAdminToken(req, res, next) {
+async function verifyAdminToken(req, res, next) {
     try {
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.startsWith('Bearer ')
             ? authHeader.split(' ')[1]
             : req.cookies?.accessToken;
         if (!token) {
-            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.FORBIDDEN, false, 'Access restricted, login first');
         }
-        const payload = jwt.verify(token, secret);
+        const payload = jsonwebtoken_1.default.verify(token, secret);
         if (!payload)
-            return sendResponse(res, STATUS_CODE.FORBIDDEN, false, 'Token expired');
-        const admin = await User.findById(payload.id);
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.FORBIDDEN, false, 'Token expired');
+        const admin = await SUser_1.User.findById(payload.id);
         if (!admin) {
-            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Admin not found');
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.UNAUTHORIZED, false, 'Admin not found');
         }
         if (admin.role !== 'admin') {
-            return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
+            return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
         }
-        req.user = userSignupDTO(admin);
+        req.user = (0, user_sign_1.userSignupDTO)(admin);
         next();
     }
     catch (error) {
-        const status = error instanceof HttpError ? error.statusCode : STATUS_CODE.FORBIDDEN;
+        const status = error instanceof resAndErrors_1.HttpError ? error.statusCode : HTTPStatusCode_1.STATUS_CODE.FORBIDDEN;
         const message = error instanceof Error ? error.message : 'Unknown error';
-        logger.error(`Failed to verify token: ${message}`);
-        sendResponse(res, status, false, message);
+        logger_1.logger.error(`Failed to verify token: ${message}`);
+        (0, resAndErrors_1.sendResponse)(res, status, false, message);
     }
 }
-export async function checkRole(req, res, next) {
+async function checkRole(req, res, next) {
     const role = req.params.role;
     if (role === 'user') {
-        logger.debug(`fuck you ${role}`);
+        logger_1.logger.debug(`fuck you ${role}`);
         return verifyToken(req, res, next);
     }
     else if (role === 'admin')
@@ -199,5 +210,5 @@ export async function checkRole(req, res, next) {
     else if (role === 'restaurant')
         return verifyRestaurantToken(req, res, next);
     else
-        throw new UNAUTHORIZEDUserFounf();
+        throw new resAndErrors_1.UNAUTHORIZEDUserFounf();
 }

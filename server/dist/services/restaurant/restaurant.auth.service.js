@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,17 +11,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { injectable, inject } from 'inversify';
-import { toRestaunrantProfile, } from '../../core/DTO/restaurant/response.dto.js';
-import bcrypt from 'bcryptjs';
-import z from 'zod';
-import { EmailAlreadyRegisteredError, InvalidCredentialsError, InvalidResetTokenError, OtpExpiredError, UserNotFoundError, } from '../../utils/resAndErrors.js';
-import { logger } from '../../utils/logger.js';
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RestaurantAuthService = void 0;
+const inversify_1 = require("inversify");
+const response_dto_1 = require("../../core/DTO/restaurant/response.dto");
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const zod_1 = __importDefault(require("zod"));
+const resAndErrors_1 = require("../../utils/resAndErrors");
+const logger_1 = require("../../utils/logger");
 let RestaurantAuthService = class RestaurantAuthService {
-    _ijwt;
-    _redisClient;
-    _restaurantRespo;
-    _emailService;
     constructor(_ijwt, _redisClient, _restaurantRespo, _emailService) {
         this._ijwt = _ijwt;
         this._redisClient = _redisClient;
@@ -28,29 +30,29 @@ let RestaurantAuthService = class RestaurantAuthService {
         this._emailService = _emailService;
     }
     async verifyRestaurantSignup(enteredEmail, enteredOTP, restaurantData) {
-        const schema = z.object({
-            email: z.email(),
-            otp: z.string().length(6),
-            restaurantData: z.object({
-                ownerName: z.string(),
-                companyName: z.string(),
-                email: z.email(),
-                password: z.string(),
-                phone: z.number(),
+        const schema = zod_1.default.object({
+            email: zod_1.default.email(),
+            otp: zod_1.default.string().length(6),
+            restaurantData: zod_1.default.object({
+                ownerName: zod_1.default.string(),
+                companyName: zod_1.default.string(),
+                email: zod_1.default.email(),
+                password: zod_1.default.string(),
+                phone: zod_1.default.number(),
             }),
         });
         schema.parse({ email: enteredEmail, otp: enteredOTP, restaurantData });
         const pendings = await this._redisClient.get(`pending:${enteredEmail}`);
         if (!pendings)
-            throw new OtpExpiredError();
+            throw new resAndErrors_1.OtpExpiredError();
         const { email, otp } = JSON.parse(pendings);
         if (email !== enteredEmail || otp !== enteredOTP)
-            throw new InvalidCredentialsError();
-        logger.info(`got in here`);
+            throw new resAndErrors_1.InvalidCredentialsError();
+        logger_1.logger.info(`got in here`);
         const existingRestaurant = await this._restaurantRespo.findByEmail(email);
         if (existingRestaurant)
-            throw new EmailAlreadyRegisteredError();
-        const hashedPassword = await bcrypt.hash(restaurantData.password, 10);
+            throw new resAndErrors_1.EmailAlreadyRegisteredError();
+        const hashedPassword = await bcryptjs_1.default.hash(restaurantData.password, 10);
         const restaurantDoc = await this._restaurantRespo.create({
             companyName: restaurantData.companyName,
             email: restaurantData.email,
@@ -65,34 +67,34 @@ let RestaurantAuthService = class RestaurantAuthService {
             role: restaurantDoc.role,
         });
         await this._redisClient.del(`pending:${email}`);
-        return { restaurant: toRestaunrantProfile(restaurantDoc), accessToken, refreshToken };
+        return { restaurant: (0, response_dto_1.toRestaunrantProfile)(restaurantDoc), accessToken, refreshToken };
     }
     async verifyLogin(email, password) {
-        const schema = z.object({
-            email: z.email(),
-            password: z.string().min(8),
+        const schema = zod_1.default.object({
+            email: zod_1.default.email(),
+            password: zod_1.default.string().min(8),
         });
         schema.parse({ email, password });
         const existingRestaurant = await this._restaurantRespo.findByEmail(email);
         if (!existingRestaurant)
-            throw new UserNotFoundError();
-        const isMatch = await bcrypt.compare(password, existingRestaurant.password);
+            throw new resAndErrors_1.UserNotFoundError();
+        const isMatch = await bcryptjs_1.default.compare(password, existingRestaurant.password);
         if (!isMatch)
-            throw new InvalidCredentialsError();
+            throw new resAndErrors_1.InvalidCredentialsError();
         const { accessToken, refreshToken } = await this._ijwt.generateToken({
             id: existingRestaurant.id,
             role: existingRestaurant.role,
         });
-        return { restaurantData: toRestaunrantProfile(existingRestaurant), accessToken, refreshToken };
+        return { restaurantData: (0, response_dto_1.toRestaunrantProfile)(existingRestaurant), accessToken, refreshToken };
     }
     async sendResetLink(email) {
-        const schema = z.object({
-            email: z.email(),
+        const schema = zod_1.default.object({
+            email: zod_1.default.email(),
         });
         schema.parse({ email });
         const restaurant = await this._restaurantRespo.findByEmail(email);
         if (!restaurant)
-            throw new UserNotFoundError();
+            throw new resAndErrors_1.UserNotFoundError();
         const { resetToken } = await this._ijwt.generateResetToken({
             id: restaurant.id,
             email: restaurant.email,
@@ -100,27 +102,27 @@ let RestaurantAuthService = class RestaurantAuthService {
         await this._emailService.sendEmail(email, `Password reset link`, `You can reset the pass word using this link ${resetToken}`);
     }
     async resetPassword(newPassword, token) {
-        const schema = z.object({
-            newPassword: z.string().min(8),
-            token: z.string(),
+        const schema = zod_1.default.object({
+            newPassword: zod_1.default.string().min(8),
+            token: zod_1.default.string(),
         });
         schema.parse({ token, newPassword });
         const payload = await this._ijwt.verifyResetToken(token);
         if (!payload)
-            throw new InvalidResetTokenError();
+            throw new resAndErrors_1.InvalidResetTokenError();
         const restaurant = await this._restaurantRespo.findById(payload.id);
         if (!restaurant)
-            throw new UserNotFoundError();
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
+            throw new resAndErrors_1.UserNotFoundError();
+        const hashedPassword = await bcryptjs_1.default.hash(newPassword, 10);
         await this._restaurantRespo.findByIdAndUpdatePassword(restaurant.id, hashedPassword);
     }
 };
-RestaurantAuthService = __decorate([
-    injectable(),
-    __param(0, inject('IJWT')),
-    __param(1, inject('IRedisClient')),
-    __param(2, inject('IRestaurantAuthRepository')),
-    __param(3, inject('IEmailService')),
+exports.RestaurantAuthService = RestaurantAuthService;
+exports.RestaurantAuthService = RestaurantAuthService = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)('IJWT')),
+    __param(1, (0, inversify_1.inject)('IRedisClient')),
+    __param(2, (0, inversify_1.inject)('IRestaurantAuthRepository')),
+    __param(3, (0, inversify_1.inject)('IEmailService')),
     __metadata("design:paramtypes", [Object, Object, Object, Object])
 ], RestaurantAuthService);
-export { RestaurantAuthService };

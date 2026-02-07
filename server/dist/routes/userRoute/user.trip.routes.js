@@ -1,9 +1,11 @@
-import { Router } from "express";
-import { container } from "../../core/DI/container.js";
-import { asyncHandler } from "../../middleware/asyncHandler.js";
-const tripRouter = Router();
-const tripController = container.get('IUserTripController');
-tripRouter.get('/tripHistory', asyncHandler(tripController.getHistory.bind(tripController)))
-    .get('/orderDetails/:orderId', asyncHandler(tripController.getOrder.bind(tripController)))
-    .patch('/cancelOrder', asyncHandler(tripController.orderCalcellation.bind(tripController)));
-export default tripRouter;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const container_1 = require("../../core/DI/container");
+const asyncHandler_1 = require("../../middleware/asyncHandler");
+const tripRouter = (0, express_1.Router)();
+const tripController = container_1.container.get('IUserTripController');
+tripRouter.get('/tripHistory', (0, asyncHandler_1.asyncHandler)(tripController.getHistory.bind(tripController)))
+    .get('/orderDetails/:orderId', (0, asyncHandler_1.asyncHandler)(tripController.getOrder.bind(tripController)))
+    .patch('/cancelOrder', (0, asyncHandler_1.asyncHandler)(tripController.orderCalcellation.bind(tripController)));
+exports.default = tripRouter;

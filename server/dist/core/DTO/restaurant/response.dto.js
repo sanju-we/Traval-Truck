@@ -1,4 +1,7 @@
-export const toRestaunrantProfile = (restaunrat) => ({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.toRestaunrantProfile = void 0;
+const toRestaunrantProfile = (restaunrat) => ({
     id: restaunrat._id.toString(),
     companyName: restaunrat.companyName,
     ownerName: restaunrat.ownerName,
@@ -10,3 +13,4 @@ export const toRestaunrantProfile = (restaunrat) => ({
     rating: restaunrat.rating,
     totalReviews: restaunrat.totalReviews,
 });
+exports.toRestaunrantProfile = toRestaunrantProfile;

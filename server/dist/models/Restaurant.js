@@ -1,5 +1,8 @@
-import { Schema, model } from 'mongoose';
-const restaurantSchema = new Schema({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Restaurant = void 0;
+const mongoose_1 = require("mongoose");
+const restaurantSchema = new mongoose_1.Schema({
     companyName: {
         type: String,
         required: true,
@@ -29,12 +32,12 @@ const restaurantSchema = new Schema({
         },
     ],
     foodItems: {
-        type: Schema.Types.ObjectId,
+        type: mongoose_1.Schema.Types.ObjectId,
         unique: false,
     },
     reviews: [
         {
-            type: Schema.Types.ObjectId,
+            type: mongoose_1.Schema.Types.ObjectId,
         },
     ],
     images: [
@@ -100,4 +103,4 @@ const restaurantSchema = new Schema({
         default: '',
     },
 });
-export const Restaurant = model('Restaurant', restaurantSchema);
+exports.Restaurant = (0, mongoose_1.model)('Restaurant', restaurantSchema);
