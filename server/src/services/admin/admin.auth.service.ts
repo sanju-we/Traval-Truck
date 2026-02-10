@@ -9,15 +9,16 @@ import {
   UNAUTHORIZEDUserFounf,
   InvalidCredentialsError,
 } from '../../utils/resAndErrors';
-import z from 'zod';
 import { logger } from '../../utils/logger';
 import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile';
+import { IAuthValidator } from '../../core/interface/validator/Iauth.validator';
 
 @injectable()
 export class AdminAuthService implements IAdminAuthService {
   constructor(
     @inject('IAuthRepository') private readonly _authRepository: IAuthRepository,
     @inject('IJWT') private readonly _ijwt: IJWT,
+    @inject('IAuthValidator') private readonly _authValidator: IAuthValidator,
   ) {}
 
   async verifyAdminEmail(
@@ -28,11 +29,7 @@ export class AdminAuthService implements IAdminAuthService {
     accessToken: string;
     refreshToken: string;
   }> {
-    const schema = z.object({
-      email: z.email(),
-      password: z.string(),
-    });
-    schema.parse({ email, password });
+    this._authValidator.loginValidator(email,password)
 
     const admin = await this._authRepository.findByEmail(email);
     if (!admin) throw new UserNotFoundError();

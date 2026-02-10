@@ -25,6 +25,8 @@ import { IGenerateTrip } from '../../core/interface/utils/Igenerate.trip';
 import { TripGenerator } from '../../utils/genarateTrip';
 import { IRoomValidator } from '../../core/interface/validator/Iroom.validator';
 import { RoomValidator } from '../../validators/room.validator';
+import { IFoodValidator } from '../../core/interface/validator/foodValidator';
+import { FoodValidator } from '../../validators/food.validator';
 
 // ------------------------------------------------------shares-------------------------------------------------------------
 import { IWalletService } from '../interface/serivice/shared/IWaller.service';
@@ -200,6 +202,7 @@ container.bind<IPaymentValidator>('IPaymentValidator').to(PaymentValidator);
 container.bind<IBaseValidator>('IBaseValidator').to(BaseValidator);
 container.bind<IGenerateTrip>('IGenerateTrip').to(TripGenerator);
 container.bind<IRoomValidator>('IRoomValidator').to(RoomValidator);
+container.bind<IFoodValidator>('IFoodValidator').to(FoodValidator);
 
 // -------------------------------------------------------Shared container-----------------------------------------------------------
 container.bind<IWalletService>('IWalletService').to(WalletService);

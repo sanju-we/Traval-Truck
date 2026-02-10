@@ -1,23 +1,22 @@
 import { IUserProfileService } from '../../core/interface/serivice/user/Iuser.profile.service';
 import { inject, injectable } from 'inversify';
 import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository';
-import z from 'zod';
 import { userEdit, Userauth } from 'types/index';
 import { UserNotFoundError } from '../../utils/resAndErrors';
 import { IUser } from 'types';
 import { singleUpload } from '../../utils/upload.cloudinary';
 import { toUserProfileDTO, userProfileDTO } from '../../core/DTO/user/Response/user.profile';
+import { IBaseValidator } from '../../core/interface/validator/IBasic.validator';
 
 @injectable()
 export class UserProfileService implements IUserProfileService {
-  constructor(@inject('IAuthRepository') private readonly _authRespository: IAuthRepository) {}
+  constructor(
+    @inject('IAuthRepository') private readonly _authRespository: IAuthRepository,
+    @inject('IBaseValidator') private readonly _baseValidator : IBaseValidator,
+  ) {}
 
   async setInterest(interests: string[], id: string): Promise<void> {
-    const schema = z.object({
-      interests: z.array(z.string()),
-      id: z.string(),
-    });
-    schema.parse({ interests, id });
+    await this._baseValidator.InterestValidator(interests,id)
     await this._authRespository.findByIdAndUpdateAction(id, interests, 'interest');
   }
 

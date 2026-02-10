@@ -5,12 +5,12 @@ import { IRedisClient } from '../../core/interface/redis/IRedisClinet';
 import { IEmailService } from '../../core/interface/emailInterface/emailInterface';
 import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository';
 import { vendorData } from 'types/index';
+import { IAuthValidator } from '../../core/interface/validator/Iauth.validator';
 import {
   RestaurantProfileDTO,
   toRestaunrantProfile,
 } from '../../core/DTO/restaurant/response.dto';
 import bcrypt from 'bcryptjs';
-import z from 'zod';
 import {
   EmailAlreadyRegisteredError,
   InvalidCredentialsError,
@@ -25,9 +25,9 @@ export class RestaurantAuthService implements IRestaurantAuthService {
   constructor(
     @inject('IJWT') private readonly _ijwt: IJWT,
     @inject('IRedisClient') private readonly _redisClient: IRedisClient,
-    @inject('IRestaurantAuthRepository')
-    private readonly _restaurantRespo: IRestaurantAuthRepository,
+    @inject('IRestaurantAuthRepository')private readonly _restaurantRespo: IRestaurantAuthRepository,
     @inject('IEmailService') private readonly _emailService: IEmailService,
+    @inject('IAuthValidator') private readonly _authValidator : IAuthValidator
   ) {}
 
   async verifyRestaurantSignup(
@@ -35,18 +35,7 @@ export class RestaurantAuthService implements IRestaurantAuthService {
     enteredOTP: string,
     restaurantData: vendorData,
   ): Promise<{ restaurant: RestaurantProfileDTO; accessToken: string; refreshToken: string }> {
-    const schema = z.object({
-      email: z.email(),
-      otp: z.string().length(6),
-      restaurantData: z.object({
-        ownerName: z.string(),
-        companyName: z.string(),
-        email: z.email(),
-        password: z.string(),
-        phone: z.number(),
-      }),
-    });
-    schema.parse({ email: enteredEmail, otp: enteredOTP, restaurantData });
+    await this._authValidator.signUpValidator(enteredEmail,enteredOTP,restaurantData)
     const pendings = await this._redisClient.get(`pending:${enteredEmail}`);
     if (!pendings) throw new OtpExpiredError();
 
@@ -79,11 +68,7 @@ export class RestaurantAuthService implements IRestaurantAuthService {
     email: string,
     password: string,
   ): Promise<{ restaurantData: RestaurantProfileDTO; accessToken: string; refreshToken: string }> {
-    const schema = z.object({
-      email: z.email(),
-      password: z.string().min(8),
-    });
-    schema.parse({ email, password });
+    await this._authValidator.loginValidator(email, password)
 
     const existingRestaurant = await this._restaurantRespo.findByEmail(email);
     if (!existingRestaurant) throw new UserNotFoundError();
@@ -99,10 +84,7 @@ export class RestaurantAuthService implements IRestaurantAuthService {
   }
 
   async sendResetLink(email: string): Promise<void> {
-    const schema = z.object({
-      email: z.email(),
-    });
-    schema.parse({ email });
+    await this._authValidator.emailValidator(email)
     const restaurant = await this._restaurantRespo.findByEmail(email);
     if (!restaurant) throw new UserNotFoundError();
 
@@ -118,11 +100,7 @@ export class RestaurantAuthService implements IRestaurantAuthService {
   }
 
   async resetPassword(newPassword: string, token: string): Promise<void> {
-    const schema = z.object({
-      newPassword: z.string().min(8),
-      token: z.string(),
-    });
-    schema.parse({ token, newPassword });
+    await this._authValidator.resetPasswordValidator(token, newPassword)
 
     const payload = await this._ijwt.verifyResetToken(token);
     if (!payload) throw new InvalidResetTokenError();

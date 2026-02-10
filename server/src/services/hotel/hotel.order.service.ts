@@ -2,7 +2,7 @@ import { IHotelOrderService } from "../../core/interface/serivice/hotel/Ihotel.o
 import { inject, injectable } from "inversify";
 import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository";
 import { orderDTO, toOrderDTO } from "../../core/DTO/agency/response/agency.order.DTO";
-import { DataNotFoundError, DataUpdatingError, PAYMENT_VERIFICATOIN_FAILED, ROOM_VACATING_EARLY } from "../../utils/resAndErrors";
+import { DataNotFoundError, PAYMENT_VERIFICATOIN_FAILED, ROOM_VACATING_EARLY } from "../../utils/resAndErrors";
 import { IBaseValidator } from "../../core/interface/validator/IBasic.validator";
 import { IWalletRespository } from "../../core/interface/repositorie/shared/IWallet.repository";
 import { IPaymentRepository } from "../../core/interface/repositorie/shared/Ishared.payment.repository";

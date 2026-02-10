@@ -1,4 +1,3 @@
-import z from "zod";
 import { RoomsDTO, toRoomsDTO } from "../../core/DTO/hotel/roomsDTO";
 import { IHotelRoomsService } from "../../core/interface/serivice/hotel/Ihotel.rooms.service";
 import { logger } from "../../utils/logger";
@@ -8,6 +7,7 @@ import { inject, injectable } from "inversify";
 import { DataNotFoundError } from "../../utils/resAndErrors";
 import { IAuthValidator } from "../../core/interface/validator/Iauth.validator";
 import { IRoomValidator } from "../../core/interface/validator/Iroom.validator";
+import { IBaseValidator } from "../../core/interface/validator/IBasic.validator";
 import { PaginationResponse } from "@core/DTO/pagination.DTO";
 
 @injectable()
@@ -16,6 +16,7 @@ export class HotelRoomsService implements IHotelRoomsService {
     @inject('IHotelRoomsRepository') private readonly _roomsRepo: IHotelRoomsRepository,
     @inject('IAuthValidator') private readonly _authValidator: IAuthValidator,
     @inject('IRoomValidator') private readonly _roomValidator: IRoomValidator,
+    @inject('IBaseValidator') private readonly _baseValidator : IBaseValidator,
   ) { }
 
   async getAllRooms(hotelID: string, page: number, search: number, Description: string): Promise<PaginationResponse<RoomsDTO>> {
@@ -35,8 +36,7 @@ export class HotelRoomsService implements IHotelRoomsService {
   }
 
   async getRoom(id: string): Promise<RoomsDTO> {
-    const schema = z.string().min(10)
-    schema.parse(id)
+    this._baseValidator.idValidator(id);
     const room = await this._roomsRepo.findById(id);
     if (room) return toRoomsDTO(room)
     throw new DataNotFoundError()
@@ -51,19 +51,15 @@ export class HotelRoomsService implements IHotelRoomsService {
   }
 
   async updateBlock(data: { id: string; status: boolean; }): Promise<RoomsDTO> {
-    const schema = z.object({
-      id: z.string().min(10),
-      status: z.boolean()
-    })
-    schema.parse(data)
+    
+    this._authValidator.blockValidator(data.id,data.status)
     const update = await this._roomsRepo.update(data.id, { isBlocked: data.status })
     if (update) return toRoomsDTO(update)
     throw new DataNotFoundError()
   }
 
   async getEditRoom(id: string): Promise<RoomsDTO> {
-    const schema = z.string().min(10)
-    schema.parse(id)
+    this._baseValidator.idValidator(id);
     const room = await this._roomsRepo.findById(id)
     if (room) return toRoomsDTO(room)
     throw new DataNotFoundError()

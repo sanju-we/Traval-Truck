@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
-import z from 'zod';
 import { NoAccessToken } from '../../utils/resAndErrors';
 import { sendResponse } from '../../utils/resAndErrors';
 import { IAgencyAuthService } from '../../core/interface/serivice/agency/Iagency.auth.service';

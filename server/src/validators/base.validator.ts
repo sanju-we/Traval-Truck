@@ -8,6 +8,14 @@ export class BaseValidator implements IBaseValidator {
     schema.parse(id)
   }
 
+  async InterestValidator(interest: string[],id?:string): Promise<void> {
+    const schema = z.object({
+      interests: z.array(z.string()),
+      id: z.string().optional(),
+    });
+    schema.parse({interest,id})
+  }
+
   async reviewValidator(data: { rating: number; comment: string; vendor: string; }): Promise<void> {
     const schema = z.object({
       rating: z.number().min(1, 'Atleast 1 start is required').max(5, 'Maximum 5 star is valid'),
@@ -40,7 +48,7 @@ export class BaseValidator implements IBaseValidator {
     const MindMapSchema = z.object({
       id: z.string().min(23).optional(),
 
-      orderId:z.string().optional(),
+      orderId: z.string().optional(),
 
       title: z.string().min(3, "Title must be at least 3 characters"),
 

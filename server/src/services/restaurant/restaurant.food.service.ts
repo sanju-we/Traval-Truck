@@ -2,28 +2,21 @@ import { foodDTO, toFoodDTO } from "../../core/DTO/restaurant/requestDTO";
 import { foodType } from "../../types/restaurantType";
 import { IRestaurantFoodService } from "../../core/interface/serivice/restaurant/Irestaurant.food.service";
 import { IRestaurantFoodRespository } from "@core/interface/repositorie/restaurant/Irestaurant.food.repository";
-import z from "zod";
 import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.cloudinary";
 import { inject, injectable } from "inversify";
 import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors";
 import { logger } from "../../utils/logger";
+import { IFoodValidator } from "../../core/interface/validator/foodValidator";
 
 @injectable()
 export class RestaurantFoodService implements IRestaurantFoodService {
   constructor(
-    @inject('IRestaurantFoodRespository') private readonly _foodRepo: IRestaurantFoodRespository
+    @inject('IRestaurantFoodRespository') private readonly _foodRepo: IRestaurantFoodRespository,
+    @inject('IFoodValidator') private readonly _foodValidator : IFoodValidator,
   ) { }
 
   async addFood(data: foodType, files: Express.Multer.File[], id: string): Promise<foodDTO> {
-    const foodTypeSchema = z.object({
-      Name: z.string().min(1, "Name is required"),
-      Description: z.string().min(1, "Description is required"),
-      Price: z.number().positive("Price must be greater than 0"),
-      AvailableQuantity: z.number().int().nonnegative("Quantity must be 0 or more"),
-      Category: z.string().min(1, "Category is required"),
-      Status:z.enum(['Available','Finish'], 'Invalid status choosen')
-    });
-    foodTypeSchema.parse(data)
+    await this._foodValidator.FoodValidator(data.Name,data.Description,data.Price,data.AvailableQuantity,data.Category)
     const image: string[] = []
     for (const data of files) {
       const url = await singleUpload(data, 'Travel-Truck-Document')
@@ -42,15 +35,7 @@ export class RestaurantFoodService implements IRestaurantFoodService {
   }
 
   async update(data: foodType, files: Express.Multer.File[]): Promise<foodDTO> {
-      const foodTypeSchema = z.object({
-      Name: z.string().min(1, "Name is required"),
-      Description: z.string().min(1, "Description is required"),
-      Price: z.number().positive("Price must be greater than 0"),
-      AvailableQuantity: z.number().int().nonnegative("Quantity must be 0 or more"),
-      Category: z.string().min(1, "Category is required"),
-      Status:z.enum(['Available','Finish'], 'Invalid status choosen')
-    });
-    foodTypeSchema.parse(data)
+    await this._foodValidator.FoodValidator(data.Name,data.Description,data.Price,data.AvailableQuantity,data.Category);
     const image: string[] = []
     for (const data of files) {
       const url = await singleUpload(data, 'Travel-Truck-Document')

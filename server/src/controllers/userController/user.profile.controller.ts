@@ -4,11 +4,12 @@ import { IJWT } from '../../core/interface/JWT/JWTInterface';
 import { BADREQUEST, sendResponse } from '../../utils/resAndErrors';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode';
 import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository';
-import z from 'zod';
 import { IUserProfileController } from '../../core/interface/controllerInterface/user/userProfile';
 import { IUserProfileService } from '../../core/interface/serivice/user/Iuser.profile.service';
 import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile';
 import { MESSAGES } from '../../utils/responseMessaages';
+import { IAuthValidator } from '../../core/interface/validator/Iauth.validator';
+import { IBaseValidator } from '../../core/interface/validator/IBasic.validator';
 
 @injectable()
 export class ProfileController implements IUserProfileController {
@@ -16,6 +17,8 @@ export class ProfileController implements IUserProfileController {
     @inject('IJWT') private readonly _jwt: IJWT,
     @inject('IAuthRepository') private _authRepository: IAuthRepository,
     @inject('IUserProfileService') private readonly _profileService: IUserProfileService,
+    @inject('IBaseValidator') private readonly _baseValidator : IBaseValidator,
+    @inject('IAuthValidator') private readonly _authValidator : IAuthValidator,
   ) {}
 
   async profile(req: Request, res: Response): Promise<void> {
@@ -34,10 +37,8 @@ export class ProfileController implements IUserProfileController {
   }
 
   async intrest(req: Request, res: Response): Promise<void> {
-    const schema = z.object({
-      interests: z.array(z.string().min(1)).nonempty(),
-    });
-    const { interests } = schema.parse(req.body);
+    const { interests } = req.body;
+    await this._baseValidator.InterestValidator(interests)
 
     if (!req.user?.id) {
       return sendResponse(res, STATUS_CODE.UNAUTHORIZED, false, 'User not authenticated');
@@ -47,12 +48,8 @@ export class ProfileController implements IUserProfileController {
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED);
   }
   async updateUser(req: Request, res: Response): Promise<void> {
-    const schema = z.object({
-      name: z.string(),
-      userName: z.string(),
-      phoneNumber: z.preprocess((val) => Number(val), z.number()),
-    });
     const formData = req.body;
+    // await this._authValidator.userProfileUpdateValidator(formData.name,formData.userName,formData.phoneNumber)
     const user = req.user;
 
     const userData = await this._profileService.updateProfile(formData, user);

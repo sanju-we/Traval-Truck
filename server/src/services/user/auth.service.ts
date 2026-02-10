@@ -15,8 +15,8 @@ import {
   RESTRICTED_USER,
 } from '../../utils/resAndErrors';
 import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile';
-import { z } from 'zod';
 import { logger } from '../../utils/logger';
+import { IAuthValidator } from '../../core/interface/validator/Iauth.validator';
 
 @injectable()
 export class AuthService implements IAuthService {
@@ -27,6 +27,7 @@ export class AuthService implements IAuthService {
     @inject('IRedisClient') private _redisClient: IRedisClient,
     @inject('IJWT') private _jwtUtil: IJWT,
     @inject('IEmailService') private readonly _emailService: IEmailService,
+    @inject('IAuthValidator') private readonly _authValidator : IAuthValidator,
   ) {}
 
   async verify(
@@ -38,17 +39,7 @@ export class AuthService implements IAuthService {
     accessToken: string;
     refreshToken: string;
   }> {
-    const schema = z.object({
-      email: z.email(),
-      otp: z.string().length(6),
-      userData: z.object({
-        name: z.string().min(1),
-        email: z.email(),
-        password: z.string().min(8),
-        phoneNumber: z.number(),
-      }),
-    });
-    schema.parse({ email: enteredEmail, otp: enteredOtp, userData });
+    await this._authValidator.userSignupValidator(enteredEmail,enteredOtp, userData );
 
     const pending = await this._redisClient.get(`pending:${enteredEmail}`);
     if (!pending) throw new OtpExpiredError();
@@ -91,11 +82,7 @@ export class AuthService implements IAuthService {
     accessToken: string;
     refreshToken: string;
   }> {
-    const schema = z.object({
-      email: z.email(),
-      password: z.string().min(8),
-    });
-    schema.parse({ email, password });
+    await this._authValidator.loginValidator(email,password)
 
     const user = await this._authRepository.findByEmail(email);
     if (!user) throw new UserNotFoundError();
@@ -115,10 +102,7 @@ export class AuthService implements IAuthService {
   }
 
   async sendLink(email: string): Promise<void> {
-    const schema = z.object({
-      email: z.email(),
-    });
-    schema.parse({ email });
+    await this._authValidator.emailValidator(email);
 
     const userData = await this._authRepository.findByEmail(email);
     if (!userData) throw new UserNotFoundError();
@@ -135,11 +119,7 @@ export class AuthService implements IAuthService {
   }
 
   async resetPassword(token: string, newPassword: string): Promise<void> {
-    const schema = z.object({
-      token: z.string().min(1),
-      newPassword: z.string().min(8),
-    });
-    schema.parse({ token, newPassword });
+    await this._authValidator.resetPasswordValidator(token,newPassword);
 
     const payload = await this._jwtUtil.verifyResetToken(token);
     const user = await this._authRepository.findById(payload.id);

@@ -4,5 +4,6 @@ export interface IBaseValidator{
   idValidator(id:string):Promise<void>;
   reviewValidator(data:{rating:number,comment:string}):Promise<void>;
   orderIdValidator(orderId:string):Promise<void>
-  MindMapValidation(data:MindMapRequest):Promise<void>
+  MindMapValidation(data:MindMapRequest):Promise<void>;
+  InterestValidator(interest:string[],id?:string):Promise<void>;
 }

@@ -1,9 +1,10 @@
 import { PackageDTO } from "../../DTO/agency/request/packageDTO";
-import { vendorData } from "types/index";
+import { UserData, vendorData } from "types/index";
 import { RoomsDTO } from "../../../core/DTO/hotel/roomsDTO";
 
 export interface IAuthValidator {
   signUpValidator(enteredEmail: string, enteredOtp: string, agencyData: vendorData): Promise<void>;
+  userSignupValidator(email:string, otp:string, userData:UserData):Promise<void>;
   loginValidator(email: string, password: string): Promise<void>;
   emailValidator(email: string): Promise<void>;
   addPackageValidator(data: PackageDTO): Promise<void>;
@@ -11,4 +12,8 @@ export interface IAuthValidator {
   profileUpdateValidator(ownerName: string, companyName: string, phone: number, bankDetails: { accountHolder: string, accountNumber: string, bankName: string, ifscCode: string }): Promise<void>
   RoomValidator(data: RoomsDTO): Promise<void>;
   updateStatusValidator(id:string,status:string):Promise<void>;
+  otpStoreValidator(email:string, otp:string):Promise<void>;  
+  blockValidator(id:string, status:boolean) :Promise<void>;
+  userProfileUpdateValidator(name:string,userName:string,phone:number):Promise<void>;
+  tokenValidator(accessToken?:string,refreshToken?:string):Promise<void>;
 }

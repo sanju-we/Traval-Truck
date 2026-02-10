@@ -1,7 +1,7 @@
 import { IAuthValidator } from "../core/interface/validator/Iauth.validator";
 import z from "zod";
 import { PackageDTO } from "../core/DTO/agency/request/packageDTO";
-import { vendorData } from "../types/index";
+import { UserData, vendorData } from "../types/index";
 import { RoomsDTO } from "@core/DTO/hotel/roomsDTO";
 
 export class authValidator implements IAuthValidator {
@@ -21,6 +21,53 @@ export class authValidator implements IAuthValidator {
     schema.parse({ enteredEmail, enteredOtp, agencyData })
   }
 
+  async userProfileUpdateValidator(name: string, userName: string, phone: number): Promise<void> {
+    const schema = z.object({
+      name: z.string(),
+      userName: z.string(),
+      phoneNumber: z.preprocess((val) => Number(val), z.number()),
+    });
+    schema.parse({name,userName,phone})
+  }
+
+  async tokenValidator(accessToken?: string, refreshToken?: string): Promise<void> {
+    const schema = z.object({
+      refreshToken: z.string().optional(),
+      accessToken: z.string().optional(),
+    });
+    schema.parse({accessToken,refreshToken})
+  }
+
+  async otpStoreValidator(email: string, otp: string): Promise<void> {
+    const schema = z.object({
+      email: z.email("Please enter a valid email address.").trim().toLowerCase().max(100, "Email is too long."),
+      otp: z.string().length(6),
+    });
+    schema.parse({ email, otp });
+  }
+
+  async userSignupValidator(email: string, otp: string, userData: UserData): Promise<void> {
+    const schema = z.object({
+      email: z.email(),
+      otp: z.string().length(6),
+      userData: z.object({
+        name: z.string().min(1),
+        email: z.email(),
+        password: z.string().min(8),
+        phoneNumber: z.number(),
+      }),
+    });
+    schema.parse({email,otp,userData})
+  }
+
+  async blockValidator(id: string, status: boolean): Promise<void> {
+    const schema = z.object({
+      id: z.string().min(10),
+      status: z.boolean()
+    })
+    schema.parse({id,status})
+  }
+
   async loginValidator(email: string, password: string): Promise<void> {
     const schema = z.object({
       email: z.email("Please enter a valid email address.").trim().toLowerCase().max(100, "Email is too long."),
@@ -34,7 +81,7 @@ export class authValidator implements IAuthValidator {
     schema.parse(email)
   }
 
-  
+
 
   async addPackageValidator(data: PackageDTO): Promise<void> {
     const itinerarySchema = z.object({

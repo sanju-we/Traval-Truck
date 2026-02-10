@@ -1,14 +1,17 @@
 import { IGeneralService } from '../core/interface/serivice/Igeneral.service';
-import z from 'zod';
 import { logger } from '../utils/logger';
 import { IRedisClient } from '../core/interface/redis/IRedisClinet';
 import { inject, injectable } from 'inversify';
+import { IAuthValidator } from '../core/interface/validator/Iauth.validator';
 
 @injectable()
 export class GeneralService implements IGeneralService {
   private readonly OTP_TTL_SECONDS = 65;
 
-  constructor(@inject('IRedisClient') private readonly _redisClient: IRedisClient) {}
+  constructor(
+    @inject('IRedisClient') private readonly _redisClient: IRedisClient,
+    @inject('IAuthValidator') private readonly _authValidator : IAuthValidator,
+  ) {}
 
   async generateOtp(): Promise<string> {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -17,11 +20,7 @@ export class GeneralService implements IGeneralService {
   }
 
   async storeOtp(email: string, otp: string): Promise<void> {
-    const schema = z.object({
-      email: z.string().email(),
-      otp: z.string().length(6),
-    });
-    schema.parse({ email, otp });
+    await this._authValidator.otpStoreValidator(email,otp)
     await this._redisClient.setEx(
       `pending:${email}`,
       this.OTP_TTL_SECONDS,

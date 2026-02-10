@@ -6,16 +6,15 @@ import { BADREQUEST, DataUpdatingError, sendResponse, UserNotFoundError } from '
 import { STATUS_CODE } from '../../utils/HTTPStatusCode';
 import { MESSAGES } from '../../utils/responseMessaages';
 import { IRestaurantProfileService } from '../../core/interface/serivice/restaurant/IRestaurant.profile.service';
-import z from 'zod';
 import { toVendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto';
+import { IAuthValidator } from '../../core/interface/validator/Iauth.validator';
 
 @injectable()
 export class RestaurantProfileController implements IRestaurantProfileController {
   constructor(
-    @inject('IRestaurantAuthRepository')
-    private readonly _restaurantAuthRepository: IRestaurantAuthRepository,
-    @inject('IRestaurantProfileService')
-    private readonly _restaurantProfileService: IRestaurantProfileService,
+    @inject('IRestaurantAuthRepository')private readonly _restaurantAuthRepository: IRestaurantAuthRepository,
+    @inject('IRestaurantProfileService')private readonly _restaurantProfileService: IRestaurantProfileService,
+    @inject('IAuthValidator') private readonly _authValidator : IAuthValidator,
   ) {}
   async getRestaurant(req: Request, res: Response): Promise<void> {
     const user = req.user;
@@ -29,19 +28,8 @@ export class RestaurantProfileController implements IRestaurantProfileController
   }
 
   async updateProfile(req: Request, res: Response): Promise<void> {
-    const schema = z.object({
-      ownerName: z.string(),
-      companyName: z.string(),
-      phone: z.string(),
-      bankDetails: z.object({
-        accountHolder: z.string(),
-        accountNumber: z.string(),
-        bankName: z.string(),
-        ifscCode: z.string(),
-      }),
-    });
-
-    const { ownerName, phone, companyName, bankDetails } = schema.parse(req.body);
+    const { ownerName, phone, companyName, bankDetails } = req.body
+    await this._authValidator.profileUpdateValidator(ownerName,companyName,phone,bankDetails)
     const restaunratId = req.user.id;
 
     const updateRestaurant = await this._restaurantProfileService.updateProfile(restaunratId, {
