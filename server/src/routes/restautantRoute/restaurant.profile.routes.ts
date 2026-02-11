@@ -24,6 +24,7 @@ restaurantProfileRouter
   .patch(
     '/update',
     verifyRestaurantToken,
+    upload.none(),
     restaurantProfileController.updateProfile.bind(restaurantProfileController),
   )
   .put(

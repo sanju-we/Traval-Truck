@@ -13,7 +13,7 @@ export class HotelProfileCotroller implements IHotelProfileController {
   constructor(
     @inject('IHotelAuthRepository') private readonly _hotelAuthRepository: IHotelAuthRepository,
     @inject('IHotelProfileService') private readonly _hoteService: IHotelProfileService,
-  ) {}
+  ) { }
 
   async getHotelProfile(req: Request, res: Response): Promise<void> {
     const user = req.user;
@@ -23,13 +23,19 @@ export class HotelProfileCotroller implements IHotelProfileController {
   }
 
   async updateProfile(req: Request, res: Response): Promise<void> {
-    const { ownerName, phone, companyName, bankDetails } = req.body;
+    const { ownerName, phone, companyName } = req.body;
+    const bankDetails = req.body.bankDetails || {
+      accountHolder: req.body['bankDetails.accountHolder'],
+      accountNumber: req.body['bankDetails.accountNumber'],
+      bankName: req.body['bankDetails.bankName'],
+      ifscCode: req.body['bankDetails.ifscCode'],
+    };
     const user = req.user;
     const updatedHotel = await this._hoteService.updateProfile(user.id, {
       ownerName,
       companyName,
       phone: Number(phone),
-      bankDetails,
+      bankDetails: bankDetails as any,
     });
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updatedHotel);
   }

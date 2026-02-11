@@ -29,7 +29,7 @@ export default function UserDetailsPage() {
   const handleToggleBlock = async () => {
     try {
       setLoading(true);
-      const { data } = await ADMIN_API_METHODS.blockUser(user.id,user.role);
+      const data = await ADMIN_API_METHODS.blockUser(user.id,user.role);
 
       if (data.success) {
         setIsBlocked(!isBlocked);

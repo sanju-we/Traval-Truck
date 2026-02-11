@@ -20,6 +20,11 @@ export default function ResetPasswordPage() {
       return;
     }
 
+    if(!token){
+      toast.error('Inavalid Router');
+      return;
+    }
+
     if (password !== confirmPassword) {
       toast.error('Passwords do not match');
       return;

@@ -13,7 +13,7 @@ export const HOTEL_ROUTES = {
     login: `${HOTEL_AUTH}/login`,
     logout: `${HOTEL_AUTH}/logout`,
     forgotPassword: `${HOTEL_AUTH}/forgot-password`,
-    resetPassword: `${HOTEL_AUTH}/resetPassword`,
+    resetPassword: `${HOTEL_AUTH}/reset-password`,
     dashboard: `${HOTEL_AUTH}/dashboard`
   },
 

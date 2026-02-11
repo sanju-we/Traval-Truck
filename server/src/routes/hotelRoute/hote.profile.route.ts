@@ -17,6 +17,7 @@ hotelProfileRouter
   .patch(
     '/update',
     verifyHotelToken,
+    upload.none(),
     asyncHandler(hotelProfileController.updateProfile.bind(hotelProfileController)),
   )
   .put(

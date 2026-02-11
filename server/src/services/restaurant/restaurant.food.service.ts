@@ -16,7 +16,8 @@ export class RestaurantFoodService implements IRestaurantFoodService {
   ) { }
 
   async addFood(data: foodType, files: Express.Multer.File[], id: string): Promise<foodDTO> {
-    await this._foodValidator.FoodValidator(data.Name,data.Description,data.Price,data.AvailableQuantity,data.Category)
+    console.log(data)
+    await this._foodValidator.FoodValidator(data.Name,data.Description,data.Price,data.AvailableQuantity,data.Category,data.Status)
     const image: string[] = []
     for (const data of files) {
       const url = await singleUpload(data, 'Travel-Truck-Document')
@@ -35,7 +36,7 @@ export class RestaurantFoodService implements IRestaurantFoodService {
   }
 
   async update(data: foodType, files: Express.Multer.File[]): Promise<foodDTO> {
-    await this._foodValidator.FoodValidator(data.Name,data.Description,data.Price,data.AvailableQuantity,data.Category);
+    await this._foodValidator.FoodValidator(data.Name,data.Description,data.Price,data.AvailableQuantity,data.Category,data.Status);
     const image: string[] = []
     for (const data of files) {
       const url = await singleUpload(data, 'Travel-Truck-Document')

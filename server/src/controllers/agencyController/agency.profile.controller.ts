@@ -13,7 +13,7 @@ export class AgencyProfileController implements IAgencyProfileController {
   constructor(
     @inject('IAgencyRespository') private readonly _agencyRepository: IAgencyRespository,
     @inject('IAgencyProfileService') private readonly _agencyProfileService: IAgencyProfileService,
-  ) {}
+  ) { }
   async getAgency(req: Request, res: Response): Promise<void> {
     const user = req.user;
     const agency = await this._agencyRepository.findById(user.id);
@@ -26,13 +26,22 @@ export class AgencyProfileController implements IAgencyProfileController {
   }
 
   async update(req: Request, res: Response): Promise<void> {
-    const { ownerName, companyName, phone, bankDetails } = req.body;
+    const { ownerName, companyName, phone } = req.body;
+
+    // Extract bankDetails from flat structure if sent via FormData
+    const bankDetails = req.body.bankDetails || {
+      accountHolder: req.body['bankDetails.accountHolder'],
+      accountNumber: req.body['bankDetails.accountNumber'],
+      bankName: req.body['bankDetails.bankName'],
+      ifscCode: req.body['bankDetails.ifscCode'],
+    };
+
     const agencyId = req.user.id;
     const updatedAgency = await this._agencyProfileService.updateProfile(agencyId, {
       ownerName,
       companyName,
       phone: Number(phone),
-      bankDetails,
+      bankDetails: bankDetails as any,
     });
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updatedAgency);
   }

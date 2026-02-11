@@ -20,7 +20,7 @@ export class JWT implements IJWT {
     }
 
     this.JWT_SECRET = process.env.JWT_SECRET;
-    this.ACCESS_TOKEN_EXPIRY =  (process.env.ACCESS_TOKEN_EXPIRY ?? '15m') as SignOptions['expiresIn'];
+    this.ACCESS_TOKEN_EXPIRY = (process.env.ACCESS_TOKEN_EXPIRY ?? '15m') as SignOptions['expiresIn'];
     this.REFRESH_TOKEN_EXPIRY = (process.env.REFRESH_TOKEN_EXPIRY ?? '7d') as SignOptions['expiresIn'];
     this.RESET_TOKEN_EXPIRY = (process.env.RESET_TOKEN_EXPIRY ?? '1h') as SignOptions['expiresIn'];
   }
@@ -62,7 +62,12 @@ export class JWT implements IJWT {
       const resetToken = jwt.sign({ id: user.id, email: user.email }, this.JWT_SECRET, {
         expiresIn: this.RESET_TOKEN_EXPIRY as jwt.SignOptions['expiresIn'],
       });
-      const resetLink = `${process.env.FRONTEND_URL}/user/resetPassword?token=${resetToken}`;
+      let resetLink
+      if (user.role == 'user') resetLink = `${process.env.FRONTEND_URL}/resetPassword?token=${resetToken}`;
+      else if (user.role == 'restaurant') resetLink = `${process.env.FRONTEND_URL}/restaurant/resetPassword?token=${resetToken}`
+      else if (user.role == 'agency') resetLink = `${process.env.FRONTEND_URL}/agency/resetPassword?token=${resetToken}`
+      else resetLink = `${process.env.FRONTEND_URL}/hotel/resetPassword?token=${resetToken}`
+      logger.info(`resetLink:- ${resetLink}`)
       return { resetToken, resetLink };
     } catch (err: any) {
       logger.error(`From JWT->generateResetToken:- Failed to generate reset token: ${err.message}`);

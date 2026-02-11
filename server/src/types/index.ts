@@ -55,6 +55,7 @@ export interface VendorAuth {
 export interface ResetToken {
   id: string;
   email: string;
+  role:string
 }
 
 // Vendor Types

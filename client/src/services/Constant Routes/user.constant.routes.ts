@@ -24,7 +24,7 @@ export const USER_ROUTES = {
     getProfile : `${USER_PROFILE}/profile`,
     intrest : `${USER_PROFILE}/intrest`,
     editProfile : `${USER_PROFILE}/update`,
-    uploadImage : `${USER_PROFILE}/upload-profle`
+    uploadImage : `${USER_PROFILE}/upload-profile`
   },
 
   packages : {

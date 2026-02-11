@@ -11,7 +11,7 @@ export const RESTAURANT_ROUTES = {
     login: `${RESTAURANT_AUTH}/login`,
     logout: `${RESTAURANT_AUTH}/logout`,
     forgotPassword: `${RESTAURANT_AUTH}/forgot-password`,
-    resetPassword: `${RESTAURANT_AUTH}/resetPassword`,
+    resetPassword: `${RESTAURANT_AUTH}/reset-password`,
   },
 
   profile: {

@@ -19,6 +19,7 @@ export class RestaurantFoodController implements IRestaurantFoodController {
     const files = req.files as Express.Multer.File[]
     if (!files) throw new Files_Missing()
     logger.info(req.files)
+  console.log(data)
     const created = await this._foodService.addFood({ ...data, Price: Number(data.Price), AvailableQuantity: Number(data.AvailableQuantity) }, files, id)
     sendResponse(res, STATUS_CODE.CREATED, true, MESSAGES.CREATED, created)
   }

@@ -12,11 +12,16 @@ export default function ResetPasswordPage() {
 
   const router = useRouter();
   const searchParams = useSearchParams();
-  const token = searchParams.get('token'); // token from email link
+  const token = searchParams.get('token');
 
   const handleResetPassword = async () => {
     if (!password || !confirmPassword) {
       toast.error('Please fill in all fields');
+      return;
+    }
+
+    if(!token){
+      toast.error('Inavalid Router');
       return;
     }
 
@@ -27,11 +32,10 @@ export default function ResetPasswordPage() {
 
     setIsLoading(true);
     try {
-      const res = await HOTEL_API_METHODS.resetPassword({
+      const data = await HOTEL_API_METHODS.resetPassword({
         token,
         newPassword: password,
       });
-      const data = res.data;
 
       if (data.success) {
         toast.success('Password reset successful! Redirecting...');

@@ -27,7 +27,7 @@ export function middleware(req: NextRequest) {
     '/restaurant/login',
     '/restaurant/signup',
     '/restaurant/forgetPassword',
-    '/restaurant/resetpassword',
+    '/restaurant/resetPassword',
   ];
 
   const roleRedirectMap: Record<string, string> = {

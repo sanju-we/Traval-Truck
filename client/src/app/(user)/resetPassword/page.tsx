@@ -3,11 +3,11 @@
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
+import toast from 'react-hot-toast';
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
@@ -16,32 +16,36 @@ export default function ResetPasswordPage() {
 
   const handleResetPassword = async () => {
     if (!password || !confirmPassword) {
-      setMessage('❌ Please fill in all fields');
+      toast.error('Please fill in all fields');
+      return;
+    }
+
+    if(!token){
+      toast.error('Inavalid Router');
       return;
     }
 
     if (password !== confirmPassword) {
-      setMessage('❌ Passwords do not match');
+      toast.error('Passwords do not match');
       return;
     }
 
     setIsLoading(true);
     try {
-      const res = await USER_API_METHODS.resetPassword({
+      const data = await USER_API_METHODS.resetPassword({
         token,
         newPassword: password,
       });
-      const data = res.data;
 
       if (data.success) {
-        setMessage('✅ Password reset successful! Redirecting...');
+        toast.success('Password reset successful! Redirecting...')
         setTimeout(() => router.push('/login'), 2000);
       } else {
-        setMessage(`❌ ${data.error}`);
+        toast.error(`${data.error}`);
       }
     } catch (err) {
       console.error('Reset password error:', err);
-      setMessage('❌ Failed to reset password');
+      toast.error('Failed to reset password');
     } finally {
       setIsLoading(false);
     }
@@ -65,7 +69,6 @@ export default function ResetPasswordPage() {
         <h2 className="text-2xl font-bold">Reset Your Password</h2>
         <p className="text-gray-500 text-sm mt-2">Enter your new password below</p>
 
-        <h6 className="mt-3 text-emerald-500">{message}</h6>
 
         <form
           className="w-full mt-6 space-y-4"

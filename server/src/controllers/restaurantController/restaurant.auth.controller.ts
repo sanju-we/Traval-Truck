@@ -55,6 +55,7 @@ export class RestaurantAuthController implements IRestaurantAuthController {
   }
 
   async forgotPassword(req: Request, res: Response): Promise<void> {
+    console.log('sanju')
     const { email } = req.body;
     await this._authValidator.emailValidator(email);
     await this._restaurantService.sendResetLink(email);

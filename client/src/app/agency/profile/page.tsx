@@ -246,7 +246,6 @@ export default function VendorProfilePage() {
 
       const formPayload = new FormData();
       formPayload.append('logo', blob, 'profile.jpg');
-
       const data = await AGENCY_API_METHODS.uploadProfile(formPayload);
 
       if (data.success) {

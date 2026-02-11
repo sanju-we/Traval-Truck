@@ -10,7 +10,7 @@ const profileController = container.get<IUserProfileController>('IUserProfileCon
 profileRouter
   .get('/profile', asyncHandler(profileController.profile.bind(profileController)))
   .post('/intrest', asyncHandler(profileController.intrest.bind(profileController)))
-  .patch('/update', asyncHandler(profileController.updateUser.bind(profileController)))
+  .patch('/update', upload.none(), asyncHandler(profileController.updateUser.bind(profileController)))
   .post(
     '/upload-profile',
     upload.single('profile'),

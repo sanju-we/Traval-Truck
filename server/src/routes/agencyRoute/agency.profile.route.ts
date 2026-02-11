@@ -22,6 +22,7 @@ agencyProfileRouter
   .patch(
     '/update',
     verifyAgencyToken,
+    upload.none(),
     asyncHandler(agencyProfileController.update.bind(agencyProfileController)),
   )
   .put(
@@ -41,7 +42,7 @@ agencyProfileRouter
   )
   .post(
     '/upload-profile',
-    upload.single('profile'),
+    upload.single('logo'),
     asyncHandler(agencyProfileController.uploadProfile.bind(agencyProfileController)),
   );
 

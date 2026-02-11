@@ -96,7 +96,7 @@ export class agencyAuthService implements IAgencyAuthService {
 
     const agencyData = await this._agencyRepository.findByEmail(email);
     if (!agencyData) throw new UserNotFoundError();
-    const agency = { id: agencyData.id, email: agencyData.email };
+    const agency = { id: agencyData.id, email: agencyData.email, role:agencyData.role };
 
     const { resetLink } = await this._ijwt.generateResetToken(agency);
     await this._emailService.sendEmail(

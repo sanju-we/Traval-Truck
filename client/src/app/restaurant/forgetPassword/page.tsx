@@ -21,7 +21,7 @@ export default function ForgotPasswordPage() {
       console.log('sanju')
       const data = await RESTAURANT_API_METHODS.forgotPassword(email);
       if (data.success) {
-        toast.success(`success`);
+        toast.success(`Reset link send to the email successfully.`);
         router.push('/restaurant/forgetPassword/sent');
       } else {
         toast.error(`${data.message}`);

@@ -91,7 +91,9 @@ export class RestaurantAuthService implements IRestaurantAuthService {
     const { resetToken } = await this._ijwt.generateResetToken({
       id: restaurant.id,
       email: restaurant.email,
+      role: restaurant.role
     });
+    console.log(`${resetToken}`)
     await this._emailService.sendEmail(
       email,
       `Password reset link`,

@@ -11,44 +11,44 @@ const delet = deleteRequest;
 
 export const USER_API_METHODS = {
     // authentication api requests
-    login: (data: {email:string,password:string}) => post(USER_ROUTES.auth.login, data),
+    login: (data: { email: string, password: string }) => post(USER_ROUTES.auth.login, data),
     logout: () => post(USER_ROUTES.auth.logout, {}),
-    sendOtp: (data: any) => post(USER_ROUTES.auth.sendOtp, data),
+    sendOtp: (data: { email: string }) => post(USER_ROUTES.auth.sendOtp, data),
     verifySignup: (data: any) => post(USER_ROUTES.auth.verifySignup, data),
-    forgetPasswordRequest: (data: any) => post(USER_ROUTES.auth.forgetPasswordRequest, data),
-    resetPassword: (data: any) => post(USER_ROUTES.auth.resetPassword, data),
+    forgetPasswordRequest: (data: { email: string }) => post(USER_ROUTES.auth.forgetPasswordRequest, data),
+    resetPassword: (data: { token: string, newPassword: string }) => post(USER_ROUTES.auth.resetPassword, data),
     googleAuth: (data: any) => post(USER_ROUTES.auth.googleAuth, data),
 
     // profile api requests
     getProfile: () => get(USER_ROUTES.profile.getProfile),
     intrest: (data: any) => post(USER_ROUTES.profile.intrest, data),
-    editProfile: (data: any) => patch(USER_ROUTES.profile.editProfile, data),
-    uploadImage: (data: any) => post(USER_ROUTES.profile.uploadImage, data),
+    editProfile: (data: any) => patch(USER_ROUTES.profile.editProfile, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+    uploadImage: (data: any) => post(USER_ROUTES.profile.uploadImage, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
 
     // packages api requests
     getLatestPackages: () => get(USER_ROUTES.packages.getLatestPackages),
     getAllPackages: (params?: any) => get(USER_ROUTES.packages.getAllPackages, params),
     packageDetails: (id: string) => get(USER_ROUTES.packages.packageDetails(id)),
-    PurchasePackage : (data:any) => post(USER_ROUTES.packages.Purchasepackage,data),
-    GetAllCoupon : () => get(USER_ROUTES.packages.GetAllCoupon),
+    PurchasePackage: (data: any) => post(USER_ROUTES.packages.Purchasepackage, data),
+    GetAllCoupon: () => get(USER_ROUTES.packages.GetAllCoupon),
 
     // hotel api requests
-    getAllHotel: (query:string,page?: number,limit?: number) => get(USER_ROUTES.hotel.getAllHotel, {page,limit,query}),
+    getAllHotel: (query: string, page?: number, limit?: number) => get(USER_ROUTES.hotel.getAllHotel, { page, limit, query }),
     getRoomDetails: (id: string) => get(USER_ROUTES.hotel.getRoomDetails(id)),
-    purchaseRoom:(data:{roomId:string,role:string,amount:number,couponId?:string,startDate:string})=> post(USER_ROUTES.hotel.purchaseRoom,data),
+    purchaseRoom: (data: { roomId: string, role: string, amount: number, couponId?: string, startDate: string }) => post(USER_ROUTES.hotel.purchaseRoom, data),
 
     // foods api requests
     showAllFoods: (params?: any) => get(USER_ROUTES.foods.showAllFoods, params),
 
     // booking api request
-    orderHistory : () => get(USER_ROUTES.Trip.History),
-    getOrderDetails : (orderId:string)=>get(USER_ROUTES.Trip.OrderDetail(orderId)),
-    cancelOrder : (orderId:string,reason:string)=> patch(USER_ROUTES.Trip.orderCancel,{orderId,reason}),
+    orderHistory: () => get(USER_ROUTES.Trip.History),
+    getOrderDetails: (orderId: string) => get(USER_ROUTES.Trip.OrderDetail(orderId)),
+    cancelOrder: (orderId: string, reason: string) => patch(USER_ROUTES.Trip.orderCancel, { orderId, reason }),
 
     // Mind Map
-    generateMap : (data:any) => post(USER_ROUTES.Mind_Map.GenerateTrip,data),
-    updateMindMap : (data:{id:string,data:any}) => post(USER_ROUTES.Mind_Map.UpdatedateTrip,data),
-    getMindMap : (page:number)=> get(USER_ROUTES.Mind_Map.getMindMap,{page}),
-    MindMapDetails: (id:string) => get(USER_ROUTES.Mind_Map.MindMapDetails,{id}),
-    submitTheMindmap : (id:string) => post(USER_ROUTES.Mind_Map.confitmMindMap,{id})
+    generateMap: (data: any) => post(USER_ROUTES.Mind_Map.GenerateTrip, data),
+    updateMindMap: (data: { id: string, data: any }) => post(USER_ROUTES.Mind_Map.UpdatedateTrip, data),
+    getMindMap: (page: number) => get(USER_ROUTES.Mind_Map.getMindMap, { page }),
+    MindMapDetails: (id: string) => get(USER_ROUTES.Mind_Map.MindMapDetails, { id }),
+    submitTheMindmap: (id: string) => post(USER_ROUTES.Mind_Map.confitmMindMap, { id })
 };

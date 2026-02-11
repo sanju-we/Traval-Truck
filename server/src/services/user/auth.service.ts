@@ -106,7 +106,7 @@ export class AuthService implements IAuthService {
 
     const userData = await this._authRepository.findByEmail(email);
     if (!userData) throw new UserNotFoundError();
-    const user = { id: userData.id, email: userData.email };
+    const user = { id: userData.id, email: userData.email, role:userData.role };
 
     const { resetLink } = await this._jwtUtil.generateResetToken(user);
     await this._emailService.sendEmail(

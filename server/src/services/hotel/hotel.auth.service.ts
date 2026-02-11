@@ -95,6 +95,7 @@ export class HotelAuthService implements IHotelAuthService {
     const { resetLink } = await this._ijwt.generateResetToken({
       id: hotelData.id,
       email: hotelData.email,
+      role:hotelData.role,
     });
     logger.info(`resetLink :- ${resetLink}`)
     await this._emailService.sendEmail(

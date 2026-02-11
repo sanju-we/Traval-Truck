@@ -8,7 +8,6 @@ import { Label } from '@/components/shared/ui/label';
 import { ImageCropperModal } from './ImagesCroperModalForRestaurant';
 import { RESTAURANT_API_METHODS } from '@/services/APIs/restaurant.api.service';
 import toast from 'react-hot-toast';
-import api from '@/services/api';
 
 export interface FoodData {
   id: string;
@@ -150,6 +149,7 @@ export default function FoodModal({ isOpen, onClose, onSave, editingFood }: Food
 
       let data;
       if (!editingFood) {
+        console.log(form)
         data = await RESTAURANT_API_METHODS.create(form)
       } else {
         data = await RESTAURANT_API_METHODS.editFood(form)

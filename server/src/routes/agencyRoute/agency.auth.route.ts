@@ -17,6 +17,6 @@ agencyAuthRoute
     asyncHandler(agencyController.agencyLogout.bind(agencyController)),
   )
   .post('/forgot-password', asyncHandler(agencyController.forgotPassword.bind(agencyController)))
-  .post('/resetPassword', asyncHandler(agencyController.resetPassword.bind(agencyController)));
+  .post('/reset-password', asyncHandler(agencyController.resetPassword.bind(agencyController)));
 
 export default agencyAuthRoute;

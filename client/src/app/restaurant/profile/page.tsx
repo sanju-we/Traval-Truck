@@ -168,7 +168,7 @@ export default function VendorProfilePage() {
         });
       }
 
-      const data = await RESTAURANT_API_METHODS.updateDocument({ formPayload });
+      const data = await RESTAURANT_API_METHODS.edit(formPayload);
 
       if (!data.success) {
         toast.error(data.message || 'Update failed');
@@ -447,7 +447,7 @@ export default function VendorProfilePage() {
             </div>
           </TabsContent>
         </Tabs>
-        <VendorFooter/>
+        <VendorFooter />
       </div>
 
       <AnimatePresence>

@@ -12,10 +12,10 @@ import { IAuthValidator } from '../../core/interface/validator/Iauth.validator';
 @injectable()
 export class RestaurantProfileController implements IRestaurantProfileController {
   constructor(
-    @inject('IRestaurantAuthRepository')private readonly _restaurantAuthRepository: IRestaurantAuthRepository,
-    @inject('IRestaurantProfileService')private readonly _restaurantProfileService: IRestaurantProfileService,
-    @inject('IAuthValidator') private readonly _authValidator : IAuthValidator,
-  ) {}
+    @inject('IRestaurantAuthRepository') private readonly _restaurantAuthRepository: IRestaurantAuthRepository,
+    @inject('IRestaurantProfileService') private readonly _restaurantProfileService: IRestaurantProfileService,
+    @inject('IAuthValidator') private readonly _authValidator: IAuthValidator,
+  ) { }
   async getRestaurant(req: Request, res: Response): Promise<void> {
     const user = req.user;
     const restaurant = await this._restaurantAuthRepository.findById(user.id);
@@ -28,15 +28,21 @@ export class RestaurantProfileController implements IRestaurantProfileController
   }
 
   async updateProfile(req: Request, res: Response): Promise<void> {
-    const { ownerName, phone, companyName, bankDetails } = req.body
-    await this._authValidator.profileUpdateValidator(ownerName,companyName,phone,bankDetails)
+    const { ownerName, phone, companyName } = req.body
+    const bankDetails = req.body.bankDetails || {
+      accountHolder: req.body['bankDetails.accountHolder'],
+      accountNumber: req.body['bankDetails.accountNumber'],
+      bankName: req.body['bankDetails.bankName'],
+      ifscCode: req.body['bankDetails.ifscCode'],
+    };
+    await this._authValidator.profileUpdateValidator(ownerName, companyName, phone, bankDetails)
     const restaunratId = req.user.id;
 
     const updateRestaurant = await this._restaurantProfileService.updateProfile(restaunratId, {
       ownerName,
       companyName,
       phone: Number(phone),
-      bankDetails,
+      bankDetails: bankDetails as any,
     });
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updateRestaurant);
   }
@@ -49,10 +55,10 @@ export class RestaurantProfileController implements IRestaurantProfileController
     };
 
     const update = this._restaurantProfileService.updateDocuments(restaurantId, files);
-    if(!update) throw new DataUpdatingError();
-    sendResponse(res,STATUS_CODE.OK,true,MESSAGES.UPDATED,update)
+    if (!update) throw new DataUpdatingError();
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, update)
   }
- 
+
   async deleteImage(req: Request, res: Response): Promise<void> {
     const { documentUrl, key } = req.body;
     const restaurantId = req.user.id;

@@ -20,6 +20,11 @@ export default function ResetPasswordPage() {
       return;
     }
 
+    if(!token){
+      toast.error('Invalid ROoter')
+      return;
+    }
+
     if (password !== confirmPassword) {
       toast.error('Passwords do not match');
       return;
@@ -27,11 +32,10 @@ export default function ResetPasswordPage() {
 
     setIsLoading(true);
     try {
-      const res = await RESTAURANT_API_METHODS.resetPassword({
+      const data = await RESTAURANT_API_METHODS.resetPassword({
         token,
         newPassword: password,
       });
-      const data = res.data;
 
       if (data.success) {
         toast.success('Password reset successful! Redirecting...');

@@ -69,8 +69,8 @@ export default function UserProfilePage() {
     setIsSaving(true);
     try {
       const res = await USER_API_METHODS.editProfile(formData);
-      if (!res.data.success) {
-        toast.error(res.data.message || 'Update failed');
+      if (!res.success) {
+        toast.error(res.message || 'Update failed');
         setIsSaving(false);
         return;
       }
@@ -106,10 +106,10 @@ export default function UserProfilePage() {
       const formDataImg = new FormData();
       formDataImg.append('profile', file);
       const res = await USER_API_METHODS.uploadImage(formDataImg);
-      if (res.data.success) {
-        if (res.data.data != null) {
-          setFormData(res.data.data);
-          setUser(res.data.data);
+      if (res.success) {
+        if (res.data != null) {
+          setFormData(res.data);
+          setUser(res.data);
         }
         toast.success('Profile picture updated successfully!');
       }
@@ -198,11 +198,10 @@ export default function UserProfilePage() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`font-semibold transition ${
-                  activeTab === tab
+                className={`font-semibold transition ${activeTab === tab
                     ? 'text-emerald-600 border-b-2 border-emerald-600'
                     : 'text-gray-600 hover:text-gray-800'
-                }`}
+                  }`}
               >
                 {tab === 'overview' && 'Profile Overview'}
                 {tab === 'history' && 'Trip History'}
@@ -339,11 +338,10 @@ export default function UserProfilePage() {
                       handleFormSubmit(e);
                     }}
                     disabled={isSaving}
-                    className={`px-4 py-2 rounded-md transition ${
-                      isSaving
+                    className={`px-4 py-2 rounded-md transition ${isSaving
                         ? 'bg-gray-400 cursor-not-allowed text-white'
                         : 'bg-emerald-500 text-white hover:bg-emerald-600'
-                    }`}
+                      }`}
                   >
                     {isSaving ? 'Saving...' : 'Save Changes'}
                   </button>

@@ -13,7 +13,7 @@ export const AGENCY_ROUTES = {
     login: `${AGENCY_AUTH}/login`,
     logout: `${AGENCY_AUTH}/logout`,
     forgotPassword: `${AGENCY_AUTH}/forgot-password`,
-    resetPassword: `${AGENCY_AUTH}/resetPassword`,
+    resetPassword: `${AGENCY_AUTH}/reset-password`,
   },
 
   profile: {
