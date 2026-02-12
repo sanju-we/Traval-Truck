@@ -38,7 +38,7 @@ export const RESTAURANT_ROUTES = {
     purchase: `/shared/subscriptions/restaurant/purchase`
   },
 
-  bill : {
-    craeteBill : `${RESTAURANT_BILL}/create`
+  bill: {
+    craeteBill: `${RESTAURANT_BILL}/create`
   },
 }

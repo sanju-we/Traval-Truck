@@ -129,4 +129,5 @@ export interface Subscription {
   valid: number;
   features: string[];
   endDate?: string;
+  status: 'active' | 'expired';
 }

@@ -36,11 +36,11 @@ export const HOTEL_ROUTES = {
     deleteImage: (id: string) => `${HOTEL_ROOMS}/deleteImage/${id}`,
   },
 
-  orders:{
-    getAll : `${HOTEL_ORDERS}/getAll`,
-    getOrder :(orderId:string)=> `${HOTEL_ORDERS}/getOrder/${orderId}`,
-    checkIn : (orderId:string) => `${HOTEL_ORDERS}/check-in/${orderId}`,
-    checkOut : (orderId:string) => `${HOTEL_ORDERS}/check-out/${orderId}`
+  orders: {
+    getAll: `${HOTEL_ORDERS}/getAll`,
+    getOrder: (orderId: string) => `${HOTEL_ORDERS}/getOrder/${orderId}`,
+    checkIn: (orderId: string) => `${HOTEL_ORDERS}/check-in/${orderId}`,
+    checkOut: (orderId: string) => `${HOTEL_ORDERS}/check-out/${orderId}`
   },
 
   payment: {

@@ -18,9 +18,9 @@ export class UserTripService implements IUserTripService {
     @inject('IWalletRespository') private readonly _walletRepo: IWalletRespository
   ) { }
 
-  async history(userId: string): Promise<TripDTO[]> {
+  async history(userId: string, page?: number, limit?: number): Promise<TripDTO[]> {
     await this._validator.idValidator(userId)
-    const history = await this._ordersRepo.findAllByProduct(userId)
+    const history = await this._ordersRepo.findAllByProduct(userId, page, limit)
     logger.info(`charle ${history}`)
     if (!history) throw new DataNotFoundError()
     return history
@@ -33,7 +33,7 @@ export class UserTripService implements IUserTripService {
     return toOrderDTO(order)
   }
 
-  async orderCancellation(orderId: string, reason:string): Promise<orderDTO> {
+  async orderCancellation(orderId: string, reason: string): Promise<orderDTO> {
     logger.info(`orderId ${orderId}`)
     await this._validator.idValidator(orderId)
     const order = await this._ordersRepo.findById(orderId)

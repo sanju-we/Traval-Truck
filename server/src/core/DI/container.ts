@@ -57,6 +57,9 @@ import { IReviewRepository } from '../../core/interface/repositorie/shared/Ishar
 import { ReviewRepository } from '../../repositories/shared/share.review.repository';
 import { IReplayRepository } from '../../core/interface/repositorie/shared/Ireplay.repository';
 import { ReplayRepository } from '../../repositories/shared/shared.replay.repository';
+import { ISubscriptionCleanupService } from '../../core/interface/serivice/shared/ISubscriptionCleanup.service';
+import { SubscriptionCleanupService } from '../../services/shared/subscriptionCleanup.service';
+import { SchedulerService } from '../../services/shared/scheduler.service';
 
 // ----------------------------------------------------user-------------------------------------------------------------
 import { IAuthService } from '../../core/interface/serivice/user/auth.interface';
@@ -219,6 +222,8 @@ container.bind<IReviewController>('IReviewController').to(ReviewController);
 container.bind<IReviewService>('IReviewService').to(ReviewService);
 container.bind<IReviewRepository>('IReviewRepository').to(ReviewRepository);
 container.bind<IReplayRepository>('IReplayRepository').to(ReplayRepository);
+container.bind<ISubscriptionCleanupService>('ISubscriptionCleanupService').to(SubscriptionCleanupService).inSingletonScope();
+container.bind<SchedulerService>('SchedulerService').to(SchedulerService).inSingletonScope();
 
 // ---------------------------------------------------user container-------------------------------------------------------------------------
 container.bind<IAuthRepository>('IAuthRepository').to(AuthRepository);

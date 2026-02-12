@@ -40,10 +40,11 @@ export default function TripHistory({ userId }: TripHistoryProps) {
   async function fetchTrips() {
     try {
       setLoading(true);
-      const response = await USER_API_METHODS.orderHistory();
+      // Fetch only 3 latest orders for profile trip history
+      const response = await USER_API_METHODS.orderHistory(1, 3);
       console.log(response);
       const data = await response.data;
-      
+
       if (response.success) {
         setTrips(data);
       } else {
@@ -91,8 +92,8 @@ export default function TripHistory({ userId }: TripHistoryProps) {
         <MapPin className="mx-auto text-gray-300" size={64} />
         <h3 className="mt-4 text-lg font-semibold text-gray-700">No trips yet</h3>
         <p className="text-gray-500 mt-2">Start planning your next adventure!</p>
-        <button 
-          className="mt-6 px-6 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition" 
+        <button
+          className="mt-6 px-6 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition"
           onClick={() => router.push('/package')}
         >
           Browse Packages
@@ -107,31 +108,28 @@ export default function TripHistory({ userId }: TripHistoryProps) {
         <div className="flex gap-3">
           <button
             onClick={() => setFilter('all')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-              filter === 'all'
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${filter === 'all'
                 ? 'bg-emerald-500 text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
+              }`}
           >
             All Trips ({trips.length})
           </button>
           <button
             onClick={() => setFilter('upcoming')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-              filter === 'upcoming'
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${filter === 'upcoming'
                 ? 'bg-emerald-500 text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
+              }`}
           >
             Upcoming ({upcomingTrips.length})
           </button>
           <button
             onClick={() => setFilter('completed')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-              filter === 'completed'
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${filter === 'completed'
                 ? 'bg-emerald-500 text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
+              }`}
           >
             Completed ({completedTrips.length})
           </button>
@@ -173,7 +171,7 @@ export default function TripHistory({ userId }: TripHistoryProps) {
                   className="w-28 h-28 rounded-lg object-cover flex-shrink-0"
                 />
               )}
-              
+
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
@@ -188,15 +186,14 @@ export default function TripHistory({ userId }: TripHistoryProps) {
                       <span className="font-mono">Order: {trip.orderId}</span>
                     </div>
                   </div>
-                  
+
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${
-                      trip.status === 'Upcoming'
+                    className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${trip.status === 'Upcoming'
                         ? 'bg-blue-100 text-blue-700'
                         : trip.status === 'Ongoing'
-                        ? 'bg-orange-100 text-orange-700'
-                        : 'bg-green-100 text-green-700'
-                    }`}
+                          ? 'bg-orange-100 text-orange-700'
+                          : 'bg-green-100 text-green-700'
+                      }`}
                   >
                     {trip.status === 'Upcoming' && <Clock size={12} className="inline mr-1" />}
                     {trip.status === 'Completed' && <CheckCircle size={12} className="inline mr-1" />}
@@ -215,10 +212,10 @@ export default function TripHistory({ userId }: TripHistoryProps) {
                   <p className="text-lg font-bold text-emerald-600">
                     ₹{trip.amount.toLocaleString()}
                   </p>
-                  
+
                   <div className="flex gap-2">
                     {trip.status !== 'Completed' && (
-                      <button 
+                      <button
                         onClick={() => handleChatWithAgency(trip)}
                         className="px-3 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition flex items-center gap-2"
                       >
@@ -226,7 +223,7 @@ export default function TripHistory({ userId }: TripHistoryProps) {
                         Chat with Agency
                       </button>
                     )}
-                    <button 
+                    <button
                       onClick={() => handleViewDetails(trip)}
                       className="px-3 py-2 text-sm bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition flex items-center gap-2"
                     >

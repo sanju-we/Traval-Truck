@@ -41,7 +41,8 @@ export default function LoginPage() {
           }),
         );
         router.push('/');
-      }else{
+      } else {
+        toast.error(data.message)
         setIsLoading(false)
       }
     } catch (err) {

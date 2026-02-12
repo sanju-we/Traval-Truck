@@ -94,7 +94,7 @@ export default function FoodList() {
   return (
     <div className="min-h-screen flex bg-gray-50">
       <SideNavbar />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col p-5">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-semibold">🍴 Food Items</h1>
           <Button onClick={() => {

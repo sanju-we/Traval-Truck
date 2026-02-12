@@ -32,8 +32,24 @@ export class SharedSubscriptionService implements ISharedSubscriptionService {
   }
 
   async getCurrentSubscription(id: string): Promise<subscriptionHistoryDTO> {
-    const subscription = await this._subscriptionHistoryRepo.findOne({ userId: id });
+    // Find the most recent active subscription (not expired)
+    const subscription = await this._subscriptionHistoryRepo.findOne(
+      {
+        userId: id,
+        status: 'active',
+        endDate: { $gt: new Date() } // End date is in the future
+      },
+      { sort: { createdAt: -1 } } // Get the most recent one
+    );
+
     if (!subscription) throw new DataNotFoundError();
+
+    const plan = await this._subscriptionRepo.findById(subscription.subscriptionId);
+    if (plan) {
+      (subscription as any).name = plan.Name;
+      (subscription as any).features = plan.Features;
+      (subscription as any).valid = plan.Valid;
+    }
 
     return toSubsctiptionHistoryDTO(subscription);
   }
@@ -80,7 +96,7 @@ export class SharedSubscriptionService implements ISharedSubscriptionService {
       userId,
       role,
       paymentId,
-      amount:plan.Amount,
+      amount: plan.Amount,
       subscriptionId: planId,
       startDate: new Date(),
       endDate

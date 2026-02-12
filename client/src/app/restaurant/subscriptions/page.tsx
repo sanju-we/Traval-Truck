@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { SHARED_API_METHODS } from "@/services/APIs/shared.api.service";
 import { Subscription } from "@/types/agency";
 import VendorFooter from "@/components/shared/Footer";
+import { checkDomainOfScale } from "recharts/types/util/ChartUtils";
 
 export default function SubscriptionsPage() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
@@ -24,25 +25,16 @@ export default function SubscriptionsPage() {
         SHARED_API_METHODS.currentSubscription('restaurant'),
       ]);
 
-      if (allRes.data.success) {
-        setSubscriptions(allRes.data.data || []);
+      if (allRes.success) {
+        setSubscriptions(allRes.data || []);
       }
 
-      // 👇 THIS IS THE MISSING PART
-      if (currentRes.data.success && currentRes.data.data) {
-        const current = currentRes.data.data;
+      console.log('Current subscription response:', currentRes);
+      console.log('Current subscription data:', currentRes.data);
+      console.log('Current subscription status:', currentRes.data?.status);
 
-        
-        const data = await SHARED_API_METHODS.currentSubscription('restaurant')
-
-        if (data.success) {
-          setActiveSubscription({
-            ...data.data,   // name, amount, valid, features
-            endDate: current.endDate,        // from ownership record
-          });
-        } else {
-          setActiveSubscription(null);
-        }
+      if (currentRes.success && currentRes.data) {
+        setActiveSubscription(currentRes.data);
       } else {
         setActiveSubscription(null);
       }
@@ -87,41 +79,59 @@ export default function SubscriptionsPage() {
                 </h2>
 
                 {activeSubscription ? (
-                  <div className="relative bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-6 shadow-lg text-white">
-                    <div className="absolute top-4 right-4 flex items-center gap-1 text-sm bg-white/20 px-3 py-1 rounded-full">
-                      <CheckCircle size={16} />
-                      Active
-                    </div>
+                  activeSubscription.status === "active" ? (
+                    <div className="relative bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-6 shadow-lg text-white">
+                      <div className="absolute top-4 right-4 flex items-center gap-1 text-sm bg-white/20 px-3 py-1 rounded-full">
+                        <CheckCircle size={16} />
+                        Active
+                      </div>
 
-                    <h3 className="text-2xl font-bold mb-2">
-                      {activeSubscription.name}
-                    </h3>
+                      <h3 className="text-2xl font-bold mb-2">
+                        {activeSubscription.name}
+                      </h3>
 
-                    <p className="opacity-90">
-                      Valid for {activeSubscription.valid} days
-                    </p>
-
-                    {activeSubscription.endDate && (
-                      <p className="opacity-90 mt-1">
-                        Expires on{" "}
-                        <span className="font-semibold">
-                          {new Date(
-                            activeSubscription.endDate
-                          ).toLocaleDateString()}
-                        </span>
+                      <p className="opacity-90">
+                        Valid for {activeSubscription.valid} days
                       </p>
-                    )}
 
-                    <p className="text-3xl font-bold mt-4">
-                      ₹{activeSubscription.amount}
-                    </p>
+                      {activeSubscription.endDate && (
+                        <p className="opacity-90 mt-1">
+                          Expires on{" "}
+                          <span className="font-semibold">
+                            {new Date(
+                              activeSubscription.endDate
+                            ).toLocaleDateString()}
+                          </span>
+                        </p>
+                      )}
 
-                    <ul className="mt-5 space-y-1 text-sm opacity-95">
-                      {activeSubscription.features?.map((f, i) => (
-                        <li key={i}>• {f}</li>
-                      ))}
-                    </ul>
-                  </div>
+                      <p className="text-3xl font-bold mt-4">
+                        ₹{activeSubscription.amount}
+                      </p>
+
+                      <ul className="mt-5 space-y-1 text-sm opacity-95">
+                        {activeSubscription.features?.map((f, i) => (
+                          <li key={i}>• {f}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <div className="bg-red-50 border border-red-300 rounded-xl p-6 flex items-start gap-3 shadow-md">
+                      <AlertTriangle className="text-red-600 mt-1" />
+                      <div>
+                        <h3 className="font-bold text-red-800 text-lg uppercase tracking-wide">
+                          Subscription Expired
+                        </h3>
+                        <p className="text-red-700 font-medium mt-1 italic">
+                          "Your subscription has expired. Please purchase a new plan for your upcoming products and orders."
+                        </p>
+                        <div className="mt-4 text-sm text-red-600">
+                          <p>Expired on: {activeSubscription.endDate ? new Date(activeSubscription.endDate).toLocaleDateString() : 'N/A'}</p>
+                          <p>Last Plan: {activeSubscription.name}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )
                 ) : (
                   <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-6 flex items-start gap-3">
                     <AlertTriangle className="text-yellow-600 mt-1" />
@@ -190,7 +200,7 @@ export default function SubscriptionsPage() {
             </>
           )}
         </div>
-        <VendorFooter/>
+        <VendorFooter />
       </div>
     </div>
   );

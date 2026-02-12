@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Calendar, MapPin, Clock, CheckCircle, MessageCircle, Eye, ArrowLeft, Package } from 'lucide-react';
+import { Calendar, MapPin, Clock, CheckCircle, MessageCircle, Eye, ArrowLeft, Package, ChevronLeft, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
@@ -11,24 +11,51 @@ import { product } from '@/types/user/profile';
 import { Trip } from '@/types/user/profile';
 
 export default function OrdersPage() {
-  const [trips, setTrips] = useState<Trip[]>([]);
+  const [allTrips, setAllTrips] = useState<Trip[]>([]);
+  const [displayTrips, setDisplayTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'completed'>('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
   const router = useRouter();
 
   useEffect(() => {
-    fetchTrips();
+    fetchAllTripsForStats();
   }, []);
+  useEffect(() => {
+    fetchCurrentPage();
+  }, [currentPage, filter]);
 
-  async function fetchTrips() {
+  async function fetchAllTripsForStats() {
+    try {
+      const response = await USER_API_METHODS.orderHistory();
+      if (response.success) {
+        setAllTrips(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching trip statistics:', error);
+    }
+  }
+
+  async function fetchCurrentPage() {
     try {
       setLoading(true);
       const response = await USER_API_METHODS.orderHistory();
       const data = await response.data;
-      
+
       if (response.success) {
-        console.log('data:',data)
-        setTrips(data);
+        console.log('data:', data);
+
+        const filtered = data.filter((trip: Trip) => {
+          if (filter === 'all') return true;
+          if (filter === 'upcoming') return trip.status === 'Upcoming' || trip.status === 'Ongoing';
+          if (filter === 'completed') return trip.status === 'Completed';
+          return true;
+        });
+
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        setDisplayTrips(filtered.slice(startIndex, endIndex));
       } else {
         toast.error(response.message || 'Failed to fetch trips');
       }
@@ -45,19 +72,26 @@ export default function OrdersPage() {
   }
 
   function handleViewDetails(trip: Trip) {
-    console.log('trip:',typeof trip.id )
+    console.log('trip:', typeof trip.id)
     router.push(`/profile/orders/${trip.id}`);
   }
 
-  const filteredTrips = trips.filter(trip => {
+  const upcomingTrips = allTrips.filter((t: Trip) => t.status === 'Upcoming' || t.status === 'Ongoing');
+  const completedTrips = allTrips.filter((t: Trip) => t.status === 'Completed');
+
+  const filteredCount = allTrips.filter((trip: Trip) => {
     if (filter === 'all') return true;
     if (filter === 'upcoming') return trip.status === 'Upcoming' || trip.status === 'Ongoing';
     if (filter === 'completed') return trip.status === 'Completed';
     return true;
-  });
+  }).length;
 
-  const upcomingTrips = trips.filter(t => t.status === 'Upcoming' || t.status === 'Ongoing');
-  const completedTrips = trips.filter(t => t.status === 'Completed');
+  const totalPages = Math.ceil(filteredCount / itemsPerPage);
+
+  const handleFilterChange = (newFilter: 'all' | 'upcoming' | 'completed') => {
+    setFilter(newFilter);
+    setCurrentPage(1);
+  };
 
   if (loading) {
     return (
@@ -74,7 +108,7 @@ export default function OrdersPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -90,13 +124,12 @@ export default function OrdersPage() {
           <p className="text-gray-600">View and manage all your bookings</p>
         </div>
 
-        {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 font-medium">Total Orders</p>
-                <p className="text-2xl font-bold text-gray-800 mt-1">{trips.length}</p>
+                <p className="text-2xl font-bold text-gray-800 mt-1">{allTrips.length}</p>
               </div>
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                 <Package className="text-blue-600" size={24} />
@@ -129,53 +162,48 @@ export default function OrdersPage() {
           </div>
         </div>
 
-        {/* Filters */}
         <div className="flex gap-3 mb-6">
           <button
-            onClick={() => setFilter('all')}
-            className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition ${
-              filter === 'all'
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
-            }`}
+            onClick={() => handleFilterChange('all')}
+            className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition ${filter === 'all'
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+              }`}
           >
-            All Orders ({trips.length})
+            All Orders ({allTrips.length})
           </button>
           <button
-            onClick={() => setFilter('upcoming')}
-            className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition ${
-              filter === 'upcoming'
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
-            }`}
+            onClick={() => handleFilterChange('upcoming')}
+            className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition ${filter === 'upcoming'
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+              }`}
           >
             Upcoming ({upcomingTrips.length})
           </button>
           <button
-            onClick={() => setFilter('completed')}
-            className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition ${
-              filter === 'completed'
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
-            }`}
+            onClick={() => handleFilterChange('completed')}
+            className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition ${filter === 'completed'
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+              }`}
           >
             Completed ({completedTrips.length})
           </button>
         </div>
 
-        {/* Orders List */}
-        {filteredTrips.length === 0 ? (
+        {displayTrips.length === 0 ? (
           <div className="bg-white rounded-xl p-12 text-center shadow-sm border border-gray-100">
             <MapPin className="mx-auto text-gray-300 mb-4" size={64} />
             <h3 className="text-xl font-semibold text-gray-700">No orders found</h3>
             <p className="text-gray-500 mt-2">
-              {filter === 'all' 
-                ? "You haven't made any bookings yet" 
+              {filter === 'all'
+                ? "You haven't made any bookings yet"
                 : `No ${filter} trips found`}
             </p>
             {filter === 'all' && (
-              <button 
-                className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold" 
+              <button
+                className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
                 onClick={() => router.push('/package')}
               >
                 Browse Packages
@@ -184,7 +212,7 @@ export default function OrdersPage() {
           </div>
         ) : (
           <div className="space-y-4">
-            {filteredTrips.map((trip) => (
+            {displayTrips.map((trip) => (
               <div
                 key={trip.id}
                 className="bg-white border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-all duration-200"
@@ -197,7 +225,7 @@ export default function OrdersPage() {
                       className="w-32 h-32 rounded-xl object-cover flex-shrink-0 border border-gray-200"
                     />
                   )}
-                  
+
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-4 mb-3">
                       <div className="flex-1 min-w-0">
@@ -223,15 +251,14 @@ export default function OrdersPage() {
                           )}
                         </div>
                       </div>
-                      
+
                       <span
-                        className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap flex-shrink-0 inline-flex items-center gap-1.5 ${
-                          trip.status === 'Upcoming'
-                            ? 'bg-blue-100 text-blue-700 border border-blue-200'
-                            : trip.status === 'Ongoing'
+                        className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap flex-shrink-0 inline-flex items-center gap-1.5 ${trip.status === 'Upcoming'
+                          ? 'bg-blue-100 text-blue-700 border border-blue-200'
+                          : trip.status === 'Ongoing'
                             ? 'bg-orange-100 text-orange-700 border border-orange-200'
                             : 'bg-green-100 text-green-700 border border-green-200'
-                        }`}
+                          }`}
                       >
                         {trip.status === 'Upcoming' && <Clock size={14} />}
                         {trip.status === 'Completed' && <CheckCircle size={14} />}
@@ -253,10 +280,10 @@ export default function OrdersPage() {
                           ₹{trip.amount.toLocaleString()}
                         </p>
                       </div>
-                      
+
                       <div className="flex gap-3">
                         {trip.status !== 'Completed' && (
-                          <button 
+                          <button
                             onClick={() => handleChatWithAgency(trip)}
                             className="px-4 py-2.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2 font-semibold"
                           >
@@ -264,7 +291,7 @@ export default function OrdersPage() {
                             Chat with Agency
                           </button>
                         )}
-                        <button 
+                        <button
                           onClick={() => handleViewDetails(trip)}
                           className="px-4 py-2.5 text-sm bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition flex items-center gap-2 font-semibold"
                         >
@@ -277,6 +304,50 @@ export default function OrdersPage() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="mt-8 flex items-center justify-center gap-2">
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className={`flex items-center gap-1 px-4 py-2 rounded-lg font-medium transition ${currentPage === 1
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                }`}
+            >
+              <ChevronLeft size={18} />
+              Previous
+            </button>
+
+            <div className="flex gap-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`w-10 h-10 rounded-lg font-semibold transition ${currentPage === page
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                    }`}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className={`flex items-center gap-1 px-4 py-2 rounded-lg font-medium transition ${currentPage === totalPages
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                }`}
+            >
+              Next
+              <ChevronRight size={18} />
+            </button>
           </div>
         )}
       </div>

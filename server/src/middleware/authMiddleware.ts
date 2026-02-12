@@ -86,7 +86,8 @@ export async function verifyHotelToken(req: Request, res: Response, next: NextFu
     }
 
     if (hotel.isRestricted) {
-      if (req.url !== '/profile' && req.url == '/update-documents') {
+      const allowedUrls = ['/profile', '/update-documents', '/purchase', '/activate'];
+      if (!allowedUrls.includes(req.url)) {
         if (!hotel.isApproved) throw new UNAUTHORIZEDUserFounf();
       }
     }
@@ -127,7 +128,8 @@ export async function verifyAgencyToken(req: Request, res: Response, next: NextF
     }
 
     if (agency.isRestricted || !agency.isApproved) {
-      if (req.url !== '/profile' && req.url !== '/update-documents' && req.url !== '/logout' && req.url !== '/update') {
+      const allowedUrls = ['/profile', '/update-documents', '/logout', '/update', '/purchase', '/activate'];
+      if (!allowedUrls.includes(req.url)) {
         if (!agency.isApproved) throw new UNAUTHORIZEDUserFounf();
       }
     }
@@ -168,9 +170,10 @@ export async function verifyRestaurantToken(req: Request, res: Response, next: N
     }
 
     if (restaurant.isRestricted || !restaurant.isApproved) {
-      if (req.url !== '/profile' && req.url !== '/update-documents' && req.url !== '/update') {
+      const allowedUrls = ['/profile', '/update-documents', '/update', '/purchase', '/activate'];
+      if (!allowedUrls.includes(req.url)) {
         if (!restaurant.isApproved) {
-          console.log('in here',req.url)
+          console.log('in here', req.url)
           throw new UNAUTHORIZEDUserFounf()
         };
       }

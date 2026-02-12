@@ -43,9 +43,13 @@ export class BaseRepository<T extends Document> implements IBaserepository<T> {
     }
   }
 
-  async findOne(filter: FilterQuery<T>): Promise<T | null> {
+  async findOne(filter: FilterQuery<T>, options?: QueryOptions): Promise<T | null> {
     try {
-      const item = await this.#model.findOne(filter).exec();
+      const query = this.#model.findOne(filter);
+      if (options) {
+        query.setOptions(options);
+      }
+      const item = await query.exec();
       logger.debug(
         `Queried ${this.#model.modelName} with filter ${JSON.stringify(filter)}: ${item ? 'found' : 'not found'}`,
       );
@@ -94,15 +98,26 @@ export class BaseRepository<T extends Document> implements IBaserepository<T> {
     }
   }
 
+  async updateMany(filter: FilterQuery<T>, data: UpdateQuery<T>): Promise<any> {
+    try {
+      const result = await this.#model.updateMany(filter, data).exec();
+      logger.info(`Updated multiple documents in ${this.#model.modelName} match filter ${JSON.stringify(filter)}: ${JSON.stringify(result)}`);
+      return result;
+    } catch (err: any) {
+      logger.error(`Failed to update multiple documents in ${this.#model.modelName}: ${err.message}`);
+      throw new RepositoryError(`Failed to update multiple documents: ${err.message}`);
+    }
+  }
+
   async countDocuments(): Promise<number> {
-      try {
-        const count = await this.#model.countDocuments()
-        return count
-      } catch (error:any) {
-         logger.error(
+    try {
+      const count = await this.#model.countDocuments()
+      return count
+    } catch (error: any) {
+      logger.error(
         `count the documents: ${error.message}`,
       );
       throw new RepositoryError(`Failed to count document: ${error.message}`);
-      }
+    }
   }
 }

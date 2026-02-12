@@ -31,10 +31,10 @@ export const HOTEL_API_METHODS = {
     getAll: (params?: any) => get(HOTEL_ROUTES.rooms.getAll, params),
     getRoom: (id: string) => get(HOTEL_ROUTES.rooms.getRoom(id)),
     editRoom: (id: string, data: any) => put(HOTEL_ROUTES.rooms.edit(id), data),
-    create: (data: any) => post(HOTEL_ROUTES.rooms.create, data),
+    create: (data: any) => post(HOTEL_ROUTES.rooms.create, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
     updateStatus: (data: any) => patch(HOTEL_ROUTES.rooms.updateStatus, data),
     updateBlock: (data: any) => patch(HOTEL_ROUTES.rooms.updateBlock, data),
-    editImage: (id: string, data: any) => patch(HOTEL_ROUTES.rooms.editImage(id), data),
+    editImage: (id: string, data: any) => patch(HOTEL_ROUTES.rooms.editImage(id), data, { headers: { 'Content-Type': 'multipart/form-data' } }),
     deleteRoomImage: (id: string) => patch(HOTEL_ROUTES.rooms.deleteImage(id), {}),
 
     // orders api 
