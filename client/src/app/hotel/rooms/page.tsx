@@ -65,7 +65,7 @@ export default function RoomsPage() {
   return (
     <div className="min-h-screen flex bg-gray-50">
       <SideNavbar />
-      <div className="flex-1 flex flex-col p-8 space-y-6">
+      <div className="flex-1 flex flex-col p-8 ">
         {/* Header */}
         <div className="flex flex-wrap justify-between items-center gap-4">
           <div>
@@ -124,6 +124,7 @@ export default function RoomsPage() {
             {viewMode === "grid" ? "List" : "Grid"}
           </Button>
         </form>
+        <br />
 
         {/* Content */}
         {loading ? (
@@ -168,15 +169,14 @@ export default function RoomsPage() {
 
                     <TableCell>
                       <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          room.Status === "Available"
-                            ? "bg-green-100 text-green-700"
-                            : room.Status === "Occupied"
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${room.Status === "Available"
+                          ? "bg-green-100 text-green-700"
+                          : room.Status === "Occupied"
                             ? "bg-red-100 text-red-700"
                             : room.Status === "Cleaning"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-gray-100 text-gray-700"
-                        }`}
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-gray-100 text-gray-700"
+                          }`}
                       >
                         {room.Status}
                       </span>
@@ -222,15 +222,14 @@ export default function RoomsPage() {
                 <div className="p-5">
                   <div className="flex justify-between items-center mb-2">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        room.Status === "Available"
-                          ? "bg-green-100 text-green-700"
-                          : room.Status === "Occupied"
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${room.Status === "Available"
+                        ? "bg-green-100 text-green-700"
+                        : room.Status === "Occupied"
                           ? "bg-red-100 text-red-700"
                           : room.Status === "Cleaning"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : "bg-gray-100 text-gray-700"
-                      }`}
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-gray-100 text-gray-700"
+                        }`}
                     >
                       {room.Status}
                     </span>
@@ -286,8 +285,8 @@ export default function RoomsPage() {
             </Button>
           </div>
         )}
+        <VendorFooter />
       </div>
-        <VendorFooter/>
 
       {/* Add Room Modal */}
       {showAddModal && (

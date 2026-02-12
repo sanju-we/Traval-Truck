@@ -199,13 +199,14 @@ export default function SubscriptionPage() {
   };
 
   const handleEditSubmit = async (e: React.FormEvent) => {
-    const errors = validateSubscriptionForm(addFormData);
+    e.preventDefault();
+    const errors = validateSubscriptionForm(editFormData);
     if (Object.keys(errors).length > 0) {
-      setAddErrors(errors);
+      setEditErrors(errors);
       toast.error("Please fix the validation errors.");
       return;
     }
-    setAddErrors({});
+    setEditErrors({});
     setLoading(true);
     if (!selectedSubscription?.id) return;
 
@@ -224,7 +225,7 @@ export default function SubscriptionPage() {
     };
 
     try {
-      const data = await ADMIN_API_METHODS.editSubscription( payload,selectedSubscription.id);
+      const data = await ADMIN_API_METHODS.editSubscription(payload, selectedSubscription.id);
 
       if (data.success) {
         toast.success("Subscription updated successfully!");
@@ -613,7 +614,7 @@ export default function SubscriptionPage() {
                         className="w-full border rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-orange-500"
                         placeholder="Enter plan name"
                       />
-                      {addErrors.Name && <p className="text-red-500 text-sm mt-1">{addErrors.Name}</p>}
+                      {editErrors.Name && <p className="text-red-500 text-sm mt-1">{editErrors.Name}</p>}
                     </div>
 
                     <div>
@@ -628,7 +629,7 @@ export default function SubscriptionPage() {
                         <option value="premium">Premium</option>
                         <option value="platinum">Platinum</option>
                       </select>
-                      {addErrors.Category && <p className="text-red-500 text-sm mt-1">{addErrors.Category}</p>}
+                      {editErrors.Category && <p className="text-red-500 text-sm mt-1">{editErrors.Category}</p>}
                     </div>
 
                     <div>
@@ -640,7 +641,7 @@ export default function SubscriptionPage() {
                         onChange={handleEditChange}
                         className="w-full border rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-orange-500"
                       />
-                      {addErrors.startingDate && <p className="text-red-500 text-sm mt-1">{addErrors.startingDate}</p>}
+                      {editErrors.startingDate && <p className="text-red-500 text-sm mt-1">{editErrors.startingDate}</p>}
                     </div>
 
                     <div>
@@ -652,7 +653,7 @@ export default function SubscriptionPage() {
                         onChange={handleEditChange}
                         className="w-full border rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-orange-500"
                       />
-                      {addErrors.endingDate && <p className="text-red-500 text-sm mt-1">{addErrors.endingDate}</p>}
+                      {editErrors.endingDate && <p className="text-red-500 text-sm mt-1">{editErrors.endingDate}</p>}
                     </div>
 
                     <div>
@@ -665,7 +666,7 @@ export default function SubscriptionPage() {
                         className="w-full border rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-orange-500"
                         placeholder="Enter validity (in days)"
                       />
-                      {addErrors.Valid && <p className="text-red-500 text-sm mt-1">{addErrors.Valid}</p>}
+                      {editErrors.Valid && <p className="text-red-500 text-sm mt-1">{editErrors.Valid}</p>}
                     </div>
 
                     <div>
@@ -678,7 +679,7 @@ export default function SubscriptionPage() {
                         placeholder="Describe this plan"
                         rows={3}
                       />
-                      {addErrors.Description && <p className="text-red-500 text-sm mt-1">{addErrors.Description}</p>}
+                      {editErrors.Description && <p className="text-red-500 text-sm mt-1">{editErrors.Description}</p>}
                     </div>
 
                     <div>
@@ -691,7 +692,7 @@ export default function SubscriptionPage() {
                         className="w-full border rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-orange-500"
                         placeholder="Enter price"
                       />
-                      {addErrors.Amount && <p className="text-red-500 text-sm mt-1">{addErrors.Amount}</p>}
+                      {editErrors.Amount && <p className="text-red-500 text-sm mt-1">{editErrors.Amount}</p>}
                     </div>
 
                     <div>
@@ -704,7 +705,7 @@ export default function SubscriptionPage() {
                         className="w-full border rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-orange-500"
                         placeholder="e.g. Priority Support, Extra Storage"
                       />
-                      {addErrors.Features && <p className="text-red-500 text-sm mt-1">{addErrors.Features}</p>}
+                      {editErrors.Features && <p className="text-red-500 text-sm mt-1">{editErrors.Features}</p>}
                     </div>
 
                     <div className="flex justify-center gap-3 mt-6">

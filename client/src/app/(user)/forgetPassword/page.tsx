@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
+import toast from 'react-hot-toast';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -12,7 +13,7 @@ export default function ForgotPasswordPage() {
 
   const handleForgotPassword = async () => {
     if (!email) {
-      setMessage('❌ Please enter your email');
+      toast.error('Please enter your email');
       return;
     }
 
@@ -21,14 +22,14 @@ export default function ForgotPasswordPage() {
       const data = await USER_API_METHODS.forgetPasswordRequest({ email });
 
       if (data.success) {
-        setMessage(`success`);
+        toast.success(`success`);
         router.push('/forgetPassword/sent');
       } else {
-        setMessage(`❌ ${data.error}`);
+        toast.error(`${data.message}`);
       }
     } catch (err) {
       console.error('Forgot password error:', err);
-      setMessage('❌ Failed to send reset link');
+      toast.error('Failed to send reset link');
     } finally {
       setIsLoading(false);
     }

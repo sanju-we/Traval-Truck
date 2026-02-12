@@ -218,6 +218,7 @@ export default function MindMapDetailsPage() {
 
         {mindMap && (
           <RouteMap
+            key={mindMap.status}
             title={mindMap.title}
             status={mindMap.status}
             startingPosition={mindMap.startingPosition}

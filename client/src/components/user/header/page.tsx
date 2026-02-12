@@ -5,13 +5,17 @@ import { Bell, Menu, X, User, Wallet, LogOut, Plane, ChevronDown } from 'lucide-
 import toast from 'react-hot-toast';
 import api from '@/services/api';
 import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { clearCurrentUser } from '@/redux/userDetailsSlice';
+import { useInitializeUser } from '@/hooks/useInitializeUser';
 
 export function Header() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifyOpen, setNotifyOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [user, setUser] = useState<{ profilePicture?: string; name?: string } | null>(null);
+  const user = useInitializeUser(); // Get user from Redux
+  const dispatch = useDispatch();
   const [notifications] = useState([
     { id: 1, icon: '✈️', message: 'Your Goa trip is confirmed!', time: '2h ago', unread: true },
     { id: 2, icon: '🏨', message: 'Hotel booking in Bali successful.', time: '5h ago', unread: true },
@@ -35,18 +39,6 @@ export function Header() {
       }
     };
 
-    const fetchUser = async () => {
-      try {
-        const { data } = await api.get('/user/profile/profile');
-        if (data.success) {
-          setUser(data.data);
-        }
-      } catch (err) {
-        console.error('Error fetching user:', err);
-      }
-    };
-
-    fetchUser();
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
@@ -58,6 +50,7 @@ export function Header() {
       if (!data.success) throw new Error('Logout failed');
       toast.success('Logged out successfully');
       console.log('logged out')
+      dispatch(clearCurrentUser()); // Clear Redux state
       router.push('/login');
     } catch (error) {
       console.error(error);
@@ -73,8 +66,8 @@ export function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 sm:h-20">
             {/* Logo */}
-            <div 
-              onClick={() => router.push('/home')} 
+            <div
+              onClick={() => router.push('/home')}
               className="flex items-center space-x-2 cursor-pointer group"
             >
               <div className="bg-gradient-to-br from-emerald-500 to-teal-500 p-2 rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-md">
@@ -148,9 +141,8 @@ export function Header() {
                           <div
                             key={notif.id}
                             onClick={() => toast.success(notif.message)}
-                            className={`px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-100 last:border-0 ${
-                              notif.unread ? 'bg-emerald-50/30' : ''
-                            }`}
+                            className={`px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-100 last:border-0 ${notif.unread ? 'bg-emerald-50/30' : ''
+                              }`}
                           >
                             <div className="flex items-start space-x-3">
                               <span className="text-2xl">{notif.icon}</span>

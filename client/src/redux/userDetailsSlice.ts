@@ -12,16 +12,18 @@ interface User {
   isBlocked?: boolean;
   phone?: number;
   createdAt?: string;
-  profilePicture?:string;
-  logo?:string;
+  profilePicture?: string;
+  logo?: string;
 }
 
 interface UserState {
   selectedUser: User | null;
+  currentUser: User | null;
 }
 
 const initialState: UserState = {
   selectedUser: null,
+  currentUser: null,
 };
 
 const detailsSlice = createSlice({
@@ -34,8 +36,14 @@ const detailsSlice = createSlice({
     clearSelectedUser(state) {
       state.selectedUser = null;
     },
+    setCurrentUser(state, action: PayloadAction<User>) {
+      state.currentUser = action.payload;
+    },
+    clearCurrentUser(state) {
+      state.currentUser = null;
+    },
   },
 });
 
-export const { setSelectedUser, clearSelectedUser } = detailsSlice.actions;
+export const { setSelectedUser, clearSelectedUser, setCurrentUser, clearCurrentUser } = detailsSlice.actions;
 export default detailsSlice.reducer;

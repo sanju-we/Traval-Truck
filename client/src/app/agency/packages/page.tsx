@@ -25,7 +25,7 @@ export default function PackageListingPage() {
 
   const fetchPackages = async (pageNumber = 1) => {
     try {
-      const  data  = await AGENCY_API_METHODS.getAll({ page: pageNumber, limit });
+      const data = await AGENCY_API_METHODS.getAll({ page: pageNumber, limit });
 
       console.log(data.data)
       if (!data.success) return toast.error(data.message);
@@ -51,7 +51,7 @@ export default function PackageListingPage() {
   return (
     <div className="min-h-screen flex bg-gray-50">
       <SideNavbar />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col p-5">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-semibold text-gray-900">Travel Packages</h1>
@@ -198,7 +198,7 @@ export default function PackageListingPage() {
             </Button>
           </div>
         )}
-        <VendorFooter/>
+        <VendorFooter />
       </div>
 
       {/* ✅ Add Package Modal */}

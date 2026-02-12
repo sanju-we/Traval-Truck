@@ -11,16 +11,18 @@ import {
   Inbox,
   BarChart,
   Plane,
+  User,
 } from 'lucide-react';
 import { useState } from 'react';
 import api from '@/services/api';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { AnimatePresence, motion } from 'framer-motion';
 
 function SideNavbar() {
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleLogout = async () => {
     const res = await api.post('/restaurant/auth/logout');
@@ -46,26 +48,26 @@ function SideNavbar() {
             </span>
           </div>
           <div className="space-y-2 ">
-            <div className='hover:bg-gray-200 rounded'>
-              <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
+            <div className={`${pathname === '/restaurant' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded`}>
+              <button className={`flex items-center space-x-2 p-2 ${pathname === '/restaurant' ? 'text-emerald-700 font-semibold' : 'text-gray-600'} rounded`} onClick={() => router.push('/restaurant')}>
                 <Home className="material-icons">home</Home>
                 <span>Dashboard</span>
               </button>
             </div>
-            <div className='hover:bg-gray-200 rounded' onClick={() => router.push('/restaurant/foods')}>
-              <button className="flex items-center space-x-2 p-2 text-gray-600">
+            <div className={`${pathname === '/restaurant/foods' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded`} onClick={() => router.push('/restaurant/foods')}>
+              <button className={`flex items-center space-x-2 p-2 ${pathname === '/restaurant/foods' ? 'text-emerald-700 font-semibold' : 'text-gray-600'}`}>
                 <Utensils className="material-icons">Foods</Utensils>
                 <span>Foods</span>
               </button>
             </div>
-            <div className='hover:bg-gray-200 rounded' onClick={() => router.push('/restaurant/subscriptions')}>
-              <button className="flex items-center space-x-2 p-2 text-gray-600">
+            <div className={`${pathname === '/restaurant/subscriptions' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded`} onClick={() => router.push('/restaurant/subscriptions')}>
+              <button className={`flex items-center space-x-2 p-2 ${pathname === '/restaurant/subscriptions' ? 'text-emerald-700 font-semibold' : 'text-gray-600'}`}>
                 <UserPlus className="material-icons">Subscriptions</UserPlus>
                 <span>Subscriptions</span>
               </button>
             </div>
-            <div className='hover:bg-gray-200 rounded' onClick={() => router.push('/restaurant/wallet')}>
-              <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
+            <div className={`${pathname === '/restaurant/wallet' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded`} onClick={() => router.push('/restaurant/wallet')}>
+              <button className={`flex items-center space-x-2 p-2 ${pathname === '/restaurant/wallet' ? 'text-emerald-700 font-semibold' : 'text-gray-600'} rounded`}>
                 <IndianRupee className="material-icons">payment</IndianRupee>
                 <span>Payments</span>
               </button>
@@ -80,6 +82,12 @@ function SideNavbar() {
               <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
                 <BarChart className="material-icons">bar_chart</BarChart>
                 <span>Reports</span>
+              </button>
+            </div>
+            <div className={`${pathname === '/restaurant/profile' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded`}>
+              <button className={`flex items-center space-x-2 p-2 ${pathname === '/restaurant/profile' ? 'text-emerald-700 font-semibold' : 'text-gray-600'} rounded`} onClick={() => router.push('/restaurant/profile')}>
+                <User className="material-icons">person</User>
+                <span>Profile</span>
               </button>
             </div>
             <div className='hover:bg-gray-200 rounded'>

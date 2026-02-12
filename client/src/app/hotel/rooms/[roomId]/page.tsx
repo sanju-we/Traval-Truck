@@ -2,22 +2,31 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { Card, CardContent } from "@/components/shared/ui/card";
 import { Button } from "@/components/shared/ui/button";
-import { Separator } from "@/components/shared/ui/seperator";
-import { Badge } from "@/components/shared/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/shared/ui/table";
 import api from "@/services/api";
 import toast from "react-hot-toast";
 import EditRoomModal from "@/components/hotel/EditRoomModal";
 import { IRoom } from "@/types/hotel";
+import SideNavbar from "@/components/hotel/SideNavbar";
+import {
+  ArrowLeft,
+  Users,
+  IndianRupee,
+  Wifi,
+  Edit,
+  ToggleLeft,
+  ToggleRight,
+  Ban,
+  CheckCircle,
+  ImageIcon,
+} from "lucide-react";
 
 export default function RoomDetails() {
   const { roomId } = useParams();
   const navigate = useRouter();
   const [room, setRoom] = useState<IRoom | null>(null);
   const [openEdit, setOpenEdit] = useState(false);
-  const [roomData, setRoomData] = useState(room);
+  const [selectedImage, setSelectedImage] = useState(0);
 
   useEffect(() => {
     async function fetchRoom() {
@@ -34,7 +43,7 @@ export default function RoomDetails() {
     const { data } = await api.patch('/hotel/rooms/updateStatus', { id, status })
     console.log(data)
     if (data.success) {
-      toast.success(`Status updates as ${status}`)
+      toast.success(`Status updated as ${status}`)
       setRoom(data.data)
     } else toast.error(data.message)
   }
@@ -49,77 +58,233 @@ export default function RoomDetails() {
     const { data } = await api.patch('/hotel/rooms/updateBlock', { id, status })
     console.log(data)
     if (data.success) {
-      toast.success(`Status updates as ${status}`)
+      toast.success(`Room ${status ? 'blocked' : 'unblocked'} successfully`)
       setRoom(data.data)
     } else toast.error(data.message)
   }
 
-  if (!room) return <div className="p-10 text-center">Loading room details...</div>;
+  if (!room) {
+    return (
+      <div className="min-h-screen flex bg-gray-50">
+        <SideNavbar />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading room details...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'Available':
+        return 'bg-green-100 text-green-700 border-green-200';
+      case 'Occupied':
+        return 'bg-red-100 text-red-700 border-red-200';
+      case 'Cleaning':
+        return 'bg-yellow-100 text-yellow-700 border-yellow-200';
+      case 'Maintenance':
+      case 'Maintance':
+        return 'bg-orange-100 text-orange-700 border-orange-200';
+      default:
+        return 'bg-gray-100 text-gray-700 border-gray-200';
+    }
+  };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6">
-      <div className="text-sm text-gray-500 mb-2">
-        <span
-          onClick={() => navigate.push("/hotel/rooms")}
-          className="cursor-pointer hover:underline text-blue-500"
-        >
-          Rooms
-        </span>{" "}
-        / Room No. {room.RoomNumber}
-      </div>
-
-      <div className="flex justify-between items-start">
-        <div>
-          <h1 className="text-2xl font-semibold">Room Details - Room No. {room.RoomNumber}</h1>
-          <p className="text-gray-500">Overview of room status, pricing, and recent activity.</p>
-          <Button onClick={() => setOpenEdit(true)}>Edit</Button>
-        </div>
-        <Button variant="outline" onClick={() => navigate.push("/hotel/rooms")}>
-          ← Back to All Rooms
-        </Button>
-      </div>
-
-      <Separator />
-
-      {/* Room Info Section */}
-      <div className="flex flex-col md:flex-row gap-6 items-start">
-        <div className="flex-1 space-y-2">
-          <Badge
-            variant={
-              room.Status === "Available"
-                ? "success"
-                : room.Status === "Maintenance"
-                  ? "destructive"
-                  : "secondary"
-            }
+    <div className="min-h-screen flex bg-gray-50">
+      <SideNavbar />
+      <div className="flex-1 flex flex-col p-8">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg mb-6">
+          <button
+            onClick={() => navigate.push("/hotel/rooms")}
+            className="flex items-center gap-2 text-white/90 hover:text-white transition-colors mb-4"
           >
-            {room.Status}
-          </Badge>
-          <p className="font-medium text-lg">{room.Description}</p>
-          <p className="text-sm text-gray-600">
-            Capacity: {room.Capacity} Adults • ₹{room.PricePerNight}/night
-          </p>
-          <p className="text-sm text-gray-600">
-            Facilities: {room.Facilities.join(", ")}
-          </p>
-          <p className="text-sm text-gray-600">
-            Available Rooms: {room.AvailableCount}
-          </p>
+            <ArrowLeft size={18} />
+            <span className="font-medium">Back to Rooms</span>
+          </button>
+
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Room No. {room.RoomNumber}</h1>
+              <p className="text-blue-100">{room.Description}</p>
+            </div>
+            <div className="flex gap-3">
+              <Button
+                onClick={() => setOpenEdit(true)}
+                className="bg-white text-blue-600 hover:bg-blue-50"
+              >
+                <Edit size={18} className="mr-2" />
+                Edit Room
+              </Button>
+            </div>
+          </div>
         </div>
 
-        <Card className="w-72 h-48 overflow-hidden">
-          <img
-            src={room.images[0]}
-            alt="Room"
-            className="w-full h-full object-cover"
-          />
-        </Card>
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* Left Column - Images */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Main Image */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="relative h-96">
+                <img
+                  src={room.images[selectedImage]}
+                  alt={`Room ${room.RoomNumber}`}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full text-white text-sm flex items-center gap-2">
+                  <ImageIcon size={16} />
+                  {selectedImage + 1} / {room.images.length}
+                </div>
+              </div>
+
+              {/* Image Thumbnails */}
+              {room.images.length > 1 && (
+                <div className="p-4 bg-gray-50 border-t border-gray-100">
+                  <div className="grid grid-cols-4 gap-3">
+                    {room.images.map((img, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setSelectedImage(idx)}
+                        className={`relative h-20 rounded-lg overflow-hidden border-2 transition ${selectedImage === idx
+                          ? 'border-blue-500 ring-2 ring-blue-200'
+                          : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                      >
+                        <img
+                          src={img}
+                          alt={`Thumbnail ${idx + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Room Details Card */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Room Details</h2>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                  <Users className="text-blue-600 mt-0.5" size={20} />
+                  <div>
+                    <p className="text-sm text-gray-600">Capacity</p>
+                    <p className="font-semibold text-gray-800">{room.Capacity} Adults</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 p-4 bg-green-50 rounded-lg border border-green-100">
+                  <IndianRupee className="text-green-600 mt-0.5" size={20} />
+                  <div>
+                    <p className="text-sm text-gray-600">Price Per Night</p>
+                    <p className="font-semibold text-gray-800">₹{room.PricePerNight.toLocaleString()}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 p-4 bg-purple-50 rounded-lg border border-purple-100">
+                <div className="flex items-start gap-3">
+                  <Wifi className="text-purple-600 mt-0.5" size={20} />
+                  <div className="flex-1">
+                    <p className="text-sm text-gray-600 mb-2">Facilities</p>
+                    <div className="flex flex-wrap gap-2">
+                      {room.Facilities.map((facility, idx) => (
+                        <span
+                          key={idx}
+                          className="px-3 py-1 bg-white border border-purple-200 rounded-full text-sm text-gray-700"
+                        >
+                          {facility}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Status & Actions */}
+          <div className="space-y-6">
+            {/* Status Card */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h3 className="text-lg font-bold text-gray-800 mb-4">Status</h3>
+
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm text-gray-600 mb-2">Current Status</p>
+                  <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border ${getStatusColor(room.Status)}`}>
+                    <CheckCircle size={16} />
+                    {room.Status}
+                  </span>
+                </div>
+
+                <div className="pt-4 border-t border-gray-200">
+                  <p className="text-sm text-gray-600 mb-2">Available Rooms</p>
+                  <p className="text-2xl font-bold text-blue-600">{room.AvailableCount}</p>
+                </div>
+
+                {room.isBlocked && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <div className="flex items-center gap-2 text-red-700">
+                      <Ban size={16} />
+                      <span className="text-sm font-medium">Room is blocked</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Actions Card */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h3 className="text-lg font-bold text-gray-800 mb-4">Actions</h3>
+
+              <div className="space-y-3">
+                <Button
+                  onClick={() => tongleStatus(room.id)}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  {room.Status === 'Available' ? (
+                    <>
+                      <ToggleRight size={18} className="mr-2" />
+                      Mark as Maintenance
+                    </>
+                  ) : (
+                    <>
+                      <ToggleLeft size={18} className="mr-2" />
+                      Mark as Available
+                    </>
+                  )}
+                </Button>
+
+                <Button
+                  onClick={() => tongleBlock(room.id)}
+                  variant={room.isBlocked ? 'default' : 'danger'}
+                  className="w-full"
+                >
+                  {room.isBlocked ? (
+                    <>
+                      <CheckCircle size={18} className="mr-2" />
+                      Enable Room
+                    </>
+                  ) : (
+                    <>
+                      <Ban size={18} className="mr-2" />
+                      Disable Room
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="flex gap-4">
-        <Button variant="secondary" onClick={() => tongleStatus(room.id)}>{room.Status == 'Available' ? 'Mark as Maintenance' : 'Mark as Available'}</Button>
-        <Button variant={room.isBlocked ? 'default' : 'danger'} onClick={() => tongleBlock(room.id)}>{room.isBlocked ? 'Enable Room' : 'Disable Room'}</Button>
-      </div>
       {openEdit && (
         <EditRoomModal
           isOpen={openEdit}

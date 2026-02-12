@@ -57,7 +57,7 @@ export default function SubscriptionDetailsPage({
 
         {/* Back */}
         <Link
-          href="/hotel/subscriptions"
+          href="/agency/subscriptions"
           className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-800"
         >
           <ArrowLeft size={18} />
@@ -129,7 +129,7 @@ export default function SubscriptionDetailsPage({
               <BuyNowButton
                 subscriptionId={id}
                 amount={subscription.amount}
-                role="hotel"
+                role="agency"
               />
 
               <p className="text-xs text-gray-500 text-center">

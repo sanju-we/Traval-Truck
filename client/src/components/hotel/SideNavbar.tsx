@@ -10,16 +10,18 @@ import {
   Inbox,
   BarChart,
   Plane,
+  User,
 } from 'lucide-react';
 import { useState } from 'react';
 import api from '@/services/api';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { AnimatePresence, motion } from 'framer-motion';
 
 function SideNavbar() {
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleLogout = async () => {
     const res = await api.post('/hotel/auth/logout');
@@ -46,19 +48,19 @@ function SideNavbar() {
           </div>
           <div className="space-y-2">
             <button
-              className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded"
+              className={`flex items-center space-x-2 p-2 ${pathname === '/hotel' ? 'bg-emerald-100 text-emerald-700 font-semibold' : 'text-gray-600 hover:bg-gray-200'} rounded`}
               onClick={() => router.push('/hotel')}
             >
               <Home className="material-icons">home</Home>
               <span>Dashboard</span>
             </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded"
-            onClick={() => router.push('/hotel/rooms')}
+            <button className={`flex items-center space-x-2 p-2 ${pathname === '/hotel/rooms' ? 'bg-emerald-100 text-emerald-700 font-semibold' : 'text-gray-600 hover:bg-gray-200'} rounded`}
+              onClick={() => router.push('/hotel/rooms')}
             >
               <Hotel className="material-icons">hotel</Hotel>
               <span>Rooms</span>
             </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded" onClick={()=>router.push('/hotel/bookings')}>
+            <button className={`flex items-center space-x-2 p-2 ${pathname === '/hotel/bookings' ? 'bg-emerald-100 text-emerald-700 font-semibold' : 'text-gray-600 hover:bg-gray-200'} rounded`} onClick={() => router.push('/hotel/bookings')}>
               <FlagTriangleRightIcon />
               Bookings / Trips
             </button>
@@ -66,7 +68,7 @@ function SideNavbar() {
               <PersonStanding className="material-icons">person</PersonStanding>
               <span>Guests</span>
             </button> */}
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded" onClick={()=>router.push('/hotel/subscriptions')}>
+            <button className={`flex items-center space-x-2 p-2 ${pathname === '/hotel/subscriptions' ? 'bg-emerald-100 text-emerald-700 font-semibold' : 'text-gray-600 hover:bg-gray-200'} rounded`} onClick={() => router.push('/hotel/subscriptions')}>
               <IndianRupee className="material-icons">payment</IndianRupee>
               <span>Subscriptions</span>
             </button>
@@ -74,9 +76,13 @@ function SideNavbar() {
               <Inbox className="material-icons">chat</Inbox>
               <span>Chat</span>
             </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded" onClick={()=>router.push('/hotel/wallet')}>
+            <button className={`flex items-center space-x-2 p-2 ${pathname === '/hotel/wallet' ? 'bg-emerald-100 text-emerald-700 font-semibold' : 'text-gray-600 hover:bg-gray-200'} rounded`} onClick={() => router.push('/hotel/wallet')}>
               <IndianRupee className="material-icons">bar_chart</IndianRupee>
               <span>Wallet</span>
+            </button>
+            <button className={`flex items-center space-x-2 p-2 ${pathname === '/hotel/profile' ? 'bg-emerald-100 text-emerald-700 font-semibold' : 'text-gray-600 hover:bg-gray-200'} rounded`} onClick={() => router.push('/hotel/profile')}>
+              <User className="material-icons">person</User>
+              <span>Profile</span>
             </button>
             <button
               className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded"

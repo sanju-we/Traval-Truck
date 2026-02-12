@@ -27,6 +27,7 @@ import toast from 'react-hot-toast';
 import RatingCard from '@/components/user/orders/Rating';
 import { PlanDay } from '@/types/user/orders';
 import { OrderDetails } from '@/types/user/orders';
+import jsPDF from 'jspdf';
 
 const CANCEL_REASONS = [
   'Change of plans',
@@ -167,6 +168,159 @@ export default function UserOrderDetailsPage() {
     );
   };
 
+  const handleDownloadInvoice = () => {
+    if (!order) return;
+
+    const pdf = new jsPDF();
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    let yPos = 20;
+
+    // Header
+    pdf.setFontSize(24);
+    pdf.setTextColor(59, 130, 246); // Blue
+    pdf.text('INVOICE', pageWidth / 2, yPos, { align: 'center' });
+
+    yPos += 10;
+    pdf.setFontSize(12);
+    pdf.setTextColor(107, 114, 128); // Gray
+    pdf.text(`Order ID: ${order.orderId}`, pageWidth / 2, yPos, { align: 'center' });
+
+    yPos += 6;
+    pdf.text(`Date: ${new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`, pageWidth / 2, yPos, { align: 'center' });
+
+    // Line separator
+    yPos += 10;
+    pdf.setDrawColor(59, 130, 246);
+    pdf.setLineWidth(0.5);
+    pdf.line(20, yPos, pageWidth - 20, yPos);
+
+    // Order Details Section
+    yPos += 15;
+    pdf.setFontSize(14);
+    pdf.setTextColor(31, 41, 55); // Dark gray
+    pdf.text('Order Details', 20, yPos);
+
+    yPos += 8;
+    pdf.setFontSize(10);
+    pdf.setTextColor(0, 0, 0);
+    pdf.text(`Package Name: ${order.product?.title || 'N/A'}`, 20, yPos);
+
+    yPos += 6;
+    pdf.text(`Type: ${order.productType}`, 20, yPos);
+
+    yPos += 6;
+    pdf.text(`Status: ${order.status}`, 20, yPos);
+
+    if (order.startDate) {
+      yPos += 6;
+      pdf.text(`${order.productType === 'Rooms' ? 'Check-in' : 'Start'} Date: ${new Date(order.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`, 20, yPos);
+    }
+
+    if (order.endDate) {
+      yPos += 6;
+      pdf.text(`${order.productType === 'Rooms' ? 'Check-out' : 'End'} Date: ${new Date(order.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`, 20, yPos);
+    }
+
+    // Pricing Table
+    yPos += 15;
+    pdf.setFontSize(14);
+    pdf.setTextColor(31, 41, 55);
+    pdf.text('Pricing Details', 20, yPos);
+
+    yPos += 10;
+    pdf.setFontSize(10);
+
+    // Table header
+    pdf.setFillColor(243, 244, 246);
+    pdf.rect(20, yPos - 5, pageWidth - 40, 8, 'F');
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Description', 25, yPos);
+    pdf.text('Amount', pageWidth - 50, yPos);
+
+    yPos += 10;
+    pdf.setFont('helvetica', 'normal');
+
+    // Original price and discount
+    if (order.originalAmount && order.discount && order.discount > 0) {
+      pdf.text('Original Price', 25, yPos);
+      pdf.text(`Rs.${order.originalAmount.toLocaleString()}`, pageWidth - 50, yPos);
+
+      yPos += 8;
+      const discountText = order.couponId && typeof order.couponId === 'object'
+        ? `Discount (${order.couponId.code})`
+        : 'Discount';
+      pdf.text(discountText, 25, yPos);
+      pdf.setTextColor(16, 185, 129); // Green
+      pdf.text(`- Rs.${order.discount.toLocaleString()}`, pageWidth - 50, yPos);
+      pdf.setTextColor(0, 0, 0);
+
+      yPos += 8;
+    }
+
+    // Total
+    pdf.setFillColor(239, 246, 255);
+    pdf.rect(20, yPos - 5, pageWidth - 40, 10, 'F');
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Total Amount Paid', 25, yPos);
+    pdf.text(`Rs.${order.amount.toLocaleString()}`, pageWidth - 50, yPos);
+    pdf.setFont('helvetica', 'normal');
+
+    // Payment Information
+    if (typeof order.paymentId === 'object' && order.paymentId?.transactionId) {
+      yPos += 20;
+      pdf.setFontSize(14);
+      pdf.setTextColor(31, 41, 55);
+      pdf.text('Payment Information', 20, yPos);
+
+      yPos += 8;
+      pdf.setFontSize(10);
+      pdf.setTextColor(0, 0, 0);
+      pdf.text(`Transaction ID: ${order.paymentId.transactionId}`, 20, yPos);
+
+      if (order.paymentId.paymentMethod) {
+        yPos += 6;
+        pdf.text(`Payment Method: ${order.paymentId.paymentMethod}`, 20, yPos);
+      }
+
+      if (order.paymentId.paymentStatus) {
+        yPos += 6;
+        pdf.text(`Payment Status: ${order.paymentId.paymentStatus}`, 20, yPos);
+      }
+    }
+
+    // Vendor Information
+    if (order.ownedBy && typeof order.ownedBy === 'object') {
+      yPos += 20;
+      pdf.setFontSize(14);
+      pdf.setTextColor(31, 41, 55);
+      pdf.text(`${order.productType === 'Rooms' ? 'Hotel' : 'Agency'} Information`, 20, yPos);
+
+      yPos += 8;
+      pdf.setFontSize(10);
+      pdf.setTextColor(0, 0, 0);
+      pdf.text(`Name: ${order.ownedBy.companyName || order.ownedBy.name || 'N/A'}`, 20, yPos);
+
+      if (order.ownedBy.email) {
+        yPos += 6;
+        pdf.text(`Email: ${order.ownedBy.email}`, 20, yPos);
+      }
+    }
+
+    // Footer
+    const footerY = pdf.internal.pageSize.getHeight() - 30;
+    pdf.setDrawColor(229, 231, 235);
+    pdf.line(20, footerY, pageWidth - 20, footerY);
+
+    pdf.setFontSize(9);
+    pdf.setTextColor(107, 114, 128);
+    pdf.text('Thank you for your business!', pageWidth / 2, footerY + 8, { align: 'center' });
+    pdf.text('This is a computer-generated invoice and does not require a signature.', pageWidth / 2, footerY + 13, { align: 'center' });
+
+    // Save PDF
+    pdf.save(`Invoice_${order.orderId}.pdf`);
+    toast.success('Invoice downloaded successfully');
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -273,7 +427,10 @@ export default function UserOrderDetailsPage() {
                 Cancel Order
               </button>
             )}
-            <button className="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition flex items-center gap-2 font-semibold">
+            <button
+              onClick={handleDownloadInvoice}
+              className="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition flex items-center gap-2 font-semibold"
+            >
               <Download size={18} />
               Download Invoice
             </button>
@@ -511,7 +668,7 @@ export default function UserOrderDetailsPage() {
                   )}
               </div>
             </div>
-            {order.status == 'Completed' && <RatingCard orderId={order.id} productId={order.product} vendor={order.ownedBy}/>}
+            {order.status == 'Completed' && <RatingCard orderId={order.id} productId={order.product} vendor={order.ownedBy} />}
           </div>
         </div>
       </div>
@@ -557,8 +714,8 @@ export default function UserOrderDetailsPage() {
                   <label
                     key={reason}
                     className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition ${selectedReason === reason
-                        ? 'border-red-500 bg-red-50'
-                        : 'border-gray-200 hover:border-gray-300 bg-white'
+                      ? 'border-red-500 bg-red-50'
+                      : 'border-gray-200 hover:border-gray-300 bg-white'
                       }`}
                   >
                     <input

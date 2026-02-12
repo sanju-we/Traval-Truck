@@ -232,119 +232,127 @@ export default function RouteMap({
   };
 
   async function buildDirectionsRoute(): Promise<string> {
-  const directionsService = new google.maps.DirectionsService();
+    const directionsService = new google.maps.DirectionsService();
 
-  return new Promise((resolve, reject) => {
-    directionsService.route(
-      {
-        origin: {
-          lat: startingPosition.lat,
-          lng: startingPosition.lng,
+    return new Promise((resolve, reject) => {
+      directionsService.route(
+        {
+          origin: {
+            lat: startingPosition.lat,
+            lng: startingPosition.lng,
+          },
+          destination: {
+            lat: places[places.length - 1].lat,
+            lng: places[places.length - 1].lng,
+          },
+          waypoints: places.slice(0, -1).map(p => ({
+            location: { lat: p.lat, lng: p.lng },
+            stopover: true,
+          })),
+          travelMode: google.maps.TravelMode.DRIVING,
+          optimizeWaypoints: false,
         },
-        destination: {
-          lat: places[places.length - 1].lat,
-          lng: places[places.length - 1].lng,
-        },
-        waypoints: places.slice(0, -1).map(p => ({
-          location: { lat: p.lat, lng: p.lng },
-          stopover: true,
-        })),
-        travelMode: google.maps.TravelMode.DRIVING,
-        optimizeWaypoints: false,
-      },
-      (result, status) => {
-        if (status !== 'OK' || !result) {
-          reject('Directions failed');
-          return;
+        (result, status) => {
+          if (status !== 'OK' || !result) {
+            reject('Directions failed');
+            return;
+          }
+
+          const route = result.routes[0];
+
+          // ✅ SAFELY extract polyline
+          const polyline = (result.routes[0].overview_polyline as unknown as { points: string }).points;
+
+
+          if (!polyline) {
+            reject('No polyline found');
+            return;
+          }
+
+          resolve(polyline);
         }
-
-        const route = result.routes[0];
-
-        // ✅ SAFELY extract polyline
-        const polyline = (result.routes[0].overview_polyline as unknown as { points: string }).points;
-
-
-        if (!polyline) {
-          reject('No polyline found');
-          return;
-        }
-
-        resolve(polyline);
-      }
-    );
-  });
-}
+      );
+    });
+  }
 
   function buildStaticMapWithRoute(encodedPolyline: string) {
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
-  const markers = places
-    .map(
-      (p, i) =>
-        `markers=label:${i + 1}|${p.lat},${p.lng}`
-    )
-    .join('&');
+    const markers = places
+      .map(
+        (p, i) =>
+          `markers=label:${i + 1}|${p.lat},${p.lng}`
+      )
+      .join('&');
 
-  const startMarker = `markers=color:blue|label:S|${startingPosition.lat},${startingPosition.lng}`;
+    const startMarker = `markers=color:blue|label:S|${startingPosition.lat},${startingPosition.lng}`;
 
-  const path = `path=enc:${encodedPolyline}`;
+    const path = `path=enc:${encodedPolyline}`;
 
-  return (
-    `https://maps.googleapis.com/maps/api/staticmap?` +
-    `size=1200x1200` +
-    `&scale=2` +
-    `&${startMarker}` +
-    `&${markers}` +
-    `&${path}` +
-    `&key=${apiKey}`
-  );
-}
+    return (
+      `https://maps.googleapis.com/maps/api/staticmap?` +
+      `size=1200x1200` +
+      `&scale=2` +
+      `&${startMarker}` +
+      `&${markers}` +
+      `&${path}` +
+      `&key=${apiKey}`
+    );
+  }
 
 
 
 
   const handleDownload = () => {
-  setShowDownloadModal(true);
-  setDownloadProgress(0);
-  setDownloadMessage('Preparing your offline map...');
+    setShowDownloadModal(true);
+    setDownloadProgress(0);
+    setDownloadMessage('Preparing your offline map...');
 
-  let progress = 0;
+    let progress = 0;
 
-  const interval = setInterval(async () => {
-    progress += 10;
-    setDownloadProgress(progress);
+    const interval = setInterval(async () => {
+      progress += 10;
+      setDownloadProgress(progress);
 
-    if (progress === 30) setDownloadMessage('Calculating route...');
-    if (progress === 60) setDownloadMessage('Rendering map...');
-    if (progress === 90) setDownloadMessage('Finalizing download...');
+      if (progress === 30) setDownloadMessage('Calculating route...');
+      if (progress === 60) setDownloadMessage('Rendering map...');
+      if (progress === 90) setDownloadMessage('Finalizing download...');
 
-    if (progress >= 100) {
-      clearInterval(interval);
+      if (progress >= 100) {
+        clearInterval(interval);
 
-      try {
-        const polyline = await buildDirectionsRoute();
-        const mapUrl = buildStaticMapWithRoute(polyline);
+        try {
+          const polyline = await buildDirectionsRoute();
+          const mapUrl = buildStaticMapWithRoute(polyline);
 
-        const a = document.createElement('a');
-        a.href = mapUrl;
-        a.download = `${title.replace(/\s+/g, '_')}_route_map.png`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+          // Fetch as blob to avoid CORS issues
+          const response = await fetch(mapUrl);
+          const blob = await response.blob();
+          const blobUrl = URL.createObjectURL(blob);
 
-        setDownloadMessage('✓ Download Complete');
-      } catch (err) {
-        console.error(err);
-        setDownloadMessage('❌ Failed to generate map');
+          const a = document.createElement('a');
+          a.href = blobUrl;
+          a.download = `${title.replace(/\s+/g, '_')}_route_map.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+
+          // Clean up blob URL
+          URL.revokeObjectURL(blobUrl);
+
+          setDownloadMessage('✓ Download Complete');
+        } catch (err) {
+          console.error(err);
+          setDownloadMessage('❌ Failed to generate map');
+        }
+
+        setTimeout(() => {
+          setShowDownloadModal(false);
+          setDownloadProgress(0);
+        }, 1500);
       }
-
-      setTimeout(() => {
-        setShowDownloadModal(false);
-        setDownloadProgress(0);
-      }, 1500);
-    }
-  }, 200);
-};
+    }, 200);
+  };
 
 
   const getStatusColor = () => {

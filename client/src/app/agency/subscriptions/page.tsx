@@ -59,7 +59,7 @@ export default async function SubscriptionsPage() {
                   </h3>
 
                   <p className="opacity-90">
-                    Valid for {activeSubscription.valid} days
+                    Valid for {activeSubscription.valid} {activeSubscription.valid === 1 ? 'year' : 'years'}
                   </p>
 
                   <p className="opacity-90 mt-1">
@@ -140,7 +140,7 @@ export default async function SubscriptionsPage() {
                       </p>
 
                       <p className="text-gray-500 text-sm">
-                        {sub.valid} days validity
+                        {sub.valid} {sub.valid === 1 ? 'year' : 'years'} validity
                       </p>
 
                       <ul className="mt-4 text-sm text-gray-600 space-y-1">

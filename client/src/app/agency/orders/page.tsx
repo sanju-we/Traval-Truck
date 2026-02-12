@@ -15,6 +15,8 @@ export default function PackageOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ordersPerPage = 5;
   const router = useRouter()
 
   useEffect(() => {
@@ -65,6 +67,12 @@ export default function PackageOrdersPage() {
     upcoming: orders.filter((o: any) => o.status === 'Upcoming').length,
   };
 
+  // Pagination calculations
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
+
   if (loading) {
     return (
       <div className="bg-gray-50 min-h-screen">
@@ -83,7 +91,7 @@ export default function PackageOrdersPage() {
     <div className="min-h-screen flex bg-gray-50">
       <SideNavbar />
       <div className="flex-1 flex flex-col">
-        <div className="max-w-7xl mx-auto space-y-6">
+        <div className="max-w-7xl mx-auto p-8 space-y-6">
 
           {/* Header */}
           <div className="flex items-center justify-between">
@@ -153,7 +161,7 @@ export default function PackageOrdersPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              {orders.map((order: any) => (
+              {currentOrders.map((order: any) => (
                 <div
                   key={order.id}
                   className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200"
@@ -169,10 +177,10 @@ export default function PackageOrdersPage() {
                           </span>
                           <span
                             className={`px-3 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1 ${order.status === 'Ongoing'
-                                ? 'bg-blue-100 text-blue-700'
-                                : order.status === 'Completed'
-                                  ? 'bg-green-100 text-green-700'
-                                  : 'bg-yellow-100 text-yellow-700'
+                              ? 'bg-blue-100 text-blue-700'
+                              : order.status === 'Completed'
+                                ? 'bg-green-100 text-green-700'
+                                : 'bg-yellow-100 text-yellow-700'
                               }`}
                           >
                             {order.status === 'Ongoing' && <AlertCircle size={14} />}
@@ -252,8 +260,36 @@ export default function PackageOrdersPage() {
               ))}
             </div>
           )}
+
+          {/* Pagination Controls */}
+          {orders.length > ordersPerPage && (
+            <div className="flex items-center justify-between bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+              <p className="text-sm text-gray-600">
+                Showing {indexOfFirstOrder + 1} to {Math.min(indexOfLastOrder, orders.length)} of {orders.length} orders
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium text-sm transition-colors"
+                >
+                  Previous
+                </button>
+                <span className="px-4 py-2 bg-emerald-100 text-emerald-700 rounded-lg font-medium text-sm">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium text-sm transition-colors"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </div>
-      <VendorFooter />
+        <VendorFooter />
       </div>
 
       {/* Modal */}

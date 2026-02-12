@@ -8,7 +8,7 @@ import detailsSlice from './userDetailsSlice';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth'],
+  whitelist: ['auth', 'details'],
 };
 
 const rootReducer = combineReducers({
