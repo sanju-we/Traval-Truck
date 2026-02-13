@@ -62,16 +62,6 @@ const occupancyData = [
   { category: 'Suite', value: 25 },
 ];
 
-const revenueData = [
-  { day: 'Aug 12', revenue: 6000 },
-  { day: 'Aug 13', revenue: 8200 },
-  { day: 'Aug 14', revenue: 7200 },
-  { day: 'Aug 15', revenue: 5000 },
-  { day: 'Aug 16', revenue: 6100 },
-  { day: 'Aug 17', revenue: 7900 },
-  { day: 'Aug 18', revenue: 6500 },
-];
-
 export default function HotelDashboard() {
   const [requests, setRequests] = useState([]);
 
@@ -145,13 +135,12 @@ export default function HotelDashboard() {
                       <td className="p-3">{booking.out}</td>
                       <td className="p-3">
                         <span
-                          className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
-                            booking.status === 'Checked-In'
+                          className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${booking.status === 'Checked-In'
                               ? 'bg-green-100 text-green-800'
                               : booking.status === 'Upcoming'
                                 ? 'bg-yellow-100 text-yellow-800'
                                 : 'bg-gray-300 text-gray-700'
-                          }`}
+                            }`}
                         >
                           {booking.status}
                         </span>

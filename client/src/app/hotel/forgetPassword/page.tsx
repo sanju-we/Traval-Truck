@@ -18,7 +18,7 @@ export default function ForgotPasswordPage() {
 
     setIsLoading(true);
     try {
-      const data = await HOTEL_API_METHODS.forgotPassword({ email });
+      const data = await HOTEL_API_METHODS.forgotPassword(email);
       console.log('suss')
 
       if (data.success) {

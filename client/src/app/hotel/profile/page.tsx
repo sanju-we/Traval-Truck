@@ -38,7 +38,7 @@ export default function VendorProfilePage() {
   useEffect(() => {
     async function fetchVendor() {
       try {
-        const data  = await HOTEL_API_METHODS.getProfile();
+        const data = await HOTEL_API_METHODS.getProfile();
         if (!data.success) {
           toast.error(data.message);
           if (data.message === 'This user is Restricted by the admin') {
@@ -296,7 +296,7 @@ export default function VendorProfilePage() {
   return (
     <div className="min-h-screen flex bg-gray-50">
       <SideNavbar />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col p-5">
         {vendor.reason != "" && (
           <RestrictionBanner reason={vendor.reason} />
         )}
@@ -376,7 +376,7 @@ export default function VendorProfilePage() {
                 disabled={isResubmitting ? true : false}
               >
                 {!vendor.isRestricted ? "Attach Documents" : "Resubmit Documents"}
-              </button> }
+              </button>}
             </div>
           </div>
         </div>
@@ -451,7 +451,7 @@ export default function VendorProfilePage() {
             </div>
           </TabsContent>
         </Tabs>
-        <VendorFooter/>
+        <VendorFooter />
       </div>
 
       <AnimatePresence>
