@@ -102,7 +102,7 @@ export default function SubscriptionsPage() {
                       )}
 
                       <p className="text-3xl font-bold mt-4">
-                        ₹{activeSubscription.amount}
+                        ₹{activeSubscription.amount.toLocaleString('en-IN')}
                       </p>
 
                       <ul className="mt-5 space-y-1 text-sm opacity-95">
@@ -168,7 +168,7 @@ export default function SubscriptionsPage() {
                           </h3>
 
                           <p className="text-emerald-600 font-bold text-2xl mt-2">
-                            ₹{sub.amount}
+                            ₹{sub.amount.toLocaleString('en-IN')}
                           </p>
 
                           <p className="text-gray-500 text-sm">

@@ -15,6 +15,7 @@ export interface PackageResDTO {
   duration: string;
   itinerary: ItineraryDTO[];
   price: number;
+  maxPeople:number;
   title: string;
   images:string[];
   ownedBy:string
@@ -28,6 +29,7 @@ export const toPackageResDTO = (pkg: IPackage): PackageResDTO => ({
   duration: pkg.duration || "",
   itinerary: pkg.itinerary || [],
   price: pkg.price || 0,
+  maxPeople: pkg.maxPeople || 0,
   title: pkg.title || "",
   images:pkg.images || [],
   ownedBy:pkg.ownedBy

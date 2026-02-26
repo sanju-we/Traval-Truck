@@ -13,6 +13,7 @@ import {
   UserNotFoundError,
   InvalidCredentialsError,
   RESTRICTED_USER,
+  EmailNotExists,
 } from '../../utils/resAndErrors';
 import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile';
 import { logger } from '../../utils/logger';
@@ -105,7 +106,7 @@ export class AuthService implements IAuthService {
     await this._authValidator.emailValidator(email);
 
     const userData = await this._authRepository.findByEmail(email);
-    if (!userData) throw new UserNotFoundError();
+    if (!userData) throw new EmailNotExists();
     const user = { id: userData.id, email: userData.email, role:userData.role };
 
     const { resetLink } = await this._jwtUtil.generateResetToken(user);

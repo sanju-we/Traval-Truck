@@ -4,35 +4,37 @@ import { PackageDTO } from "../request/packageDTO"
 import { agencyProfileDTO } from "./agency.profile"
 
 export interface orderDTO {
-  id:string,
-  userId:string,
-  orderId:string,
-  product : string | PackageDTO,
-  amount : number,
-  status:string,
+  id: string,
+  userId: string,
+  orderId: string,
+  product: string | PackageDTO,
+  amount: number,
+  status: string,
   paymentId: any,
-  startDate?:string,
-  endDate?:string,
-  createdAt:Date,
-  ownedBy?:string | agencyProfileDTO,
-  reason?:string,
+  people?: number,
+  startDate?: string,
+  endDate?: string,
+  createdAt: Date,
+  ownedBy?: string | agencyProfileDTO,
+  reason?: string,
   plan?: TripPlan[],
-  productType:string
+  productType: string
 }
 
-export const toOrderDTO = (order:IOrders) : orderDTO => ({
-  id : order._id.toString(),
-  userId:order.userId.toString(),
-  orderId:order.orderId,
+export const toOrderDTO = (order: IOrders): orderDTO => ({
+  id: order._id.toString(),
+  userId: order.userId.toString(),
+  orderId: order.orderId,
   product: order.product && typeof order.product === 'object' ? JSON.parse(JSON.stringify(order.product)) : order.product,
-  amount :order.amount,
-  status:order.status,
-  startDate:order.startDate,
-  endDate:order.endDate,
+  amount: order.amount,
+  status: order.status,
+  people: order.people,
+  startDate: order.startDate,
+  endDate: order.endDate,
   paymentId: order.paymentId && typeof order.paymentId === 'object' ? JSON.parse(JSON.stringify(order.paymentId)) : order.paymentId,
-  createdAt:order.createdAt,
+  createdAt: order.createdAt,
   ownedBy: order.ownedBy && typeof order.ownedBy === 'object' ? JSON.parse(JSON.stringify(order.ownedBy)) : order.ownedBy,
-  reason:order.reason,
-  plan:order.plan,
-  productType:order.productType
+  reason: order.reason,
+  plan: order.plan,
+  productType: order.productType
 })

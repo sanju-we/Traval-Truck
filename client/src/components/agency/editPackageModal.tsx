@@ -41,6 +41,7 @@ export default function EditPackageModal({
     title: '',
     duration: '',
     price: '',
+    maxPeople:'',
     description: '',
     discoveries: [] as string[],
     availableFoods: [] as string[],
@@ -54,6 +55,7 @@ export default function EditPackageModal({
         title: pkg.title || '',
         duration: pkg.duration || '',
         price: String(pkg.price || ''),
+        maxPeople: String(pkg.maxPeople || ''),
         description: pkg.description || '',
         discoveries: pkg.discoveries || [],
         availableFoods: pkg.availableFoods || [],
@@ -112,7 +114,7 @@ export default function EditPackageModal({
 
       const data = await AGENCY_API_METHODS.deletePackageImage(formData.id, { index });
 
-      console.log("🟢 Response:", data);
+      console.log("Response:", data);
 
       if (data.success) {
         toast.success("Image deleted successfully!");
@@ -121,7 +123,7 @@ export default function EditPackageModal({
         toast.error(data.message || "Failed to delete image");
       }
     } catch (error: any) {
-      console.error("🔥 Delete image error:", error.response || error);
+      console.error("Delete image error:", error.response || error);
       toast.error("Something went wrong while deleting image");
     }
   };
@@ -186,6 +188,7 @@ export default function EditPackageModal({
       form.append('title', formData.title);
       form.append('duration', formData.duration);
       form.append('price', formData.price);
+      form.append('maxPeople', formData.maxPeople);
       form.append('description', formData.description);
       form.append('discoveries', JSON.stringify(formData.discoveries));
       form.append('availableFoods', JSON.stringify(formData.availableFoods));
@@ -249,6 +252,7 @@ export default function EditPackageModal({
               <Input name="title" placeholder="Package Title" value={formData.title} onChange={handleChange} />
               <Input name="duration" placeholder="Duration (e.g. 3 Days)" value={formData.duration} onChange={handleChange} />
               <Input name="price" type="number" placeholder="Price" value={formData.price} onChange={handleChange} />
+              <Input name="maxPeople" type="number" placeholder="maxPeople" value={formData.maxPeople} onChange={handleChange} />
               <Textarea name="description" placeholder="Description" value={formData.description} onChange={handleChange} />
 
               {/* Discoveries */}

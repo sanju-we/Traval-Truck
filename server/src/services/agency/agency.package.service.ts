@@ -14,7 +14,7 @@ export class AgencyPackageService implements IAgencyPackageService {
   constructor(
     @inject('IAgencyPackageRepository') private readonly _agencyPackeageRepository: IAgencyPackageRepository,
     @inject('IAuthValidator') private readonly _authValidator: IAuthValidator,
-    @inject('IAgencyRespository') private readonly _agencyRepo : IAgencyRespository
+    @inject('IAgencyRespository') private readonly _agencyRepo: IAgencyRespository
   ) { }
 
   async getAllPackage(page: number): Promise<{ data: PackageResDTO[]; total: number; page: number; totalPages: number; }> {
@@ -22,7 +22,7 @@ export class AgencyPackageService implements IAgencyPackageService {
     return allPackage
   }
 
-  async addPackage(data: PackageDTO, files: Express.Multer.File[] , id:string): Promise<{ data: PackageResDTO[]; total: number; page: number; totalPages: number; }> {
+  async addPackage(data: PackageDTO, files: Express.Multer.File[], id: string): Promise<{ data: PackageResDTO[]; total: number; page: number; totalPages: number; }> {
     if (typeof data.discoveries === 'string') {
       data.discoveries = JSON.parse(data.discoveries);
     }
@@ -36,10 +36,10 @@ export class AgencyPackageService implements IAgencyPackageService {
     const agency = await this._agencyRepo.findById(id)
     const images: string[] = []
     for (const fieldname of files) {
-        const result = await singleUpload(fieldname, "Travel-Truck-Vendor-Document");
-        images.push(result);
+      const result = await singleUpload(fieldname, "Travel-Truck-Vendor-Document");
+      images.push(result);
     }
-    const packageData = await this._agencyPackeageRepository.create({ ...data, images: images, ownedBy:id })
+    const packageData = await this._agencyPackeageRepository.create({ ...data, images: images, ownedBy: id })
     if (packageData) {
       agency?.packages.push(packageData._id.toString())
       await agency?.save()

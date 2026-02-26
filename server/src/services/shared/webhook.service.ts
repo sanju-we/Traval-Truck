@@ -158,6 +158,8 @@ export class WebhookService implements IWebhookService {
         const userId = metadata.userId
         const couponId = metadata.couponId
         const role: string = metadata.role
+        const people: number = metadata.people
+        const amount: number = metadata.amount
 
         const pack = await this._packageRepo.findById(packageId)
         if (!pack) throw new DataNotFoundError()
@@ -192,8 +194,9 @@ export class WebhookService implements IWebhookService {
             productType: 'Package',
             role: 'Agency',
             product: packageId,
+            people: people,
             ownedBy: pack.ownedBy,
-            amount: totalAmount,
+            amount: amount,
             couponApplied: coupon,
             offer: discountAmount,
             paymentId: transaction.id
@@ -244,21 +247,21 @@ export class WebhookService implements IWebhookService {
         const orderId = `ORD-${pad(date.getDate())}${pad(date.getMonth() + 1)}${date.getFullYear()}-${count}`
 
         const orderData = await this._orderRepo.create({
-            orderId:orderId,
-            amount:totalAmount,
-            userId:userId,
-            productType:'Rooms',
-            role:'Hotel',
-            product:roomId,
-            ownedBy:room.HotelId,
-            paymentId:transaction.id,
-            couponApplied:coupon,
-            startDate:startDate.toString(),
-            endDate:endDate.toString()
+            orderId: orderId,
+            amount: totalAmount,
+            userId: userId,
+            productType: 'Rooms',
+            role: 'Hotel',
+            product: roomId,
+            ownedBy: room.HotelId,
+            paymentId: transaction.id,
+            couponApplied: coupon,
+            startDate: startDate.toString(),
+            endDate: endDate.toString()
         })
 
-        const adminWallet = await this._walletRepo.findOne({role:'admin'})
-        if(!adminWallet) throw new DataNotFoundError();
+        const adminWallet = await this._walletRepo.findOne({ role: 'admin' })
+        if (!adminWallet) throw new DataNotFoundError();
         const adminTransaction = {
             Type: 'credit',
             Amount: orderData.amount,
@@ -269,9 +272,9 @@ export class WebhookService implements IWebhookService {
         }
         adminWallet.Transaction.push(adminTransaction);
         adminWallet.Balance += orderData.amount;
-        await this._walletRepo.update(adminWallet._id.toString(),adminWallet);
-        
+        await this._walletRepo.update(adminWallet._id.toString(), adminWallet);
+
         room.Status = 'Occupid';
-        await this._roomRepo.update(room._id.toString(),room);
+        await this._roomRepo.update(room._id.toString(), room);
     }
 }

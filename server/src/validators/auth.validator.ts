@@ -27,7 +27,7 @@ export class authValidator implements IAuthValidator {
       userName: z.string(),
       phoneNumber: z.preprocess((val) => Number(val), z.number()),
     });
-    schema.parse({name,userName,phone})
+    schema.parse({ name, userName, phone })
   }
 
   async tokenValidator(accessToken?: string, refreshToken?: string): Promise<void> {
@@ -35,7 +35,7 @@ export class authValidator implements IAuthValidator {
       refreshToken: z.string().optional(),
       accessToken: z.string().optional(),
     });
-    schema.parse({accessToken,refreshToken})
+    schema.parse({ accessToken, refreshToken })
   }
 
   async otpStoreValidator(email: string, otp: string): Promise<void> {
@@ -57,7 +57,7 @@ export class authValidator implements IAuthValidator {
         phoneNumber: z.number(),
       }),
     });
-    schema.parse({email,otp,userData})
+    schema.parse({ email, otp, userData })
   }
 
   async blockValidator(id: string, status: boolean): Promise<void> {
@@ -65,7 +65,7 @@ export class authValidator implements IAuthValidator {
       id: z.string().min(10),
       status: z.boolean()
     })
-    schema.parse({id,status})
+    schema.parse({ id, status })
   }
 
   async loginValidator(email: string, password: string): Promise<void> {
@@ -100,6 +100,11 @@ export class authValidator implements IAuthValidator {
       price: z
         .string()
         .regex(/^\d+$/, "Price must be a number string")
+        .transform((val) => parseInt(val, 10)),
+
+      maxPeople: z
+        .string()
+        .regex(/^\d+$/, "maxPrice must be a number string")
         .transform((val) => parseInt(val, 10)),
 
       availableFoods: z

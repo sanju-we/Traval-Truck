@@ -29,6 +29,12 @@ export class HttpError extends Error {
 }
 
 
+export class EmailNotExists extends HttpError {
+  constructor() {
+    super(400, 'Email not exists');
+  }
+}
+
 export class OtpExpiredError extends HttpError {
   constructor() {
     super(400, 'OTP expired or not found');

@@ -3,40 +3,40 @@ import { useEffect, useState } from "react";
 import { SHARED_API_METHODS } from "@/services/APIs/shared.api.service";
 import toast from "react-hot-toast";
 
-interface props{
-  orderId:string,
-  vendor:{
-    _id:number
+interface props {
+  orderId: string,
+  vendor: {
+    _id: string
   },
-  productId:{
-    _id:number
+  productId: {
+    _id: any
   },
 }
 
-export default function RatingCard({orderId, vendor, productId}:props) {
+export default function RatingCard({ orderId, vendor, productId }: props) {
   const [rating, setRating] = useState(0);
   const [hovered, setHovered] = useState(0);
   const [comment, setComment] = useState("");
   const [review, setReview] = useState<{
-    rate:number,
-    comment:string
-  }|null>(null)
+    rate: number,
+    comment: string
+  } | null>(null)
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchReview()
-  },[])
-  
-  async function fetchReview(){
-    const review = await SHARED_API_METHODS.getRating('user',orderId);
-    if(review.success){
+  }, [])
+
+  async function fetchReview() {
+    const review = await SHARED_API_METHODS.getRating('user', orderId);
+    if (review.success) {
       setReview(review.data)
       setRating(review.data.rate)
     }
   }
 
-  async function handleSubmit(){
-    const data = await SHARED_API_METHODS.rating({rating,comment,vendor:vendor._id.toString(), productId:productId._id.toString()},'user',orderId)
-    if(data.success){
+  async function handleSubmit() {
+    const data = await SHARED_API_METHODS.rating({ rating, comment, vendor: vendor._id.toString(), productId: productId._id.toString() }, 'user', orderId)
+    if (data.success) {
       toast.success('Rating submited successfully');
       setReview(data.data)
     }
@@ -44,7 +44,7 @@ export default function RatingCard({orderId, vendor, productId}:props) {
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-      
+
       <div className="flex items-center gap-3 bg-gradient-to-r from-blue-50 to-purple-100 px-6 py-4 border-b border-blue-200">
         <Star className="text-purple-600" size={22} />
         <h3 className="font-semibold text-gray-800 text-lg">Rate Your Experience</h3>
@@ -63,11 +63,10 @@ export default function RatingCard({orderId, vendor, productId}:props) {
             >
               <Star
                 size={30}
-                className={`transition-colors ${
-                  value <= (hovered || rating)
+                className={`transition-colors ${value <= (hovered || rating)
                     ? "fill-purple-600 text-purple-600"
                     : "text-gray-300"
-                }`}
+                  }`}
               />
             </button>
           ))}
@@ -114,11 +113,10 @@ export default function RatingCard({orderId, vendor, productId}:props) {
             >
               <Star
                 size={30}
-                className={`transition-colors ${
-                  value <= (hovered || rating)
+                className={`transition-colors ${value <= (hovered || rating)
                     ? "fill-purple-600 text-purple-600"
                     : "text-gray-300"
-                }`}
+                  }`}
               />
             </button>
           ))}

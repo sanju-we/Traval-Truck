@@ -11,7 +11,7 @@ export default interface User {
   email: string;
   role: string;
   createdAt: string;
-  logo:string;
+  logo: string;
 }
 
 export interface UserProfile {
@@ -30,22 +30,38 @@ export interface UserProfile {
   interest?: string[];
 }
 
-export interface product {
-  availableFoods: string[];
-  description: string;
-  itinerary: string[];
-  price: number;
-  title: string;
-  images: string[];
+export interface ProductData {
+  availableFoods?: string[];
+  description?: string;
+  itinerary?: any[];
+  price?: number;
+  title?: string;
+  images?: string[];
   duration?: string;
+  // Room specific
+  RoomNumber?: number;
+  Description?: string;
+  PricePerNight?: number;
+  Capacity?: number;
+  Facilities?: string[];
+  id?: string;
+  _id?: string;
+  ownedBy?: string;
 }
 
 export interface Trip {
   id: string;
   orderId: string;
-  product: product;
-  status: 'Upcoming' | 'Ongoing' | 'Completed';
+  product: {
+    type: 'Package' | 'Rooms' | 'Foods';
+    data: ProductData;
+  };
+  status: 'Upcoming' | 'Ongoing' | 'Completed' | 'Cancelled';
   agencyId?: string;
   amount: number;
+  people?: number;
   createdAt?: string;
+  startDate?: string;
+  endDate?: string;
+  productType: string;
 }

@@ -111,18 +111,21 @@ export class UserMindMapService implements IUserMindMapService {
     if (!data.id) {
       mindMap = await this._mindMapRepo.create(MindMap)
     } else {
-      mindMap = await this._mindMapRepo.update(data.id, {...MindMap,orderId:data.orderId})
+      mindMap = await this._mindMapRepo.update(data.id, { ...MindMap, orderId: data.orderId })
     }
     if (!mindMap) throw new DataNotFoundError();
     return toMindMapRes(mindMap)
   }
 
-  async getMaps(page: number, userId: string): Promise<{ data: MindMapResDTO[], page: number }> {
-    const maps = await this._mindMapRepo.findMapsWithPagination(userId, page);
+  async getMaps(page: number, userId: string): Promise<{ data: MindMapResDTO[], page: number, total: number, totalPages: number }> {
+    const limit = 6;
+    const maps = await this._mindMapRepo.findMapsWithPagination(userId, page, limit);
     if (!maps) throw new DataNotFoundError()
     const data = {
-      data: maps,
-      page: page
+      data: maps.data,
+      page: page,
+      total: maps.total,
+      totalPages: maps.totalPages
     }
     return data
   }

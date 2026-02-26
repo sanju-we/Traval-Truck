@@ -27,6 +27,10 @@ const packageSchema = new Schema<IPackage>({
     type: Number,
     required: true,
   },
+  maxPeople: {
+    type: Number,
+    required: true,
+  },
   description: {
     type: String,
   },

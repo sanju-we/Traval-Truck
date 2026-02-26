@@ -1,26 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, ChangeEvent } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
-import {
-  Loader2,
-  Clock,
-  MapPin,
-  Utensils,
-  CalendarDays,
-  Star,
-  User,
-  Image as ImageIcon,
-  ArrowLeft,
-  Check,
-  ChevronRight,
-  Tag,
-  X,
-  Ticket,
-} from 'lucide-react';
+import { Loader2, Clock, MapPin, Utensils, CalendarDays, Star, User, Image as ImageIcon, ArrowLeft, Check, ChevronRight, Tag, X, Ticket, } from 'lucide-react';
 import TermsModal from '@/components/shared/TermsModal';
 import BookNowButton from '@/components/user/booking/bookNowButton';
 import toast from 'react-hot-toast';
@@ -35,6 +20,7 @@ export default function PackageDetailsPage() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [price, setPrice] = useState(0)
   const [showCoupons, setShowCoupons] = useState(false);
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
@@ -42,6 +28,7 @@ export default function PackageDetailsPage() {
   const [availableCoupons, setAvailableCoupons] = useState<any[]>([]);
   const [couponId, setCouponId] = useState('')
   const [couponLoading, setCouponLoading] = useState(true);
+  const [maxPeople, setMaxPeople] = useState(1);
 
   const id = typeof params.id === "string" ? params.id : params.id?.[0];
 
@@ -51,7 +38,8 @@ export default function PackageDetailsPage() {
 
   useEffect(() => {
     if (pack) {
-      setDiscountedPrice(pack.price);
+      setPrice(pack.price)
+      setDiscountedPrice(price);
       fetchCoupon()
     }
   }, [pack]);
@@ -78,16 +66,46 @@ export default function PackageDetailsPage() {
     }
   }
 
+  function handlePeople(e: ChangeEvent<HTMLInputElement>) {
+    if (!pack?.price) return
+    const count = parseInt(e.target.value) || 0;
+    if (count > pack.maxPeople) {
+      toast.error(`You can only select ${pack.maxPeople} people`);
+      return;
+    }
+    setMaxPeople(count);
+    const newPrice = count * pack.price
+    setPrice(newPrice)
+    if (!couponCode) {
+      setDiscountedPrice(newPrice)
+    } else {
+      const coupon = availableCoupons.find(c => c.couponCode === couponCode);
+      if (coupon) {
+        setAppliedCoupon(coupon);
+        let disPrice = newPrice;
+        if (coupon.discountType === 'percentage') {
+          disPrice = newPrice - (newPrice * coupon.discountValue / 100);
+        } else {
+          disPrice = newPrice - coupon.discountValue;
+        }
+        setDiscountedPrice(Math.max(0, disPrice));
+        setCouponId(coupon.id)
+        setPrice(disPrice)
+      }
+    }
+    console.log(newPrice)
+  }
+
   const applyCoupon = () => {
     console.log('couponCode:', couponCode)
     const coupon = availableCoupons.find(c => c.couponCode === couponCode);
     if (coupon) {
       setAppliedCoupon(coupon);
-      let newPrice = pack!.price;
+      let newPrice = price;
       if (coupon.discountType === 'percentage') {
-        newPrice = pack!.price - (pack!.price * coupon.discountValue / 100);
+        newPrice = price - (price * coupon.discountValue / 100);
       } else {
-        newPrice = pack!.price - coupon.discountValue;
+        newPrice = price - coupon.discountValue;
       }
       setDiscountedPrice(Math.max(0, newPrice));
       setCouponId(coupon.id)
@@ -100,7 +118,7 @@ export default function PackageDetailsPage() {
   const removeCoupon = () => {
     setAppliedCoupon(null);
     setCouponCode('');
-    setDiscountedPrice(pack!.price);
+    setDiscountedPrice(price);
     toast.success('Coupon removed');
   };
 
@@ -518,19 +536,23 @@ export default function PackageDetailsPage() {
           {/* Price Summary */}
           <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
             <div className="space-y-2">
+              <div className='justify-between flex text-gray-700'>
+                <span>Total Trip Memebers</span>
+                <input type="number" min={1} max={pack.maxPeople} placeholder='1' onChange={handlePeople} className='border-2' />
+              </div>
               <div className="flex justify-between text-gray-700">
-                <span>Package Price</span>
-                <span className="font-semibold">₹{pack.price.toLocaleString()}</span>
+                <span>Package Price Per Person</span>
+                <span className="font-semibold">₹{pack.price}</span>
               </div>
               {appliedCoupon && (
                 <div className="flex justify-between text-green-600">
                   <span>Discount ({appliedCoupon.couponCode})</span>
-                  <span className="font-semibold">- ₹{Math.round(pack.price - discountedPrice).toLocaleString()}</span>
+                  <span className="font-semibold">- ₹{Math.round(price - discountedPrice).toLocaleString()}</span>
                 </div>
               )}
               <div className="border-t pt-2 flex justify-between text-lg font-bold text-gray-800">
                 <span>Total Amount</span>
-                <span className="text-blue-600">₹{Math.round(discountedPrice).toLocaleString()}</span>
+                <span className="text-blue-600">₹{discountedPrice ? Math.round(discountedPrice).toLocaleString() : price}</span>
               </div>
             </div>
           </div>
@@ -560,7 +582,7 @@ export default function PackageDetailsPage() {
           {/* Book Now Button */}
           <div className="flex justify-end">
             {acceptedTerms ? (
-              <BookNowButton packageId={id} amount={Math.round(discountedPrice)} role="user" couponCode={couponId} />
+              <BookNowButton packageId={id} amount={Math.round(discountedPrice)} role="user" couponCode={couponId} maxPeople={maxPeople} />
             ) : (
               <button
                 disabled

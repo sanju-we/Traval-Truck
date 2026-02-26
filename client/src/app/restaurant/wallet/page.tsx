@@ -9,7 +9,7 @@ export default function Page() {
     <div className="min-h-screen flex bg-gray-50">
       <SideNavbar />
       <div className="flex-1 flex flex-col">
-        <WalletMain role="agency" />
+        <WalletMain role="restaurant" />
         <VendorFooter/>
       </div>
     </div>

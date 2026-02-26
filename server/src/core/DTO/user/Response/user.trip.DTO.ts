@@ -44,9 +44,10 @@ export interface TripDTO {
   status: string
   amount: number
   plan?: TripPlan[]
+  people?: number
   startDate?: string
   endDate?: string
-  productType:string
+  productType: string
 }
 
 export interface Trip {
@@ -72,7 +73,8 @@ export const toTripDTO = (
   amount: order.amount,
   status: order.status,
   plan: order.plan,
+  people: order.people,
   startDate: order.startDate,
   endDate: order.endDate,
-  productType:order.productType
+  productType: order.productType
 })

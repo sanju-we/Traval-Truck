@@ -172,7 +172,7 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
             <option value="double">Double</option>
             <option value="villa">Villa</option>
           </select>
-          <Input name="price" placeholder="Price per night" type="number" value={formData.price} onChange={handleChange} />
+          <Input name="price" placeholder="Price per night" min={100} type="number" value={formData.price} onChange={handleChange} />
           <Input name="capacity" placeholder="Capacity (e.g. 2 Adults, 1 Kid)" value={formData.capacity} onChange={handleChange} />
           <Textarea name="description" placeholder="Room Description" value={formData.description} onChange={handleChange} />
 

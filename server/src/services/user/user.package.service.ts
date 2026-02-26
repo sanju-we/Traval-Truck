@@ -14,7 +14,7 @@ export class UserPackageSerivce implements IUserPackageService {
     @inject('IAgencyPackageRepository') private readonly _packageRepo: IAgencyPackageRepository,
     @inject('ISubscriptionHistoryRepository') private readonly _subscriptionHistoryRepo: ISubscriptionHistoryRepository,
     @inject('IPaymentUtils') private readonly _paymentUtils: IPaymentUtils,
-    @inject('IAdminCouponRepository') private readonly _couponRepo : IAdminCouponRepository
+    @inject('IAdminCouponRepository') private readonly _couponRepo: IAdminCouponRepository
   ) { }
   async getLatestPackage(): Promise<PackageResDTO[]> {
     const data = await this._packageRepo.findAllPackageWithPartners(1)
@@ -53,7 +53,7 @@ export class UserPackageSerivce implements IUserPackageService {
     throw new DataNotFoundError()
   }
 
-  async initiativePurchase(packageId: string, userId: string, role: string, amount:number, couponId:string): Promise<{ url: string; sessionId: string }> {
+  async initiativePurchase(packageId: string, userId: string, role: string, amount: number, couponId: string, maxPeople?: number): Promise<{ url: string; sessionId: string }> {
     const data = await this._packageRepo.findById(packageId)
     if (!data) throw new DataNotFoundError()
 
@@ -66,16 +66,18 @@ export class UserPackageSerivce implements IUserPackageService {
       metadata: {
         type: 'package',
         userId,
+        amount,
         role,
         packageId,
-        couponId
+        couponId,
+        people: maxPeople
       }
     })
   }
 
-  async getAllCoupons(userId:string): Promise<CouponDTO[]> {
-    const coupons = await this._couponRepo.findAll({usedBy:{$ne:userId}},{})
-    if(!coupons) throw new DataNotFoundError()
-      return coupons.map(toCouponDTO)
+  async getAllCoupons(userId: string): Promise<CouponDTO[]> {
+    const coupons = await this._couponRepo.findAll({ usedBy: { $ne: userId } }, {})
+    if (!coupons) throw new DataNotFoundError()
+    return coupons.map(toCouponDTO)
   }
 }

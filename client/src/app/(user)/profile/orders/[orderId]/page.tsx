@@ -105,7 +105,7 @@ export default function UserOrderDetailsPage() {
   };
 
   const handleChatWithAgency = () => {
-    const agencyId = order?.product?.ownedBy || order?.ownedBy;
+    const agencyId = order?.product?.data?.ownedBy || order?.product?.ownedBy || order?.ownedBy;
     if (agencyId) {
       router.push(`/chat/${agencyId}?orderId=${order?.orderId}`);
     } else {
@@ -203,7 +203,7 @@ export default function UserOrderDetailsPage() {
     yPos += 8;
     pdf.setFontSize(10);
     pdf.setTextColor(0, 0, 0);
-    pdf.text(`Package Name: ${order.product?.title || 'N/A'}`, 20, yPos);
+    pdf.text(`Package Name: ${order.product?.data?.title || 'N/A'}`, 20, yPos);
 
     yPos += 6;
     pdf.text(`Type: ${order.productType}`, 20, yPos);
@@ -447,14 +447,14 @@ export default function UserOrderDetailsPage() {
             {/* Render Package or Room Details Component */}
             {order.productType === 'Package' ? (
               <PackageDetails
-                product={order.product}
+                product={order.product?.data}
                 status={order.status}
                 plan={order.plan}
                 tripProgress={order.tripProgress}
                 startDate={order.startDate}
               />
             ) : order.productType === 'Rooms' ? (
-              <RoomDetails product={order.product} />
+              <RoomDetails product={order.product?.data} />
             ) : (
               <div className="bg-white rounded-xl p-6 text-center">
                 <p className="text-gray-500">Product type not supported</p>
@@ -571,7 +571,7 @@ export default function UserOrderDetailsPage() {
                     {(order.ownedBy &&
                       typeof order.ownedBy === 'object' &&
                       (order.ownedBy.companyName || order.ownedBy.name)) ||
-                      (order.product?.ownedBy ? 'Information' : 'N/A')}
+                      (order.product?.data?.ownedBy ? 'Information' : 'N/A')}
                   </p>
                 </div>
 
@@ -668,7 +668,7 @@ export default function UserOrderDetailsPage() {
                   )}
               </div>
             </div>
-            {order.status == 'Completed' && <RatingCard orderId={order.id} productId={order.product} vendor={order.ownedBy} />}
+            {order.status == 'Completed' && <RatingCard orderId={order.id} productId={{ _id: order.product?.data?.id || order.product?.data?._id }} vendor={order.ownedBy} />}
           </div>
         </div>
       </div>

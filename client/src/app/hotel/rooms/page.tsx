@@ -3,21 +3,8 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/shared/ui/button";
 import { Input } from "@/components/shared/ui/input";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/shared/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/shared/ui/table";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem, } from "@/components/shared/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/shared/ui/table";
 import { LayoutGrid, List } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";

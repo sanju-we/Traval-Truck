@@ -33,18 +33,21 @@ export default function MindMapsPage() {
   const [myPlans, setMyPlans] = useState<MindMapTrip[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const fetchMindmap = async (page: number) => {
     const map = await USER_API_METHODS.getMindMap(page);
-    if (map) return map;
-    return [];
+    if (map && map.data) return map.data;
+    return { data: [], totalPages: 1 };
   };
 
   useEffect(() => {
     const loadMindmap = async () => {
-      const plans = await fetchMindmap(page);
-      console.log(plans)
-      setMyPlans(plans.data.data);
+      setLoading(true);
+      const res = await fetchMindmap(page);
+      console.log(res)
+      setMyPlans(res.data);
+      setTotalPages(res.totalPages || 1);
       setLoading(false);
     };
     loadMindmap();
@@ -70,11 +73,11 @@ export default function MindMapsPage() {
       <Header />
 
       <div className="max-w-7xl mx-auto px-4 py-12 space-y-24">
-        
+
         {/* Hero Section */}
         <section className="relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/10 to-blue-400/10 rounded-3xl blur-3xl"></div>
-          
+
           <div className="relative grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
@@ -95,7 +98,7 @@ export default function MindMapsPage() {
               </h1>
 
               <p className="text-xl text-gray-600 leading-relaxed">
-                Transform your travel ideas into beautiful, interactive mind-maps. 
+                Transform your travel ideas into beautiful, interactive mind-maps.
                 Plan visually, collaborate easily, and bring your dream trips to life.
               </p>
 
@@ -145,7 +148,7 @@ export default function MindMapsPage() {
                   alt="Mind Map Planning"
                   className="rounded-2xl w-full h-[500px] object-cover"
                 />
-                
+
                 {/* Floating cards */}
                 <motion.div
                   animate={{ y: [0, -10, 0] }}
@@ -250,16 +253,16 @@ export default function MindMapsPage() {
                 className="group relative bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl border border-gray-100 hover:border-transparent transition-all duration-300 overflow-hidden"
               >
                 <div className={`absolute inset-0 bg-gradient-to-br from-${feature.color}-50 to-${feature.color}-100 opacity-0 group-hover:opacity-100 transition-opacity`}></div>
-                
+
                 <div className="relative">
                   <div className={`w-14 h-14 bg-${feature.color}-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                     <feature.icon className={`text-${feature.color}-600`} size={28} />
                   </div>
-                  
+
                   <h3 className="font-bold text-xl text-gray-900 mb-2">
                     {feature.title}
                   </h3>
-                  
+
                   <p className="text-gray-600 leading-relaxed">
                     {feature.desc}
                   </p>
@@ -272,7 +275,7 @@ export default function MindMapsPage() {
         {/* How It Works */}
         <section className="relative">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-100/50 to-purple-100/50 rounded-3xl -z-10"></div>
-          
+
           <div className="p-12">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -338,11 +341,11 @@ export default function MindMapsPage() {
                     <div className={`w-16 h-16 bg-${step.color}-100 rounded-2xl flex items-center justify-center mb-4 mx-auto`}>
                       <step.icon className={`text-${step.color}-600`} size={32} />
                     </div>
-                    
+
                     <h3 className="font-bold text-lg text-gray-900 text-center mb-2">
                       {step.title}
                     </h3>
-                    
+
                     <p className="text-sm text-gray-600 text-center leading-relaxed">
                       {step.desc}
                     </p>
@@ -395,13 +398,13 @@ export default function MindMapsPage() {
               <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Map className="text-emerald-600" size={40} />
               </div>
-              
+
               <h3 className="text-2xl font-bold text-gray-900 mb-3">
                 Start Your First Mind-Map
               </h3>
-              
+
               <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                Turn your travel dreams into visual plans. Create your first mind-map 
+                Turn your travel dreams into visual plans. Create your first mind-map
                 and see where your imagination takes you!
               </p>
 
@@ -415,85 +418,122 @@ export default function MindMapsPage() {
               </button>
             </motion.div>
           ) : (
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-              {myPlans?.map((plan, index) => (
-                <motion.div
-                  key={plan.orderId}
-                  variants={itemVariants}
-                  className="group bg-white rounded-2xl shadow-md hover:shadow-2xl border border-gray-100 overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-2"
-                  onClick={() => router.push(`/mind-map/${plan.id}`)}
-                >
-                  {/* Cover Image */}
-                  <div className="relative h-48 bg-gradient-to-br from-emerald-400 to-blue-500 overflow-hidden">
-                    {plan.coverImage ? (
-                      <img
-                        src={plan.coverImage}
-                        alt={plan.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Map className="text-white/30" size={80} />
+            <>
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
+                {myPlans?.map((plan, index) => (
+                  <motion.div
+                    key={plan.orderId}
+                    variants={itemVariants}
+                    className="group bg-white rounded-2xl shadow-md hover:shadow-2xl border border-gray-100 overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-2"
+                    onClick={() => router.push(`/mind-map/${plan.id}`)}
+                  >
+                    {/* Cover Image */}
+                    <div className="relative h-48 bg-gradient-to-br from-emerald-400 to-blue-500 overflow-hidden">
+                      {plan.coverImage ? (
+                        <img
+                          src={plan.coverImage}
+                          alt={plan.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Map className="text-white/30" size={80} />
+                        </div>
+                      )}
+
+                      {/* Status Badge */}
+                      <div className="absolute top-4 right-4">
+                        <span
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm ${plan.status === 'Draft'
+                              ? 'bg-gray-900/70 text-white'
+                              : plan.status === 'Planned'
+                                ? 'bg-blue-600/90 text-white'
+                                : 'bg-emerald-600/90 text-white'
+                            }`}
+                        >
+                          {plan.status === 'Booked' && <CheckCircle2 size={12} />}
+                          {plan.status}
+                        </span>
                       </div>
-                    )}
-                    
-                    {/* Status Badge */}
-                    <div className="absolute top-4 right-4">
-                      <span
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm ${
-                          plan.status === 'Draft'
-                            ? 'bg-gray-900/70 text-white'
-                            : plan.status === 'Planned'
-                            ? 'bg-blue-600/90 text-white'
-                            : 'bg-emerald-600/90 text-white'
-                        }`}
+
+                      {/* Overlay gradient */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-6 space-y-4">
+                      <h3 className="font-bold text-xl text-gray-900 group-hover:text-emerald-600 transition-colors line-clamp-1">
+                        {plan.title}
+                      </h3>
+
+                      {/* Stats */}
+                      <div className="flex items-center gap-4 text-sm">
+                        <div className="flex items-center gap-1.5 text-gray-600">
+                          <CalendarDays size={16} className="text-emerald-600" />
+                          <span className="font-medium">{plan.days} days</span>
+                        </div>
+
+                        <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+
+                        <div className="flex items-center gap-1.5 text-gray-600">
+                          <MapPin size={16} className="text-blue-600" />
+                          <span className="font-medium">{plan.places?.length || 0} places</span>
+                        </div>
+                      </div>
+
+                      {/* View button */}
+                      <div className="pt-4 border-t border-gray-100">
+                        <div className="flex items-center justify-between text-emerald-600 font-semibold text-sm group-hover:text-emerald-700">
+                          <span>View Details</span>
+                          <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-4 pt-12">
+                  <button
+                    onClick={() => setPage(prev => Math.max(1, prev - 1))}
+                    disabled={page === 1}
+                    className="p-2 rounded-lg border border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                  >
+                    <ArrowRight size={20} className="rotate-180" />
+                  </button>
+
+                  <div className="flex items-center gap-2">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                      <button
+                        key={p}
+                        onClick={() => setPage(p)}
+                        className={`w-10 h-10 rounded-lg font-medium transition-all ${page === p
+                            ? 'bg-emerald-600 text-white shadow-lg'
+                            : 'bg-white border border-gray-200 text-gray-600 hover:border-emerald-600'
+                          }`}
                       >
-                        {plan.status === 'Booked' && <CheckCircle2 size={12} />}
-                        {plan.status}
-                      </span>
-                    </div>
-
-                    {/* Overlay gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                        {p}
+                      </button>
+                    ))}
                   </div>
 
-                  {/* Content */}
-                  <div className="p-6 space-y-4">
-                    <h3 className="font-bold text-xl text-gray-900 group-hover:text-emerald-600 transition-colors line-clamp-1">
-                      {plan.title}
-                    </h3>
-
-                    {/* Stats */}
-                    <div className="flex items-center gap-4 text-sm">
-                      <div className="flex items-center gap-1.5 text-gray-600">
-                        <CalendarDays size={16} className="text-emerald-600" />
-                        <span className="font-medium">{plan.days} days</span>
-                      </div>
-                      
-                      <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                      
-                      <div className="flex items-center gap-1.5 text-gray-600">
-                        <MapPin size={16} className="text-blue-600" />
-                        <span className="font-medium">{plan.places?.map((p) => p.name)} places</span>
-                      </div>
-                    </div>
-
-                    {/* View button */}
-                    <div className="pt-4 border-t border-gray-100">
-                      <div className="flex items-center justify-between text-emerald-600 font-semibold text-sm group-hover:text-emerald-700">
-                        <span>View Details</span>
-                        <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
+                  <button
+                    onClick={() => setPage(prev => Math.min(totalPages, prev + 1))}
+                    disabled={page === totalPages}
+                    className="p-2 rounded-lg border border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                  >
+                    <ArrowRight size={20} />
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </section>
 
@@ -501,7 +541,7 @@ export default function MindMapsPage() {
         <section className="relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-blue-600 rounded-3xl"></div>
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yLjIxLTEuNzktNC00LTRzLTQgMS43OS00IDQgMS43OSA0IDQgNCA0LTEuNzkgNC00em0wLTEwYzAtMi4yMS0xLjc5LTQtNC00cy00IDEuNzktNCA0IDEuNzkgNCA0IDQgNC0xLjc5IDQtNHoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-10"></div>
-          
+
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -509,11 +549,11 @@ export default function MindMapsPage() {
             className="relative px-12 py-16 text-center"
           >
             <Star className="text-yellow-300 mx-auto mb-6" size={48} fill="currentColor" />
-            
+
             <h2 className="text-4xl font-bold text-white mb-4">
               Ready to Plan Your Dream Trip?
             </h2>
-            
+
             <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
               Join thousands of travelers who are creating beautiful, organized trip plans with Mind-Maps
             </p>

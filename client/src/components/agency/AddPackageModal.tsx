@@ -17,6 +17,7 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
     title: "",
     duration: "",
     price: "",
+    maxPeople: "",
     description: "",
     discoveries: [] as string[],
     availableFoods: [] as string[],
@@ -106,6 +107,7 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
     if (!formData.title.trim()) newErrors.title = "Package title is required";
     if (!formData.duration.trim()) newErrors.duration = "Duration is required";
     if (!formData.price.trim()) newErrors.price = "Price is required";
+    if (!formData.maxPeople.trim()) newErrors.maxPeople = "Select Maximum people for this trip"
     if (!formData.description.trim()) newErrors.description = "Description is required";
     if (images.length === 0) newErrors.images = "At least one image is required";
 
@@ -126,6 +128,7 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
       form.append("title", formData.title);
       form.append("duration", formData.duration);
       form.append("price", formData.price);
+      form.append("maxPeople", formData.maxPeople);
       form.append("description", formData.description);
       form.append("discoveries", JSON.stringify(formData.discoveries));
       form.append("availableFoods", JSON.stringify(formData.availableFoods));
@@ -172,6 +175,9 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
 
           <Input name="price" placeholder="Price" type="number" onChange={handleChange} value={formData.price} />
           {errors.price && <p className="text-red-500 text-sm">{errors.price}</p>}
+
+          <Input name="maxPeople" placeholder="Maximum people" type="number" onChange={handleChange} value={formData.maxPeople} />
+          {errors.maxPeople && <p className="text-red-500 text-sm">{errors.maxPeople}</p>}
 
           <Textarea name="description" placeholder="Description" onChange={handleChange} value={formData.description} />
           {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}

@@ -5,6 +5,7 @@ export interface IPackage extends Document {
   title: string;
   duration: string;
   price: number;
+  maxPeople:number;
   description: string;
   discoveries: string[];
   availableFoods: string[];

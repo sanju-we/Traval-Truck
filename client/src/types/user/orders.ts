@@ -1,3 +1,4 @@
+import { ProductData } from './profile';
 
 export interface PlanDay {
   date: string;
@@ -18,7 +19,11 @@ export interface OrderDetails {
     phoneNumber?: string;
   };
   productType?: 'Package' | 'Rooms' | 'Foods';
-  product: any;
+  product: {
+    type: string;
+    data: ProductData;
+    ownedBy?: string;
+  };
   amount: number;
   originalAmount?: number;
   discount?: number;
@@ -27,7 +32,10 @@ export interface OrderDetails {
     discount: number;
     type: string;
   };
-  ownedBy?: any;
+  ownedBy?: {
+    _id: string;
+    [key: string]: any;
+  };
   startDate?: string;
   endDate?: string;
   status: 'Upcoming' | 'Ongoing' | 'Completed' | 'Cancelled';

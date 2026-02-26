@@ -13,6 +13,7 @@ export interface PackageData {
   title: string;
   duration: string;
   price: number;
+  maxPeople:number;
   description: string;
   discoveries: string[];
   availableFoods: string[];

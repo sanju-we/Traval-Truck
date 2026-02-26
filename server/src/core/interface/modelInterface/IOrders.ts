@@ -13,6 +13,7 @@ export interface IOrders extends Document {
   startDate: string;
   endDate: string;
   plan?: TripPlan[];
+  people?: number;
   tripProgress?: TripProgress
   status: string;
   paymentId: Types.ObjectId;

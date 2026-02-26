@@ -13,6 +13,7 @@ export interface PackageDTO{
   images:string[],
   itinerary:irineray[],
   price:number,
+  maxPeople:number,
   title:string
 }
 
@@ -23,6 +24,7 @@ export const toPackageDTO = (packages:IPackage):PackageDTO =>({
   duration:packages.duration,
   itinerary:packages.itinerary,
   price:packages.price,
+  maxPeople:packages.maxPeople,
   title:packages.title,
   images:packages.images
 })

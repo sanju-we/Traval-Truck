@@ -29,7 +29,7 @@ export default function BuyNowButton({ subscriptionId, role }: any) {
     try {
       setLoading(true);
 
-      const { data } = await service.purchaseSubscription({
+      const data = await service.purchaseSubscription({
         subscriptionId,
         role
       });

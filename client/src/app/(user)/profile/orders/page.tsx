@@ -1,13 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Calendar, MapPin, Clock, CheckCircle, MessageCircle, Eye, ArrowLeft, Package, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, MapPin, Clock, CheckCircle, MessageCircle, Eye, ArrowLeft, Package, ChevronLeft, ChevronRight, Users } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
-import { product } from '@/types/user/profile';
 import { Trip } from '@/types/user/profile';
 
 export default function OrdersPage() {
@@ -217,89 +216,95 @@ export default function OrdersPage() {
                 key={trip.id}
                 className="bg-white border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-all duration-200"
               >
-                <div className="flex gap-5">
-                  {trip.product.images && (
+                {/* Top Section: Title Left, Image Right */}
+                <div className="flex justify-between items-start gap-4 mb-4">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-bold text-gray-800 text-xl truncate mb-1">
+                      {trip.product.data.title || trip.product.data.Description}
+                    </h4>
+                    <div className="flex items-center gap-2 text-gray-600 text-sm mb-2">
+                      <MapPin size={16} className="flex-shrink-0" />
+                      <span className="line-clamp-1">{trip.product.data.description || trip.product.data.Description}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2 items-center text-gray-500 text-xs mt-2">
+                      <span className="font-mono bg-gray-100 px-2 py-1 rounded">
+                        Order #{trip.orderId}
+                      </span>
+                      {trip.createdAt && (
+                        <span>
+                          • Booked on {new Date(trip.createdAt).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
+                          })}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  {trip.product.data.images && trip.product.data.images.length > 0 && (
                     <img
-                      src={trip.product.images[0]}
-                      alt={trip.product.title}
-                      className="w-32 h-32 rounded-xl object-cover flex-shrink-0 border border-gray-200"
+                      src={trip.product.data.images[0]}
+                      alt={trip.product.data.title || 'Room'}
+                      className="w-24 h-24 rounded-lg object-cover flex-shrink-0 border border-gray-200"
                     />
                   )}
+                </div>
 
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-4 mb-3">
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-gray-800 text-xl truncate mb-1">
-                          {trip.product.title}
-                        </h4>
-                        <div className="flex items-center gap-2 text-gray-600 text-sm mb-2">
-                          <MapPin size={16} className="flex-shrink-0" />
-                          <span className="line-clamp-1">{trip.product.description}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-gray-500 text-xs">
-                          <span className="font-mono bg-gray-100 px-2 py-1 rounded">
-                            Order #{trip.orderId}
-                          </span>
-                          {trip.createdAt && (
-                            <span>
-                              • Booked on {new Date(trip.createdAt).toLocaleDateString('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                                year: 'numeric'
-                              })}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      <span
-                        className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap flex-shrink-0 inline-flex items-center gap-1.5 ${trip.status === 'Upcoming'
-                          ? 'bg-blue-100 text-blue-700 border border-blue-200'
-                          : trip.status === 'Ongoing'
-                            ? 'bg-orange-100 text-orange-700 border border-orange-200'
-                            : 'bg-green-100 text-green-700 border border-green-200'
-                          }`}
-                      >
-                        {trip.status === 'Upcoming' && <Clock size={14} />}
-                        {trip.status === 'Completed' && <CheckCircle size={14} />}
-                        {trip.status}
-                      </span>
-                    </div>
-
-                    {trip.product.duration && (
-                      <div className="flex items-center gap-2 mb-4 text-sm text-gray-600">
+                {/* Middle Section: Status & Details, People Count Right */}
+                <div className="flex flex-wrap justify-between items-center gap-4 py-4 border-y border-gray-50 mb-4">
+                  <div className="flex flex-wrap gap-4 items-center">
+                    {trip.product.data.duration && (
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Calendar size={16} />
-                        <span>{trip.product.duration}</span>
+                        <span>{trip.product.data.duration}</span>
                       </div>
                     )}
+                    <span
+                      className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap inline-flex items-center gap-1.5 ${trip.status === 'Upcoming'
+                        ? 'bg-blue-100 text-blue-700 border border-blue-200'
+                        : trip.status === 'Ongoing'
+                          ? 'bg-orange-100 text-orange-700 border border-orange-200'
+                          : 'bg-green-100 text-green-700 border border-green-200'
+                        }`}
+                    >
+                      {trip.status === 'Upcoming' && <Clock size={14} />}
+                      {trip.status === 'Completed' && <CheckCircle size={14} />}
+                      {trip.status}
+                    </span>
+                  </div>
 
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <div>
-                        <p className="text-sm text-gray-500 mb-1">Total Amount</p>
-                        <p className="text-2xl font-bold text-blue-600">
-                          ₹{trip.amount.toLocaleString()}
-                        </p>
-                      </div>
+                  <div className="flex items-center gap-2 text-blue-700 font-semibold bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100">
+                    <Users size={18} />
+                    <span>{trip.people || 1} People</span>
+                  </div>
+                </div>
 
-                      <div className="flex gap-3">
-                        {trip.status !== 'Completed' && (
-                          <button
-                            onClick={() => handleChatWithAgency(trip)}
-                            className="px-4 py-2.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2 font-semibold"
-                          >
-                            <MessageCircle size={18} />
-                            Chat with Agency
-                          </button>
-                        )}
-                        <button
-                          onClick={() => handleViewDetails(trip)}
-                          className="px-4 py-2.5 text-sm bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition flex items-center gap-2 font-semibold"
-                        >
-                          <Eye size={18} />
-                          View Details
-                        </button>
-                      </div>
-                    </div>
+                {/* Bottom Section: Price & Buttons */}
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <p className="text-sm text-gray-500 mb-1">Total Amount</p>
+                    <p className="text-2xl font-bold text-blue-600">
+                      ₹{trip.amount.toLocaleString()}
+                    </p>
+                  </div>
+
+                  <div className="flex gap-3">
+                    {trip.status !== 'Completed' && (
+                      <button
+                        onClick={() => handleChatWithAgency(trip)}
+                        className="px-4 py-2.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2 font-semibold"
+                      >
+                        <MessageCircle size={18} />
+                        Chat with Agency
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleViewDetails(trip)}
+                      className="px-4 py-2.5 text-sm bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition flex items-center gap-2 font-semibold"
+                    >
+                      <Eye size={18} />
+                      View Details
+                    </button>
                   </div>
                 </div>
               </div>

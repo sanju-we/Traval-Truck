@@ -49,6 +49,7 @@ export class SharedSubscriptionService implements ISharedSubscriptionService {
       (subscription as any).name = plan.Name;
       (subscription as any).features = plan.Features;
       (subscription as any).valid = plan.Valid;
+      (subscription as any).amount = plan.Amount;
     }
 
     return toSubsctiptionHistoryDTO(subscription);
