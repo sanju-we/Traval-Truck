@@ -1,8 +1,7 @@
 import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Ihotel.auth.repository';
-import { BaseRepository, RepositoryError } from '../../repositories/baseRepository';
+import { BaseRepository } from '../../repositories/baseRepository';
 import { Hotel } from '../../models/Hotel';
 import { IHotel } from '../../core/interface/modelInterface/IHotel';
-import z from 'zod';
 
 export class HotelAuthRepository extends BaseRepository<IHotel> implements IHotelAuthRepository {
   constructor() {
@@ -37,6 +36,7 @@ export class HotelAuthRepository extends BaseRepository<IHotel> implements IHote
       filter['$or'] = [
         { companyName: { $regex: query.search, $options: 'i' } },
         { email: { $regex: query.search, $options: 'i' } },
+        { address: { $regex: query.search, $options: 'i' } },
       ];
     }
 

@@ -16,7 +16,7 @@ export class UserHotelsController implements IUserHotelsController {
     const { page, limit } = req.query
     const search = req.query.search
     if (!page || !limit) throw new BADREQUEST()
-    const data = await this._userHotelService.getAllHotels(Number(page), Number(limit),isNaN(Number(search))? 0 : Number(search))
+    const data = await this._userHotelService.getAllHotels(Number(page), Number(limit), search != undefined ? String(search) : '')
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, data)
   }
 
@@ -27,10 +27,29 @@ export class UserHotelsController implements IUserHotelsController {
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, data)
   }
 
+  async getRoomsByHotel(req: Request, res: Response): Promise<void> {
+    const id = req.params.id;
+    const { startDate, endDate, people } = req.query;
+    if (!id) throw new BADREQUEST();
+    const data = await this._userHotelService.getRoomsByHotel(id, {
+      startDate: startDate as string,
+      endDate: endDate as string,
+      people: people ? Number(people) : undefined
+    });
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, data);
+  }
+
+  async getHotelDetails(req: Request, res: Response): Promise<void> {
+    const id = req.params.id;
+    if (!id) throw new BADREQUEST();
+    const data = await this._userHotelService.getHotelDetails(id);
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, data);
+  }
+
   async purchaseRoom(req: Request, res: Response): Promise<void> {
-    const {roomId,amount,couponId,role,startDate} = req.body
+    const { roomId, amount, couponId, role, startDate, people } = req.body
     const userId = req.user.id;
-    const session = await this._userHotelService.initializeSession(roomId,role,userId,amount,couponId,startDate);
-    sendResponse(res,STATUS_CODE.OK,true,MESSAGES.CREATED,session)
-  } 
+    const session = await this._userHotelService.initializeSession(roomId, role, userId, amount, couponId, startDate, Number(people));
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.CREATED, session)
+  }
 }

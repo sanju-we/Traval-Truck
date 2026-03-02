@@ -5,7 +5,7 @@ import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders
 import { logger } from "../../utils/logger";
 import { IOrderWithProduct, toTripDTO, TripDTO } from "../../core/DTO/user/Response/user.trip.DTO";
 import { IPackage } from "../../core/interface/modelInterface/Ipackage";
-import { IRooms } from "../../core/interface/modelInterface/IRooms";
+import { IRoomType } from "../../core/interface/modelInterface/IRoomType";
 
 export class OrderRepository extends BaseRepository<IOrders> implements IOrdersRepository {
   constructor() {
@@ -13,7 +13,7 @@ export class OrderRepository extends BaseRepository<IOrders> implements IOrdersR
   }
 
   async findAllByProduct(userId: string, page?: number, limit?: number): Promise<TripDTO[]> {
-    let query = Order.find({ userId: userId }).populate<{ product: IPackage | IRooms }>('product').sort({ createdAt: -1 })
+    let query = Order.find({ userId: userId }).populate<{ product: IPackage | IRoomType }>('product').sort({ createdAt: -1 })
 
     // Apply pagination if both page and limit are provided
     if (page !== undefined && limit !== undefined && limit > 0) {
@@ -37,7 +37,7 @@ export class OrderRepository extends BaseRepository<IOrders> implements IOrdersR
   }
 
   async findAllOrdersAdmin(): Promise<TripDTO[] | null> {
-    const orders = await Order.find().populate('userId').populate('ownedBy').populate<{ product: IPackage | IRooms }>('product')
+    const orders = await Order.find().populate('userId').populate('ownedBy').populate<{ product: IPackage | IRoomType }>('product')
     return orders.map(order => toTripDTO(order as IOrderWithProduct))
   }
 }

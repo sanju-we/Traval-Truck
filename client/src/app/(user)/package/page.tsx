@@ -2,30 +2,34 @@
 
 import { useEffect, useState } from 'react';
 import api from '@/services/api';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Search } from 'lucide-react';
 import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
 import { useRouter } from 'next/navigation';
 import { Package } from '@/types/agency';
+import { useDebounce } from '@/hooks/useDebounce';
 
 export default function PackagesPage() {
   const [packages, setPackages] = useState<Package[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
 
   const router = useRouter()
 
   const itemsPerPage = 6; // adjust how many packages per page
 
-  useEffect(() => {
-    fetchPackages(currentPage);
-  }, [currentPage]);
+  const debouncedSearch = useDebounce(search, 500);
 
-  const fetchPackages = async (page: number) => {
+  useEffect(() => {
+    fetchPackages(currentPage, debouncedSearch);
+  }, [currentPage, debouncedSearch]);
+
+  const fetchPackages = async (page: number, searchQuery: string = '') => {
     setLoading(true);
     try {
-      const res = await api.get(`/user/packages/getAll?page=${page}&limit=${itemsPerPage}`);
+      const res = await api.get(`/user/packages/getAll?page=${page}&limit=${itemsPerPage}&search=${searchQuery}`);
       console.log(res.data.data)
       setPackages(res.data.data.data || []);
       setTotalPages(res.data.totalPages || 1);
@@ -49,6 +53,22 @@ export default function PackagesPage() {
       <section className="max-w-6xl mx-auto px-6 mt-10">
         <h2 className="text-2xl font-bold mb-6 text-center">Explore Our Travel Packages</h2>
 
+        <div className="relative max-w-xl mx-auto mb-10">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <Search className="h-5 w-5 text-gray-400" />
+          </div>
+          <input
+            type="text"
+            className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm transition-all shadow-sm hover:shadow"
+            placeholder="Search by package name or covered places..."
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
+          />
+        </div>
+
         {loading ? (
           <div className="flex justify-center items-center h-[50vh]">
             <Loader2 className="animate-spin w-8 h-8 text-emerald-500" />
@@ -61,7 +81,7 @@ export default function PackagesPage() {
               <div
                 key={pkg.id}
                 className="border rounded-lg p-4 shadow hover:shadow-md transition duration-200"
-                onClick={()=>router.push(`/package/${pkg.id}`)}
+                onClick={() => router.push(`/package/${pkg.id}`)}
               >
                 <img
                   src={pkg.images ? pkg.images[0] : '/images/default.jpg'}
@@ -89,11 +109,10 @@ export default function PackagesPage() {
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`px-4 py-2 rounded-md border ${
-              currentPage === 1
-                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                : 'bg-white text-emerald-600 hover:bg-emerald-50'
-            }`}
+            className={`px-4 py-2 rounded-md border ${currentPage === 1
+              ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              : 'bg-white text-emerald-600 hover:bg-emerald-50'
+              }`}
           >
             Previous
           </button>
@@ -105,11 +124,10 @@ export default function PackagesPage() {
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`px-4 py-2 rounded-md border ${
-              currentPage === totalPages
-                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                : 'bg-white text-emerald-600 hover:bg-emerald-50'
-            }`}
+            className={`px-4 py-2 rounded-md border ${currentPage === totalPages
+              ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              : 'bg-white text-emerald-600 hover:bg-emerald-50'
+              }`}
           >
             Next
           </button>

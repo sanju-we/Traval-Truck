@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/shared/ui/tabs';
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Camera, Edit, Mail, Phone, X, Check } from 'lucide-react';
+import { Camera, Edit, Mail, Phone, X, Check, MapPin } from 'lucide-react';
 import SideNavbar from '@/components/hotel/SideNavbar';
 import api from '@/services/api';
 import Cropper from 'react-easy-crop';
@@ -16,6 +16,7 @@ import DocumentUploadWithPreview from '@/components/utils/DocumentUploadWithPrev
 import RestrictionBanner from '@/components/vendor/RestrictionBanner';
 import { HOTEL_API_METHODS } from '@/services/APIs/hotel.api.service';
 import VendorFooter from '@/components/shared/Footer';
+import LocationPicker from '@/components/vendor/LocationPicker';
 
 export default function VendorProfilePage() {
   const [vendor, setVendor] = useState<VendorProfile | null>(null);
@@ -162,6 +163,7 @@ export default function VendorProfilePage() {
       if (formData.ownerName) formPayload.append('ownerName', formData.ownerName);
       if (formData.phone) formPayload.append('phone', formData.phone.toString());
       if (formData.companyName) formPayload.append('companyName', formData.companyName);
+      if (formData.address) formPayload.append('address', formData.address);
 
       if (formData.bankDetails) {
         Object.entries(formData.bankDetails).forEach(([key, value]) => {
@@ -404,6 +406,13 @@ export default function VendorProfilePage() {
                   <p className="font-medium text-gray-800">{vendor.phone || 'N/A'}</p>
                 </div>
               </div>
+              <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg shadow-sm md:col-span-2">
+                <MapPin className="text-emerald-500" size={20} />
+                <div>
+                  <p className="text-sm text-gray-500">Address</p>
+                  <p className="font-medium text-gray-800">{vendor.address || 'N/A'}</p>
+                </div>
+              </div>
             </div>
           </TabsContent>
 
@@ -464,7 +473,7 @@ export default function VendorProfilePage() {
             className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center"
           >
             <motion.div
-              className="bg-white rounded-2xl shadow-xl w-[90%] max-w-md p-6 relative"
+              className="bg-white rounded-2xl shadow-xl w-[90%] max-w-md p-6 relative max-h-[90vh] overflow-y-auto"
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
@@ -526,6 +535,11 @@ export default function VendorProfilePage() {
                   className="border rounded-md px-3 py-2"
                 />
                 {errors.companyName && <p className="text-red-500 text-sm">{errors.companyName}</p>}
+
+                <LocationPicker
+                  initialAddress={formData.address}
+                  onAddressSelect={(address) => setFormData(prev => ({ ...prev, address }))}
+                />
                 <input
                   name="bankDetails.accountHolder"
                   value={formData.bankDetails?.accountHolder || ''}

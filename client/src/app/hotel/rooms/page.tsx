@@ -128,8 +128,9 @@ export default function RoomsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Room</TableHead>
+                  <TableHead>Room Type</TableHead>
                   <TableHead>Capacity</TableHead>
+                  <TableHead>Available Count</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Price</TableHead>
                   <TableHead>Action</TableHead>
@@ -147,12 +148,14 @@ export default function RoomsPage() {
                           alt="room"
                         />
                         <span className="font-medium">
-                          #{room.RoomNumber}
+                          {room.roomType}
                         </span>
                       </div>
                     </TableCell>
 
-                    <TableCell>{room.Capacity} Adults</TableCell>
+                    <TableCell>{room.Capacity} Guests</TableCell>
+
+                    <TableCell>{room.AvailableCount}</TableCell>
 
                     <TableCell>
                       <span
@@ -223,10 +226,10 @@ export default function RoomsPage() {
                   </div>
 
                   <p className="font-semibold text-gray-800">
-                    Room #{room.RoomNumber}
+                    {room.roomType}
                   </p>
                   <p className="text-sm text-gray-500">
-                    Capacity: {room.Capacity} Adults
+                    Capacity: {room.Capacity} Guests | Available: {room.AvailableCount}
                   </p>
 
                   <p className="text-lg font-bold text-gray-900 mt-3">

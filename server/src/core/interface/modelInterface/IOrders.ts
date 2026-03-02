@@ -8,7 +8,7 @@ export interface IOrders extends Document {
   role: string;
   productType: string;
   product: Types.ObjectId;
-  ownedBy: string;
+  ownedBy: string | Types.ObjectId;
   amount: number;
   startDate: string;
   endDate: string;

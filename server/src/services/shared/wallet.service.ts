@@ -6,6 +6,7 @@ import { IPaymentValidator } from "../../core/interface/validator/Ipayment.valid
 import { IPaymentUtils } from "../../core/interface/PaymentInterface/Ipayment.utils";
 import { DataNotFoundError } from "../../utils/resAndErrors";
 import { IWallet } from "../../core/interface/modelInterface/IWaller";
+import mongoose from "mongoose";
 
 @injectable()
 export class WalletService implements IWalletService {
@@ -53,11 +54,11 @@ export class WalletService implements IWalletService {
       wallet.Balance += amount;
       wallet.Transaction.push(transaction);
       const isSaved = await this._walletRepo.update(wallet.id, wallet);
-      if(isSaved) return isSaved
+      if (isSaved) return isSaved
     }
 
     return await this._walletRepo.create({
-      UserId: userId,
+      UserId: new mongoose.Types.ObjectId(userId),
       Balance: amount,
       Transaction: [transaction],
     });

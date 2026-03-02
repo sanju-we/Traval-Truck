@@ -253,7 +253,7 @@ export class WebhookService implements IWebhookService {
             productType: 'Rooms',
             role: 'Hotel',
             product: roomId,
-            ownedBy: room.HotelId,
+            ownedBy: room.HotelId.toString(),
             paymentId: transaction.id,
             couponApplied: coupon,
             startDate: startDate.toString(),

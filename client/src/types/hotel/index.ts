@@ -1,15 +1,19 @@
 export interface Hotel {
   id: string;
+  companyName: string;
+  address: string;
   Description: string;
   location: string;
   rating?: number;
+  logo?: string;
   PricePerNight: number;
-  images?: [string];
+  images?: string[];
 }
 
 export interface RoomData {
   id: string;
   RoomNumber: number;
+  roomType: string;
   Description: string;
   PricePerNight: number;
   Capacity: number;
@@ -79,6 +83,7 @@ export interface Room {
 export interface IRoom {
   id: string;
   RoomNumber: number;
+  roomType: string;
   Description: string;
   PricePerNight: number;
   Capacity: number;

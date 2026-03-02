@@ -13,13 +13,14 @@ import { IAuthValidator } from '../../core/interface/validator/Iauth.validator';
 export class AgencyProfileService implements IAgencyProfileService {
   constructor(
     @inject('IAgencyRespository') private readonly _agencyAuthRepo: IAgencyRespository,
-    @inject('IAuthValidator') private readonly _authValidator : IAuthValidator
+    @inject('IAuthValidator') private readonly _authValidator: IAuthValidator
   ) { }
   async updateProfile(
     id: string,
     data: {
       ownerName: string;
       companyName: string;
+      address?: string;
       phone: number;
       bankDetails: {
         ifscCode: string;
@@ -29,7 +30,7 @@ export class AgencyProfileService implements IAgencyProfileService {
       };
     },
   ): Promise<vendorRequestDTO> {
-    await this._authValidator.profileUpdateValidator(data.ownerName,data.companyName,data.phone,data.bankDetails)
+    await this._authValidator.profileUpdateValidator(data.ownerName, data.companyName, data.phone, data.bankDetails)
     const agency = await this._agencyAuthRepo.findById(id);
     if (!agency) throw new UserNotFoundError();
 

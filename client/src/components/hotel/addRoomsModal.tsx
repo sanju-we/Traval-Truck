@@ -13,11 +13,11 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
   const [formData, setFormData] = useState({
     roomNumber: "",
     roomType: "",
-    price: "",
-    capacity: "",
     description: "",
-    roomLevel: '',
-    amenities: [""],
+    price: "",
+    AvailableCount: "",
+    capacity: "",
+    facilities: [""],
     images: [] as File[],
     imagePreviews: [] as string[],
   });
@@ -36,18 +36,18 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
   };
 
   const handleAddAmenity = () => {
-    setFormData((prev) => ({ ...prev, amenities: [...prev.amenities, ""] }));
+    setFormData((prev) => ({ ...prev, facilities: [...prev.facilities, ""] }));
   };
 
   const handleAmenityChange = (index: number, value: string) => {
-    const updated = [...formData.amenities];
+    const updated = [...formData.facilities];
     updated[index] = value;
-    setFormData({ ...formData, amenities: updated });
+    setFormData({ ...formData, facilities: updated });
   };
 
   const handleRemoveAmenity = (index: number) => {
-    const updated = formData.amenities.filter((_, i) => i !== index);
-    setFormData({ ...formData, amenities: updated });
+    const updated = formData.facilities.filter((_, i) => i !== index);
+    setFormData({ ...formData, facilities: updated });
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,7 +107,8 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
   };
 
   const handleSubmit = async () => {
-    if (!formData.roomNumber || !formData.price || formData.images.length === 0) {
+    if (!formData.roomNumber || !formData.roomType || !formData.price || formData.images.length === 0) {
+      console.log('formData', formData)
       toast.error("Please fill all required fields and upload at least one image.");
       return;
     }
@@ -117,29 +118,23 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
       const data = new FormData();
       data.append("RoomNumber", formData.roomNumber);
       data.append("roomType", formData.roomType);
-      if (formData.roomType == '') {
-        toast.error('sucks')
-        return
-      }
       data.append("PricePerNight", formData.price);
+      data.append("AvailableCount", formData.AvailableCount);
       data.append("Capacity", formData.capacity);
       data.append("Description", formData.description);
-      data.append("Facilities", JSON.parse(JSON.stringify(formData.amenities)));
+      data.append("Facilities", JSON.stringify(formData.facilities));
 
       formData.images.forEach((img) => {
         data.append("images", img);
       });
-      for (const da of data) {
-        console.log(da)
-      }
+
       const res = await api.post("/hotel/rooms/addRooms", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (res.data.success) {
         toast.success("Room added successfully!");
-        rooms((prev: any) => [...prev, res.data.data])
-        onAdd?.();
+        onAdd?.(res.data.data);
         onClose();
       } else {
         toast.error(res.data.message);
@@ -175,14 +170,15 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
           <Input name="price" placeholder="Price per night" min={100} type="number" value={formData.price} onChange={handleChange} />
           <Input name="capacity" placeholder="Capacity (e.g. 2 Adults, 1 Kid)" value={formData.capacity} onChange={handleChange} />
           <Textarea name="description" placeholder="Room Description" value={formData.description} onChange={handleChange} />
+          <Input name="AvailableCount" type="number" min={1} placeholder="Available room count" value={formData.AvailableCount} onChange={handleChange} />
 
           <div>
-            <label className="text-sm text-gray-700 font-medium">Amenities</label>
-            {formData.amenities.map((item, index) => (
+            <label className="text-sm text-gray-700 font-medium">Facilities</label>
+            {formData.facilities.map((item, index) => (
               <div key={index} className="flex gap-2 mt-2">
                 <Input
                   value={item}
-                  placeholder={`Amenity ${index + 1}`}
+                  placeholder={`Facility ${index + 1}`}
                   onChange={(e) => handleAmenityChange(index, e.target.value)}
                 />
                 <Button variant="outline" onClick={() => handleRemoveAmenity(index)}>
@@ -191,7 +187,7 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
               </div>
             ))}
             <Button variant="outline" onClick={handleAddAmenity} className="mt-2">
-              + Add Amenity
+              + Add Facility
             </Button>
           </div>
 

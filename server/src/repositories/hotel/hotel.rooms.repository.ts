@@ -1,5 +1,5 @@
-import Rooms from "../../models/Rooms";
-import { IRooms } from "../../core/interface/modelInterface/IRooms";
+import RoomType from "../../models/RoomType";
+import { IRoomType, IRoomsDocument } from "../../core/interface/modelInterface/IRoomType";
 import { IHotelRoomsRepository } from "../../core/interface/repositorie/Hotel/Ihotel.rooms.repository";
 import { BaseRepository } from "../../repositories/baseRepository";
 import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors";
@@ -8,52 +8,55 @@ import { logger } from "../../utils/logger";
 import { PaginationResponse } from "../../core/DTO/pagination.DTO";
 import mongoose from "mongoose";
 
-export class HotelRoomsRepository extends BaseRepository<IRooms> implements IHotelRoomsRepository {
+export class HotelRoomsRepository extends BaseRepository<IRoomsDocument> implements IHotelRoomsRepository {
   constructor() {
-    super(Rooms)
+    super(RoomType as any)
   }
 
   async findAllPackageWithPartners(
-  page: number = 1,
-  status?: string,
-  lim: number = 10,
-  search?: number,
-  hotelID?: string
-): Promise<PaginationResponse<RoomsDTO>> {
+    page: number = 1,
+    status?: string,
+    lim: number = 10,
+    search?: number,
+    hotelID?: string
+  ): Promise<PaginationResponse<RoomsDTO>> {
 
-  page = Math.max(page, 1);
-  lim = Math.max(lim, 1);
-  const skip = (page - 1) * lim;
+    page = Math.max(page, 1);
+    lim = Math.max(lim, 1);
+    const skip = (page - 1) * lim;
 
-  const filter: any = hotelID ? {
-    HotelId: hotelID,
-  } : {};
+    const filter: any = hotelID ? {
+      HotelId: hotelID,
+    } : {};
 
-  if (search !== undefined && search !== null && search != 0) {
-    filter.RoomNumber = search;
+    if (search !== undefined && search !== null && search != 0) {
+      filter.RoomNumber = search;
+    }
+
+    if (status) {
+      filter.Status = status;
+    }
+
+    logger.info({ filter });
+
+    const [rooms, total] = await Promise.all([
+      RoomType.find(filter).skip(skip).limit(lim).lean(),
+      RoomType.countDocuments(),
+    ]);
+
+    return {
+      data: rooms.map(toRoomsDTO),
+      totalCount: total,
+      totalPage: Math.ceil(total / lim),
+    };
   }
 
-  if (status) {
-    filter.Status = status;
+  async findByHotelId(hotelId: string): Promise<IRoomsDocument[]> {
+    return await RoomType.find({ HotelId: hotelId, isBlocked: false });
   }
-
-  logger.info({ filter });
-
-  const [rooms, total] = await Promise.all([
-    Rooms.find(filter).skip(skip).limit(lim).lean(),
-    Rooms.countDocuments(),
-  ]);
-
-  return {
-    data: rooms.map(toRoomsDTO),
-    totalCount: total,
-    totalPage: Math.ceil(total / lim),
-  };
-}
-
 
   async findPackageWithPartner(id: string): Promise<RoomsDTO> {
-    const data = await Rooms.findById(id)
+    const data = await RoomType.findById(id)
       .populate('HotelId')
       .lean()
     if (data) return toRoomsDTO(data)

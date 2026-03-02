@@ -33,9 +33,11 @@ export const USER_API_METHODS = {
     GetAllCoupon: () => get(USER_ROUTES.packages.GetAllCoupon),
 
     // hotel api requests
-    getAllHotel: (query: string, page?: number, limit?: number) => get(USER_ROUTES.hotel.getAllHotel, { page, limit, query }),
+    getAllHotel: (search: string, page?: number, limit?: number) => get(USER_ROUTES.hotel.getAllHotel, { page, limit, search }),
+    getHotelDetails: (id: string) => get(`${USER_ROUTES.hotel.getAllHotel.replace('/getAll', '/details')}/${id}`),
+    getRoomsByHotel: (id: string, params?: { startDate?: string; endDate?: string; people?: number }) => get(`${USER_ROUTES.hotel.getAllHotel.replace('/getAll', '/getRoomsByHotel')}/${id}`, params),
     getRoomDetails: (id: string) => get(USER_ROUTES.hotel.getRoomDetails(id)),
-    purchaseRoom: (data: { roomId: string, role: string, amount: number, couponId?: string, startDate: string }) => post(USER_ROUTES.hotel.purchaseRoom, data),
+    purchaseRoom: (data: { roomId: string, role: string, amount: number, couponId?: string, startDate: string, people: number }) => post(USER_ROUTES.hotel.purchaseRoom, data),
 
     // foods api requests
     showAllFoods: (params?: any) => get(USER_ROUTES.foods.showAllFoods, params),

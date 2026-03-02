@@ -26,7 +26,7 @@ export class AgencyProfileController implements IAgencyProfileController {
   }
 
   async update(req: Request, res: Response): Promise<void> {
-    const { ownerName, companyName, phone } = req.body;
+    const { ownerName, companyName, phone, address } = req.body;
 
     // Extract bankDetails from flat structure if sent via FormData
     const bankDetails = req.body.bankDetails || {
@@ -40,6 +40,7 @@ export class AgencyProfileController implements IAgencyProfileController {
     const updatedAgency = await this._agencyProfileService.updateProfile(agencyId, {
       ownerName,
       companyName,
+      address,
       phone: Number(phone),
       bankDetails: bankDetails as any,
     });

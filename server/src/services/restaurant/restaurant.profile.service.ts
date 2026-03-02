@@ -13,12 +13,13 @@ export class RestaurantProfileService implements IRestaurantProfileService {
   constructor(
     @inject('IRestaurantAuthRepository')
     private readonly _restaurantAuthRepo: IRestaurantAuthRepository,
-  ) {}
+  ) { }
   async updateProfile(
     id: string,
     data: {
       ownerName: string;
       companyName: string;
+      address?: string;
       phone: number;
       bankDetails: {
         ifscCode: string;
@@ -42,7 +43,6 @@ export class RestaurantProfileService implements IRestaurantProfileService {
     files: { [fieldname: string]: Express.Multer.File[] },
   ): Promise<vendorRequestDTO | null> {
     let update;
-    console.log('asdkfjasld;fj',files)
     for (const fileName in files) {
       const file = files[fileName][0];
       console.log(file)

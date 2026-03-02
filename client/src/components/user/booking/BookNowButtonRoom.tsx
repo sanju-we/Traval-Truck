@@ -9,10 +9,11 @@ interface props {
   amount: number,
   role: string,
   couponCode?: string,
-  startDate : string,
+  startDate: string,
+  people: number,
 }
 
-export default function BuyNowButton({ roomId, amount, role, couponCode,startDate }: props) {
+export default function BuyNowButton({ roomId, amount, role, couponCode, startDate, people }: props) {
   const [loading, setLoading] = useState(false);
 
   const handleBuy = async () => {
@@ -25,7 +26,7 @@ export default function BuyNowButton({ roomId, amount, role, couponCode,startDat
     try {
       setLoading(true);
 
-      const res = await service.purchaseRoom({ roomId, role, amount, couponId:couponCode,startDate});
+      const res = await service.purchaseRoom({ roomId, role, amount, couponId: couponCode, startDate, people });
       console.log(res)
       if (res.success && res.data.url) {
         window.location.href = res.data.url;

@@ -4,7 +4,7 @@ import { IOrders } from "../../../../core/interface/modelInterface/IOrders"
 import { IPackage } from "../../../../core/interface/modelInterface/Ipackage"
 import { TripPlan } from "../../../../types/index"
 import { RoomsDTO, toRoomsDTO } from "../../../../core/DTO/hotel/roomsDTO"
-import { IRooms } from "../../../../core/interface/modelInterface/IRooms"
+import { IRoomType } from "../../../interface/modelInterface/IRoomType"
 // import FoodsDTO later
 
 export type TripProductDTO =
@@ -13,7 +13,7 @@ export type TripProductDTO =
 
 export interface IOrderWithProduct
   extends Omit<IOrders, "product"> {
-  product: IPackage | IRooms
+  product: IPackage | IRoomType
 }
 
 export const mapTripProduct = (
@@ -29,7 +29,7 @@ export const mapTripProduct = (
     case "Rooms":
       return {
         type: "Rooms",
-        data: toRoomsDTO(order.product as IRooms)
+        data: toRoomsDTO(order.product as IRoomType)
       }
 
     default:

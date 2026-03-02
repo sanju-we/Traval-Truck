@@ -6,6 +6,7 @@ export interface IAgencyProfileService {
     data: {
       ownerName: string;
       companyName: string;
+      address?: string;
       phone: number;
       bankDetails: {
         ifscCode: string;

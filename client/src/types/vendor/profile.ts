@@ -19,6 +19,7 @@ export default interface VendorProfile {
   logo?: string;
   phone?: number;
   companyName?: string;
+  address?: string;
   role: string;
   bankDetails?: BankDetails;
   documents?: VendorDocuments;
@@ -26,5 +27,5 @@ export default interface VendorProfile {
   isBlocked: boolean;
   isRestricted: boolean;
   createdAt: string;
-  reason:string
+  reason: string
 }
