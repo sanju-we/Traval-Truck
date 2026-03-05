@@ -13,6 +13,11 @@ const messageSchema = new Schema<IMessageDocument>(
             required: true,
             refPath: 'receiverModel',
         },
+        chatId: {
+            type: Schema.Types.ObjectId,
+            required: true,
+            ref: 'Chat',
+        },
         content: {
             type: String,
             required: true,

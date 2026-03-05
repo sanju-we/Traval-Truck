@@ -67,7 +67,12 @@ export default function OrdersPage() {
   }
 
   function handleChatWithAgency(trip: Trip) {
-    router.push(`/chat/${trip.agencyId || 'agency'}?orderId=${trip.orderId}`);
+    const agencyId = trip.product.data.ownedBy || trip.agencyId;
+    if (agencyId) {
+      router.push(`/chat/${agencyId}?orderId=${trip.orderId}`);
+    } else {
+      toast.error('Agency information not available');
+    }
   }
 
   function handleViewDetails(trip: Trip) {

@@ -31,6 +31,14 @@ export class SocketService {
                 logger.info(`Socket ${socket.id} joined chat: ${chatId}`);
             });
 
+            socket.on('typing', ({ chatId, userId }: { chatId: string, userId: string }) => {
+                socket.to(chatId).emit('typing', { chatId, userId });
+            });
+
+            socket.on('stop_typing', ({ chatId, userId }: { chatId: string, userId: string }) => {
+                socket.to(chatId).emit('stop_typing', { chatId, userId });
+            });
+
             socket.on('disconnect', () => {
                 if (userId) {
                     this.userSockets.delete(userId as string);

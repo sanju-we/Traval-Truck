@@ -46,6 +46,7 @@ export class ChatService implements IChatService {
         if (!receiver) throw new Error('Receiver not found');
 
         const message = await Message.create({
+            chatId,
             senderId,
             senderModel,
             receiverId: receiver.participantId,
@@ -57,17 +58,22 @@ export class ChatService implements IChatService {
         chat.lastMessage = message._id as any;
         await chat.save();
 
-        // Real-time emit
+        // Real-time emit to receiver's private room
         this._socketService.emitToUser(receiver.participantId.toString(), 'new_message', message);
-        this._socketService.emitToChat(chatId, 'message_received', message);
+        // Real-time emit to chat room for others in the chat
+        this._socketService.emitToChat(chatId, 'new_message', message);
 
         return message;
     }
 
     async getUserChats(userId: string, role: 'User' | 'Agency'): Promise<IChatDocument[]> {
         return await Chat.find({
-            'participants.participantId': userId,
-            'participants.participantModel': role
+            participants: {
+                $elemMatch: {
+                    participantId: userId,
+                    participantModel: role
+                }
+            }
         }).populate('lastMessage').sort({ updatedAt: -1 });
     }
 

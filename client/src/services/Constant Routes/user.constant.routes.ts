@@ -3,59 +3,60 @@
 const BASE = `/user`
 const USER_AUTH = `${BASE}/auth`
 const USER_PROFILE = `${BASE}/profile`
-const USER_PACKAGE =  `${BASE}/packages`
+const USER_PACKAGE = `${BASE}/packages`
 const USER_HOTELS = `${BASE}/hotels`
 const USER_FOODS = `${BASE}/foods`
 const USER_TRIP = `${BASE}/trip`
 const USER_MIND_MAP = `${BASE}/mind-map`
 
 export const USER_ROUTES = {
-  auth : {
-    login : `${USER_AUTH}/login`,
-    logout : `${USER_AUTH}/logout`,
-    sendOtp : `${USER_AUTH}/sendOtp`,
-    verifySignup : `${USER_AUTH}/verify`,
-    forgetPasswordRequest : `${USER_AUTH}/forgot-password`,
-    resetPassword : `${USER_AUTH}/reset-password`,
-    googleAuth : `${USER_AUTH}/google`
+  auth: {
+    login: `${USER_AUTH}/login`,
+    logout: `${USER_AUTH}/logout`,
+    sendOtp: `${USER_AUTH}/sendOtp`,
+    verifySignup: `${USER_AUTH}/verify`,
+    forgetPasswordRequest: `${USER_AUTH}/forgot-password`,
+    resetPassword: `${USER_AUTH}/reset-password`,
+    googleAuth: `${USER_AUTH}/google`
   },
 
-  profile : {
-    getProfile : `${USER_PROFILE}/profile`,
-    intrest : `${USER_PROFILE}/intrest`,
-    editProfile : `${USER_PROFILE}/update`,
-    uploadImage : `${USER_PROFILE}/upload-profile`
+  profile: {
+    getProfile: `${USER_PROFILE}/profile`,
+    intrest: `${USER_PROFILE}/intrest`,
+    editProfile: `${USER_PROFILE}/update`,
+    uploadImage: `${USER_PROFILE}/upload-profile`
   },
 
-  packages : {
-    getLatestPackages : `${USER_PACKAGE}`,
-    getAllPackages : `${USER_PACKAGE}/getAll`,
-    packageDetails :(id:string) => `${USER_PACKAGE}/getPackage/${id}`,
-    Purchasepackage : `${USER_PACKAGE}/purchase`,
-    GetAllCoupon : `${USER_PACKAGE}/coupon`
+  packages: {
+    getLatestPackages: `${USER_PACKAGE}`,
+    getAllPackages: `${USER_PACKAGE}/getAll`,
+    packageDetails: (id: string) => `${USER_PACKAGE}/getPackage/${id}`,
+    getAgencyDetails: (id: string) => `${USER_PACKAGE}/getAgencyDetails/${id}`,
+    Purchasepackage: `${USER_PACKAGE}/purchase`,
+    GetAllCoupon: `${USER_PACKAGE}/coupon`
   },
 
-  hotel : {
-    getAllHotel : `${USER_HOTELS}/getAll`,
-    getRoomDetails :(id:string) => `${USER_HOTELS}/getRoom/${id}`,
-    purchaseRoom : `${USER_HOTELS}/purchase`
+  hotel: {
+    getAllHotel: `${USER_HOTELS}/getAll`,
+    getRoomDetails: (id: string) => `${USER_HOTELS}/getRoom/${id}`,
+    purchaseRoom: `${USER_HOTELS}/purchase`
   },
 
-  foods : {
-    showAllFoods : `${USER_FOODS}/getAll`
+  foods: {
+    showAllFoods: `${USER_FOODS}/getAll`
   },
 
-  Trip : {
-    History : `${USER_TRIP}/tripHistory`,
-    OrderDetail : (orderId:string)=>`${USER_TRIP}/orderDetails/${orderId}`,
-    orderCancel : `${USER_TRIP}/cancelOrder`
+  Trip: {
+    History: `${USER_TRIP}/tripHistory`,
+    OrderDetail: (orderId: string) => `${USER_TRIP}/orderDetails/${orderId}`,
+    orderCancel: `${USER_TRIP}/cancelOrder`
   },
 
-  Mind_Map : {
-    GenerateTrip : `${USER_MIND_MAP}/create`,
-    UpdatedateTrip : `${USER_MIND_MAP}/update`,
-    getMindMap : `${USER_MIND_MAP}/getMap`,
-    MindMapDetails : `${USER_MIND_MAP}/mindMap`,
-    confitmMindMap : `${USER_MIND_MAP}/confirmMap`,
+  Mind_Map: {
+    GenerateTrip: `${USER_MIND_MAP}/create`,
+    UpdatedateTrip: `${USER_MIND_MAP}/update`,
+    getMindMap: `${USER_MIND_MAP}/getMap`,
+    MindMapDetails: `${USER_MIND_MAP}/mindMap`,
+    confitmMindMap: `${USER_MIND_MAP}/confirmMap`,
   }
 } 

@@ -3,6 +3,7 @@ import { Schema, Document, Types } from 'mongoose';
 export interface IMessage {
     senderId: Types.ObjectId;
     receiverId: Types.ObjectId;
+    chatId: Types.ObjectId;
     content: string;
     senderModel: 'User' | 'Agency';
     receiverModel: 'User' | 'Agency';

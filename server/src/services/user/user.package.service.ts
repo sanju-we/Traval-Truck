@@ -7,6 +7,7 @@ import { ISubscriptionHistoryRepository } from "../../core/interface/repositorie
 import { IPaymentUtils } from "../../core/interface/PaymentInterface/Ipayment.utils";
 import { IAdminCouponRepository } from "../../core/interface/repositorie/admin/Iadmin.coupon.repository";
 import { CouponDTO, toCouponDTO } from "../../core/DTO/admin/coupon/admin.coupon.response";
+import { IAgencyRespository } from "../../core/interface/repositorie/agency/Iagency.auth.repository";
 
 @injectable()
 export class UserPackageSerivce implements IUserPackageService {
@@ -14,7 +15,8 @@ export class UserPackageSerivce implements IUserPackageService {
     @inject('IAgencyPackageRepository') private readonly _packageRepo: IAgencyPackageRepository,
     @inject('ISubscriptionHistoryRepository') private readonly _subscriptionHistoryRepo: ISubscriptionHistoryRepository,
     @inject('IPaymentUtils') private readonly _paymentUtils: IPaymentUtils,
-    @inject('IAdminCouponRepository') private readonly _couponRepo: IAdminCouponRepository
+    @inject('IAdminCouponRepository') private readonly _couponRepo: IAdminCouponRepository,
+    @inject('IAgencyRespository') private readonly _agencyRepo: IAgencyRespository
   ) { }
   async getLatestPackage(): Promise<PackageResDTO[]> {
     const data = await this._packageRepo.findAllPackageWithPartners(1)
@@ -79,5 +81,11 @@ export class UserPackageSerivce implements IUserPackageService {
     const coupons = await this._couponRepo.findAll({ usedBy: { $ne: userId } }, {})
     if (!coupons) throw new DataNotFoundError()
     return coupons.map(toCouponDTO)
+  }
+
+  async getAgencyDetails(id: string): Promise<any> {
+    const agency = await this._agencyRepo.findById(id)
+    if (!agency) throw new DataNotFoundError()
+    return agency
   }
 }

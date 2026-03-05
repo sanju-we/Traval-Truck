@@ -105,7 +105,7 @@ export default function UserOrderDetailsPage() {
   };
 
   const handleChatWithAgency = () => {
-    const agencyId = order?.product?.data?.ownedBy || order?.product?.ownedBy || order?.ownedBy;
+    const agencyId = order?.product?.data?.ownedBy || order?.product?.ownedBy || (typeof order?.ownedBy === 'object' ? (order.ownedBy as any)._id : order?.ownedBy);
     if (agencyId) {
       router.push(`/chat/${agencyId}?orderId=${order?.orderId}`);
     } else {
@@ -668,7 +668,13 @@ export default function UserOrderDetailsPage() {
                   )}
               </div>
             </div>
-            {order.status == 'Completed' && <RatingCard orderId={order.id} productId={{ _id: order.product?.data?.id || order.product?.data?._id }} vendor={order.ownedBy} />}
+            {order.status == 'Completed' && order.ownedBy && (order.product?.data?.id || order.product?.data?._id) && (
+              <RatingCard
+                orderId={order.id}
+                productId={{ _id: order.product?.data?.id || order.product?.data?._id }}
+                vendor={order.ownedBy}
+              />
+            )}
           </div>
         </div>
       </div>

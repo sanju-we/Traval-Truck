@@ -45,4 +45,11 @@ export class UserPackageController implements IUserPackageController {
     const coupons = await this._userPackageService.getAllCoupons(userId)
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, coupons)
   }
+
+  async getAgencyDetails(req: Request, res: Response): Promise<void> {
+    const id = req.params.id
+    if (!id) throw new BADREQUEST()
+    const data = await this._userPackageService.getAgencyDetails(String(id))
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, data)
+  }
 }

@@ -13,4 +13,5 @@ export interface IUserPackageService {
   getPackage(id: string): Promise<PackageResDTO>;
   initiativePurchase(packageId: string, userId: string, role: string, amount: number, couponId: string, maxPeople?: number): Promise<{ url: string; sessionId: string }>
   getAllCoupons(userId: string): Promise<CouponDTO[]>;
+  getAgencyDetails(id: string): Promise<any>;
 }
