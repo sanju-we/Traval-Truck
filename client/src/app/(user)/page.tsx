@@ -1,12 +1,37 @@
-'use client';
-
+'use client'
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { Map, Route, Wallet, MessageSquare, Users, Sparkles, CheckCircle, TrendingUp } from 'lucide-react';
+import { Map, Route, Wallet, MessageSquare, Users, Sparkles, CheckCircle, TrendingUp, IndianRupee, Star, Loader2, Calendar, ArrowRight, MapPin } from 'lucide-react';
+import api from '@/services/api';
 
 export default function LandingPage() {
   const router = useRouter();
-  
+  const [packages, setPackages] = useState<any[]>([]);
+  const [hotels, setHotels] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [pkgRes, hotelRes] = await Promise.all([
+          api.get('/user/packages/getAll?page=1&limit=3'),
+          api.get('/user/hotels/getAll?page=1&limit=4'),
+        ]);
+        setPackages(pkgRes.data.data.data || []);
+        setHotels(hotelRes.data.data.data || []);
+      } catch (error) {
+        console.error('Error fetching landing page data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleAction = () => {
+    router.push('/login');
+  };
   return (
     <main className="bg-gradient-to-br from-blue-50 via-white to-emerald-50 overflow-hidden">
 
@@ -15,7 +40,7 @@ export default function LandingPage() {
         {/* Decorative elements */}
         <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000"></div>
-        
+
         <div className="max-w-6xl w-full grid md:grid-cols-2 gap-12 items-center relative z-10">
           <motion.div
             initial={{ opacity: 0, x: -40 }}
@@ -27,7 +52,7 @@ export default function LandingPage() {
               <Sparkles className="w-4 h-4" />
               AI-Powered Travel Planning
             </div>
-            
+
             <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight">
               Plan Trips.
               <span className="block text-emerald-600">Not Just Routes.</span>
@@ -40,8 +65,8 @@ export default function LandingPage() {
             </p>
 
             <div className="mt-10 flex flex-col sm:flex-row justify-center md:justify-start gap-4">
-              <button 
-                onClick={() => router.push('/home')}
+              <button
+                onClick={handleAction}
                 className="px-8 py-4 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
                 Get Started Free
@@ -269,6 +294,117 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* DYNAMIC PACKAGES SECTION */}
+      <section id="packages" className="py-24 bg-gradient-to-br from-emerald-50 to-teal-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-800 mb-4">Popular Travel Packages</h2>
+            <p className="text-gray-600">Hand-picked adventures just for you</p>
+          </div>
+
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="w-12 h-12 text-emerald-600 animate-spin" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {packages.slice(0, 3).map((pkg, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:border-emerald-200 transition-all group"
+                >
+                  <div className="bg-gradient-to-br from-emerald-500 to-teal-500 p-6 text-white relative overflow-hidden">
+                    <div className="relative z-10">
+                      <h3 className="text-2xl font-bold mb-2">{pkg.title}</h3>
+                      <p className="text-emerald-50 text-sm line-clamp-2">{pkg.description}</p>
+                    </div>
+                    <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform">
+                      <Map className="w-24 h-24" />
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="space-y-4 mb-6">
+                      <div className="flex items-center space-x-3 text-gray-700">
+                        <Calendar className="w-5 h-5 text-emerald-500" />
+                        <span className="font-medium">{pkg.duration}</span>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <IndianRupee className="w-5 h-5 text-emerald-500" />
+                        <span className="text-2xl font-bold text-gray-900">{pkg.price}</span>
+                        <span className="text-gray-500 text-sm">/ person</span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleAction}
+                      className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl font-semibold transition flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl"
+                    >
+                      <span>View Package Details</span>
+                      <ArrowRight className="w-5 h-5" />
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* DYNAMIC HOTELS/ROOMS SECTION */}
+      <section id="rooms" className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-800 mb-4">Featured Rooms & Stays</h2>
+            <p className="text-gray-600">Experience comfort in every destination</p>
+          </div>
+
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="w-12 h-12 text-emerald-600 animate-spin" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {hotels.slice(0, 4).map((hotel, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  className="group cursor-pointer"
+                  onClick={handleAction}
+                >
+                  <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
+                    <img
+                      src={hotel.Images?.[0] || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500'}
+                      alt={hotel.HotelName}
+                      className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <MapPin className="w-4 h-4 text-emerald-400" />
+                        <h3 className="text-lg font-bold line-clamp-1">{hotel.HotelName}</h3>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center text-yellow-400">
+                          <Star className="w-4 h-4 fill-current" />
+                          <span className="ml-1 text-sm font-semibold">{hotel.Rating || '4.5'}</span>
+                        </div>
+                        <p className="text-emerald-400 font-bold text-sm">
+                          <IndianRupee className="w-3 h-3 inline" /> {hotel.startingPrice || '1,200'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-24 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white text-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
@@ -288,8 +424,8 @@ export default function LandingPage() {
             <p className="mt-4 text-xl text-gray-300">
               Build your next journey with Travel Truck.
             </p>
-            <button 
-              onClick={() => router.push('/mind-map')}
+            <button
+              onClick={handleAction}
               className="inline-block mt-8 px-10 py-4 bg-gradient-to-r from-emerald-600 to-emerald-500 rounded-xl font-semibold hover:from-emerald-500 hover:to-emerald-600 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               Start Planning Now

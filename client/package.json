@@ -19,6 +19,7 @@
     "@reduxjs/toolkit": "^2.9.0",
     "@stripe/react-stripe-js": "^5.3.0",
     "@stripe/stripe-js": "^8.4.0",
+    "@types/socket.io-client": "^1.4.36",
     "axios": "^1.11.0",
     "framer-motion": "^12.29.2",
     "install": "^0.13.0",
@@ -37,7 +38,8 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.9.5",
     "recharts": "^3.2.1",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

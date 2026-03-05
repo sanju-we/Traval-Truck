@@ -60,6 +60,11 @@ import { ReplayRepository } from '../../repositories/shared/shared.replay.reposi
 import { ISubscriptionCleanupService } from '../../core/interface/serivice/shared/ISubscriptionCleanup.service';
 import { SubscriptionCleanupService } from '../../services/shared/subscriptionCleanup.service';
 import { SchedulerService } from '../../services/shared/scheduler.service';
+import { SocketService } from '../../services/shared/socket.service';
+import { IChatService } from '../../core/interface/serivice/shared/IChat.service';
+import { ChatService } from '../../services/shared/chat.service';
+import { IChatController } from '../../core/interface/controllerInterface/shared/IChat.controller';
+import { ChatController } from '../../controllers/sharedController/chat.controller';
 
 // ----------------------------------------------------user-------------------------------------------------------------
 import { IAuthService } from '../../core/interface/serivice/user/auth.interface';
@@ -224,6 +229,9 @@ container.bind<IReviewRepository>('IReviewRepository').to(ReviewRepository);
 container.bind<IReplayRepository>('IReplayRepository').to(ReplayRepository);
 container.bind<ISubscriptionCleanupService>('ISubscriptionCleanupService').to(SubscriptionCleanupService).inSingletonScope();
 container.bind<SchedulerService>('SchedulerService').to(SchedulerService).inSingletonScope();
+container.bind<SocketService>('SocketService').to(SocketService).inSingletonScope();
+container.bind<IChatService>('IChatService').to(ChatService).inSingletonScope();
+container.bind<IChatController>('IChatController').to(ChatController).inSingletonScope();
 
 // ---------------------------------------------------user container-------------------------------------------------------------------------
 container.bind<IAuthRepository>('IAuthRepository').to(AuthRepository);

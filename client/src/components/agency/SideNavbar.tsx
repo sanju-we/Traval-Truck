@@ -12,16 +12,21 @@ import {
   Plane,
   User,
 } from 'lucide-react';
-import { useState } from 'react';
-import api from '@/services/api';
 import { useRouter, usePathname } from 'next/navigation';
+import api from '@/services/api';
 import toast from 'react-hot-toast';
 import { AnimatePresence, motion } from 'framer-motion';
+import ChatWindow from '../shared/ChatWindow';
+import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 function SideNavbar() {
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const vendor = useSelector((state: RootState) => (state.auth as any).user); // Adjust based on your redux structure
 
   const handleLogout = async () => {
     const res = await api.post('/agency/auth/logout');
@@ -86,7 +91,7 @@ function SideNavbar() {
                 <span>Wallet</span>
               </button>
             </div>
-            <div className='hover:bg-gray-200 rounded-md'>
+            <div className='hover:bg-gray-200 rounded-md' onClick={() => setIsChatOpen(true)}>
               <button className="flex items-center space-x-2 p-2 text-black-600  rounded">
                 <Inbox className="material-icons">chat</Inbox>
                 <span>Chat</span>
@@ -164,6 +169,16 @@ function SideNavbar() {
           )}
         </AnimatePresence>
       </div>
+      {vendor && (
+        <ChatWindow
+          userId={vendor._id}
+          receiverId="some-admin-or-user-id" // This needs to be dynamic based on who they chat with
+          receiverName="Customer Support"
+          receiverModel="User"
+          isOpen={isChatOpen}
+          onClose={() => setIsChatOpen(false)}
+        />
+      )}
     </>
   );
 }

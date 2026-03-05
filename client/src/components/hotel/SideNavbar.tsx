@@ -17,11 +17,16 @@ import api from '@/services/api';
 import { useRouter, usePathname } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { AnimatePresence, motion } from 'framer-motion';
+import ChatWindow from '../shared/ChatWindow';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 function SideNavbar() {
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const vendor = useSelector((state: RootState) => (state.auth as any).user);
 
   const handleLogout = async () => {
     const res = await api.post('/hotel/auth/logout');
@@ -72,7 +77,7 @@ function SideNavbar() {
               <IndianRupee className="material-icons">payment</IndianRupee>
               <span>Subscriptions</span>
             </button>
-            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded">
+            <button className="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-200 rounded" onClick={() => setIsChatOpen(true)}>
               <Inbox className="material-icons">chat</Inbox>
               <span>Chat</span>
             </button>
@@ -141,6 +146,16 @@ function SideNavbar() {
           )}
         </AnimatePresence>
       </div>
+      {vendor && (
+        <ChatWindow
+          userId={vendor._id}
+          receiverId="some-admin-or-user-id"
+          receiverName="Customer Support"
+          receiverModel="User"
+          isOpen={isChatOpen}
+          onClose={() => setIsChatOpen(false)}
+        />
+      )}
     </>
   );
 }

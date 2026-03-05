@@ -55,8 +55,8 @@ export function middleware(req: NextRequest) {
   }
 
   if (pathname === '/') {
-    if (!token) {
-      return NextResponse.redirect(new URL('/login', req.url));
+    if (token) {
+      return NextResponse.redirect(new URL('/home', req.url));
     }
     return NextResponse.next();
   }
@@ -65,7 +65,9 @@ export function middleware(req: NextRequest) {
     .sort((a, b) => b.length - a.length)
     .find((prefix) => pathname.startsWith(prefix));
 
-  if (publicRoutes.includes(pathname) && token && matchedRole) {
+  const isPublicRoute = publicRoutes.includes(pathname);
+
+  if (isPublicRoute && token && matchedRole) {
     return NextResponse.redirect(new URL(roleRedirectMap[matchedRole], req.url));
   }
 
@@ -76,14 +78,21 @@ export function middleware(req: NextRequest) {
       pathname == '/forgetPassword' ||
       pathname == '/resetPassword')
   ) {
-    return NextResponse.redirect(new URL('/', req.url));
+    return NextResponse.redirect(new URL('/home', req.url));
   }
 
-  if (!publicRoutes.includes(pathname) && !token && matchedRole) {
-    return NextResponse.redirect(new URL(`${matchedRole}/login`, req.url));
+  if (!isPublicRoute && !token) {
+    if (matchedRole) {
+      return NextResponse.redirect(new URL(`${matchedRole}/login`, req.url));
+    }
+    // Only redirect if it's not the landing page (though we handled / above, just for safety)
+    if (pathname !== '/') {
+      return NextResponse.redirect(new URL('/login', req.url));
+    }
   }
 
   return NextResponse.next();
+
 }
 
 export const config = {

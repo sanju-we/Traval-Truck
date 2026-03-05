@@ -12,12 +12,12 @@ import mindMapRouter from './userRoute/user.mindMap.routes';
 const userRouter = Router();
 
 userRouter.use('/auth', authRouter)
-.use('/refresh', authRouter)
-.use('/profile', verifyToken, profileRouter)
-.use('/packages', verifyToken, userPackageRouter)
-.use('/hotels', verifyToken, UserHotelsRouter)
-.use('/foods', verifyToken, userFoodsRouter)
-.use('/trip',verifyToken, tripRouter)
-.use('/mind-map',verifyToken, mindMapRouter)
+    .use('/refresh', authRouter)
+    .use('/profile', verifyToken, profileRouter)
+    .use('/packages', userPackageRouter) // Token verification moved inside or handled differently
+    .use('/hotels', UserHotelsRouter)   // Token verification moved inside or handled differently
+    .use('/foods', verifyToken, userFoodsRouter)
+    .use('/trip', verifyToken, tripRouter)
+    .use('/mind-map', verifyToken, mindMapRouter)
 
 export default userRouter;

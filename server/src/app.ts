@@ -5,6 +5,7 @@ import agencyRouter from './routes/agencyRouters';
 import hotelRouter from './routes/hotelRouters';
 import restaurantRouter from './routes/restaurant';
 import sharedRouter from './routes/sharedRouter';
+import chatRouter from './routes/chatRouter';
 import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
@@ -41,6 +42,7 @@ app.use('/api/agency', agencyRouter);
 app.use('/api/hotel', hotelRouter);
 app.use('/api/restaurant', restaurantRouter);
 app.use('/api/shared', sharedRouter);
+app.use('/api/chat', chatRouter);
 
 
 // error handling middleware
