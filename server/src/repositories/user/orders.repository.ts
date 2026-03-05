@@ -27,7 +27,7 @@ export class OrderRepository extends BaseRepository<IOrders> implements IOrdersR
   }
 
   async findOrderWithProduct(orderId: string): Promise<IOrders | null> {
-    const data = await Order.findById(orderId).populate('product').populate('ownedBy')
+    const data = await Order.findById(orderId).populate('product').populate('ownedBy').populate('paymentId')
     return data
   }
 

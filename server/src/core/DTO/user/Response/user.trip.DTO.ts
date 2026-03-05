@@ -11,6 +11,30 @@ export type TripProductDTO =
   | { type: "Package"; data: PackageDTO }
   | { type: "Rooms"; data: RoomsDTO }
 
+export interface UserOrderDetailsDTO {
+  id: string;
+  orderId: string;
+  userId: string;
+  productType: string;
+  product: TripProductDTO;
+  amount: number;
+  startDate?: string;
+  endDate?: string;
+  status: string;
+  plan?: TripPlan[];
+  tripProgress?: any;
+  paymentId: {
+    _id: string;
+    transactionId?: string;
+    paymentMethod?: string;
+    paymentStatus?: string;
+  };
+  createdAt: Date;
+  ownedBy?: any;
+  people?: number;
+  reason?: string;
+}
+
 export interface IOrderWithProduct
   extends Omit<IOrders, "product"> {
   product: IPackage | IRoomType
@@ -78,3 +102,32 @@ export const toTripDTO = (
   endDate: order.endDate,
   productType: order.productType
 })
+
+export const toUserOrderDetailsDTO = (
+  order: IOrders
+): UserOrderDetailsDTO => {
+  const payment = order.paymentId as any;
+  return {
+    id: order._id.toString(),
+    orderId: order.orderId,
+    userId: order.userId.toString(),
+    productType: order.productType,
+    product: mapTripProduct(order as unknown as IOrderWithProduct),
+    amount: order.amount,
+    startDate: order.startDate,
+    endDate: order.endDate,
+    status: order.status,
+    plan: order.plan,
+    tripProgress: order.tripProgress,
+    paymentId: {
+      _id: payment?._id?.toString() || payment?.toString(),
+      transactionId: payment?.paymentIntentId || payment?.sessionId || "N/A",
+      paymentMethod: payment?.type || "Stripe",
+      paymentStatus: payment?.status || "paid"
+    },
+    createdAt: order.createdAt,
+    ownedBy: order.ownedBy,
+    people: order.people,
+    reason: order.reason
+  };
+}
