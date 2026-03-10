@@ -74,6 +74,8 @@ export interface Room {
   id: string;
   RoomNumber: number;
   Capacity: number;
+  roomType: string;
+  AvailableCount: number;
   Description: string;
   PricePerNight: number;
   Status: string;

@@ -43,23 +43,29 @@ export interface IOrderWithProduct
 export const mapTripProduct = (
   order: IOrderWithProduct
 ): TripProductDTO => {
+  if (!order.product) {
+    return {
+      type: order.productType as any,
+      data: {} as any
+    };
+  }
   switch (order.productType) {
     case "Package":
       return {
         type: "Package",
         data: toPackageDTO(order.product as IPackage)
-      }
+      };
 
     case "Rooms":
       return {
         type: "Rooms",
         data: toRoomsDTO(order.product as IRoomType)
-      }
+      };
 
     default:
-      throw new Error("Unsupported product type")
+      throw new Error("Unsupported product type");
   }
-}
+};
 
 export interface TripDTO {
   id: string
@@ -72,6 +78,7 @@ export interface TripDTO {
   startDate?: string
   endDate?: string
   productType: string
+  createdAt: Date
 }
 
 export interface Trip {
@@ -100,19 +107,22 @@ export const toTripDTO = (
   people: order.people,
   startDate: order.startDate,
   endDate: order.endDate,
-  productType: order.productType
+  productType: order.productType,
+  createdAt: order.createdAt
 })
 
 export const toUserOrderDetailsDTO = (
   order: IOrders
 ): UserOrderDetailsDTO => {
   const payment = order.paymentId as any;
+  const productData = (order as unknown as IOrderWithProduct).product;
+
   return {
     id: order._id.toString(),
     orderId: order.orderId,
     userId: order.userId.toString(),
     productType: order.productType,
-    product: mapTripProduct(order as unknown as IOrderWithProduct),
+    product: productData ? mapTripProduct(order as unknown as IOrderWithProduct) : null as any,
     amount: order.amount,
     startDate: order.startDate,
     endDate: order.endDate,
@@ -120,7 +130,7 @@ export const toUserOrderDetailsDTO = (
     plan: order.plan,
     tripProgress: order.tripProgress,
     paymentId: {
-      _id: payment?._id?.toString() || payment?.toString(),
+      _id: payment?._id?.toString() || payment?.toString() || "",
       transactionId: payment?.paymentIntentId || payment?.sessionId || "N/A",
       paymentMethod: payment?.type || "Stripe",
       paymentStatus: payment?.status || "paid"

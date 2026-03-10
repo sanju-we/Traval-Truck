@@ -1,4 +1,3 @@
-import RoomType from "../../models/RoomType";
 import { IRoomType, IRoomsDocument } from "../../core/interface/modelInterface/IRoomType";
 import { IHotelRoomsRepository } from "../../core/interface/repositorie/Hotel/Ihotel.rooms.repository";
 import { BaseRepository } from "../../repositories/baseRepository";
@@ -7,10 +6,11 @@ import { toRoomsDTO, RoomsDTO } from "../../core/DTO/hotel/roomsDTO";
 import { logger } from "../../utils/logger";
 import { PaginationResponse } from "../../core/DTO/pagination.DTO";
 import mongoose from "mongoose";
+import RoomType from "../../models/RoomType";
 
 export class HotelRoomsRepository extends BaseRepository<IRoomsDocument> implements IHotelRoomsRepository {
   constructor() {
-    super(RoomType as any)
+    super(RoomType)
   }
 
   async findAllPackageWithPartners(
@@ -52,7 +52,10 @@ export class HotelRoomsRepository extends BaseRepository<IRoomsDocument> impleme
   }
 
   async findByHotelId(hotelId: string): Promise<IRoomsDocument[]> {
-    return await RoomType.find({ HotelId: hotelId, isBlocked: false });
+    const Id = new mongoose.Types.ObjectId(hotelId);
+    const rooms = await RoomType.find({isBlocked: false});
+    console.log(`Rooms for hotel ${hotelId}:`, rooms);
+    return rooms;
   }
 
   async findPackageWithPartner(id: string): Promise<RoomsDTO> {

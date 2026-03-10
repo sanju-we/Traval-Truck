@@ -34,10 +34,12 @@ export default function BuyNowButton({ subscriptionId, role }: any) {
         role
       });
 
-      console.log('data:',data)
+      console.log('data:', data)
 
-      if (data.url) {
-        window.location.href = data.url; // redirect to Stripe checkout
+      if (data && data.success && data.data && data.data.url) {
+        window.location.href = data.data.url; // redirect to Stripe checkout
+      } else {
+        toast.error("Failed to initiate checkout");
       }
     } catch (err) {
       console.error("Buy error:", err);

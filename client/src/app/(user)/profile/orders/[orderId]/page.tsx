@@ -454,7 +454,13 @@ export default function UserOrderDetailsPage() {
                 startDate={order.startDate}
               />
             ) : order.productType === 'Rooms' ? (
-              <RoomDetails product={order.product?.data} />
+              <RoomDetails
+                product={order.product?.data}
+                startDate={order.startDate}
+                endDate={order.endDate}
+                people={order.people}
+                hotel={order.ownedBy}
+              />
             ) : (
               <div className="bg-white rounded-xl p-6 text-center">
                 <p className="text-gray-500">Product type not supported</p>
@@ -563,16 +569,27 @@ export default function UserOrderDetailsPage() {
               </div>
 
               <div className="p-6 space-y-4">
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">
-                    {order.productType === 'Rooms' ? 'Hotel Name' : 'Agency Name'}
-                  </p>
-                  <p className="font-semibold text-gray-800">
-                    {(order.ownedBy &&
-                      typeof order.ownedBy === 'object' &&
-                      (order.ownedBy.companyName || order.ownedBy.name)) ||
-                      (order.product?.data?.ownedBy ? 'Information' : 'N/A')}
-                  </p>
+                <div className="flex items-center gap-4">
+                  {order.ownedBy?.logo && (
+                    <div className="w-16 h-16 rounded-xl overflow-hidden border border-gray-100 flex-shrink-0 bg-gray-50">
+                      <img
+                        src={order.ownedBy.logo}
+                        alt={order.ownedBy.companyName || 'Logo'}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-xs text-gray-500 mb-1">
+                      {order.productType === 'Rooms' ? 'Hotel Name' : 'Agency Name'}
+                    </p>
+                    <p className="font-semibold text-gray-800">
+                      {(order.ownedBy &&
+                        typeof order.ownedBy === 'object' &&
+                        (order.ownedBy.companyName || order.ownedBy.name)) ||
+                        (order.product?.data?.ownedBy ? 'Information' : 'N/A')}
+                    </p>
+                  </div>
                 </div>
 
                 {order.ownedBy &&
@@ -668,7 +685,7 @@ export default function UserOrderDetailsPage() {
                   )}
               </div>
             </div>
-            {order.status == 'Completed' && <RatingCard orderId={order.id} productId={{ _id: order.product?.data?.id || order.product?.data?._id }} vendor={order.ownedBy} />}
+            {order.status === 'Completed' && order.ownedBy && (order.product?.data?.id || order.product?.data?._id) && <RatingCard orderId={order.id} productId={{ _id: order.product?.data?.id || order.product?.data?._id }} vendor={order.ownedBy} />}
           </div>
         </div>
       </div>

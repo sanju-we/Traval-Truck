@@ -7,13 +7,15 @@ export const dynamic = "force-dynamic";
 async function activateSubscription(subscriptionId: string) {
     const serverApi = await createServerAxios();
     try {
+        console.log(`[CLIENT] Activating subscription for session: ${subscriptionId}`);
         const res = await serverApi.post(
             `/shared/subscriptions/hotel/activate`,
             { subscriptionId }
         );
+        console.log(`[CLIENT] Activation response:`, res.data);
         return res.data.success;
-    } catch (err) {
-        console.error("Activation failed:", err);
+    } catch (err: any) {
+        console.error("[CLIENT] Activation failed:", err.message, err.response?.data);
         return false;
     }
 }

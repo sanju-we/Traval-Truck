@@ -140,6 +140,12 @@ export class WebhookService implements IWebhookService {
         const durationMs = plan.Valid * 24 * 60 * 60 * 1000;
         const endDate = new Date(Date.now() + durationMs);
 
+        const existing = await this._subscriptionHistoryRepo.findOne({ paymentId: paymentIntentId });
+        if (existing) {
+            logger.info(`Subscription already activated for payment: ${paymentIntentId}`);
+            return;
+        }
+
         await this._subscriptionHistoryRepo.create({
             userId,
             role,
@@ -224,8 +230,10 @@ export class WebhookService implements IWebhookService {
         const roomId = metadata.roomId;
         const amount = metadata.amount;
         const start = metadata.startDate;
+        const end = metadata.endDate;
         const userId = metadata.userId;
         const couponId = metadata.couponId;
+        const people = parseInt(metadata.people || '1');
 
         const room = await this._roomRepo.findById(roomId);
         if (!room) throw new DataNotFoundError();
@@ -236,10 +244,13 @@ export class WebhookService implements IWebhookService {
         const discountAmount: number = 0;
         const coupon: string = 'none';
         const totalAmount: number = amount;
-        const days = (amount / room.PricePerNight)
+
         const startDate = new Date(start);
-        const endDate = new Date(startDate);
-        endDate.setDate(endDate.getDate() + days);
+        const endDate = end ? new Date(end) : new Date(startDate);
+        if (!end) {
+            const days = (amount / room.PricePerNight);
+            endDate.setDate(endDate.getDate() + days);
+        }
 
         const pad = (n: number) => n.toString().padStart(2, '0');
         const count = (await this._orderRepo.countDocuments() + 1).toString().padStart(6, '0')
@@ -253,11 +264,12 @@ export class WebhookService implements IWebhookService {
             productType: 'Rooms',
             role: 'Hotel',
             product: roomId,
+            people: people,
             ownedBy: room.HotelId.toString(),
             paymentId: transaction.id,
             couponApplied: coupon,
-            startDate: startDate.toString(),
-            endDate: endDate.toString()
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString()
         })
 
         const adminWallet = await this._walletRepo.findOne({ role: 'admin' })
@@ -274,7 +286,6 @@ export class WebhookService implements IWebhookService {
         adminWallet.Balance += orderData.amount;
         await this._walletRepo.update(adminWallet._id.toString(), adminWallet);
 
-        room.Status = 'Occupid';
-        await this._roomRepo.update(room._id.toString(), room);
+        // We no longer set room.Status to 'Occupid' because availability is now dynamic per date.
     }
 }

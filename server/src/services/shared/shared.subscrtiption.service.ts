@@ -32,7 +32,6 @@ export class SharedSubscriptionService implements ISharedSubscriptionService {
   }
 
   async getCurrentSubscription(id: string): Promise<subscriptionHistoryDTO> {
-    // Find the most recent active subscription (not expired)
     const subscription = await this._subscriptionHistoryRepo.findOne(
       {
         userId: id,
@@ -88,7 +87,10 @@ export class SharedSubscriptionService implements ISharedSubscriptionService {
   ): Promise<subscriptionHistoryDTO> {
 
     const plan = await this._subscriptionRepo.findById(planId);
-    if (!plan) throw new DataNotFoundError();
+    if (!plan) {
+      logger.error(`createSubscriptionHistory failed: Plan not found ${planId}`);
+      throw new DataNotFoundError();
+    }
 
     const durationMs = plan.Valid * 24 * 60 * 60 * 1000;
     const endDate = new Date(Date.now() + durationMs);
@@ -96,14 +98,20 @@ export class SharedSubscriptionService implements ISharedSubscriptionService {
     const saved = await this._subscriptionHistoryRepo.create({
       userId,
       role,
-      paymentId,
+      paymentId: paymentId,
       amount: plan.Amount,
       subscriptionId: planId,
       startDate: new Date(),
+      status: 'active',
       endDate
     });
 
-    if (!saved) throw new Data_Creation_Error();
+    if (!saved) {
+      logger.error(`createSubscriptionHistory failed to save in DB`);
+      throw new Data_Creation_Error();
+    }
+
+    logger.info(`Subscription activated for user: ${userId}, plan: ${plan.Name}, end date: ${endDate}`);
 
     return toSubsctiptionHistoryDTO(saved);
   }
@@ -117,15 +125,29 @@ export class SharedSubscriptionService implements ISharedSubscriptionService {
     }
 
     // 2. Check metadata matches
-    if (session.metadata?.userId !== userId || session.metadata?.role !== role) {
-      logger.error(`Activation failed: Metadata mismatch. Session User: ${session.metadata?.userId}, Request User: ${userId}`);
+    const metadataUserId = session.metadata?.userId;
+    const metadataRole = session.metadata?.role;
+
+    // Use toString() to ensure we are comparing strings if one is an ObjectId
+    if (metadataUserId?.toString() !== userId?.toString() || metadataRole !== role) {
+      logger.error(`Activation failed: Metadata mismatch. Session User: ${metadataUserId}, Request User: ${userId}`);
       return false;
     }
 
-    const planId = session.metadata.planId;
+    const planId = session.metadata?.planId;
+    if (!planId) {
+      logger.error(`Activation failed: No planId in session metadata.`);
+      return false;
+    }
+
     const paymentIntentId = typeof session.payment_intent === 'string'
       ? session.payment_intent
       : (session.payment_intent as any)?.id;
+
+    if (!paymentIntentId) {
+      logger.error(`Activation failed: Could not extract payment intent ID from session.`);
+      return false;
+    }
 
     // 3. Check if already active (Idempotency)
     const existingHistory = await this._subscriptionHistoryRepo.findOne({

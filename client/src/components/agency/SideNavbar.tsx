@@ -16,7 +16,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
 import { AnimatePresence, motion } from 'framer-motion';
-import ChatWindow from '../shared/ChatWindow';
+// import ChatWindow from '../shared/ChatWindow';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
@@ -169,7 +169,7 @@ function SideNavbar() {
           )}
         </AnimatePresence>
       </div>
-      {vendor && (
+      {/* {vendor && (
         <ChatWindow
           userId={vendor._id}
           receiverId="some-admin-or-user-id" // This needs to be dynamic based on who they chat with
@@ -178,7 +178,7 @@ function SideNavbar() {
           isOpen={isChatOpen}
           onClose={() => setIsChatOpen(false)}
         />
-      )}
+      )} */}
     </>
   );
 }

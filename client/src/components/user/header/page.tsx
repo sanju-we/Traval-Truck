@@ -84,7 +84,7 @@ export function Header() {
                 { name: 'Home', path: '/' },
                 { name: 'Packages', path: '/package' },
                 { name: 'Hotels', path: '/hotels' },
-                { name: 'Destinations', path: '/description' },
+                // { name: 'Destinations', path: '/description' },
                 { name: 'Mind-Map', path: '/mind-map' },
               ].map((item) => (
                 <a

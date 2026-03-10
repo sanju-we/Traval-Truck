@@ -20,35 +20,42 @@ export class UserHotelsService implements IUserHotelsService {
   ) { }
 
   async getAllHotels(page: number, limit: number, search?: string): Promise<PaginationResponse<any>> {
-    const query = { search: search || '', status: 'approved' };
+    const query = { search: search || '', status: 'Activity' };
     const hotelsData = await this._hotelAuthRepo.findAllWithpagination(query, limit, page);
 
-    // Filter hotels that have active subscriptions
     const checks = await Promise.all(
       hotelsData.data.map(async (hotel) => {
-        const hasSubscription = await this._subscriptionHistoryRepo.findOne({
-          userId: hotel._id,
-        });
+        const hotelId = hotel._id.toString();
 
-        // Also check if they have at least one room type
-        const rooms = await this._hotelRoomRepo.findByHotelId(hotel._id.toString());
+        const hasSubscription = await this._subscriptionHistoryRepo.findOne(
+          {
+            userId: hotelId,
+            status: 'active',
+            endDate: { $gt: new Date() }
+          },
+          { sort: { createdAt: -1 } } 
+        );
+        
+        const rooms = await this._hotelRoomRepo.findByHotelId(hotelId);
+        console.log(`Hotel ID: ${hotelId}, Has Active Subscription: ${hasSubscription}, And rooms are ${rooms}`);
 
         if (hasSubscription && rooms.length > 0) {
+          const hotelObj = hotel.toObject ? hotel.toObject() : hotel;
           return {
-            ...hotel.toObject ? hotel.toObject() : hotel,
-            id: hotel._id.toString(),
-            PricePerNight: rooms[0].PricePerNight // For listing purposes
+            ...hotelObj,
+            id: hotelId,
+            PricePerNight: rooms[0].PricePerNight
           };
         }
         return null;
       })
     );
-
+    console.log(checks);
     const result = checks.filter((h) => h !== null);
 
     return {
       data: result,
-      totalCount: result.length, // This might be wrong for pagination, but simplified for now
+      totalCount: result.length,
       totalPage: Math.ceil(result.length / limit),
     };
   }
@@ -65,16 +72,11 @@ export class UserHotelsService implements IUserHotelsService {
       const filteredRooms = await Promise.all(roomsDTOs.map(async (room) => {
         const requiredRooms = Math.ceil(people / room.Capacity);
 
-        // If the required rooms for this type exceed total available units, skip
-        if (requiredRooms > (room.AvailableCount || 1)) return null;
-
-        // Check availability for dates
         const orders = await this._orderRepo.findAll({
           product: room.id,
           status: { $in: ['Upcoming', 'Ongoing'] }
         }, {});
 
-        // Count overlapping rooms per day
         const dateRange = [];
         let curr = new Date(start);
         while (curr < end) {
@@ -82,24 +84,29 @@ export class UserHotelsService implements IUserHotelsService {
           curr.setDate(curr.getDate() + 1);
         }
 
-        const isAvailable = dateRange.every(date => {
+        let maxBookedOnAnyDay = 0;
+
+        dateRange.forEach(date => {
           let bookedOnThisDay = 0;
           orders.forEach(order => {
             if (order.startDate && order.endDate) {
               const oStart = new Date(order.startDate);
               const oEnd = new Date(order.endDate);
               if (date >= oStart && date < oEnd) {
-                // We need to know how many rooms were booked in this order.
-                // Assuming 'people' was saved in order and we can derive rooms.
                 const orderRooms = Math.ceil((order.people || 1) / room.Capacity);
                 bookedOnThisDay += orderRooms;
               }
             }
           });
-          return (bookedOnThisDay + requiredRooms) <= (room.AvailableCount || 1);
+          if (bookedOnThisDay > maxBookedOnAnyDay) maxBookedOnAnyDay = bookedOnThisDay;
         });
 
-        return isAvailable ? { ...room, requiredRooms } : null;
+        const remainingCount = (room.AvailableCount || 1) - maxBookedOnAnyDay;
+
+        if (remainingCount >= requiredRooms) {
+          return { ...room, AvailableCount: remainingCount, requiredRooms };
+        }
+        return null;
       }));
 
       roomsDTOs = filteredRooms.filter(r => r !== null) as RoomsDTO[];
@@ -175,7 +182,9 @@ export class UserHotelsService implements IUserHotelsService {
         amount,
         roomId,
         couponId,
-        startDate
+        startDate,
+        endDate: endDate.toISOString(),
+        people: people.toString()
       }
     })
   }

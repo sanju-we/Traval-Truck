@@ -13,7 +13,10 @@ export class OrderRepository extends BaseRepository<IOrders> implements IOrdersR
   }
 
   async findAllByProduct(userId: string, page?: number, limit?: number): Promise<TripDTO[]> {
-    let query = Order.find({ userId: userId }).populate<{ product: IPackage | IRoomType }>('product').sort({ createdAt: -1 })
+    let query = Order.find({ userId: userId })
+      .populate<{ product: IPackage | IRoomType }>('product')
+      .populate('ownedBy')
+      .sort({ createdAt: -1 })
 
     // Apply pagination if both page and limit are provided
     if (page !== undefined && limit !== undefined && limit > 0) {
@@ -22,22 +25,29 @@ export class OrderRepository extends BaseRepository<IOrders> implements IOrdersR
     }
 
     const data = await query
-    console.log(data)
     return data.map(order => toTripDTO(order as IOrderWithProduct))
   }
 
   async findOrderWithProduct(orderId: string): Promise<IOrders | null> {
-    const data = await Order.findById(orderId).populate('product').populate('ownedBy').populate('paymentId')
+    const data = await Order.findById(orderId)
+      .populate('product')
+      .populate('ownedBy')
+      .populate('paymentId')
     return data
   }
 
   async findOrderWithUser(orderId: string): Promise<IOrders | null> {
-    const data = await Order.findById(orderId).populate('userId').populate('ownedBy')
+    const data = await Order.findById(orderId)
+      .populate('userId')
+      .populate('ownedBy')
     return data
   }
 
   async findAllOrdersAdmin(): Promise<TripDTO[] | null> {
-    const orders = await Order.find().populate('userId').populate('ownedBy').populate<{ product: IPackage | IRoomType }>('product')
+    const orders = await Order.find()
+      .populate('userId')
+      .populate('ownedBy')
+      .populate<{ product: IPackage | IRoomType }>('product')
     return orders.map(order => toTripDTO(order as IOrderWithProduct))
   }
 }

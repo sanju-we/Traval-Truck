@@ -87,7 +87,7 @@ export async function verifyHotelToken(req: Request, res: Response, next: NextFu
 
     if (hotel.isRestricted) {
       const allowedUrls = ['/profile', '/update-documents', '/purchase', '/activate'];
-      if (!allowedUrls.includes(req.url)) {
+      if (!allowedUrls.some(url => req.url.endsWith(url))) {
         if (!hotel.isApproved) throw new UNAUTHORIZEDUserFounf();
       }
     }
@@ -129,7 +129,7 @@ export async function verifyAgencyToken(req: Request, res: Response, next: NextF
 
     if (agency.isRestricted || !agency.isApproved) {
       const allowedUrls = ['/profile', '/update-documents', '/logout', '/update', '/purchase', '/activate'];
-      if (!allowedUrls.includes(req.url)) {
+      if (!allowedUrls.some(url => req.url.endsWith(url))) {
         if (!agency.isApproved) throw new UNAUTHORIZEDUserFounf();
       }
     }
@@ -171,9 +171,8 @@ export async function verifyRestaurantToken(req: Request, res: Response, next: N
 
     if (restaurant.isRestricted || !restaurant.isApproved) {
       const allowedUrls = ['/profile', '/update-documents', '/update', '/purchase', '/activate'];
-      if (!allowedUrls.includes(req.url)) {
+      if (!allowedUrls.some(url => req.url.endsWith(url))) {
         if (!restaurant.isApproved) {
-          console.log('in here', req.url)
           throw new UNAUTHORIZEDUserFounf()
         };
       }

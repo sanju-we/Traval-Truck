@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { IRooms } from "../core/interface/modelInterface/IRoomType";
+import { IRooms, IRoomsDocument } from "../core/interface/modelInterface/IRoomType";
 
 const RoomTypeSchema: Schema = new Schema({
   HotelId: {
@@ -39,6 +39,6 @@ const RoomTypeSchema: Schema = new Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-const RoomType = mongoose.model<IRooms>("RoomType", RoomTypeSchema);
+const RoomType = mongoose.model<IRoomsDocument>("RoomType", RoomTypeSchema);
 
 export default RoomType;
