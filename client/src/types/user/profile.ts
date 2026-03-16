@@ -23,6 +23,8 @@ export interface UserProfile {
   isBlocked: boolean;
   role: string;
   googleId: string;
+  newPassword?:string;
+  oldPassword?:string;
   profilePicture?: string;
   bio?: string;
   phoneNumber?: number;

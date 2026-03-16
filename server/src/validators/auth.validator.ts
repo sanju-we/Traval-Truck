@@ -6,6 +6,11 @@ import { RoomsDTO } from "@core/DTO/hotel/roomsDTO";
 
 export class authValidator implements IAuthValidator {
 
+  async passwordValidator(password: string): Promise<void> {
+    const schema = z.string().min(8, "Password must be at least 8 characters long.").max(64, "Password cannot exceed 64 characters.").regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d_]{8,}$/, "Password must be at least 8 characters, include letters, numbers, and only '_' is allowed as special character");
+    schema.parse(password)
+  }
+
   async signUpValidator(enteredEmail: string, enteredOtp: string, agencyData: vendorData): Promise<void> {
     const schema = z.object({
       enteredEmail: z.email("Please enter a valid email address.").trim().toLowerCase().max(100, "Email is too long."),

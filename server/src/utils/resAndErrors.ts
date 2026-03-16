@@ -65,6 +65,12 @@ export class DataNotFoundError extends HttpError {
   }
 }
 
+export class PasswordMismatchError extends HttpError {
+  constructor() {
+    super(400, 'Current password is incorrect');
+  }
+}
+
 export class NoAccessToken extends HttpError {
   constructor() {
     super(403, 'Invalid Token');

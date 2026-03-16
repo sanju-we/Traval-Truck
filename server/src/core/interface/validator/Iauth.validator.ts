@@ -3,6 +3,7 @@ import { UserData, vendorData } from "types/index";
 import { RoomsDTO } from "../../../core/DTO/hotel/roomsDTO";
 
 export interface IAuthValidator {
+  passwordValidator(password: string): Promise<void>;
   signUpValidator(enteredEmail: string, enteredOtp: string, agencyData: vendorData): Promise<void>;
   userSignupValidator(email:string, otp:string, userData:UserData):Promise<void>;
   loginValidator(email: string, password: string): Promise<void>;

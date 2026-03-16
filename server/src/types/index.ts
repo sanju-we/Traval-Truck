@@ -23,13 +23,16 @@ export interface userProfileDTO {
   profilePicture?: string;
   phoneNumber?: number;
   role: string;
-  isBlocked:boolean
+  isBlocked: boolean
 }
 
 export interface userEdit {
   name: string;
   userName: string;
   phoneNumber: number;
+  oldPassword?: string;
+  newPassword?: string;
+  password?:string;
 }
 
 export interface Userauth {
@@ -55,7 +58,7 @@ export interface VendorAuth {
 export interface ResetToken {
   id: string;
   email: string;
-  role:string
+  role: string
 }
 
 // Vendor Types
@@ -96,8 +99,8 @@ export interface TripPlan {
   day: number;
   title: string;
   activities: string[];
-  completedActivities:number[];
-  isCompleted:boolean;
+  completedActivities: number[];
+  isCompleted: boolean;
 }
 
 export interface TripProgress {
@@ -112,6 +115,6 @@ export interface TripInterface {
   orderId: string
   product: PackageDTO
   status: string,
-  amount:number,
+  amount: number,
   plan: TripPlan[] | undefined
 }

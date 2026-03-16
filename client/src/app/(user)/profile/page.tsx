@@ -18,6 +18,7 @@ export default function UserProfilePage() {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [showPasswordChange, setShowPasswordChange] = useState(false);
   const [formData, setFormData] = useState<Partial<UserProfile>>({});
   const [isSaving, setIsSaving] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -56,6 +57,10 @@ export default function UserProfilePage() {
     fetchUser();
   }, []);
 
+  // function changePassword() {
+  //   await USER_API_METHODS.requestPasswordReset({ email: user?.email || '' });
+  // }
+
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -75,8 +80,9 @@ export default function UserProfilePage() {
         return;
       }
       toast.success('Profile updated successfully');
-      setUser(res.data.data);
+      setUser(res.data);
       setIsEditing(false);
+      setShowPasswordChange(false);
     } catch (err) {
       console.error(err);
       toast.error('Failed to update profile');
@@ -286,7 +292,7 @@ export default function UserProfilePage() {
                 <p className="text-sm text-gray-500 mt-2">Click the camera to change photo</p>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Full Name
@@ -323,6 +329,14 @@ export default function UserProfilePage() {
                     onChange={handleInputChange}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
+                </div>
+                <span className="text-sm flex justify-end text-emerald-600 hover:text-emerald-700 hover:cursor-pointer" onClick={() => setShowPasswordChange(!showPasswordChange)}>Change Password?</span>
+
+                <div hidden={!showPasswordChange}>
+                  <label> Currennt Password</label>
+                  <input type="password" name="oldPassword" id="oldPassword" placeholder="Current Password" onChange={handleInputChange} className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-emerald-500" /><br />
+                  <label> New Password</label>
+                  <input type="password" name="newPassword" id="newPassword" placeholder="New Password" onChange={handleInputChange} className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-emerald-500"/>
                 </div>
 
                 <div className="flex justify-end gap-3 pt-4">

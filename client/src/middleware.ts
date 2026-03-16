@@ -11,6 +11,7 @@ export function middleware(req: NextRequest) {
     '/signup',
     '/forgetPassword',
     '/resetPassword',
+    '/',
 
     '/admin/login',
 

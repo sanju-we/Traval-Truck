@@ -49,9 +49,7 @@ export class ProfileController implements IUserProfileController {
   }
   async updateUser(req: Request, res: Response): Promise<void> {
     const formData = req.body;
-    // await this._authValidator.userProfileUpdateValidator(formData.name,formData.userName,formData.phoneNumber)
     const user = req.user;
-
     const userData = await this._profileService.updateProfile(formData, user);
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, userData);
   }

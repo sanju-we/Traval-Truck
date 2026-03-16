@@ -2,21 +2,24 @@ import { IUserProfileService } from '../../core/interface/serivice/user/Iuser.pr
 import { inject, injectable } from 'inversify';
 import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository';
 import { userEdit, Userauth } from 'types/index';
-import { UserNotFoundError } from '../../utils/resAndErrors';
+import { PasswordMismatchError, UserNotFoundError } from '../../utils/resAndErrors';
 import { IUser } from 'types';
 import { singleUpload } from '../../utils/upload.cloudinary';
 import { toUserProfileDTO, userProfileDTO } from '../../core/DTO/user/Response/user.profile';
 import { IBaseValidator } from '../../core/interface/validator/IBasic.validator';
+import { IAuthValidator } from '@core/interface/validator/Iauth.validator';
+import bcrypt from 'bcryptjs';
 
 @injectable()
 export class UserProfileService implements IUserProfileService {
   constructor(
     @inject('IAuthRepository') private readonly _authRespository: IAuthRepository,
-    @inject('IBaseValidator') private readonly _baseValidator : IBaseValidator,
-  ) {}
+    @inject('IBaseValidator') private readonly _baseValidator: IBaseValidator,
+    @inject('IAuthValidator') private readonly _authValidator: IAuthValidator,
+  ) { }
 
   async setInterest(interests: string[], id: string): Promise<void> {
-    await this._baseValidator.InterestValidator(interests,id)
+    await this._baseValidator.InterestValidator(interests, id)
     await this._authRespository.findByIdAndUpdateAction(id, interests, 'interest');
   }
 
@@ -24,7 +27,19 @@ export class UserProfileService implements IUserProfileService {
     const userData = await this._authRespository.findById(user.id);
     if (!userData) throw new UserNotFoundError();
 
-    const updateUser = await this._authRespository.findByIdAndUpdateProfile(userData.id, formData);
+    let updateUser;
+
+    if (formData.oldPassword && formData.newPassword) {
+      const isMatch = await bcrypt.compare(formData.oldPassword, userData.password);
+      if (!isMatch) throw new PasswordMismatchError();
+      await this._authValidator.passwordValidator(formData.newPassword)
+      const hashedPassword = await bcrypt.hash(formData.newPassword, 10);
+      formData.newPassword = hashedPassword;
+      updateUser = await this._authRespository.findByIdAndUpdateProfile(userData.id, { ...formData, password: formData.newPassword });
+    } else {
+      updateUser = await this._authRespository.findByIdAndUpdateProfile(userData.id, formData);
+    }
+
     if (!updateUser) throw new UserNotFoundError();
 
     return updateUser;

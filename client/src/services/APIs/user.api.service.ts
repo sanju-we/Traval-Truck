@@ -24,6 +24,7 @@ export const USER_API_METHODS = {
     intrest: (data: any) => post(USER_ROUTES.profile.intrest, data),
     editProfile: (data: any) => patch(USER_ROUTES.profile.editProfile, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
     uploadImage: (data: any) => post(USER_ROUTES.profile.uploadImage, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+    changePassword:(data:{oldPassword:string,newPassword:string}) => post(USER_ROUTES.profile.changePassword, data),
 
     // packages api requests
     getLatestPackages: () => get(USER_ROUTES.packages.getLatestPackages),
