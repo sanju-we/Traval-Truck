@@ -5,12 +5,13 @@ import { useParams, useRouter } from 'next/navigation';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
-import { Loader2, Clock, MapPin, Utensils, CalendarDays, Star, User, Image as ImageIcon, ArrowLeft, Check, ChevronRight, Tag, X, Ticket, } from 'lucide-react';
+import { Loader2, Clock, MapPin, Utensils, CalendarDays, Home, Compass, Star, User, Image as ImageIcon, ArrowLeft, Check, ChevronRight, Tag, X, Ticket, } from 'lucide-react';
 import TermsModal from '@/components/shared/TermsModal';
 import BookNowButton from '@/components/user/booking/bookNowButton';
 import toast from 'react-hot-toast';
 import PackageReviews from '@/components/shared/Reviews';
 import { PackageData } from '@/types/agency';
+import { SHARED_API_METHODS } from '@/services/APIs/shared.api.service';
 
 export default function PackageDetailsPage() {
   const params = useParams();
@@ -29,6 +30,9 @@ export default function PackageDetailsPage() {
   const [couponId, setCouponId] = useState('')
   const [couponLoading, setCouponLoading] = useState(true);
   const [maxPeople, setMaxPeople] = useState(1);
+  const [paymentMethod, setPaymentMethod] = useState<'online' | 'wallet'>('online');
+  const [walletBalance, setWalletBalance] = useState<number | null>(null);
+  const [walletLoading, setWalletLoading] = useState(false);
 
   const id = typeof params.id === "string" ? params.id : params.id?.[0];
 
@@ -44,11 +48,11 @@ export default function PackageDetailsPage() {
     }
   }, [pack]);
 
-  if (!id) return (
-    <div>
-      <h1>Provided id is not valid</h1>
-    </div>
-  )
+  useEffect(() => {
+    if (paymentMethod === 'wallet') {
+      fetchWalletBalance();
+    }
+  }, [paymentMethod])
 
   async function fetchCoupon() {
     try {
@@ -66,10 +70,46 @@ export default function PackageDetailsPage() {
     }
   }
 
+  async function fetchWalletBalance() {
+    try {
+      setWalletLoading(true);
+      const data = await SHARED_API_METHODS.getWalletBalance('user');
+      console.log(data)
+      if (data.success) {
+        setWalletBalance(data.data.balance);
+      } else setWalletBalance(0);
+    } catch (err) {
+      console.log('Wallet balance fetch error:', err);
+      setWalletBalance(0);
+    } finally {
+      setWalletLoading(false);
+    }
+  }
+
+  async function handleWalletPayment() {
+    if (!walletBalance || walletBalance < discountedPrice) {
+      toast.error('Insufficient wallet balance to complete this booking');
+      return;
+    }
+
+    const data = await USER_API_METHODS.walletPurchase({
+      productId: id!,
+      amount: discountedPrice,
+      people: maxPeople,
+      couponId: couponId,
+      productType: 'package'
+    })
+
+    if (data.success) {
+      toast.success('Booking successful! Your wallet has been debited.');
+      router.push('/profile/orders');
+    }
+  }
+
   function handlePeople(e: ChangeEvent<HTMLInputElement>) {
     if (!pack?.price) return
     const count = parseInt(e.target.value) || 0;
-    if (count > pack.maxPeople) {
+    if (count >= pack.maxPeople) {
       toast.error(`You can only select ${pack.maxPeople} people`);
       return;
     }
@@ -118,7 +158,7 @@ export default function PackageDetailsPage() {
   const removeCoupon = () => {
     setAppliedCoupon(null);
     setCouponCode('');
-    setDiscountedPrice(price);
+    setDiscountedPrice(pack?.price || price);
     toast.success('Coupon removed');
   };
 
@@ -126,7 +166,7 @@ export default function PackageDetailsPage() {
     try {
       const res = await USER_API_METHODS.packageDetails(packageId);
       if (res.success) {
-        setPack(res.data);
+        setPack(res.data);  
       } else {
         toast.error('Failed to load package details');
       }
@@ -145,6 +185,65 @@ export default function PackageDetailsPage() {
         <div className="flex flex-col items-center justify-center h-[60vh] gap-3">
           <Loader2 className="animate-spin w-12 h-12 text-emerald-500" />
           <p className="text-gray-600 font-medium">Loading package details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!id) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center px-4">
+        <div className="max-w-2xl w-full text-center">
+
+          {/* 404 Illustration */}
+          <div className="relative mb-8">
+            <div className="text-[150px] font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-pink-600 leading-none">
+              404
+            </div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+              <Compass className="text-orange-500/20" size={120} />
+            </div>
+          </div>
+
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Lost in the Travel-Verse
+          </h1>
+
+          <p className="text-xl text-gray-600 mb-8 max-w-lg mx-auto">
+            This mind-map seems to have wandered off the map.
+            Let's get you back on track!
+          </p>
+
+          <div className="inline-flex items-center gap-3 bg-white rounded-full px-6 py-3 shadow-lg mb-8">
+            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+            <span className="text-sm font-medium text-gray-700">Invalid Trip ID</span>
+          </div>
+
+          <div className="flex flex-wrap gap-4 justify-center">
+            <button
+              onClick={() => router.push('/mind-map/create')}
+              className="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-xl font-semibold hover:shadow-2xl hover:scale-105 transition-all flex items-center gap-2"
+            >
+              <Compass size={20} />
+              Create New Trip
+            </button>
+
+            <button
+              onClick={() => router.push('/mind-map')}
+              className="px-8 py-4 bg-white text-gray-700 rounded-xl font-semibold border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all flex items-center gap-2"
+            >
+              <Home size={20} />
+              My Trips
+            </button>
+          </div>
+
+          {/* Fun fact */}
+          <div className="mt-12 p-6 bg-white/50 backdrop-blur rounded-2xl border border-white/60">
+            <p className="text-sm text-gray-600">
+              💡 <span className="font-semibold">Did you know?</span> The average person plans
+              3-4 trips per year. Start planning yours now!
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -527,10 +626,43 @@ export default function PackageDetailsPage() {
             {appliedCoupon && (
               <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
                 <p className="text-sm text-green-700 font-medium">
-                  🎉 Coupon "{appliedCoupon.couponCode}" applied! You saved ₹{Math.round(pack.price - discountedPrice).toLocaleString()}
+                  🎉 Coupon "{appliedCoupon.couponCode}" applied! You saved ₹{Math.abs(Math.round(discountedPrice - (pack.price * maxPeople))).toLocaleString()}
                 </p>
               </div>
             )}
+          </div>
+
+          {/* Payment Method Selection */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">
+              Choose Payment Method
+            </h3>
+
+            <div className="grid grid-cols-2 gap-4">
+              {/* Online */}
+              <button
+                onClick={() => setPaymentMethod('online')}
+                className={`p-4 border-2 rounded-xl text-left transition ${paymentMethod === 'online'
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-200 hover:border-gray-300'
+                  }`}
+              >
+                <p className="font-semibold text-gray-800">Online Payment</p>
+                <p className="text-sm text-gray-500">Pay via Stripe / Card</p>
+              </button>
+
+              {/* Wallet */}
+              <button
+                onClick={() => setPaymentMethod('wallet')}
+                className={`p-4 border-2 rounded-xl text-left transition ${paymentMethod === 'wallet'
+                  ? 'border-emerald-500 bg-emerald-50'
+                  : 'border-gray-200 hover:border-gray-300'
+                  }`}
+              >
+                <p className="font-semibold text-gray-800">Wallet</p>
+                <p className="text-sm text-gray-500">Use your wallet balance</p>
+              </button>
+            </div>
           </div>
 
           {/* Price Summary */}
@@ -547,7 +679,7 @@ export default function PackageDetailsPage() {
               {appliedCoupon && (
                 <div className="flex justify-between text-green-600">
                   <span>Discount ({appliedCoupon.couponCode})</span>
-                  <span className="font-semibold">- ₹{Math.round(price - discountedPrice).toLocaleString()}</span>
+                  <span className="font-semibold">- ₹{Math.abs(Math.round(discountedPrice - (pack.price * maxPeople))).toLocaleString()}</span>
                 </div>
               )}
               <div className="border-t pt-2 flex justify-between text-lg font-bold text-gray-800">
@@ -579,10 +711,41 @@ export default function PackageDetailsPage() {
             </label>
           </div>
 
+          {paymentMethod === 'wallet' && (
+            <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+              {walletLoading ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="animate-spin w-5 h-5 text-emerald-600" />
+                  <span className="text-sm text-gray-600">Fetching wallet balance...</span>
+                </div>
+              ) : (
+                <>
+                  <p className="text-sm text-gray-600">Wallet Balance</p>
+                  <p className="text-2xl font-bold text-emerald-600">
+                    ₹{walletBalance?.toLocaleString()}
+                  </p>
+
+                  {walletBalance !== null && walletBalance < discountedPrice && (
+                    <p className="text-sm text-red-600 mt-2 font-medium">
+                      Insufficient balance to complete this booking
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+
           {/* Book Now Button */}
           <div className="flex justify-end">
-            {acceptedTerms ? (
+            {acceptedTerms && paymentMethod === 'online' ? (
               <BookNowButton packageId={id} amount={Math.round(discountedPrice)} role="user" couponCode={couponId} maxPeople={maxPeople} />
+            ) : paymentMethod === 'wallet' && acceptedTerms ? (
+              <button
+                className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center gap-2"
+                onClick={handleWalletPayment}
+              >
+                Buy Now (Wallet)
+              </button>
             ) : (
               <button
                 disabled

@@ -8,7 +8,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "
 import { LayoutGrid, List } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import SideNavbar from "@/components/hotel/SideNavbar";
 import AddRoomModal from "@/components/hotel/addRoomsModal";
 import { HOTEL_API_METHODS } from "@/services/APIs/hotel.api.service";
 import { Room } from "@/types/hotel";
@@ -50,10 +49,8 @@ export default function RoomsPage() {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
-      <SideNavbar />
-      <div className="flex-1 flex flex-col p-8 ">
-        {/* Header */}
+    <div className="space-y-8">
+      {/* Header */}
         <div className="flex flex-wrap justify-between items-center gap-4">
           <div>
             <h1 className="text-2xl font-semibold text-gray-900">Rooms</h1>
@@ -276,8 +273,6 @@ export default function RoomsPage() {
           </div>
         )}
         <VendorFooter />
-      </div>
-
       {/* Add Room Modal */}
       {showAddModal && (
         <AddRoomModal

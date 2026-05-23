@@ -6,5 +6,6 @@ export interface IUserPackageController {
   getAllPackage(req:Request,res:Response) : Promise<void>;
   getPackage(req:Request,res:Response) :Promise<void>;
   puchasePackage(req:Request,res:Response):Promise<void>;
+  walletPurchase(req:Request,res:Response):Promise<void>;
   getCoupons(req:Request,res:Response) : Promise<void>;
 }

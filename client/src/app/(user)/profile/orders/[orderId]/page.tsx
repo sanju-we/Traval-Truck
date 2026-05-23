@@ -148,7 +148,8 @@ export default function UserOrderDetailsPage() {
 
       if (response.success) {
         toast.success('Order cancelled successfully');
-        setOrder(response.data);
+        order.status = 'Cancelled'
+        // setOrder(response.data);
         closeCancelModal();
       } else {
         toast.error(response.message || 'Failed to cancel order');
@@ -427,13 +428,15 @@ export default function UserOrderDetailsPage() {
                 Cancel Order
               </button>
             )}
-            <button
-              onClick={handleDownloadInvoice}
-              className="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition flex items-center gap-2 font-semibold"
-            >
-              <Download size={18} />
-              Download Invoice
-            </button>
+            {order.status == 'Completed' && (
+              <button
+                onClick={handleDownloadInvoice}
+                className="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition flex items-center gap-2 font-semibold"
+              >
+                <Download size={18} />
+                Download Invoice
+              </button>
+            )}
             <button className="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition flex items-center gap-2 font-semibold">
               <Share2 size={18} />
               Share
@@ -619,72 +622,74 @@ export default function UserOrderDetailsPage() {
             </div>
 
             {/* Schedule Information */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="bg-gradient-to-r from-blue-50 to-blue-100 px-6 py-4 border-b border-blue-200">
-                <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                  <Calendar className="text-blue-600" size={22} />
-                  {order.productType === 'Rooms'
-                    ? 'Booking Schedule'
-                    : 'Trip Schedule'}
-                </h2>
-              </div>
-              <div className="p-6 space-y-4">
-                <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-100">
-                  <Calendar className="text-blue-600" size={24} />
-                  <div>
-                    <p className="text-sm text-gray-600">
-                      {order.productType === 'Rooms' ? 'Check-in Date' : 'Start Date'}
-                    </p>
-                    <p className="font-semibold text-gray-800">
-                      {order.startDate
-                        ? new Date(order.startDate).toLocaleDateString('en-US', {
-                          month: 'long',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })
-                        : 'Not set yet'}
-                    </p>
-                  </div>
+            {order.status != 'Cancelled' && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="bg-gradient-to-r from-blue-50 to-blue-100 px-6 py-4 border-b border-blue-200">
+                  <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                    <Calendar className="text-blue-600" size={22} />
+                    {order.productType === 'Rooms'
+                      ? 'Booking Schedule'
+                      : 'Trip Schedule'}
+                  </h2>
                 </div>
-
-                {order.endDate && (
-                  <div className="flex items-center gap-3 p-4 bg-purple-50 rounded-lg border border-purple-100">
-                    <Calendar className="text-purple-600" size={24} />
+                <div className="p-6 space-y-4">
+                  <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                    <Calendar className="text-blue-600" size={24} />
                     <div>
                       <p className="text-sm text-gray-600">
-                        {order.productType === 'Rooms'
-                          ? 'Check-out Date'
-                          : 'End Date'}
+                        {order.productType === 'Rooms' ? 'Check-in Date' : 'Start Date'}
                       </p>
                       <p className="font-semibold text-gray-800">
-                        {new Date(order.endDate).toLocaleDateString('en-US', {
-                          month: 'long',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })}
+                        {order.startDate
+                          ? new Date(order.startDate).toLocaleDateString('en-US', {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric',
+                          })
+                          : 'Not set yet'}
                       </p>
                     </div>
                   </div>
-                )}
 
-                {/* Calculate and show nights for Rooms */}
-                {order.productType === 'Rooms' &&
-                  order.startDate &&
-                  order.endDate && (
-                    <div className="pt-4 border-t border-gray-200">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">Total Nights</span>
-                        <span className="font-bold text-blue-600 text-lg">
-                          {calculateNights(order.startDate, order.endDate)}{' '}
-                          {calculateNights(order.startDate, order.endDate) === 1
-                            ? 'Night'
-                            : 'Nights'}
-                        </span>
+                  {order.endDate && (
+                    <div className="flex items-center gap-3 p-4 bg-purple-50 rounded-lg border border-purple-100">
+                      <Calendar className="text-purple-600" size={24} />
+                      <div>
+                        <p className="text-sm text-gray-600">
+                          {order.productType === 'Rooms'
+                            ? 'Check-out Date'
+                            : 'End Date'}
+                        </p>
+                        <p className="font-semibold text-gray-800">
+                          {new Date(order.endDate).toLocaleDateString('en-US', {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric',
+                          })}
+                        </p>
                       </div>
                     </div>
                   )}
+
+                  {/* Calculate and show nights for Rooms */}
+                  {order.productType === 'Rooms' &&
+                    order.startDate &&
+                    order.endDate && (
+                      <div className="pt-4 border-t border-gray-200">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">Total Nights</span>
+                          <span className="font-bold text-blue-600 text-lg">
+                            {calculateNights(order.startDate, order.endDate)}{' '}
+                            {calculateNights(order.startDate, order.endDate) === 1
+                              ? 'Night'
+                              : 'Nights'}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                </div>
               </div>
-            </div>
+            )}
             {order.status === 'Completed' && order.ownedBy && (order.product?.data?.id || order.product?.data?._id) && <RatingCard orderId={order.id} productId={{ _id: order.product?.data?.id || order.product?.data?._id }} vendor={order.ownedBy} />}
           </div>
         </div>

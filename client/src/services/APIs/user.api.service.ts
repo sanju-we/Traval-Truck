@@ -47,6 +47,7 @@ export const USER_API_METHODS = {
     orderHistory: (page?: number, limit?: number) => get(USER_ROUTES.Trip.History, { page, limit }),
     getOrderDetails: (orderId: string) => get(USER_ROUTES.Trip.OrderDetail(orderId)),
     cancelOrder: (orderId: string, reason: string) => patch(USER_ROUTES.Trip.orderCancel, { orderId, reason }),
+    walletPurchase :(data: {productId:string, amount:number, people:number, couponId?:string, productType:string}) => post(USER_ROUTES.purchase.walletPurchase, data),
 
     // Mind Map
     generateMap: (data: any) => post(USER_ROUTES.Mind_Map.GenerateTrip, data),

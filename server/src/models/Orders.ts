@@ -31,11 +31,12 @@ const OrdersSchema = new Schema<IOrders>({
   people: { type: Number, default: 1 },
   tripProgress: { type: progress },
   status: { type: String, enum: ['Upcoming', 'Ongoing', 'Completed'], default: 'Upcoming' },
-  paymentId: { type: Schema.Types.ObjectId, ref: 'Payments', required: true },
   couponApplied: { type: String },
   offer: { type: Number },
   createdAt: { type: Date },
-  reason: { type: String }
+  reason: { type: String },
+  paymentType: {type:String, enum:['wallet','onlinePayment'], default:'onlinePayment'},
+  paymentId: { type: Schema.Types.ObjectId, ref: 'Payments' },
 }, { timestamps: true })
 
 export const Order = model<IOrders>('Orders', OrdersSchema);

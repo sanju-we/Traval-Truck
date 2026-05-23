@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import SideNavbar from "@/components/hotel/SideNavbar";
 import { CheckCircle, AlertTriangle, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "@/services/api";
@@ -47,10 +46,7 @@ export default function SubscriptionsPage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
-      <SideNavbar />
-      <div className="flex-1 flex flex-col p-6 md:p-10">
-        <div className="max-w-7xl mx-auto space-y-10">
+    <div className="space-y-10 max-w-7xl mx-auto">
 
           {/* Page Header */}
           <div>
@@ -195,9 +191,7 @@ export default function SubscriptionsPage() {
               </section>
             </>
           )}
-        </div>
         <VendorFooter />
-      </div>
     </div>
   );
 }

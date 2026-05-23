@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setTokens } from '@/redux/authSlice';
-import { useRouter } from 'next/navigation';
+import { useRouter,redirect } from 'next/navigation';
 import { ShowerHeadIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
@@ -17,6 +17,14 @@ export default function LoginPage() {
 
   const dispatch = useDispatch();
   const router = useRouter();
+
+  useEffect(()=>{
+    const token = document.cookie.includes('accessToken')
+
+    if(token){
+      redirect('/home')
+    }
+  },[])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -40,7 +48,7 @@ export default function LoginPage() {
             refreshToken: data.data.refreshToken,
           }),
         );
-        router.push('/');
+        router.replace('/');
       } else {
         toast.error(data.message)
         setIsLoading(false)

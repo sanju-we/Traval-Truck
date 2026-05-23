@@ -26,4 +26,10 @@ export class SharedWalletController implements ISharedWalletController {
     logger.info(wallet)
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.PAYMENT_SUCCESS, wallet)
   }
+
+  async getBalance(req: Request, res: Response): Promise<void> {
+    const id = req.user.id
+    const balance = await this._walletService.getBalance(id);
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, balance);
+  }
 }

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import SideNavbar from '@/components/hotel/SideNavbar';
 import { HOTEL_API_METHODS } from '@/services/APIs/hotel.api.service';
 import {
   Loader2,
@@ -74,10 +73,7 @@ export default function HotelOrdersPage() {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
-      <SideNavbar />
-      <div className="flex-1 flex flex-col">
-        <div className="max-w-7xl mx-auto space-y-6">
+    <div className="space-y-8 max-w-7xl mx-auto">
 
           {/* Header */}
           <div>
@@ -177,9 +173,7 @@ export default function HotelOrdersPage() {
             </div>
           )}
 
-        </div>
         <VendorFooter/>
-      </div>
     </div>
   );
 }

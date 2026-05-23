@@ -7,7 +7,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/shared/ui
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Camera, Edit, Mail, Phone, X, Check, MapPin } from 'lucide-react';
-import SideNavbar from '@/components/hotel/SideNavbar';
 import api from '@/services/api';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from '@/components/utils/UserCropImage';
@@ -296,9 +295,7 @@ export default function VendorProfilePage() {
   }
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
-      <SideNavbar />
-      <div className="flex-1 flex flex-col p-5">
+    <div className="space-y-6">
         {vendor.reason != "" && (
           <RestrictionBanner reason={vendor.reason} />
         )}
@@ -461,7 +458,6 @@ export default function VendorProfilePage() {
           </TabsContent>
         </Tabs>
         <VendorFooter />
-      </div>
 
       <AnimatePresence>
         {isEditing && (

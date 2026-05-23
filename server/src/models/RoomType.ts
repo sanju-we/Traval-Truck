@@ -39,6 +39,6 @@ const RoomTypeSchema: Schema = new Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-const RoomType = mongoose.model<IRoomsDocument>("RoomType", RoomTypeSchema);
+const RoomType = mongoose.model<IRoomsDocument>("Rooms", RoomTypeSchema);
 
 export default RoomType;

@@ -45,4 +45,11 @@ export class UserPackageController implements IUserPackageController {
     const coupons = await this._userPackageService.getAllCoupons(userId)
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, coupons)
   }
+
+  async walletPurchase(req: Request, res: Response): Promise<void> {
+    const { productId, amount, people, couponId, productType } = req.body
+    const userId = req.user.id;
+    const result = await this._userPackageService.walletPurchase(userId, productId, people, amount, productType, couponId);
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.SUCCESS, result);
+  }
 }

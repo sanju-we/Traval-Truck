@@ -33,9 +33,9 @@ export class UserHotelsService implements IUserHotelsService {
             status: 'active',
             endDate: { $gt: new Date() }
           },
-          { sort: { createdAt: -1 } } 
+          { sort: { createdAt: -1 } }
         );
-        
+
         const rooms = await this._hotelRoomRepo.findByHotelId(hotelId);
         console.log(`Hotel ID: ${hotelId}, Has Active Subscription: ${hasSubscription}, And rooms are ${rooms}`);
 

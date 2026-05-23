@@ -13,7 +13,8 @@ export const SHARED_ROUTES = {
 
   wallet : {
     getWallet : (role : string) => `${SHARED_WALLET}/${role}`,
-    addMoney : (role:string) => `${SHARED_WALLET}/${role}/add-money`
+    addMoney : (role:string) => `${SHARED_WALLET}/${role}/add-money`,
+    getBalance : (role:string) => `${SHARED_WALLET}/${role}/balance`
   },
 
   Review : {

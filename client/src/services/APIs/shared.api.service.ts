@@ -8,6 +8,7 @@ export const SHARED_API_METHODS = {
   createPayment : (role:string, body:any) => post(SHARED_ROUTES.paymet.createPayment(role),body),
 
   getWallet : (role:string) => get(SHARED_ROUTES.wallet.getWallet(role)),
+  getWalletBalance : (role:string) => get(SHARED_ROUTES.wallet.getBalance(role)),
 
   getAllSubscriptions : (role:string) => get(SHARED_ROUTES.subscriptions.getAll(role)),
   currentSubscription : (role:string) => get(SHARED_ROUTES.subscriptions.currentSubscription(role)),

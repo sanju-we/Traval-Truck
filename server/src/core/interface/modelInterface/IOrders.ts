@@ -20,6 +20,7 @@ export interface IOrders extends Document {
   couponApplied?: string;
   reason?: string;
   offer?: number;
+  paymentType:string;
   createdAt: Date;
   updatedAt: Date
 }

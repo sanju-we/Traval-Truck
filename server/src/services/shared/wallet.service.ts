@@ -39,7 +39,6 @@ export class WalletService implements IWalletService {
     });
   }
 
-  // ⚠️ This function is called ONLY from the Stripe webhook
   async addMoney(userId: string, amount: number, paymentId: string): Promise<IWallet> {
     const wallet = await this._walletRepo.FindByUserId(userId);
     const transaction = {
@@ -62,5 +61,12 @@ export class WalletService implements IWalletService {
       Balance: amount,
       Transaction: [transaction],
     });
+  }
+
+  async getBalance(id: string): Promise<{ balance: number; }> {
+    const wallet = await this._walletRepo.FindByUserId(id);
+    console.log(wallet)
+    if(!wallet) return {balance:0}
+    return {balance: wallet.Balance}
   }
 }

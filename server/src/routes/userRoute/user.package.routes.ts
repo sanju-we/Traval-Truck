@@ -11,6 +11,7 @@ userPackageRouter.get('/', asyncHandler(packageController.getLatestPackage.bind(
   .get('/getAll', asyncHandler(packageController.getAllPackage.bind(packageController)))
   .get('/getPackage/:id', asyncHandler(packageController.getPackage.bind(packageController)))
   .post('/purchase', verifyToken, asyncHandler(packageController.puchasePackage.bind(packageController)))
+  .post('/wallet-purchase', verifyToken, asyncHandler(packageController.walletPurchase.bind(packageController)))
   .get('/coupon', verifyToken, asyncHandler(packageController.getCoupons.bind(packageController)))
 
 export default userPackageRouter
