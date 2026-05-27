@@ -1,6 +1,6 @@
 import { createServerAxios } from "@/services/serverApi";
 import Link from "next/link";
-import { CheckCircle, Sparkles, ArrowRight, Home, CreditCard, Calendar, Shield } from "lucide-react";
+import { CheckCircle, Sparkles, ArrowRight, Home, CreditCard, Calendar, Shield, Utensils } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -13,10 +13,10 @@ async function activateSubscription(subscriptionId: string) {
             { subscriptionId }
         );
         console.log(`[CLIENT] Activation response:`, res.data);
-        return res.data.success;
+        return res.data.success ? res.data.data : null;
     } catch (err: any) {
         console.error("[CLIENT] Activation failed:", err.message, err.response?.data);
-        return false;
+        return null;
     }
 }
 
@@ -28,93 +28,84 @@ export default async function PaymentSuccessPage({
     const { session_id, amount: rawAmount } = await searchParams;
     const amount = rawAmount || null;
 
-    let activated = false;
+    let subscriptionData = null;
 
     if (session_id) {
-        activated = await activateSubscription(session_id);
+        subscriptionData = await activateSubscription(session_id);
     }
 
+    const activated = !!subscriptionData;
+    const transactionId = subscriptionData?.paymentId || "N/A";
+    const planName = subscriptionData?.name || "Culinary Partner";
+    const displayAmount = subscriptionData?.amount || amount;
+    const expiryDate = subscriptionData?.endDate ? new Date(subscriptionData.endDate) : null;
+
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-green-50 p-4 sm:p-6">
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50 p-4 sm:p-6">
             <div className="w-full max-w-lg">
-                {/* Animated Background Elements */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
-                    <div className="absolute bottom-20 right-10 w-72 h-72 bg-teal-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse delay-1000"></div>
-                </div>
+                <div className="relative bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-orange-100">
+                    {/* Success Header */}
+                    <div className="bg-orange-600 p-8 sm:p-10 text-center relative overflow-hidden">
+                        <div className="absolute inset-0 bg-black/5 backdrop-blur-[2px]"></div>
 
-                <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden">
-                    {/* Success Header with Gradient */}
-                    <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-6 sm:p-8 text-center relative overflow-hidden">
-                        <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
-
-                        {/* Animated Success Icon */}
-                        <div className="relative inline-block animate-in zoom-in-50 duration-500">
-                            <div className="absolute inset-0 bg-white rounded-full animate-ping opacity-20"></div>
-                            <div className="relative bg-white rounded-full p-4 sm:p-5 shadow-xl">
-                                <CheckCircle className="text-emerald-600 animate-in zoom-in duration-300 delay-200" size={60} strokeWidth={2.5} />
+                        <div className="relative inline-block">
+                            <div className="bg-white rounded-full p-5 shadow-xl">
+                                <CheckCircle className="text-orange-600" size={50} strokeWidth={2.5} />
                             </div>
                         </div>
 
-                        <h1 className="text-2xl sm:text-3xl font-bold text-white mt-6 mb-2 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
-                            Payment Successful!
+                        <h1 className="text-3xl font-black text-white mt-6 mb-2 uppercase tracking-tighter">
+                            Service Online!
                         </h1>
-                        <div className="flex items-center justify-center space-x-2 text-emerald-100 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-400">
-                            <Sparkles className="w-4 h-4" />
-                            <p className="text-sm sm:text-base">Your transaction is complete</p>
-                            <Sparkles className="w-4 h-4" />
-                        </div>
+                        <p className="text-orange-100 font-bold uppercase tracking-widest text-[10px]">
+                            Dining Partnership Activated
+                        </p>
                     </div>
 
                     {/* Content Section */}
-                    <div className="p-6 sm:p-8">
-                        {/* Amount Display */}
-                        {amount && (
-                            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 mb-6 border-2 border-emerald-100 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-500">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-3">
-                                        <div className="bg-emerald-500 rounded-full p-2">
-                                            <CreditCard className="w-5 h-5 text-white" />
-                                        </div>
-                                        <div>
-                                            <p className="text-gray-600 text-sm font-medium">Amount Paid</p>
-                                            <p className="text-3xl font-bold text-emerald-600">₹{amount}</p>
-                                        </div>
+                    <div className="p-8 sm:p-10">
+                        {/* Plan & Amount */}
+                        <div className="bg-orange-50/50 rounded-3xl p-6 mb-8 border border-orange-100">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-4">
+                                    <div className="bg-orange-600 rounded-2xl p-3 shadow-lg">
+                                        <Utensils className="w-6 h-6 text-white" />
                                     </div>
-                                    <CheckCircle className="text-emerald-500 w-8 h-8" />
+                                    <div>
+                                        <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest">{planName}</p>
+                                        <p className="text-3xl font-black text-gray-900">₹{displayAmount?.toLocaleString('en-IN')}</p>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <span className="px-3 py-1 bg-white text-orange-600 border border-orange-100 rounded-full text-[10px] font-black uppercase">
+                                        Verified
+                                    </span>
                                 </div>
                             </div>
-                        )}
+                        </div>
 
                         {/* Status Message */}
-                        <div className={`rounded-2xl p-4 sm:p-5 mb-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-600 ${activated
-                            ? 'bg-green-50 border-2 border-green-200'
-                            : 'bg-red-50 border-2 border-red-200'
-                            }`}>
-                            <div className="flex items-start space-x-3">
+                        <div className={`rounded-3xl p-6 mb-8 border ${activated ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`}>
+                            <div className="flex items-start space-x-4">
                                 {activated ? (
                                     <>
-                                        <Shield className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                                        <Shield className="w-6 h-6 text-emerald-600 mt-1" />
                                         <div>
-                                            <p className="font-semibold text-green-800 text-base sm:text-lg">
-                                                Subscription Activated Successfully
-                                            </p>
-                                            <p className="text-green-600 text-sm mt-1">
-                                                You now have full access to all premium features
+                                            <p className="font-black text-gray-900 text-lg uppercase tracking-tight">Active Coverage</p>
+                                            <p className="text-emerald-700 text-sm font-medium mt-1 leading-relaxed">
+                                                Your restaurant is now featured. Transaction ID: <span className="font-mono font-bold break-all block mt-1 text-xs opacity-60">{transactionId}</span>
                                             </p>
                                         </div>
                                     </>
                                 ) : (
                                     <>
-                                        <div className="w-6 h-6 bg-red-200 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <span className="text-red-600 font-bold text-sm">!</span>
+                                        <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center shrink-0 mt-1">
+                                            <span className="text-red-600 font-black">!</span>
                                         </div>
                                         <div>
-                                            <p className="font-semibold text-red-800 text-base sm:text-lg">
-                                                Activation Pending
-                                            </p>
-                                            <p className="text-red-600 text-sm mt-1">
-                                                Payment received, but activation failed. Please contact support.
+                                            <p className="font-black text-red-900 text-lg uppercase tracking-tight">Sync Delayed</p>
+                                            <p className="text-red-700 text-sm font-medium mt-1">
+                                                Payment received. Activation pending sync with our global registry. ID: {session_id?.substring(0, 10)}
                                             </p>
                                         </div>
                                     </>
@@ -122,78 +113,39 @@ export default async function PaymentSuccessPage({
                             </div>
                         </div>
 
-                        {/* Features List (Only if activated) */}
-                        {activated && (
-                            <div className="bg-gray-50 rounded-2xl p-5 mb-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-700">
-                                <h3 className="font-semibold text-gray-800 mb-3 flex items-center space-x-2">
-                                    <Sparkles className="w-5 h-5 text-emerald-500" />
-                                    <span>What's Next?</span>
-                                </h3>
-                                <ul className="space-y-2.5">
-                                    {[
-                                        'Access all premium features',
-                                        'Unlimited menu management',
-                                        'Priority customer support',
-                                        'Advanced order analytics'
-                                    ].map((feature, idx) => (
-                                        <li key={idx} className="flex items-center space-x-3 text-gray-700 text-sm">
-                                            <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                                            <span>{feature}</span>
-                                        </li>
-                                    ))}
-                                </ul>
+                        {/* Details */}
+                        <div className="grid grid-cols-2 gap-6 bg-gray-50 rounded-3xl p-6 mb-8">
+                            <div>
+                                <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-1">Issue Date</p>
+                                <p className="text-sm font-bold text-gray-900">{new Date().toLocaleDateString('en-IN')}</p>
                             </div>
-                        )}
-
-                        {/* Subscription Details */}
-                        {session_id && (
-                            <div className="bg-gray-50 rounded-xl p-4 mb-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-800">
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-gray-600">Session ID</span>
-                                    <span className="font-mono text-gray-800 font-medium">{session_id.substring(0, 12)}...</span>
-                                </div>
-                                <div className="flex items-center justify-between text-sm mt-2">
-                                    <span className="text-gray-600">Date</span>
-                                    <span className="font-medium text-gray-800">{new Date().toLocaleDateString('en-IN', {
-                                        year: 'numeric',
-                                        month: 'short',
-                                        day: 'numeric'
-                                    })}</span>
-                                </div>
+                            <div>
+                                <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-1">Coverage End</p>
+                                <p className="text-sm font-bold text-gray-900">{expiryDate ? expiryDate.toLocaleDateString('en-IN') : 'N/A'}</p>
                             </div>
-                        )}
+                        </div>
 
-                        {/* Action Buttons */}
-                        <div className="space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-900">
+                        {/* Actions */}
+                        <div className="space-y-4">
                             <Link
                                 href="/restaurant/subscriptions"
-                                className="flex items-center justify-center space-x-2 w-full px-6 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl hover:from-emerald-700 hover:to-teal-700 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+                                className="flex items-center justify-center gap-3 w-full py-5 bg-orange-600 text-white rounded-[1.5rem] font-black uppercase tracking-widest text-xs hover:bg-orange-700 transition-all shadow-xl shadow-orange-100 transform hover:scale-[1.02]"
                             >
-                                <Calendar className="w-5 h-5" />
-                                <span>View Subscriptions</span>
-                                <ArrowRight className="w-5 h-5" />
+                                <Calendar size={18} />
+                                Service Deck
+                                <ArrowRight size={18} />
                             </Link>
 
                             <Link
                                 href="/restaurant/profile"
-                                className="flex items-center justify-center space-x-2 w-full px-6 py-3.5 border-2 border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 font-semibold"
+                                className="flex items-center justify-center gap-3 w-full py-5 border-2 border-gray-100 text-gray-400 rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] hover:bg-gray-50 transition-all"
                             >
-                                <Home className="w-5 h-5" />
-                                <span>Go to Profile</span>
+                                <Home size={16} />
+                                DASHBOARD
                             </Link>
                         </div>
-
-                        {/* Footer Note */}
-                        <p className="text-center text-gray-500 text-xs mt-6 animate-in fade-in duration-500 delay-1000">
-                            A confirmation email has been sent to your registered email address
-                        </p>
                     </div>
                 </div>
-
-                {/* Help Text */}
-                <p className="text-center text-gray-600 text-sm mt-6 animate-in fade-in duration-500 delay-1000">
-                    Need help? <a href="/support" className="text-emerald-600 hover:text-emerald-700 font-medium underline">Contact Support</a>
-                </p>
             </div>
         </div>
     );

@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { HOTEL_API_METHODS } from '@/services/APIs/hotel.api.service';
 import {
-  Loader2,
   Calendar,
   IndianRupee,
   Bed,
@@ -16,6 +15,7 @@ import {
 import toast from 'react-hot-toast';
 import { HotelOrder } from '@/types/hotel';
 import VendorFooter from '@/components/shared/Footer';
+import TravelTruckLoading from '@/components/shared/TravelTruckLoading';
 
 export default function HotelOrdersPage() {
   const router = useRouter();
@@ -85,9 +85,7 @@ export default function HotelOrdersPage() {
 
           {/* Loading */}
           {loading ? (
-            <div className="flex justify-center items-center h-40">
-              <Loader2 className="animate-spin text-emerald-600" size={32} />
-            </div>
+            <TravelTruckLoading />
           ) : orders.length === 0 ? (
             /* Empty State */
             <div className="bg-white border rounded-xl p-12 text-center shadow-sm">

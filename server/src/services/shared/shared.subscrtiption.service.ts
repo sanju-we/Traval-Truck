@@ -69,7 +69,7 @@ export class SharedSubscriptionService implements ISharedSubscriptionService {
       currency: "inr",
       description: `Subscription Plan: ${plan.Name}`,
       successUrl: `${process.env.FRONTEND_URL}/${role}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancelUrl: `${process.env.FRONTEND_URL}/${role}/cancel`,
+      cancelUrl: `${process.env.FRONTEND_URL}/${role}/cancel?planId=${planId}&amount=${plan.Amount}`,
       metadata: {
         type: "subscription",
         userId,
@@ -116,12 +116,12 @@ export class SharedSubscriptionService implements ISharedSubscriptionService {
     return toSubsctiptionHistoryDTO(saved);
   }
 
-  async activateSubscription(sessionId: string, userId: string, role: string): Promise<boolean> {
+  async activateSubscription(sessionId: string, userId: string, role: string): Promise<subscriptionHistoryDTO | null> {
     // 1. Verify payment with Stripe
     const session = await this._paymentUtils.retrieveSession(sessionId);
     if (!session || session.payment_status !== 'paid') {
       logger.error(`Activation failed: Invalid session or unpaid. Session: ${sessionId}`);
-      return false;
+      return null;
     }
 
     // 2. Check metadata matches
@@ -131,13 +131,13 @@ export class SharedSubscriptionService implements ISharedSubscriptionService {
     // Use toString() to ensure we are comparing strings if one is an ObjectId
     if (metadataUserId?.toString() !== userId?.toString() || metadataRole !== role) {
       logger.error(`Activation failed: Metadata mismatch. Session User: ${metadataUserId}, Request User: ${userId}`);
-      return false;
+      return null;
     }
 
     const planId = session.metadata?.planId;
     if (!planId) {
       logger.error(`Activation failed: No planId in session metadata.`);
-      return false;
+      return null;
     }
 
     const paymentIntentId = typeof session.payment_intent === 'string'
@@ -146,7 +146,7 @@ export class SharedSubscriptionService implements ISharedSubscriptionService {
 
     if (!paymentIntentId) {
       logger.error(`Activation failed: Could not extract payment intent ID from session.`);
-      return false;
+      return null;
     }
 
     // 3. Check if already active (Idempotency)
@@ -156,13 +156,28 @@ export class SharedSubscriptionService implements ISharedSubscriptionService {
 
     if (existingHistory) {
       logger.info(`Subscription already activated for payment: ${paymentIntentId}`);
-      return true;
+      // Fetch plan details for consistent object
+      const plan = await this._subscriptionRepo.findById(existingHistory.subscriptionId);
+      if (plan) {
+        (existingHistory as any).name = plan.Name;
+        (existingHistory as any).features = plan.Features;
+        (existingHistory as any).valid = plan.Valid;
+      }
+      return toSubsctiptionHistoryDTO(existingHistory);
     }
 
     // 4. Create subscription history
-    await this.createSubscriptionHistory(userId, role, planId, paymentIntentId);
+    const history = await this.createSubscriptionHistory(userId, role, planId, paymentIntentId);
     logger.info(`Subscription manually activated for user: ${userId}, plan: ${planId}`);
 
-    return true;
+    // Fetch plan details for consistent object
+    const plan = await this._subscriptionRepo.findById(planId);
+    if (plan) {
+      (history as any).name = plan.Name;
+      (history as any).features = plan.Features;
+      (history as any).valid = plan.Valid;
+    }
+
+    return history;
   }
 }

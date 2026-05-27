@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import {
-  Loader2,
   Utensils,
   BedDouble,
   PackageSearch,
@@ -18,6 +17,7 @@ import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import toast from 'react-hot-toast';
 import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
+import TravelTruckLoading from '@/components/shared/TravelTruckLoading';
 
 type Tab = 'packages' | 'rooms' | 'foods';
 
@@ -139,7 +139,7 @@ export default function ExplorePage() {
           {/* Loading */}
           {loading ? (
             <div className="flex justify-center items-center h-[40vh]">
-              <Loader2 className="animate-spin w-8 h-8 text-emerald-500" />
+              <TravelTruckLoading />
             </div>
           ) : (
             <>

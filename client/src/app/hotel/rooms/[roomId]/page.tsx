@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import EditRoomModal from "@/components/hotel/EditRoomModal";
 import { IRoom } from "@/types/hotel";
 import SideNavbar from "@/components/hotel/SideNavbar";
+import TravelTruckLoading from "@/components/shared/TravelTruckLoading";
 import {
   ArrowLeft,
   Users,
@@ -68,10 +69,7 @@ export default function RoomDetails() {
       <div className="min-h-screen flex bg-gray-50">
         <SideNavbar />
         <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading room details...</p>
-          </div>
+          <TravelTruckLoading />
         </div>
       </div>
     );

@@ -21,12 +21,17 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 
-function SideNavbar() {
+function SideNavbar({ onClose }: { onClose?: () => void }) {
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const vendor = useSelector((state: RootState) => (state.auth as any).user); // Adjust based on your redux structure
+
+  const navigate = (path: string) => {
+    router.push(path);
+    if (onClose) onClose();
+  };
 
   const handleLogout = async () => {
     const res = await api.post('/agency/auth/logout');
@@ -41,7 +46,7 @@ function SideNavbar() {
       <div className="w-64 bg-white shadow-lg p-6">
         <div className="flex flex-col space-y-4">
           <div
-            onClick={() => router.push('/agency/profile')}
+            onClick={() => navigate('/agency/profile')}
             className="flex items-center space-x-2 cursor-pointer group"
           >
             <div className="bg-gradient-to-br from-emerald-500 to-teal-500 p-2 rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-md">
@@ -52,7 +57,7 @@ function SideNavbar() {
             </span>
           </div>
           <div className="space-y-2">
-            <div className={`${pathname === '/agency' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded-md`} onClick={() => router.push('/agency')}>
+            <div className={`${pathname === '/agency' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded-md`} onClick={() => navigate('/agency')}>
               <button
                 className={`flex items-center space-x-2 p-2 ${pathname === '/agency' ? 'text-emerald-700 font-semibold' : 'text-black-600'} rounded`}
               >
@@ -61,31 +66,31 @@ function SideNavbar() {
               </button>
             </div>
             <div className={`${pathname === '/agency/packages' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded-md`}
-              onClick={() => router.push('/agency/packages')}>
+              onClick={() => navigate('/agency/packages')}>
               <button className={`flex items-center space-x-2 p-2 ${pathname === '/agency/packages' ? 'text-emerald-700 font-semibold' : 'text-black-600'} rounded`}>
                 <FlagTriangleRightIcon />
                 Packages
               </button>
             </div>
-            <div className={`${pathname === '/agency/subscriptions' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded-md`} onClick={() => router.push('/agency/subscriptions')}>
+            <div className={`${pathname === '/agency/subscriptions' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded-md`} onClick={() => navigate('/agency/subscriptions')}>
               <button className={`flex items-center space-x-2 p-2 ${pathname === '/agency/subscriptions' ? 'text-emerald-700 font-semibold' : 'text-black-600'} rounded`}>
                 <Rss className="material-icons">person</Rss>
                 <span>Subscriptions</span>
               </button>
             </div>
-            <div className={`${pathname === '/agency/orders' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded-md`} onClick={() => router.push('/agency/orders')}>
+            <div className={`${pathname === '/agency/orders' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded-md`} onClick={() => navigate('/agency/orders')}>
               <button className={`flex items-center space-x-2 p-2 ${pathname === '/agency/orders' ? 'text-emerald-700 font-semibold' : 'text-black-600'} rounded`}>
                 <List className="material-icons">Order</List >
                 <span>Orders</span>
               </button>
             </div>
-            <div className={`${pathname === '/agency/reviews' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded-md`} onClick={() => router.push('/agency/reviews')}>
+            <div className={`${pathname === '/agency/reviews' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded-md`} onClick={() => navigate('/agency/reviews')}>
               <button className={`flex items-center space-x-2 p-2 ${pathname === '/agency/reviews' ? 'text-emerald-700 font-semibold' : 'text-black-600'} rounded`}>
                 <List className="material-icons">Review</List >
                 <span>Reviews</span>
               </button>
             </div>
-            <div className={`${pathname === '/agency/wallet' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded-md`} onClick={() => router.push('/agency/wallet')}>
+            <div className={`${pathname === '/agency/wallet' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded-md`} onClick={() => navigate('/agency/wallet')}>
               <button className={`flex items-center space-x-2 p-2 ${pathname === '/agency/wallet' ? 'text-emerald-700 font-semibold' : 'text-black-600'} rounded`} >
                 <IndianRupee className="material-icons">payment</IndianRupee>
                 <span>Wallet</span>
@@ -105,7 +110,7 @@ function SideNavbar() {
             </div>
             <div className={`${pathname === '/agency/profile' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded-md`}>
               <button className={`flex items-center space-x-2 p-2 ${pathname === '/agency/profile' ? 'text-emerald-700 font-semibold' : 'text-black-600'} rounded`}
-                onClick={() => router.push('/agency/profile')}>
+                onClick={() => navigate('/agency/profile')}>
                 <User className="material-icons">person</User>
                 <span>Profile</span>
               </button>

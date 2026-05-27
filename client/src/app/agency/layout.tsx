@@ -2,11 +2,11 @@
 
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import SideNavbar from '@/components/hotel/SideNavbar';
-import { Menu, X } from 'lucide-react';
+import SideNavbar from '@/components/agency/SideNavbar';
+import { Menu } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
-export default function HotelLayout({
+export default function AgencyLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -16,13 +16,13 @@ export default function HotelLayout({
 
   // Define routes that should NOT have a sidebar
   const noSidebarRoutes = [
-    '/hotel/login',
-    '/hotel/signup',
-    '/hotel/forgetPassword',
-    '/hotel/resetPassword',
-    '/hotel/success',
-    '/hotel/cancel',
-    '/hotel/restricted'
+    '/agency/login',
+    '/agency/signup',
+    '/agency/forgetPassword',
+    '/agency/resetPassword',
+    '/agency/success',
+    '/agency/cancel',
+    '/agency/restricted'
   ];
 
   const isNoSidebarPage = noSidebarRoutes.some(route => pathname.startsWith(route));
@@ -67,10 +67,10 @@ export default function HotelLayout({
         {/* Mobile Header */}
         <header className="lg:hidden flex items-center justify-between p-4 bg-white border-b border-gray-100 sticky top-0 z-30">
           <div className="flex items-center space-x-2">
-            <div className="bg-emerald-500 p-1.5 rounded-lg">
+            <div className="bg-blue-600 p-1.5 rounded-lg">
               <div className="w-5 h-5 text-white flex items-center justify-center font-bold text-xs italic">TT</div>
             </div>
-            <span className="font-bold text-lg text-emerald-700">Travel Truck</span>
+            <span className="font-bold text-lg text-blue-700">Travel Truck</span>
           </div>
           <button
             onClick={() => setIsSidebarOpen(true)}
@@ -81,7 +81,7 @@ export default function HotelLayout({
         </header>
 
         {/* Content Container */}
-        <main className="flex-1 p-4 md:p-8 lg:p-10 max-w-[1600px] mx-auto w-full">
+        <main className="flex-1">
           {children}
         </main>
       </div>

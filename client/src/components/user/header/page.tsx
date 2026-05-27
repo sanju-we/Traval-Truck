@@ -25,10 +25,8 @@ export function Header() {
   const profileRef = useRef<HTMLDivElement>(null);
   const notifyRef = useRef<HTMLDivElement>(null);
 
-  // Mock router - replace with actual useRouter from next/navigation
   const router = useRouter()
 
-  // Mock API - replace with actual api import
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
@@ -65,7 +63,6 @@ export function Header() {
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 sm:h-20">
-            {/* Logo */}
             <div
               onClick={() => router.push('/home')}
               className="flex items-center space-x-2 cursor-pointer group"
@@ -78,13 +75,12 @@ export function Header() {
               </span>
             </div>
 
-            {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-1">
               {[
                 { name: 'Home', path: '/' },
                 { name: 'Packages', path: '/package' },
                 { name: 'Hotels', path: '/hotels' },
-                // { name: 'Destinations', path: '/description' },
+                { name: 'Restaurant', path: '/restaurants' },
                 { name: 'Mind-Map', path: '/mind-map' },
               ].map((item) => (
                 <a

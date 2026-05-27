@@ -16,6 +16,7 @@ import DocumentUploadWithPreview from '@/components/utils/DocumentUploadWithPrev
 import RestrictionBanner from '@/components/vendor/RestrictionBanner';
 import VendorFooter from '@/components/shared/Footer';
 import LocationPicker from '@/components/vendor/LocationPicker';
+import TravelTruckLoading from '@/components/shared/TravelTruckLoading';
 
 export default function VendorProfilePage() {
   const [vendor, setVendor] = useState<VendorProfile | null>(null);
@@ -270,9 +271,8 @@ export default function VendorProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-lg font-semibold text-gray-600">
-        <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
-        Loading profile...
+      <div className="min-h-screen flex items-center justify-center">
+        <TravelTruckLoading />
       </div>
     );
   }

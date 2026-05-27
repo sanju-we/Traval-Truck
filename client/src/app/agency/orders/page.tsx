@@ -6,9 +6,9 @@ import SideNavbar from '@/components/agency/SideNavbar';
 import { Calendar, MessageCircle, User, Package, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
 import SetStartDateModal from '@/components/agency/SetStartDateModal';
-import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import VendorFooter from '@/components/shared/Footer';
+import TravelTruckLoading from '@/components/shared/TravelTruckLoading';
 
 export default function PackageOrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -76,12 +76,8 @@ export default function PackageOrdersPage() {
   if (loading) {
     return (
       <div className="bg-gray-50 min-h-screen">
-        <SideNavbar />
         <div className="flex items-center justify-center h-screen">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-12 h-12 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-gray-600 font-medium">Loading orders...</p>
-          </div>
+          <TravelTruckLoading />
         </div>
       </div>
     );

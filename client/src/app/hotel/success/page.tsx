@@ -13,10 +13,10 @@ async function activateSubscription(subscriptionId: string) {
             { subscriptionId }
         );
         console.log(`[CLIENT] Activation response:`, res.data);
-        return res.data.success;
+        return res.data.success ? res.data.data : null;
     } catch (err: any) {
         console.error("[CLIENT] Activation failed:", err.message, err.response?.data);
-        return false;
+        return null;
     }
 }
 
@@ -28,11 +28,17 @@ export default async function PaymentSuccessPage({
     const { session_id, amount: rawAmount } = await searchParams;
     const amount = rawAmount || null;
 
-    let activated = false;
+    let subscriptionData = null;
 
     if (session_id) {
-        activated = await activateSubscription(session_id);
+        subscriptionData = await activateSubscription(session_id);
     }
+
+    const activated = !!subscriptionData;
+    const transactionId = subscriptionData?.paymentId || "N/A";
+    const planName = subscriptionData?.name || "Premium Plan";
+    const displayAmount = subscriptionData?.amount || amount;
+    const expiryDate = subscriptionData?.endDate ? new Date(subscriptionData.endDate) : null;
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-green-50 p-4 sm:p-6">
@@ -68,23 +74,26 @@ export default async function PaymentSuccessPage({
 
                     {/* Content Section */}
                     <div className="p-6 sm:p-8">
-                        {/* Amount Display */}
-                        {amount && (
-                            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 mb-6 border-2 border-emerald-100 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-500">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-3">
-                                        <div className="bg-emerald-500 rounded-full p-2">
-                                            <CreditCard className="w-5 h-5 text-white" />
-                                        </div>
-                                        <div>
-                                            <p className="text-gray-600 text-sm font-medium">Amount Paid</p>
-                                            <p className="text-3xl font-bold text-emerald-600">₹{amount}</p>
-                                        </div>
+                        {/* Plan & Amount Display */}
+                        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 mb-6 border-2 border-emerald-100 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-500">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-3">
+                                    <div className="bg-emerald-500 rounded-full p-2">
+                                        <CreditCard className="w-5 h-5 text-white" />
                                     </div>
-                                    <CheckCircle className="text-emerald-500 w-8 h-8" />
+                                    <div>
+                                        <p className="text-gray-600 text-xs font-medium uppercase tracking-wider">{planName}</p>
+                                        <p className="text-3xl font-bold text-emerald-600">₹{displayAmount}</p>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-gray-400 text-[10px] uppercase font-bold">Status</p>
+                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                        Paid
+                                    </span>
                                 </div>
                             </div>
-                        )}
+                        </div>
 
                         {/* Status Message */}
                         <div className={`rounded-2xl p-4 sm:p-5 mb-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-600 ${activated
@@ -97,10 +106,10 @@ export default async function PaymentSuccessPage({
                                         <Shield className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
                                         <div>
                                             <p className="font-semibold text-green-800 text-base sm:text-lg">
-                                                Subscription Activated Successfully
+                                                Subscription Activated
                                             </p>
                                             <p className="text-green-600 text-sm mt-1">
-                                                You now have full access to all premium features
+                                                Your account has been upgraded. Transaction reference: <span className="font-mono font-bold">{transactionId}</span>
                                             </p>
                                         </div>
                                     </>
@@ -114,7 +123,7 @@ export default async function PaymentSuccessPage({
                                                 Activation Pending
                                             </p>
                                             <p className="text-red-600 text-sm mt-1">
-                                                Payment received, but activation failed. Please contact support.
+                                                Payment received, but activation encountered an issue. Please contact support with ID: <span className="font-mono font-bold">{session_id?.substring(0, 8)}</span>
                                             </p>
                                         </div>
                                     </>
@@ -122,46 +131,25 @@ export default async function PaymentSuccessPage({
                             </div>
                         </div>
 
-                        {/* Features List (Only if activated) */}
-                        {activated && (
-                            <div className="bg-gray-50 rounded-2xl p-5 mb-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-700">
-                                <h3 className="font-semibold text-gray-800 mb-3 flex items-center space-x-2">
-                                    <Sparkles className="w-5 h-5 text-emerald-500" />
-                                    <span>What's Next?</span>
-                                </h3>
-                                <ul className="space-y-2.5">
-                                    {[
-                                        'Access all premium features',
-                                        'Unlimited room management',
-                                        'Priority customer support',
-                                        'Advanced booking analytics'
-                                    ].map((feature, idx) => (
-                                        <li key={idx} className="flex items-center space-x-3 text-gray-700 text-sm">
-                                            <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                                            <span>{feature}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-
-                        {/* Subscription Details */}
-                        {session_id && (
-                            <div className="bg-gray-50 rounded-xl p-4 mb-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-800">
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-gray-600">Session ID</span>
-                                    <span className="font-mono text-gray-800 font-medium">{session_id.substring(0, 12)}...</span>
+                        {/* Details Grid */}
+                        <div className="bg-gray-50 rounded-2xl p-5 mb-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-700">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p className="text-gray-500 text-[10px] uppercase font-bold mb-1">Transaction ID</p>
+                                    <p className="text-xs font-mono text-gray-800 break-all">{transactionId}</p>
                                 </div>
-                                <div className="flex items-center justify-between text-sm mt-2">
-                                    <span className="text-gray-600">Date</span>
-                                    <span className="font-medium text-gray-800">{new Date().toLocaleDateString('en-IN', {
-                                        year: 'numeric',
-                                        month: 'short',
-                                        day: 'numeric'
-                                    })}</span>
+                                <div>
+                                    <p className="text-gray-500 text-[10px] uppercase font-bold mb-1">Valid Until</p>
+                                    <p className="text-sm font-semibold text-gray-800">
+                                        {expiryDate ? expiryDate.toLocaleDateString('en-IN', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric'
+                                        }) : 'N/A'}
+                                    </p>
                                 </div>
                             </div>
-                        )}
+                        </div>
 
                         {/* Action Buttons */}
                         <div className="space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-900">

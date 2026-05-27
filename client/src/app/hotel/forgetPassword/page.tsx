@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { HOTEL_API_METHODS } from '@/services/APIs/hotel.api.service';
 import toast from 'react-hot-toast';
+import TravelTruckLoading from '@/components/shared/TravelTruckLoading';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -81,7 +82,7 @@ export default function ForgotPasswordPage() {
           >
             {isLoading ? (
               <div className="flex items-center justify-center gap-2">
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <TravelTruckLoading size="sm" />
                 Sending...
               </div>
             ) : (

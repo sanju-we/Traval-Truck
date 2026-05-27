@@ -30,6 +30,7 @@ import toast from 'react-hot-toast';
 import SetStartDateModal from '@/components/agency/SetStartDateModal';
 import { OrderDetails } from '@/types/agency';
 import VendorFooter from '@/components/shared/Footer';
+import TravelTruckLoading from '@/components/shared/TravelTruckLoading';
 
 export default function OrderDetailsPage() {
   const [order, setOrder] = useState<OrderDetails | null>(null);
@@ -259,12 +260,8 @@ export default function OrderDetailsPage() {
   if (loading) {
     return (
       <div className="bg-gray-50 min-h-screen">
-        <SideNavbar />
         <div className="flex items-center justify-center h-screen">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-12 h-12 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-gray-600 font-medium">Loading order details...</p>
-          </div>
+          <TravelTruckLoading />
         </div>
       </div>
     );

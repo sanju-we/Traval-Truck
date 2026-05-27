@@ -20,5 +20,5 @@ export interface ISharedSubscriptionService {
     sessionId: string,
     userId: string,
     role: string
-  ): Promise<boolean>;
+  ): Promise<subscriptionHistoryDTO | null>;
 }

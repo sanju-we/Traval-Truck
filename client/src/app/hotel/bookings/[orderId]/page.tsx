@@ -21,6 +21,7 @@ import {
 import toast from 'react-hot-toast';
 import { HotelOrderDetails } from '../../../../types/hotel';
 import VendorFooter from '@/components/shared/Footer';
+import TravelTruckLoading from '@/components/shared/TravelTruckLoading';
 
 export default function HotelOrderDetailsPage() {
   const params = useParams();
@@ -127,7 +128,7 @@ export default function HotelOrderDetailsPage() {
       <div className="flex min-h-screen bg-gray-50">
         <SideNavbar />
         <div className="flex-1 flex justify-center items-center">
-          <Loader2 className="animate-spin text-emerald-600" size={36} />
+          <TravelTruckLoading />
         </div>
       </div>
     );

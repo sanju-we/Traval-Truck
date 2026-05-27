@@ -12,6 +12,7 @@ import AddRoomModal from "@/components/hotel/addRoomsModal";
 import { HOTEL_API_METHODS } from "@/services/APIs/hotel.api.service";
 import { Room } from "@/types/hotel";
 import VendorFooter from "@/components/shared/Footer";
+import TravelTruckLoading from "@/components/shared/TravelTruckLoading";
 
 export default function RoomsPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -112,9 +113,7 @@ export default function RoomsPage() {
 
         {/* Content */}
         {loading ? (
-          <div className="text-center py-20 text-gray-500">
-            Loading rooms...
-          </div>
+          <TravelTruckLoading />
         ) : rooms.length === 0 ? (
           <div className="bg-white rounded-xl shadow-sm p-10 text-center text-gray-500">
             No rooms found. Try adjusting filters.

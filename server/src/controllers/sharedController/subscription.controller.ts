@@ -65,10 +65,10 @@ export class SharedSubscriptionController implements ISharedSubscriptionControll
       return;
     }
 
-    const success = await this._subscriptionService.activateSubscription(subscriptionId, userId, role);
+    const subscriptionData = await this._subscriptionService.activateSubscription(subscriptionId, userId, role);
 
-    if (success) {
-      sendResponse(res, STATUS_CODE.OK, true, "Subscription activated successfully");
+    if (subscriptionData) {
+      sendResponse(res, STATUS_CODE.OK, true, "Subscription activated successfully", subscriptionData);
     } else {
       sendResponse(res, STATUS_CODE.BAD_REQUEST, false, "Activation failed");
     }

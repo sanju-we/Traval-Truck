@@ -5,6 +5,7 @@ import { useState, useRef, useLayoutEffect } from 'react';
 import { HOTEL_API_METHODS } from '@/services/APIs/hotel.api.service';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import TravelTruckLoading from '@/components/shared/TravelTruckLoading';
 
 export default function SignUpPage() {
   const [timer, setTimer] = useState(60);
@@ -346,7 +347,7 @@ export default function SignUpPage() {
               >
                 {isOtpLoading ? (
                   <div className="flex items-center justify-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <TravelTruckLoading size="sm" />
                     Sending OTP...
                   </div>
                 ) : (
@@ -363,7 +364,7 @@ export default function SignUpPage() {
               {timer === 0 ? (
                 isResendingOtp ? (
                   <div className="flex items-center justify-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <TravelTruckLoading size="sm" />
                     Resending...
                   </div>
                 ) : (
@@ -376,7 +377,7 @@ export default function SignUpPage() {
                 )
               ) : isVerifyingOtp ? (
                 <div className="flex items-center justify-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <TravelTruckLoading size="sm" />
                   Verifying...
                 </div>
               ) : (
