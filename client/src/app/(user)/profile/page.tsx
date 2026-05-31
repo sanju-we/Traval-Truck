@@ -28,6 +28,11 @@ export default function UserProfilePage() {
   const [isCropping, setIsCropping] = useState(false);
   const [profileLoad, setProfileLoad] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
+  const [tripsStats, setTripsStats] = useState({
+    total: 0,
+    upcoming: 0,
+    completed: 0
+  });
 
   const router = useRouter();
 
@@ -54,7 +59,23 @@ export default function UserProfilePage() {
       }
     }
 
+    async function fetchTripStats() {
+      try {
+        const res = await USER_API_METHODS.orderHistory();
+        if (res.success && res.data) {
+          const list = res.data;
+          const total = list.length;
+          const upcoming = list.filter((t: any) => t.status === 'Ongoing' || t.status === 'Upcoming').length;
+          const completed = list.filter((t: any) => t.status === 'Completed').length;
+          setTripsStats({ total, upcoming, completed });
+        }
+      } catch (error) {
+        console.error('Error fetching trip stats:', error);
+      }
+    }
+
     fetchUser();
+    fetchTripStats();
   }, []);
 
   // function changePassword() {
@@ -185,9 +206,9 @@ export default function UserProfilePage() {
 
           <div className="grid grid-cols-3 gap-4 mt-10">
             {[
-              { label: "Total Trips", value: 12 },
-              { label: "Ongoing", value: 3 },
-              { label: "Completed", value: 9 },
+              { label: "Total Trips", value: tripsStats.total },
+              { label: "Upcoming", value: tripsStats.upcoming },
+              { label: "Completed", value: tripsStats.completed },
             ].map((item, i) => (
               <div
                 key={i}
