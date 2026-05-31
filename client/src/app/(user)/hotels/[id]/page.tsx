@@ -10,6 +10,14 @@ import { Loader2, Users, CalendarDays, CheckCircle, Hotel as HotelIcon, Wifi, Ar
 import toast from 'react-hot-toast';
 import { IRoom } from '@/types/hotel';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
+import { SHARED_API_METHODS } from '@/services/APIs/shared.api.service';
+
+const getCapacity = (capacity: number | string): number => {
+  if (typeof capacity === 'number') return capacity;
+  if (!capacity) return 1;
+  const match = String(capacity).match(/\d+/);
+  return match ? parseInt(match[0], 10) : 1;
+};
 
 export default function HotelDetailsPage() {
   const { id } = useParams();
@@ -27,6 +35,65 @@ export default function HotelDetailsPage() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [isFiltering, setIsFiltering] = useState(false);
+
+  // Wallet payment states
+  const [paymentMethod, setPaymentMethod] = useState<'online' | 'wallet'>('online');
+  const [walletBalance, setWalletBalance] = useState<number | null>(null);
+  const [walletLoading, setWalletLoading] = useState(false);
+
+  useEffect(() => {
+    if (paymentMethod === 'wallet') {
+      fetchWalletBalance();
+    }
+  }, [paymentMethod]);
+
+  async function fetchWalletBalance() {
+    try {
+      setWalletLoading(true);
+      const data = await SHARED_API_METHODS.getWalletBalance('user');
+      if (data.success) {
+        setWalletBalance(data.data.balance);
+      } else {
+        setWalletBalance(0);
+      }
+    } catch (err) {
+      console.error('Wallet balance fetch error:', err);
+      setWalletBalance(0);
+    } finally {
+      setWalletLoading(false);
+    }
+  }
+
+  async function handleWalletPayment(roomId: string, amount: number) {
+    if (walletBalance === null || walletBalance < amount) {
+      toast.error('Insufficient wallet balance to complete this booking');
+      return;
+    }
+
+    try {
+      setWalletLoading(true);
+      const res = await USER_API_METHODS.purchaseRoomWithWallet({
+        roomId,
+        role: 'user',
+        amount,
+        startDate: checkInDate,
+        people: numPeople,
+        couponId: 'none'
+      });
+
+      if (res.data && res.data.success) {
+        toast.success('Booking successful! Your wallet has been debited.');
+        router.push('/profile/orders');
+      } else {
+        toast.error(res.message || 'Failed to complete booking');
+      }
+    } catch (err: any) {
+      console.error('Wallet payment error:', err);
+      toast.error(err.response?.data?.message || 'Something went wrong during payment.');
+    } finally {
+      setWalletLoading(false);
+    }
+  }
 
   useEffect(() => {
     if (id) {
@@ -196,6 +263,54 @@ export default function HotelDetailsPage() {
               </div>
             </div>
           </div>
+
+          {/* Payment Method Selector */}
+          <div className="mt-6 border-t pt-6">
+            <label className="block text-sm font-semibold mb-3 text-gray-700">Choose Payment Method</label>
+            <div className="grid grid-cols-2 gap-4 max-w-md">
+              <button
+                type="button"
+                onClick={() => setPaymentMethod('online')}
+                className={`p-3 border-2 rounded-xl text-left transition ${paymentMethod === 'online'
+                  ? 'border-emerald-600 bg-emerald-50/30'
+                  : 'border-gray-200 hover:border-gray-300'
+                  }`}
+              >
+                <p className="font-semibold text-gray-800 text-sm">Online Payment</p>
+                <p className="text-xs text-gray-500">Pay via Stripe / Card</p>
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentMethod('wallet')}
+                className={`p-3 border-2 rounded-xl text-left transition ${paymentMethod === 'wallet'
+                  ? 'border-emerald-600 bg-emerald-50/30'
+                  : 'border-gray-200 hover:border-gray-300'
+                  }`}
+              >
+                <p className="font-semibold text-gray-800 text-sm">Wallet</p>
+                <p className="text-xs text-gray-500">Use your wallet balance</p>
+              </button>
+            </div>
+          </div>
+
+          {paymentMethod === 'wallet' && (
+            <div className="mt-4 p-4 bg-emerald-50 border border-emerald-100 rounded-xl max-w-md">
+              {walletLoading ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="animate-spin w-4 h-4 text-emerald-600" />
+                  <span className="text-xs text-gray-600">Fetching wallet balance...</span>
+                </div>
+              ) : (
+                <>
+                  <p className="text-xs text-gray-500 font-medium">Available Wallet Balance</p>
+                  <p className="text-xl font-bold text-emerald-600">
+                    ₹{walletBalance !== null ? walletBalance.toLocaleString() : '0'}
+                  </p>
+                </>
+              )}
+            </div>
+          )}
+
           <div className="mt-6 flex flex-wrap gap-4 items-center justify-between border-t pt-6">
             <div className="flex items-start gap-3">
               <input
@@ -250,74 +365,96 @@ export default function HotelDetailsPage() {
                 No room types currently available for these criteria.
               </div>
             ) : (
-              rooms.map((room) => (
-                <div key={room.id} className="bg-white rounded-xl shadow overflow-hidden flex flex-col md:flex-row hover:shadow-md transition">
-                  <div className="w-full md:w-80 h-64 flex-shrink-0">
-                    <img
-                      src={room.images?.[0] || '/images/room-placeholder.jpg'}
-                      className="w-full h-full object-cover"
-                      alt={room.roomType}
-                    />
-                  </div>
-                  <div className="p-6 flex-1 flex flex-col justify-between">
-                    <div>
-                      <div className="flex justify-between items-start mb-2">
-                        <h3 className="text-2xl font-bold text-gray-800">{room.roomType}</h3>
-                        <div className="text-right">
-                          <div className="text-emerald-600 text-2xl font-bold">₹{room.PricePerNight.toLocaleString()}</div>
-                          <div className="text-xs text-gray-500">per night</div>
+              rooms.map((room) => {
+                const capacity = getCapacity(room.Capacity);
+                const requiredRooms = Math.ceil(numPeople / capacity);
+                const totalAmount = room.PricePerNight * nights * requiredRooms;
+
+                return (
+                  <div key={room.id} className="bg-white rounded-xl shadow overflow-hidden flex flex-col md:flex-row hover:shadow-md transition">
+                    <div className="w-full md:w-80 h-64 flex-shrink-0">
+                      <img
+                        src={room.images?.[0] || '/images/room-placeholder.jpg'}
+                        className="w-full h-full object-cover"
+                        alt={room.roomType}
+                      />
+                    </div>
+                    <div className="p-6 flex-1 flex flex-col justify-between">
+                      <div>
+                        <div className="flex justify-between items-start mb-2">
+                          <h3 className="text-2xl font-bold text-gray-800">{room.roomType}</h3>
+                          <div className="text-right">
+                            <div className="text-emerald-600 text-2xl font-bold">₹{room.PricePerNight.toLocaleString()}</div>
+                            <div className="text-xs text-gray-500">per night</div>
+                          </div>
                         </div>
-                      </div>
-                      <p className="text-gray-600 mb-4 line-clamp-2">{room.Description}</p>
-                      <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
-                        <span className="flex items-center gap-1">
-                          <Users size={16} /> Max {room.Capacity} Adults
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <CheckCircle size={16} className="text-green-500" /> {room.AvailableCount} Rooms Available
-                        </span>
-                        {isFiltering && (
-                          <span className="flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full font-bold">
-                            Required Rooms: {Math.ceil(numPeople / room.Capacity)}
+                        <p className="text-gray-600 mb-4 line-clamp-2">{room.Description}</p>
+                        <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
+                          <span className="flex items-center gap-1">
+                            <Users size={16} /> Max {room.Capacity} Adults
                           </span>
+                          <span className="flex items-center gap-1">
+                            <CheckCircle size={16} className={room.AvailableCount > 0 ? "text-green-500" : "text-red-500"} /> {room.AvailableCount} Rooms Available
+                          </span>
+                          {requiredRooms > room.AvailableCount ? (
+                            <span className="flex items-center gap-1 px-2 py-0.5 bg-red-100 text-red-700 rounded-full font-bold">
+                              Not enough rooms available!
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full font-bold">
+                              Required Rooms: {requiredRooms}
+                            </span>
+                          )}
+                        </div>
+                        {room.Facilities?.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {room.Facilities.map((f, i) => (
+                              <span key={i} className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
+                                {f}
+                              </span>
+                            ))}
+                          </div>
                         )}
                       </div>
-                      {room.Facilities?.length > 0 && (
-                        <div className="flex flex-wrap gap-2">
-                          {room.Facilities.map((f, i) => (
-                            <span key={i} className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
-                              {f}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
 
-                    <div className="mt-6 pt-4 border-t flex justify-between items-center">
-                      <div className="text-sm">
-                        Total for {nights} {nights > 1 ? 'nights' : 'night'}:
-                        <span className="font-bold text-gray-900 ml-1">₹{(room.PricePerNight * nights).toLocaleString()}</span>
+                      <div className="mt-6 pt-4 border-t flex justify-between items-center">
+                        <div className="text-sm">
+                          Total for {nights} {nights > 1 ? 'nights' : 'night'} ({requiredRooms} {requiredRooms > 1 ? 'rooms' : 'room'}):
+                          <span className="font-bold text-gray-900 ml-1">₹{totalAmount.toLocaleString()}</span>
+                        </div>
+                        {acceptedTerms && checkInDate && room.Status === 'Available' && requiredRooms <= room.AvailableCount ? (
+                          paymentMethod === 'online' ? (
+                            <BookNowButton
+                              roomId={room.id}
+                              amount={totalAmount}
+                              role="user"
+                              startDate={checkInDate}
+                              people={numPeople}
+                            />
+                          ) : (
+                            <button
+                              onClick={() => handleWalletPayment(room.id, totalAmount)}
+                              disabled={walletBalance === null || walletBalance < totalAmount || walletLoading}
+                              className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition text-sm font-medium flex items-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                            >
+                              {walletLoading ? <Loader2 className="animate-spin w-4 h-4" /> : "Pay via Wallet"}
+                            </button>
+                          )
+                        ) : (
+                          <button
+                            disabled
+                            className="px-6 py-2 bg-gray-200 text-gray-400 rounded-lg cursor-not-allowed text-sm font-medium"
+                          >
+                            {requiredRooms > room.AvailableCount
+                              ? "Not enough rooms"
+                              : "Select stays & accept terms to book"}
+                          </button>
+                        )}
                       </div>
-                      {acceptedTerms && checkInDate && room.Status === 'Available' ? (
-                        <BookNowButton
-                          roomId={room.id}
-                          amount={room.PricePerNight * nights}
-                          role="user"
-                          startDate={checkInDate}
-                          people={numPeople}
-                        />
-                      ) : (
-                        <button
-                          disabled
-                          className="px-6 py-2 bg-gray-200 text-gray-400 rounded-lg cursor-not-allowed text-sm font-medium"
-                        >
-                          Select stays & accept terms to book
-                        </button>
-                      )}
                     </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </div>

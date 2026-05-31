@@ -14,7 +14,6 @@ import {
   Facebook, 
   Twitter, 
   Compass, 
-  Sliders, 
   Sparkles, 
   CheckCircle2, 
   Loader2,
@@ -87,9 +86,6 @@ export default function HomePage() {
   const [travelStyle, setTravelStyle] = useState('Solo');
   const [startDate, setStartDate] = useState('');
 
-  // Interactive Budget Slider Widget
-  const [budgetVal, setBudgetVal] = useState(25000);
-
   useEffect(() => {
     fetchAllData();
   }, []);
@@ -109,23 +105,6 @@ export default function HomePage() {
       setLoading(false);
     }
   };
-
-  // Get budget-matching preview values
-  const getBudgetDetails = (val: number) => {
-    if (val < 15000) {
-      return { days: '2-3 Days', tier: 'Backpacker Light', stay: 'Standard Lodges', matches: 1 };
-    }
-    if (val < 40000) {
-      return { days: '4-6 Days', tier: 'Classic Explorer', stay: 'Deluxe Cozy Stays', matches: 3 };
-    }
-    if (val < 85000) {
-      return { days: '7-10 Days', tier: 'Premium Traveler', stay: 'Luxury Partner Resorts', matches: 4 };
-    }
-    return { days: '12+ Days', tier: 'Royal Elite Tour', stay: 'Premium Heritage Suites', matches: 4 };
-  };
-
-  const budgetSpecs = getBudgetDetails(budgetVal);
-
   const handlePlanSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Redirect cleanly to Mind Map tool, pre-loading variables
@@ -273,7 +252,7 @@ export default function HomePage() {
               key={i} 
               onClick={() => {
                 setTargetDest(dest.name);
-                const el = document.getElementById('budget-planner');
+                const el = document.getElementById('packages');
                 el?.scrollIntoView({ behavior: 'smooth' });
               }}
               className="group cursor-pointer bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 hover:border-emerald-500/20 transition-all duration-300"
@@ -311,60 +290,6 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-
-      {/* Dynamic Budget Slider Preview (Wow Factor!) */}
-      <section id="budget-planner" className="bg-gradient-to-b from-white to-slate-50 border-y border-slate-100 py-24">
-        <div className="max-w-4xl mx-auto px-6 space-y-8">
-          
-          <div className="text-center space-y-3">
-            <div className="inline-flex items-center gap-1 bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-full text-emerald-700 text-xs font-bold uppercase tracking-wider">
-              <Sliders className="w-3.5 h-3.5" />
-              Budget Estimator Tool
-            </div>
-            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Interactive Tour Matcher</h2>
-            <p className="text-slate-500 font-medium">Drag the slider according to your budget range to inspect matching stays & tours</p>
-          </div>
-
-          {/* Slider Controls */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-100 space-y-8">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-400 font-bold uppercase tracking-wider">Plan Budget</span>
-              <span className="text-2xl font-black text-emerald-600">₹{budgetVal.toLocaleString('en-IN')}</span>
-            </div>
-
-            <input
-              type="range"
-              min="5000"
-              max="150000"
-              step="5000"
-              value={budgetVal}
-              onChange={(e) => setBudgetVal(Number(e.target.value))}
-              className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-emerald-500 focus:outline-none"
-            />
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                <span className="text-[10px] text-slate-400 font-bold block uppercase mb-1">Trip Duration</span>
-                <span className="text-sm font-extrabold text-slate-800">{budgetSpecs.days}</span>
-              </div>
-              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                <span className="text-[10px] text-slate-400 font-bold block uppercase mb-1">Explorer Tier</span>
-                <span className="text-sm font-extrabold text-slate-800 truncate block">{budgetSpecs.tier}</span>
-              </div>
-              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                <span className="text-[10px] text-slate-400 font-bold block uppercase mb-1">Stay Type</span>
-                <span className="text-sm font-extrabold text-slate-800 truncate block">{budgetSpecs.stay}</span>
-              </div>
-              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                <span className="text-[10px] text-slate-400 font-bold block uppercase mb-1">Matched Offers</span>
-                <span className="text-sm font-extrabold text-emerald-600 block">{budgetSpecs.matches} packages</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
       {/* Exclusive Packages (Working API) */}
       <section id="packages" className="max-w-7xl mx-auto px-6 py-24">
         <div className="text-center mb-16 space-y-3">

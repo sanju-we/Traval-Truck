@@ -15,7 +15,6 @@ import { Header } from '@/components/user/header/page';
 
 const libraries: Array<"places"> = ["places"];
 
-// Icons
 const MapPinIcon = () => (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>);
 const SparklesIcon = () => (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"></path><path d="M19 12l.75 2.25L22 15l-2.25.75L19 18l-.75-2.25L16 15l2.25-.75L19 12z"></path></svg>);
 const ClockIcon = () => (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>);
@@ -40,6 +39,7 @@ export default function CreateMindMapPage() {
   const [foodAmount, setFoodAmount] = useState('');
   const [room, setRoom] = useState('5 star');
   const [startingPlaceInput, setStartingPlaceInput] = useState('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [startingLocation, setStartingLocation] = useState<StartingLocation | null>(null);
   const [startingSuggestions, setStartingSuggestions] = useState<PlaceSuggestion[]>([]);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
@@ -155,17 +155,93 @@ export default function CreateMindMapPage() {
 
   const generateTrip = async () => {
     const selectedPlaces = places.filter(p => p.selected);
+    const newErrors: Record<string, string> = {};
 
+    // 1. Title Validation
+    if (!title || title.trim().length < 3) {
+      newErrors.title = "Title must be at least 3 characters";
+    }
+
+    // 2. Start Date Validation
+    if (!startDate || isNaN(Date.parse(startDate))) {
+      newErrors.startDate = "Invalid start date";
+    }
+
+    // 3. End Date Validation
+    if (!endDate || isNaN(Date.parse(endDate))) {
+      newErrors.endDate = "Invalid end date";
+    } else if (startDate && new Date(endDate) < new Date(startDate)) {
+      newErrors.endDate = "End date cannot be before start date";
+    }
+
+    // 4. Starting Location Validation
     if (!startingLocation) {
-      toast.error('Set starting location!');
-      return;
+      newErrors.startPlace = "Starting location is required";
+    } else if (startingLocation.address.length < 5) {
+      newErrors.startPlace = "Starting place address is too short (min 5 chars)";
     }
+
+    // 5. Selected Places Validation
     if (selectedPlaces.length === 0) {
-      toast.error('Select at least one place!');
-      return;
+      newErrors.places = "At least one place must be selected";
     }
-    if (!title || !startDate || !endDate) {
-      toast.error('Fill in all details!');
+
+    // 6. Vehicle Validation
+    if (!vehicle || !["car", "bike", "traveller"].includes(vehicle)) {
+      newErrors.vehicle = "Please select a valid vehicle option";
+    }
+
+    // 7. Mileage Validation
+    if (!milage) {
+      newErrors.milage = "Mileage is required";
+    } else if (!/^\d+$/.test(milage)) {
+      newErrors.milage = "Mileage must be a number";
+    } else {
+      const numMilage = Number(milage);
+      if (numMilage <= 0 || numMilage > 150) {
+        newErrors.milage = "Mileage must be between 1 and 150";
+      }
+    }
+
+    // 8. Food Preference Validation
+    if (!food || !["veg", "non-veg"].includes(food)) {
+      newErrors.food = "Please select a valid food preference";
+    }
+
+    // 9. Food Amount Validation
+    if (!foodAmount) {
+      newErrors.foodAmount = "Food budget estimation is required";
+    } else if (!/^\d+$/.test(foodAmount)) {
+      newErrors.foodAmount = "Food amount must be numeric";
+    } else if (Number(foodAmount) < 0) {
+      newErrors.foodAmount = "Food amount cannot be negative";
+    }
+
+    // 10. Room Preference Validation
+    if (!room || !["5 star", "4 star", "3 star", "2&1 star"].includes(room)) {
+      newErrors.room = "Please select a valid room preference";
+    }
+
+    // 11. Member Validation
+    if (!member) {
+      newErrors.member = "Member count is required";
+    } else if (!/^\d+$/.test(member)) {
+      newErrors.member = "Member count must be numeric";
+    } else {
+      const numMember = Number(member);
+      if (numMember <= 0 || numMember > 10) {
+        newErrors.member = "Members must be between 1 and 10";
+      }
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      toast.error("Please resolve the validation errors before generating the Mind-Map!");
+      document.getElementById('mindmap-form')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
       return;
     }
 
@@ -176,7 +252,7 @@ export default function CreateMindMapPage() {
         title,
         startDate,
         endDate,
-        startPlace: startingLocation.address,
+        startPlace: startingLocation?.address || '',
         places: selectedPlaces,
         vehicle,
         milage,
@@ -190,10 +266,17 @@ export default function CreateMindMapPage() {
         toast.success('Mind-Map created!');
         setDraft(data.data);
         setCreated(true);
-
-        // 🔹 Smooth scroll AFTER render
         setTimeout(() => {
           draftRef.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        }, 300);
+      } else {
+        toast.error(data.message)
+
+        setTimeout(() => {
+          document.getElementById('mindmap-form')?.scrollIntoView({
             behavior: 'smooth',
             block: 'start',
           });
@@ -226,66 +309,75 @@ export default function CreateMindMapPage() {
   return (
     <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!} libraries={libraries}>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50">
-        <Header/>
+        <Header />
         {!created && (<div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
 
           {/* Trip Header */}
-          <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+          <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100" id='mindmap-form'>
             <h1 className="text-3xl font-bold flex items-center gap-3 text-gray-800 mb-6">
               <span className="text-emerald-600"><SparklesIcon /></span>
               Create Your Trip Mind-Map
             </h1>
-            <div className="grid md:grid-cols-3 gap-4">
+             <div className="grid md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Trip Title</label>
-                <input placeholder="e.g., Kerala Adventure 2025" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none" />
+                <input placeholder="e.g., Kerala Adventure 2025" value={title} onChange={(e) => setTitle(e.target.value)} className={`w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none ${errors.title ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}`} />
+                {errors.title && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.title}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
-                <input type="date" value={startDate} min={formattedTomorrow} onChange={(e) => setStartDate(e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none" />
+                <input type="date" value={startDate} min={formattedTomorrow} onChange={(e) => setStartDate(e.target.value)} className={`w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none ${errors.startDate ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}`} />
+                {errors.startDate && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.startDate}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">End Date</label>
-                <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} min={startDate} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none" />
+                <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} min={startDate} className={`w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none ${errors.endDate ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}`} />
+                {errors.endDate && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.endDate}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Select members</label>
-                <input type="number" min={0} max={5} placeholder='Select members 1-5' value={member} onChange={(e) => setMember(e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none" />
+                <input type="number" min={0} max={10} placeholder='Select members 1-10' value={member} onChange={(e) => setMember(e.target.value)} className={`w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none ${errors.member ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}`} />
+                {errors.member && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.member}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Choose the Travel Method</label>
-                <select name="vehicle" id="vehicleId" value={vehicle} onChange={(e) => setVehicle(e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none">
+                <select name="vehicle" id="vehicleId" value={vehicle} onChange={(e) => setVehicle(e.target.value)} className={`w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none ${errors.vehicle ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}`}>
                   <option disabled>Select a option</option>
                   <option value="car">Cars</option>
                   <option value="bike">Bike</option>
                   <option value="traveller">Traveller</option>
                 </select>
+                {errors.vehicle && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.vehicle}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Vehicle milage</label>
-                <input type="number" min={10} max={100} value={milage} onChange={(e) => setMilage(e.target.value)} placeholder='eg. 65' className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none" />
+                <input type="number" min={1} max={150} value={milage} onChange={(e) => setMilage(e.target.value)} placeholder='eg. 65' className={`w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none ${errors.milage ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}`} />
+                {errors.milage && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.milage}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Select Food preference</label>
-                <select name="food" id="foodId" value={food} onChange={(e) => setFood(e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none">
+                <select name="food" id="foodId" value={food} onChange={(e) => setFood(e.target.value)} className={`w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none ${errors.food ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}`}>
                   <option disabled>Select a option</option>
                   <option value="veg">Veg</option>
                   <option value="non-veg">Non-Veg</option>
                 </select>
+                {errors.food && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.food}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Estimate amount for food</label>
-                <input type="number" min={100} max={50000} value={foodAmount} onChange={(e) => setFoodAmount(e.target.value)} placeholder='eg. 1500' className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none" />
+                <input type="number" min={0} value={foodAmount} onChange={(e) => setFoodAmount(e.target.value)} placeholder='eg. 1500' className={`w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none ${errors.foodAmount ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}`} />
+                {errors.foodAmount && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.foodAmount}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Select Room preference</label>
-                <select name="room" id="roomId" value={room} onChange={(e) => setRoom(e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none">
+                <select name="room" id="roomId" value={room} onChange={(e) => setRoom(e.target.value)} className={`w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none ${errors.room ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}`}>
                   <option disabled>Select a option</option>
                   <option value="5 star">5 star</option>
                   <option value="4 star">4 star</option>
                   <option value="3 star">3 star</option>
                   <option value="2&1 star">below 3 star</option>
                 </select>
+                {errors.room && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.room}</p>}
               </div>
             </div>
             {totalDays > 0 && (
@@ -304,11 +396,12 @@ export default function CreateMindMapPage() {
             <div className="space-y-6">
 
               {/* Starting Location */}
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-2xl shadow-lg border border-blue-200">
+              <div className={`bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-2xl shadow-lg border ${errors.startPlace ? 'border-red-500' : 'border-blue-200'}`}>
                 <label className="text-sm font-medium text-gray-800 mb-3 flex items-center gap-2">
                   <HomeIcon />
                   Starting Location (Required)
                 </label>
+                {errors.startPlace && <p className="text-red-500 text-xs mb-3 font-semibold">{errors.startPlace}</p>}
                 {startingLocation ? (
                   <div className="bg-white p-4 rounded-lg border-2 border-blue-400 shadow-sm">
                     <div className="flex items-start justify-between">
@@ -347,8 +440,9 @@ export default function CreateMindMapPage() {
               </div>
 
               {/* Search Places */}
-              <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+              <div className={`bg-white p-6 rounded-2xl shadow-lg border ${errors.places ? 'border-red-500 bg-red-50/10' : 'border-gray-100'}`}>
                 <label className="block text-sm font-medium text-gray-700 mb-3">Search Places to Visit</label>
+                {errors.places && <p className="text-red-500 text-xs mb-3 font-semibold">{errors.places}</p>}
                 <div className="relative">
                   <input placeholder="Search for destinations..." value={placeInput} onChange={(e) => { setPlaceInput(e.target.value); fetchPlaceSuggestion(e.target.value); }} className="w-full border border-gray-300 rounded-lg pl-12 pr-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none" />
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"><SearchIcon /></div>
@@ -506,7 +600,7 @@ export default function CreateMindMapPage() {
               <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden sticky top-6">
                 <MapSection mapCenter={mapCenter} places={places} startingLocation={startingLocation} />
               </div>
-              
+
             </div>
           </div>
         </div>)}

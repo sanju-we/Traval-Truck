@@ -52,4 +52,15 @@ export class UserHotelsController implements IUserHotelsController {
     const session = await this._userHotelService.initializeSession(roomId, role, userId, amount, couponId, startDate, Number(people));
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.CREATED, session)
   }
+
+  async walletPurchase(req: Request, res: Response): Promise<void> {
+    const { roomId, amount, couponId, role, startDate, people } = req.body
+    const userId = req.user.id;
+    const result = await this._userHotelService.walletPurchase(roomId, role, userId, amount, couponId, startDate, Number(people));
+    if (result.success) {
+      sendResponse(res, STATUS_CODE.OK, true, result.message, result);
+    } else {
+      sendResponse(res, STATUS_CODE.BAD_REQUEST, false, result.message, null);
+    }
+  }
 }

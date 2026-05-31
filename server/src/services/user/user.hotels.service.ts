@@ -8,6 +8,8 @@ import { ISubscriptionHistoryRepository } from "../../core/interface/repositorie
 import { IPaymentUtils } from "../../core/interface/PaymentInterface/Ipayment.utils";
 import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository";
 import { PaginationResponse } from "@core/DTO/pagination.DTO";
+import { IWalletRespository } from "../../core/interface/repositorie/shared/IWallet.repository";
+import { Types } from "mongoose";
 
 @injectable()
 export class UserHotelsService implements IUserHotelsService {
@@ -17,6 +19,7 @@ export class UserHotelsService implements IUserHotelsService {
     @inject('ISubscriptionHistoryRepository') private readonly _subscriptionHistoryRepo: ISubscriptionHistoryRepository,
     @inject('IPaymentUtils') private readonly _paymentUtils: IPaymentUtils,
     @inject('IOrdersRepository') private readonly _orderRepo: IOrdersRepository,
+    @inject('IWalletRespository') private readonly _walletRepo: IWalletRespository,
   ) { }
 
   async getAllHotels(page: number, limit: number, search?: string): Promise<PaginationResponse<any>> {
@@ -134,12 +137,12 @@ export class UserHotelsService implements IUserHotelsService {
     const room = await this._hotelRoomRepo.findById(roomId);
     if (!room) throw new DataNotFoundError();
 
-    const days = Math.round(amount / room.PricePerNight);
+    const requiredRooms = Math.ceil(people / (room.Capacity || 1));
+    const days = Math.round(amount / (room.PricePerNight * requiredRooms)) || 1;
     const date = new Date(startDate);
     const endDate = new Date(date);
     endDate.setDate(endDate.getDate() + days);
 
-    const requiredRooms = Math.ceil(people / room.Capacity);
     if (requiredRooms > (room.AvailableCount || 1)) throw new ROOM_ALREADY_OCCUPAID();
 
     const orders = await this._orderRepo.findAll({
@@ -187,5 +190,80 @@ export class UserHotelsService implements IUserHotelsService {
         people: people.toString()
       }
     })
+  }
+
+  async walletPurchase(roomId: string, role: string, userId: string, amount: number, couponId: string, startDate: string, people: number): Promise<{ success: boolean; message: string }> {
+    const room = await this._hotelRoomRepo.findById(roomId);
+    if (!room) throw new DataNotFoundError();
+
+    const requiredRooms = Math.ceil(people / (room.Capacity || 1));
+    if (requiredRooms > (room.AvailableCount || 1)) {
+      return { success: false, message: 'Not enough rooms available' };
+    }
+
+    const wallet = await this._walletRepo.FindByUserId(userId);
+    if (!wallet) throw new DataNotFoundError();
+
+    if (wallet.Balance < amount) {
+      return { success: false, message: 'Insufficient wallet balance' };
+    }
+
+    const days = Math.round(amount / (room.PricePerNight * requiredRooms)) || 1;
+    const checkIn = new Date(startDate);
+    const endDate = new Date(checkIn);
+    endDate.setDate(endDate.getDate() + days);
+
+    // Generate Order ID
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    const count = (await this._orderRepo.countDocuments() + 1).toString().padStart(6, '0')
+    const date = new Date()
+    const orderId = `ORD-${pad(date.getDate())}${pad(date.getMonth() + 1)}${date.getFullYear()}-${count}`
+
+    const orderData = await this._orderRepo.create({
+      orderId: orderId,
+      amount: amount,
+      userId: new Types.ObjectId(userId),
+      productType: 'Rooms',
+      role: 'Hotel',
+      product: new Types.ObjectId(roomId),
+      people: people,
+      ownedBy: room.HotelId.toString(),
+      couponApplied: couponId || 'none',
+      paymentType: 'wallet',
+      startDate: checkIn.toISOString(),
+      endDate: endDate.toISOString()
+    });
+
+    if (!orderData) {
+      return { success: false, message: 'Failed to create booking order' };
+    }
+
+    // Deduct from user's wallet
+    wallet.Balance -= amount;
+    const transaction = {
+      Type: 'debit',
+      Amount: amount,
+      Description: `Booking of Room #${room.RoomNumber} with order ID ${orderId}`,
+      Date: new Date(),
+    };
+    wallet.Transaction.push(transaction);
+    await this._walletRepo.update(wallet.id, wallet);
+
+    // Credit to admin wallet
+    const adminWallet = await this._walletRepo.findOne({ role: 'admin' });
+    if (adminWallet) {
+      const adminTransaction = {
+        Type: 'credit',
+        Amount: amount,
+        Description: `Room Booking amount ${amount} of ${orderId}.`,
+        Date: new Date(),
+        orderId: orderData._id.toString()
+      };
+      adminWallet.Transaction.push(adminTransaction);
+      adminWallet.Balance += amount;
+      await this._walletRepo.update(adminWallet._id.toString(), adminWallet);
+    }
+
+    return { success: true, message: 'Purchase successful' };
   }
 }

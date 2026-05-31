@@ -74,27 +74,35 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
   const handleCropSave = async () => {
     if (!cropSrc || !croppedAreaPixels) return;
 
-    const croppedBlob = await getCroppedImg(cropSrc, croppedAreaPixels);
-    if (!croppedBlob) return;
+    try {
+      const croppedBlob = await getCroppedImg(cropSrc, croppedAreaPixels);
+      if (!croppedBlob) {
+        toast.error("Failed to crop image.");
+        return;
+      }
 
-    const croppedFile = new File([croppedBlob], `room-${Date.now()}.jpg`, { type: "image/jpeg" });
-    const base64 = await blobToBase64(croppedBlob);
+      const croppedFile = new File([croppedBlob], `room-${Date.now()}.jpg`, { type: "image/jpeg" });
+      const base64 = await blobToBase64(croppedBlob);
 
-    setFormData((prev) => ({
-      ...prev,
-      images: [...prev.images, croppedFile],
-      imagePreviews: [...prev.imagePreviews, base64],
-    }));
+      setFormData((prev) => ({
+        ...prev,
+        images: [...prev.images, croppedFile],
+        imagePreviews: [...prev.imagePreviews, base64],
+      }));
 
-    const nextIndex = currentImageIndex + 1;
-    if (nextIndex < pendingImages.length) {
-      const nextURL = URL.createObjectURL(pendingImages[nextIndex]);
-      setCurrentImageIndex(nextIndex);
-      setCropSrc(nextURL);
-    } else {
-      setCropSrc(null);
-      setPendingImages([]);
-      setCurrentImageIndex(0);
+      const nextIndex = currentImageIndex + 1;
+      if (nextIndex < pendingImages.length) {
+        const nextURL = URL.createObjectURL(pendingImages[nextIndex]);
+        setCurrentImageIndex(nextIndex);
+        setCropSrc(nextURL);
+      } else {
+        setCropSrc(null);
+        setPendingImages([]);
+        setCurrentImageIndex(0);
+      }
+    } catch (error) {
+      console.error("Error cropping image:", error);
+      toast.error("Failed to process cropped image.");
     }
   };
 
@@ -108,7 +116,7 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
 
   const handleSubmit = async () => {
     if (!formData.roomNumber || !formData.roomType || !formData.price || formData.images.length === 0) {
-      console.log('formData', formData)
+      console.log('image not found', formData)
       toast.error("Please fill all required fields and upload at least one image.");
       return;
     }
@@ -128,6 +136,7 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
         data.append("images", img);
       });
 
+      console.log('formData', formData)
       const res = await api.post("/hotel/rooms/addRooms", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -160,7 +169,7 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
             value={formData.roomType}
             onChange={handleChange}
           >
-            <option value="none" disabled>
+            <option value="" disabled>
               Select Room type
             </option>
             <option value="single">Single</option>

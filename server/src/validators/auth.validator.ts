@@ -151,6 +151,7 @@ export class authValidator implements IAuthValidator {
   }
 
   async RoomValidator(data: RoomsDTO): Promise<void> {
+    console.log('sunny')
     const roomSchema = z.object({
       Facilities: z
         .string(),
@@ -183,7 +184,6 @@ export class authValidator implements IAuthValidator {
         .string()
         .min(2, { message: "Room type must be at least 2 characters long" }),
     });
-    console.log(data)
     roomSchema.parse(data)
   }
 

@@ -12,5 +12,6 @@ UserHotelsRouter.get('/getAll', asyncHandler(userHotelsController.getAllHotels.b
   .get('/details/:id', verifyToken, asyncHandler(userHotelsController.getHotelDetails.bind(userHotelsController)))
   .get('/getRoomsByHotel/:id', verifyToken, asyncHandler(userHotelsController.getRoomsByHotel.bind(userHotelsController)))
   .post('/purchase', verifyToken, asyncHandler(userHotelsController.purchaseRoom.bind(userHotelsController)))
+  .post('/wallet-purchase', verifyToken, asyncHandler(userHotelsController.walletPurchase.bind(userHotelsController)))
 
 export default UserHotelsRouter

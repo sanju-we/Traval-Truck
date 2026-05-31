@@ -39,6 +39,7 @@ export const USER_API_METHODS = {
     getRoomsByHotel: (id: string, params?: { startDate?: string; endDate?: string; people?: number }) => get(`${USER_ROUTES.hotel.getAllHotel.replace('/getAll', '/getRoomsByHotel')}/${id}`, params),
     getRoomDetails: (id: string) => get(USER_ROUTES.hotel.getRoomDetails(id)),
     purchaseRoom: (data: { roomId: string, role: string, amount: number, couponId?: string, startDate: string, people: number }) => post(USER_ROUTES.hotel.purchaseRoom, data),
+    purchaseRoomWithWallet: (data: { roomId: string, role: string, amount: number, couponId?: string, startDate: string, people: number }) => post(USER_ROUTES.hotel.purchaseRoom.replace('/purchase', '/wallet-purchase'), data),
 
     // foods api requests
     showAllFoods: (params?: any) => get(USER_ROUTES.foods.showAllFoods, params),

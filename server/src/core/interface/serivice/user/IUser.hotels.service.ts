@@ -7,4 +7,5 @@ export interface IUserHotelsService {
   getRoomsByHotel(hotelId: string, searchParams?: { startDate?: string; endDate?: string; people?: number }): Promise<RoomsDTO[]>;
   getHotelDetails(hotelId: string): Promise<any>;
   initializeSession(roomId: string, role: string, userId: string, amount: number, couponId: string, startDate: string, people: number): Promise<{ url: string, sessionId: string }>
+  walletPurchase(roomId: string, role: string, userId: string, amount: number, couponId: string, startDate: string, people: number): Promise<{ success: boolean; message: string }>
 }

@@ -14,7 +14,7 @@ export function Header() {
   const [notifyOpen, setNotifyOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const user = useInitializeUser(); // Get user from Redux
+  const user = useInitializeUser();
   const dispatch = useDispatch();
   const [notifications] = useState([
     { id: 1, icon: '✈️', message: 'Your Goa trip is confirmed!', time: '2h ago', unread: true },

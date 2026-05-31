@@ -6,4 +6,5 @@ export interface IUserHotelsController {
   getRoomsByHotel(req: Request, res: Response): Promise<void>;
   getHotelDetails(req: Request, res: Response): Promise<void>;
   purchaseRoom(req: Request, res: Response): Promise<void>
+  walletPurchase(req: Request, res: Response): Promise<void>
 }

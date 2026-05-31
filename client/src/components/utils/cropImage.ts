@@ -25,7 +25,9 @@ export async function getCroppedImg(
 function createImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      img.crossOrigin = 'anonymous';
+    }
     img.src = url;
     img.onload = () => resolve(img);
     img.onerror = (error) => reject(error);

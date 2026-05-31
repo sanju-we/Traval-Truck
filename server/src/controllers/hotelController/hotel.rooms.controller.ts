@@ -19,8 +19,8 @@ export class HotelRoomsController implements IHotelRoomsController {
     const search = req.query.Description as string
     const Description = req.query.Description as string
     const roomNum = isNaN(Number(search)) ? 0 : Number(search)
-    const pageNum = isNaN(Number(page)) ? 0 : Number(page) 
-    const allRooms = await this._roomService.getAllRooms(hotelID,pageNum,roomNum,Description)
+    const pageNum = isNaN(Number(page)) ? 0 : Number(page)
+    const allRooms = await this._roomService.getAllRooms(hotelID, pageNum, roomNum, Description)
     logger.info(allRooms)
     if (allRooms) return sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, allRooms)
     throw new DataNotFoundError()
@@ -32,6 +32,7 @@ export class HotelRoomsController implements IHotelRoomsController {
       [fieldname: string]: Express.Multer.File[]
     }
     const hotelId = req.user.id
+    console.log('sexy')
     if (!files || Object.keys(files).length === 0) throw new Files_Missing();
     const allFiles: Express.Multer.File[] = Object.values(files).flat();
     const addedData = await this._roomService.addRoom({ ...data, HotelId: hotelId }, allFiles)
@@ -66,18 +67,18 @@ export class HotelRoomsController implements IHotelRoomsController {
   async updateRoom(req: Request, res: Response): Promise<void> {
     const data = req.body;
     const id = req.params.id
-    const files = req.files 
+    const files = req.files
     if (!files) throw new Files_Missing();
     logger.info(files)
     const allFiles: Express.Multer.File[] = Object.values(files).flat();
-    const updatedRoom = await this._roomService.updateRoom(data,id,allFiles)
-    sendResponse(res,STATUS_CODE.OK,true,MESSAGES.UPDATED,updatedRoom)
+    const updatedRoom = await this._roomService.updateRoom(data, id, allFiles)
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updatedRoom)
   }
 
   async deleteSingleImage(req: Request, res: Response): Promise<void> {
-      const index = req.body.index;
-      const id = req.params.id;
-      const updated = await this._roomService.deleteSingleImage(id,index)
-      sendResponse(res,STATUS_CODE.OK,true,MESSAGES.DELETED,updated);
+    const index = req.body.index;
+    const id = req.params.id;
+    const updated = await this._roomService.deleteSingleImage(id, index)
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DELETED, updated);
   }
 }

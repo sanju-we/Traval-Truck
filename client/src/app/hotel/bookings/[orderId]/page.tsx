@@ -159,6 +159,8 @@ export default function HotelOrderDetailsPage() {
       )
       : Math.max(1, Math.round(order.amount / room.PricePerNight));
 
+  const requiredRooms = Math.max(1, Math.round(order.amount / (room.PricePerNight * nights)));
+
   /* ----------------------------- UI ----------------------------- */
 
   return (
@@ -357,7 +359,7 @@ export default function HotelOrderDetailsPage() {
 
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span>₹{room.PricePerNight} × {nights} nights</span>
+                    <span>₹{room.PricePerNight} × {nights} {nights > 1 ? 'nights' : 'night'} × {requiredRooms} {requiredRooms > 1 ? 'rooms' : 'room'}</span>
                     <span>₹{order.amount}</span>
                   </div>
 
