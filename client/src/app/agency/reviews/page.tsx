@@ -1,6 +1,5 @@
 'use client'
 import { useEffect, useState } from "react";
-import SideNavbar from "@/components/agency/SideNavbar";
 import VendorRatings from "@/components/shared/VendorReviews";
 import ReplyModal from "@/components/shared/ReplayModal";
 import { SHARED_API_METHODS } from "@/services/APIs/shared.api.service";
@@ -121,24 +120,21 @@ export default function Reviews() {
   }
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
-      <SideNavbar />
-      <div className="flex-1 flex flex-col">
-        <VendorRatings
-          title="Customer Feedback"
-          totalPages={totalPages}
-          totalReviews={totalReviews}
-          averageRating={averageRating}
-          reviews={reviews}
-          currentPage={currentPage}
-          filterRating={filterRating}
-          loading={loading}
-          onPageChange={handlePageChange}
-          onFilterChange={handleFilterChange}
-          onReplyClick={handleReplyClick}
-        />
-        <VendorFooter/>
-      </div>
+    <div className="flex-1 flex flex-col p-8">
+      <VendorRatings
+        title="Customer Feedback"
+        totalPages={totalPages}
+        totalReviews={totalReviews}
+        averageRating={averageRating}
+        reviews={reviews}
+        currentPage={currentPage}
+        filterRating={filterRating}
+        loading={loading}
+        onPageChange={handlePageChange}
+        onFilterChange={handleFilterChange}
+        onReplyClick={handleReplyClick}
+      />
+      <VendorFooter/>
 
       {/* Reply Modal */}
       {showReplyModal && selectedReview && (

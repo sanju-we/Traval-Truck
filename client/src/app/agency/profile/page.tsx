@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Camera, Edit, Mail, Phone, X, Check, MapPin } from 'lucide-react';
-import SideNavbar from '@/components/agency/SideNavbar';
 import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
@@ -286,9 +285,7 @@ export default function VendorProfilePage() {
   }
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
-      <SideNavbar />
-      <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex flex-col p-8">
 
         <div className="flex-1 px-6 py-10">
           {vendor.reason != "" && (
@@ -811,6 +808,5 @@ export default function VendorProfilePage() {
         )}
         <VendorFooter />
       </div>
-    </div>
   );
 }

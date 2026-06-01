@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import SideNavbar from '@/components/agency/SideNavbar';
 import {
   ArrowLeft,
   Calendar,
@@ -269,24 +268,21 @@ export default function OrderDetailsPage() {
 
   if (!order) {
     return (
-      <div className="min-h-screen flex bg-gray-50">
-        <SideNavbar />
-        <div className="flex-1 flex flex-col">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-xl p-12 text-center shadow-sm border border-gray-100">
-              <AlertCircle className="mx-auto text-red-400 mb-4" size={64} />
-              <h3 className="text-xl font-semibold text-gray-700">Order Not Found</h3>
-              <p className="text-gray-500 mt-2">The order you're looking for doesn't exist</p>
-              <button
-                onClick={() => router.back()}
-                className="mt-6 px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition"
-              >
-                Go Back
-              </button>
-            </div>
+      <div className="flex-1 flex flex-col p-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white rounded-xl p-12 text-center shadow-sm border border-gray-100">
+            <AlertCircle className="mx-auto text-red-400 mb-4" size={64} />
+            <h3 className="text-xl font-semibold text-gray-700">Order Not Found</h3>
+            <p className="text-gray-500 mt-2">The order you're looking for doesn't exist</p>
+            <button
+              onClick={() => router.back()}
+              className="mt-6 px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition"
+            >
+              Go Back
+            </button>
           </div>
-          <VendorFooter/>
         </div>
+        <VendorFooter/>
       </div>
     );
   }
@@ -295,9 +291,7 @@ export default function OrderDetailsPage() {
   const hasPlan = order.plan && order.plan.length > 0;
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
-      <SideNavbar />
-      <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex flex-col p-8">
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Back Button */}
           <button
@@ -810,7 +804,6 @@ export default function OrderDetailsPage() {
           </div>
         </div>
         <VendorFooter/>
-      </div>
 
       {/* Start Trip Modal */}
       {showStartModal && (

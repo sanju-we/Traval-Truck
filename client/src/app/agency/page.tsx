@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import SideNavbar from '@/components/agency/SideNavbar';
 import { useEffect } from 'react';
 import api from '@/services/api';
 import VendorFooter from '@/components/shared/Footer';

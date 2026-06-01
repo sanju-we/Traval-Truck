@@ -43,7 +43,7 @@ function SideNavbar({ onClose }: { onClose?: () => void }) {
 
   return (
     <>
-      <div className="w-64 bg-white shadow-lg p-6">
+      <div className="w-full h-full bg-white shadow-lg p-6 flex flex-col justify-between">
         <div className="flex flex-col space-y-4">
           <div
             onClick={() => navigate('/agency/profile')}
@@ -57,67 +57,67 @@ function SideNavbar({ onClose }: { onClose?: () => void }) {
             </span>
           </div>
           <div className="space-y-2">
-            <div className={`${pathname === '/agency' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded-md`} onClick={() => navigate('/agency')}>
+            <div className={`${pathname === '/agency' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded`} onClick={() => navigate('/agency')}>
               <button
-                className={`flex items-center space-x-2 p-2 ${pathname === '/agency' ? 'text-emerald-700 font-semibold' : 'text-black-600'} rounded`}
+                className={`flex items-center space-x-2 p-2 ${pathname === '/agency' ? 'text-emerald-700 font-semibold' : 'text-gray-600'} rounded`}
               >
                 <Home className="material-icons">home</Home>
                 <span>Dashboard</span>
               </button>
             </div>
-            <div className={`${pathname === '/agency/packages' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded-md`}
+            <div className={`${pathname === '/agency/packages' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded`}
               onClick={() => navigate('/agency/packages')}>
-              <button className={`flex items-center space-x-2 p-2 ${pathname === '/agency/packages' ? 'text-emerald-700 font-semibold' : 'text-black-600'} rounded`}>
+              <button className={`flex items-center space-x-2 p-2 ${pathname === '/agency/packages' ? 'text-emerald-700 font-semibold' : 'text-gray-600'} rounded`}>
                 <FlagTriangleRightIcon />
-                Packages
+                <span>Packages</span>
               </button>
             </div>
-            <div className={`${pathname === '/agency/subscriptions' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded-md`} onClick={() => navigate('/agency/subscriptions')}>
-              <button className={`flex items-center space-x-2 p-2 ${pathname === '/agency/subscriptions' ? 'text-emerald-700 font-semibold' : 'text-black-600'} rounded`}>
+            <div className={`${pathname === '/agency/subscriptions' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded`} onClick={() => navigate('/agency/subscriptions')}>
+              <button className={`flex items-center space-x-2 p-2 ${pathname === '/agency/subscriptions' ? 'text-emerald-700 font-semibold' : 'text-gray-600'} rounded`}>
                 <Rss className="material-icons">person</Rss>
                 <span>Subscriptions</span>
               </button>
             </div>
-            <div className={`${pathname === '/agency/orders' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded-md`} onClick={() => navigate('/agency/orders')}>
-              <button className={`flex items-center space-x-2 p-2 ${pathname === '/agency/orders' ? 'text-emerald-700 font-semibold' : 'text-black-600'} rounded`}>
+            <div className={`${pathname === '/agency/orders' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded`} onClick={() => navigate('/agency/orders')}>
+              <button className={`flex items-center space-x-2 p-2 ${pathname === '/agency/orders' ? 'text-emerald-700 font-semibold' : 'text-gray-600'} rounded`}>
                 <List className="material-icons">Order</List >
                 <span>Orders</span>
               </button>
             </div>
-            <div className={`${pathname === '/agency/reviews' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded-md`} onClick={() => navigate('/agency/reviews')}>
-              <button className={`flex items-center space-x-2 p-2 ${pathname === '/agency/reviews' ? 'text-emerald-700 font-semibold' : 'text-black-600'} rounded`}>
+            <div className={`${pathname === '/agency/reviews' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded`} onClick={() => navigate('/agency/reviews')}>
+              <button className={`flex items-center space-x-2 p-2 ${pathname === '/agency/reviews' ? 'text-emerald-700 font-semibold' : 'text-gray-600'} rounded`}>
                 <List className="material-icons">Review</List >
                 <span>Reviews</span>
               </button>
             </div>
-            <div className={`${pathname === '/agency/wallet' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded-md`} onClick={() => navigate('/agency/wallet')}>
-              <button className={`flex items-center space-x-2 p-2 ${pathname === '/agency/wallet' ? 'text-emerald-700 font-semibold' : 'text-black-600'} rounded`} >
+            <div className={`${pathname === '/agency/wallet' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded`} onClick={() => navigate('/agency/wallet')}>
+              <button className={`flex items-center space-x-2 p-2 ${pathname === '/agency/wallet' ? 'text-emerald-700 font-semibold' : 'text-gray-600'} rounded`} >
                 <IndianRupee className="material-icons">payment</IndianRupee>
                 <span>Wallet</span>
               </button>
             </div>
-            <div className='hover:bg-gray-200 rounded-md' onClick={() => setIsChatOpen(true)}>
-              <button className="flex items-center space-x-2 p-2 text-black-600  rounded">
+            <div className='hover:bg-gray-200 rounded' onClick={() => setIsChatOpen(true)}>
+              <button className="flex items-center space-x-2 p-2 text-gray-600 rounded">
                 <Inbox className="material-icons">chat</Inbox>
                 <span>Chat</span>
               </button>
             </div>
-            <div className='hover:bg-gray-200 rounded-md'>
-              <button className="flex items-center space-x-2 p-2 text-black-600 rounded">
+            <div className='hover:bg-gray-200 rounded'>
+              <button className="flex items-center space-x-2 p-2 text-gray-600 rounded">
                 <BarChart className="material-icons">bar_chart</BarChart>
                 <span>Reports</span>
               </button>
             </div>
-            <div className={`${pathname === '/agency/profile' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded-md`}>
-              <button className={`flex items-center space-x-2 p-2 ${pathname === '/agency/profile' ? 'text-emerald-700 font-semibold' : 'text-black-600'} rounded`}
+            <div className={`${pathname === '/agency/profile' ? 'bg-emerald-100' : 'hover:bg-gray-200'} rounded`}>
+              <button className={`flex items-center space-x-2 p-2 ${pathname === '/agency/profile' ? 'text-emerald-700 font-semibold' : 'text-gray-600'} rounded`}
                 onClick={() => navigate('/agency/profile')}>
                 <User className="material-icons">person</User>
                 <span>Profile</span>
               </button>
             </div>
-            <div className='hover:bg-red-600 rounded-md'>
+            <div className='hover:bg-gray-200 rounded'>
               <button
-                className="flex items-center space-x-2 p-2 text-gray-60 rounded"
+                className="flex items-center space-x-2 p-2 text-gray-600 rounded"
                 onClick={() => setShowModal(!showModal)}
               >
                 <LogOut className="material-icons">LogOut</LogOut>
@@ -150,7 +150,7 @@ function SideNavbar({ onClose }: { onClose?: () => void }) {
 
                 {/* Title + Message */}
                 <h2 className="text-xl font-semibold text-center mb-2">Confirm Logout</h2>
-                <p className="text-black-600 text-center mb-6">
+                <p className="text-gray-600 text-center mb-6">
                   Are you sure you want to log out from your admin dashboard?
                 </p>
 
