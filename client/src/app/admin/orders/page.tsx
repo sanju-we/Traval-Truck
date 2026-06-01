@@ -7,7 +7,7 @@ import { Table,
   TableRow,
   TableHead,
   TableCell, } from "@/components/shared/ui/table";
-import { SideNavbar } from "@/components/admin/SideNavbar";
+
 import {
   Loader2,
   Package,
@@ -77,12 +77,7 @@ export default function AdminOrdersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <SideNavbar active="Orders" />
-
-      {/* Main */}
-      <div className="flex-1 p-6 md:p-10">
+    <div className="flex-1 p-6 md:p-10">
         <div className="max-w-7xl mx-auto space-y-6">
           <h1 className="text-3xl font-bold text-gray-800">All Orders</h1>
 
@@ -161,6 +156,5 @@ export default function AdminOrdersPage() {
           )}
         </div>
       </div>
-    </div>
   );
 }

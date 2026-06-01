@@ -5,10 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui
 import { Button } from "@/components/shared/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import { SideNavbar } from "@/components/admin/SideNavbar";
-import { ADMIN_API_METHODS } from "@/services/APIs/admin.api.service";
+
 import { toast } from "react-hot-toast";
 import { subscriptionData } from "@/types/subscription.type";
+import { ADMIN_API_METHODS } from "@/services/APIs/admin.api.service";
 
 export default function SubscriptionPage() {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -310,12 +310,7 @@ export default function SubscriptionPage() {
   };
 
   return (
-    <div className="flex min-h-screen">
-      <div className="hidden md:block fixed top-0 left-0 h-screen w-64 bg-white shadow-lg z-10">
-        <SideNavbar active="Subscriptions" />
-      </div>
-
-      <div className="p-6 min-h-screen bg-gray-50 flex-1 md:ml-64 overflow-y-auto space-y-4">
+    <div className="flex-1 p-6 space-y-4">
         <div className="flex justify-between">
           <h1 className="text-2xl font-bold mb-6">Current Subscription Details</h1>
           <Button
@@ -727,49 +722,49 @@ export default function SubscriptionPage() {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
-      <AnimatePresence>
-        {showConfirmModal && toggleTarget && (
-          <motion.div
-            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
+
+        <AnimatePresence>
+          {showConfirmModal && toggleTarget && (
             <motion.div
-              className="bg-white rounded-xl p-6 w-[90%] max-w-sm shadow-lg text-center"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
             >
-              <h3 className="text-lg font-semibold mb-3">
-                {toggleTarget.isActive
-                  ? "Deactivate this plan?"
-                  : "Activate this plan?"}
-              </h3>
-              <p className="text-gray-600 mb-6">
-                Are you sure you want to{" "}
-                <b>{toggleTarget.isActive ? "deactivate" : "activate"}</b> this
-                subscription plan?
-              </p>
-              <div className="flex justify-center gap-4">
-                <Button
-                  onClick={handleConfirmToggle}
-                  className="bg-orange-600 hover:bg-orange-700 text-white"
-                >
-                  Confirm
-                </Button>
-                <Button
-                  variant="secondary"
-                  onClick={() => setShowConfirmModal(false)}
-                >
-                  Cancel
-                </Button>
-              </div>
+              <motion.div
+                className="bg-white rounded-xl p-6 w-[90%] max-w-sm shadow-lg text-center"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+              >
+                <h3 className="text-lg font-semibold mb-3">
+                  {toggleTarget.isActive
+                    ? "Deactivate this plan?"
+                    : "Activate this plan?"}
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Are you sure you want to{" "}
+                  <b>{toggleTarget.isActive ? "deactivate" : "activate"}</b> this
+                  subscription plan?
+                </p>
+                <div className="flex justify-center gap-4">
+                  <Button
+                    onClick={handleConfirmToggle}
+                    className="bg-orange-600 hover:bg-orange-700 text-white"
+                  >
+                    Confirm
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => setShowConfirmModal(false)}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+          )}
+        </AnimatePresence>
+      </div>
   );
 }

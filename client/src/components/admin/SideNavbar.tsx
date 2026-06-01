@@ -10,20 +10,22 @@ import {
   Settings,
   LogOut,
   Plane,
+  Building,
 } from 'lucide-react';
 import { ADMIN_API_METHODS } from '@/services/APIs/admin.api.service';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 type SideNavbarProps = {
-  active: string;
+  active?: string;
 };
 
 export function SideNavbar({ active }: SideNavbarProps) {
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleLogout = async () => {
     const data = await ADMIN_API_METHODS.logout();
@@ -36,9 +38,9 @@ export function SideNavbar({ active }: SideNavbarProps) {
   const menuItems = [
     { label: 'Dashboard', icon: <Home className="w-5 h-5 mr-3" />, path: '/admin' },
     { label: 'Users', icon: <Users className="w-5 h-5 mr-3" />, path: '/admin/users' },
-    { label: 'Agencies', icon: <Users className="w-5 h-5 mr-3" />, path: '/admin/agencys' },
-    { label: 'Hotels', icon: <Users className="w-5 h-5 mr-3" />, path: '/admin/hotels' },
-    { label: 'Restaurants', icon: <Users className="w-5 h-5 mr-3" />, path: '/admin/restaurants' },
+    { label: 'Agencies', icon: <Plane className="w-5 h-5 mr-3" />, path: '/admin/agencys' },
+    { label: 'Hotels', icon: <Building className="w-5 h-5 mr-3" />, path: '/admin/hotels' },
+    // { label: 'Restaurants', icon: <Utensils className="w-5 h-5 mr-3" />, path: '/admin/restaurants' },
     { label: 'Requests', icon: <List className="w-5 h-5 mr-3" />, path: '/admin/requestes' },
     { label: 'Subscriptions', icon: <IndianRupee className="w-5 h-5 mr-3" />, path: '/admin/subscription' },
     { label: 'Orders', icon: <ShoppingBag className="w-5 h-5 mr-3" />, path: '/admin/orders' },
@@ -68,9 +70,9 @@ export function SideNavbar({ active }: SideNavbarProps) {
           {menuItems.map((item) => (
             <li
               key={item.label}
-              className={`flex items-center p-3 rounded-md cursor-pointer transition-all duration-150 ${active === item.label
-                ? 'bg-purple-600 text-white font-semibold'
-                : 'hover:bg-gray-800 text-gray-300'
+              className={`flex items-center p-3 rounded-md cursor-pointer transition-all duration-150 ${(item.path === '/admin' ? pathname === '/admin' : pathname?.startsWith(item.path))
+                  ? 'bg-purple-600 text-white font-semibold shadow-md'
+                  : 'hover:bg-gray-800 text-gray-300'
                 }`}
               onClick={() => router.push(item.path)}
             >

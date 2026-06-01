@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { ADMIN_API_METHODS } from '@/services/APIs/admin.api.service';
 import { Eye, Search, Loader2, Inbox } from 'lucide-react';
-import { SideNavbar } from '@/components/admin/SideNavbar';
+
 import toast from 'react-hot-toast';
 import ViewVendorDocumentsModal from '@/components/admin/viewDocumentModal';
 import VendorRequest from '@/types/vendor/profile';
@@ -80,14 +80,7 @@ export default function VendorRequestsPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
-      <div className="w-64 hidden md:block bg-white border-r">
-        <SideNavbar active="Requests" />
-      </div>
-
-      {/* Main */}
-      <div className="flex-1 p-6 md:p-10">
+    <div className="flex-1 p-6 md:p-10">
         <div className="max-w-7xl mx-auto space-y-6">
 
           {/* Header */}
@@ -188,7 +181,6 @@ export default function VendorRequestsPage() {
             </div>
           )}
         </div>
-      </div>
 
       {/* Modals (unchanged) */}
       <ViewVendorDocumentsModal

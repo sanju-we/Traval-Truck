@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ADMIN_API_METHODS } from '@/services/APIs/admin.api.service';
 import { Card, CardContent } from '@/components/shared/ui/card';
-import { SideNavbar } from '@/components/admin/SideNavbar';
+
 import { useDispatch } from 'react-redux';
 import { setSelectedUser } from '@/redux/userDetailsSlice';
 import { useRouter } from 'next/navigation';
@@ -18,6 +18,7 @@ export default function HotelsPage() {
     const [page, setPage] = useState(1);
     const [limit] = useState(5);
     const [totalPages, setTotalPages] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
     const [search, setSearch] = useState('');
 
     const dispatch = useDispatch();
@@ -35,9 +36,10 @@ export default function HotelsPage() {
 
             console.log("Admin Hotels Response:", res.data); // Debugging
 
-            const { data, totalPages: total } = res.data;
+            const { data, totalPages: total, total: totalCount } = res.data;
             setHotels(data);
             setTotalPages(total);
+            setTotalItems(totalCount || 0);
             setPage(currentPage);
         } catch (err) {
             console.error('Error fetching hotels:', err);
@@ -73,12 +75,8 @@ export default function HotelsPage() {
     };
 
     return (
-        <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
-            <div className="w-full md:w-64">
-                <SideNavbar active="Hotels" />
-            </div>
-
-            <Card className="flex-1 mt-6 mx-4 bg-white shadow-md rounded-xl">
+        <div className="flex-1 p-6">
+            <Card className="bg-white shadow-md rounded-xl">
                 <CardContent className="p-6">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                         <h2 className="text-xl font-semibold text-gray-800">Hotels</h2>
@@ -191,36 +189,31 @@ export default function HotelsPage() {
                         </div>
                     )}
 
-                    {totalPages > 1 && (
-                        <div className="flex justify-center mt-6 gap-2 text-sm">
+                    {/* ✅ Premium Pagination */}
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-gray-50 rounded-xl p-4 shadow-sm border border-gray-100 mt-6">
+                        <p className="text-sm text-gray-600 font-medium">
+                            Showing {hotels.length > 0 ? (page - 1) * limit + 1 : 0} to {Math.min(page * limit, totalItems)} of {totalItems} hotels
+                        </p>
+                        <div className="flex gap-2">
                             <button
-                                className="px-3 py-1 rounded-md border text-gray-600 hover:bg-gray-100"
                                 onClick={() => handlePageChange(page - 1)}
                                 disabled={page === 1}
+                                className="px-4 py-2 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium text-sm transition-colors border text-gray-700 shadow-sm"
                             >
-                                &lt;
+                                Previous
                             </button>
-                            {Array.from({ length: totalPages }, (_, i) => (
-                                <button
-                                    key={i + 1}
-                                    className={`px-3 py-1 rounded-md ${page === i + 1
-                                        ? 'bg-purple-600 text-white'
-                                        : 'border text-gray-600 hover:bg-gray-100'
-                                        }`}
-                                    onClick={() => handlePageChange(i + 1)}
-                                >
-                                    {i + 1}
-                                </button>
-                            ))}
+                            <span className="px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-semibold text-sm border border-purple-100">
+                                Page {page} of {totalPages || 1}
+                            </span>
                             <button
-                                className="px-3 py-1 rounded-md border text-gray-600 hover:bg-gray-100"
                                 onClick={() => handlePageChange(page + 1)}
-                                disabled={page === totalPages}
+                                disabled={page === totalPages || totalPages === 0}
+                                className="px-4 py-2 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium text-sm transition-colors border text-gray-700 shadow-sm"
                             >
-                                &gt;
+                                Next
                             </button>
                         </div>
-                    )}
+                    </div>
                 </CardContent>
             </Card>
         </div>

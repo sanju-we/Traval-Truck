@@ -7,7 +7,6 @@ import { Pencil, Plus, Loader2, Tag } from "lucide-react";
 import AddCouponModal from "@/components/admin/addCouponModal";
 import EditCouponModal from "@/components/admin/editCouponModal";
 import toast from "react-hot-toast";
-import { SideNavbar } from "@/components/admin/SideNavbar";
 import { motion } from "framer-motion";
 import { CouponDTO } from "@/types/coupon.type";
 import ConfirmModal from "@/components/common/ConfirmModal";
@@ -73,10 +72,8 @@ export default function CouponsPage() {
   };
 
   return (
-    <div className="flex">
-      <SideNavbar active="Coupon" />
-      <div className="flex-1 p-8 bg-gray-50 min-h-screen">
-        <div className="max-w-6xl mx-auto">
+    <div className="flex-1 p-8">
+      <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
             <div>
@@ -210,6 +207,5 @@ export default function CouponsPage() {
           )}
         </div>
       </div>
-    </div>
   );
 }

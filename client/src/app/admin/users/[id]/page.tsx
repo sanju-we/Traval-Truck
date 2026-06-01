@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/shared/ui
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import Image from 'next/image';
-import { SideNavbar } from '@/components/admin/SideNavbar';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { XCircle, CheckCircle } from 'lucide-react';
 import { ADMIN_API_METHODS } from '@/services/APIs/admin.api.service';
@@ -47,10 +47,7 @@ export default function UserDetailsPage() {
   const actionText = isBlocked ? 'unblock' : 'block';
 
   return (
-    <div className="flex">
-      <SideNavbar active="Users" />
-
-      <div className="flex-1 max-w-4xl mx-auto mt-12 relative">
+    <div className="flex-1 max-w-4xl mx-auto p-6 mt-12 relative">
         <Card className="shadow-lg rounded-2xl border border-gray-200">
           <CardHeader className="flex items-center justify-between">
             <CardTitle className="text-2xl font-bold">
@@ -193,6 +190,5 @@ export default function UserDetailsPage() {
           )}
         </AnimatePresence>
       </div>
-    </div>
   );
 }
