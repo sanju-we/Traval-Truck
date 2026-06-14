@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import AddRoomModal from "@/components/hotel/addRoomsModal";
 import { HOTEL_API_METHODS } from "@/services/APIs/hotel.api.service";
 import { Room } from "@/types/hotel";
+import { ApiResponse } from "@/services/api.service";
 import VendorFooter from "@/components/shared/Footer";
 import TravelTruckLoading from "@/components/shared/TravelTruckLoading";
 
@@ -29,9 +30,16 @@ export default function RoomsPage() {
   const fetchRooms = async () => {
     setLoading(true);
     try {
-      const res = await HOTEL_API_METHODS.getAllRooms(page, search, status);
-      setRooms(res.data.data || res.data);
-      setTotalPages(res.data.totalPages || 1);
+      const res = await HOTEL_API_METHODS.getAllRooms(page, search, status) as ApiResponse<Room[] | { data: Room[]; totalPages?: number }>;
+      if (res && res.success && res.data) {
+        if (Array.isArray(res.data)) {
+          setRooms(res.data);
+          setTotalPages(1);
+        } else {
+          setRooms(res.data.data || []);
+          setTotalPages(res.data.totalPages || 1);
+        }
+      }
     } catch {
       toast.error("Failed to fetch rooms");
     } finally {
@@ -275,7 +283,6 @@ export default function RoomsPage() {
       {/* Add Room Modal */}
       {showAddModal && (
         <AddRoomModal
-          open={showAddModal}
           onClose={() => setShowAddModal(false)}
           onAdd={fetchRooms}
           rooms={setRooms}

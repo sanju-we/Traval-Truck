@@ -10,6 +10,8 @@ import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
 import toast from 'react-hot-toast';
 import { ImageCropperModal } from '../hotel/ImageCropperModal';
 import ConfirmModal from '@/components/common/ConfirmModal';
+import { PackageData } from '@/types/agency';
+import { ApiResponse } from '@/services/api.service';
 
 interface ItineraryItem {
   day: number;
@@ -21,7 +23,7 @@ interface EditPackageModalProps {
   isOpen: boolean;
   onClose: () => void;
   onUpdate: () => void;
-  pkg: any;
+  pkg: PackageData;
 }
 
 export default function EditPackageModal({
@@ -51,7 +53,7 @@ export default function EditPackageModal({
   useEffect(() => {
     if (pkg) {
       setFormData({
-        id: pkg.id || '',
+        id: pkg._id || '',
         title: pkg.title || '',
         duration: pkg.duration || '',
         price: String(pkg.price || ''),
@@ -112,7 +114,7 @@ export default function EditPackageModal({
         return;
       }
 
-      const data = await AGENCY_API_METHODS.deletePackageImage(formData.id, { index });
+      const data = await AGENCY_API_METHODS.deletePackageImage(formData.id, { index }) as ApiResponse;
 
       console.log("Response:", data);
 
@@ -122,8 +124,9 @@ export default function EditPackageModal({
       } else {
         toast.error(data.message || "Failed to delete image");
       }
-    } catch (error: any) {
-      console.error("Delete image error:", error.response || error);
+    } catch (error) {
+      const err = error as Record<string, unknown> & { response?: { data?: { message?: string } } };
+      console.error("Delete image error:", err.response || err);
       toast.error("Something went wrong while deleting image");
     }
   };
@@ -206,7 +209,7 @@ export default function EditPackageModal({
       for (const i of form) {
         console.log(i)
       }
-      const res = await AGENCY_API_METHODS.editPackage(pkg.id, form);
+      const res = await AGENCY_API_METHODS.editPackage(pkg._id, form) as { data: ApiResponse };
 
       if (res.data.success) {
         toast.success('Package updated successfully!');

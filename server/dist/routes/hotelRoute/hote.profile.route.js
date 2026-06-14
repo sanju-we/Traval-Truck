@@ -12,7 +12,7 @@ const hotelProfileRouter = (0, express_1.Router)();
 const hotelProfileController = container_1.container.get('IHotelProfileController');
 hotelProfileRouter
     .get('/profile', authMiddleware_1.verifyHotelToken, (0, asyncHandler_1.asyncHandler)(hotelProfileController.getHotelProfile.bind(hotelProfileController)))
-    .patch('/update', authMiddleware_1.verifyHotelToken, (0, asyncHandler_1.asyncHandler)(hotelProfileController.updateProfile.bind(hotelProfileController)))
+    .patch('/update', authMiddleware_1.verifyHotelToken, multer_1.default.none(), (0, asyncHandler_1.asyncHandler)(hotelProfileController.updateProfile.bind(hotelProfileController)))
     .put('/update-documents', authMiddleware_1.verifyHotelToken, multer_1.default.fields([
     { name: 'registrationCertificate', maxCount: 1 },
     { name: 'panCard', maxCount: 1 },

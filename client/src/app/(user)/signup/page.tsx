@@ -5,6 +5,7 @@ import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
+import { ApiResponse } from '@/services/api.service';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 
@@ -99,17 +100,17 @@ export default function SignUpPage() {
 
     setIsOtpLoading(true);
     try {
-      const res = await USER_API_METHODS.sendOtp({ email: formData.email });
-      const data = res.data;
+      const res = await USER_API_METHODS.sendOtp({ email: formData.email }) as ApiResponse;
+      const data = res ? res.data as Record<string, any> : null;
 
-      if (data.success) {
+      if (res && res.success) {
         setShowOtpInput(true);
         setMessage('✅ OTP sent to your email');
         setErrors({});
         setTimer(60);       // Start the timer
         handleTimer();      // Trigger countdown
       } else {
-        setMessage(`❌ ${data.error}`);
+        setMessage(`❌ ${res?.message || 'Failed to send OTP'}`);
       }
     } catch (err) {
       setMessage('❌ Failed to send OTP');
@@ -124,16 +125,16 @@ export default function SignUpPage() {
     try {
       const res = await USER_API_METHODS.sendOtp({
         email: formData.email,
-      });
+      }) as ApiResponse;
 
-      const data = res.data;
+      const data = res ? res.data as Record<string, any> : null;
 
-      if (data.success) {
+      if (res && res.success) {
         toast.success('OTP resent to your email');
         setTimer(60);
         handleTimer();
       } else {
-        toast.error(data.error);
+        toast.error(res?.message || 'Failed to resend OTP');
       }
     } catch (err) {
       toast.error('Failed to resend OTP');
@@ -161,15 +162,15 @@ export default function SignUpPage() {
           password: formData.password,
           phoneNumber: Number(formData.phoneNumber),
         },
-      });
-      const data = res.data;
+      }) as ApiResponse;
+      const data = res ? res.data as Record<string, any> : null;
 
-      if (data.success) {
+      if (res && res.success) {
         toast.success('Email verified successfully!');
         document.cookie = 'allowDrive=true; path=/';
         route.push('/drive');
       } else {
-        toast.error(`${data.error}`);
+        toast.error(`${res?.message || 'Verification failed'}`);
         setOtp(['', '', '', '', '', '']);
       }
     } catch (err) {

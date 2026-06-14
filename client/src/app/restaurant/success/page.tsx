@@ -14,8 +14,9 @@ async function activateSubscription(subscriptionId: string) {
         );
         console.log(`[CLIENT] Activation response:`, res.data);
         return res.data.success ? res.data.data : null;
-    } catch (err: any) {
-        console.error("[CLIENT] Activation failed:", err.message, err.response?.data);
+    } catch (err) {
+        const error = err as Error & { response?: { data?: unknown } };
+        console.error("[CLIENT] Activation failed:", error.message, error.response?.data);
         return null;
     }
 }

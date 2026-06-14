@@ -6,4 +6,5 @@ export interface CouponDTO{
   minPurchase:number,
   expiryDate:Date,
   isActive:boolean,
+  description?:string,
 }

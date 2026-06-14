@@ -63,6 +63,7 @@ export class HotelAuthController implements IHotelAuthController {
   async resetPasword(req: Request, res: Response): Promise<void> {
     const { newPassword, token } = req.body
     await this._hotelService.resetHotelPassword(newPassword, token);
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.PASSWORD_CHANGED);
   }
 
   async getDashboard(req: Request, res: Response): Promise<void> {

@@ -6,6 +6,7 @@ import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Iho
 import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository';
 import { InvalidAction, UserNotFoundError } from '../../utils/resAndErrors';
 import { ISubscriptionValidator } from '../../core/interface/validator/Isubscription.validator';
+import { vendorRequestDTO } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto';
 
 @injectable()
 export class AdminVendorService implements IAdminVendorService {
@@ -17,12 +18,7 @@ export class AdminVendorService implements IAdminVendorService {
     @inject('ISubscriptionValidator') private readonly _subscriptionValidator: ISubscriptionValidator
   ) { }
 
-  async updateStatus(
-    id: string,
-    action: string,
-    role: string,
-    reason: string | null,
-  ): Promise<void> {
+  async updateStatus(id: string, action: string, role: string, reason: string | null,): Promise<void> {
     await this._subscriptionValidator.updateStatusValidator(id, action, role);
     if (reason) await this._subscriptionValidator.reasonValidation(reason)
     let vendor;
@@ -77,7 +73,7 @@ export class AdminVendorService implements IAdminVendorService {
     }
   }
 
-  async getAllAgency(page: number, limit: number, search: string, status: string): Promise<any> {
+  async getAllAgency(page: number, limit: number, search: string, status: string): Promise<{ data: vendorRequestDTO[]; total: number; totalPages: number }> {
     const query = {
       status: status,
       search: search
@@ -85,13 +81,12 @@ export class AdminVendorService implements IAdminVendorService {
 
     const { data, total, totalPages } = await this._agencyrepository.findAllWithpagination(query, limit, page);
 
-    // Map to vendorRequestDTO
     const mappedData = data.map(agency => ({
       id: agency._id.toString(),
       companyName: agency.companyName,
       ownerName: agency.ownerName,
       email: agency.email,
-      role: 'agency', // Hardcode or derive
+      role: 'agency',
       logo: agency.logo,
       address: agency.address,
       bankDetails: agency.bankDetails,
@@ -105,7 +100,7 @@ export class AdminVendorService implements IAdminVendorService {
     return { data: mappedData, total, totalPages };
   }
 
-  async getAllHotels(page: number, limit: number, search: string, status: string): Promise<any> {
+  async getAllHotels(page: number, limit: number, search: string, status: string): Promise<{ data: vendorRequestDTO[]; total: number; totalPages: number }> {
     const query = { status, search };
     const { data, total, totalPages } = await this._hotelRepository.findAllWithpagination(query, limit, page);
 
@@ -128,7 +123,7 @@ export class AdminVendorService implements IAdminVendorService {
     return { data: mappedData, total, totalPages };
   }
 
-  async getAllRestaurants(page: number, limit: number, search: string, status: string): Promise<any> {
+  async getAllRestaurants(page: number, limit: number, search: string, status: string): Promise<{ data: vendorRequestDTO[]; total: number; totalPages: number }> {
     const query = { status, search };
     const { data, total, totalPages } = await this._restaurantRepository.findAllWithpagination(query, limit, page);
 

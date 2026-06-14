@@ -32,7 +32,6 @@ let RestaurantProfileService = class RestaurantProfileService {
     }
     async updateDocuments(id, files) {
         let update;
-        console.log('asdkfjasld;fj', files);
         for (const fileName in files) {
             const file = files[fileName][0];
             console.log(file);
@@ -40,7 +39,9 @@ let RestaurantProfileService = class RestaurantProfileService {
             update = await this._restaurantAuthRepo.update(id, { [`documents.${fileName}`]: result });
         }
         if (update) {
-            update.isRestricted && await this._restaurantAuthRepo.update(id, { isRestricted: false });
+            if (update.isRestricted) {
+                await this._restaurantAuthRepo.update(id, { isRestricted: false });
+            }
             return (0, vendor_response_dto_1.toVendorRequestDTO)(update);
         }
         return null;

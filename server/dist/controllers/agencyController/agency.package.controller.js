@@ -22,8 +22,9 @@ let agencyPackageController = class agencyPackageController {
         this._packageService = _packageService;
     }
     async getAllPackages(req, res) {
-        const { page } = req.query;
-        const allPackage = await this._packageService.getAllPackage(Number(page));
+        const { page, limit, search, price, duration, sortBy } = req.query;
+        const agencyId = req.user.id;
+        const allPackage = await this._packageService.getAllPackage(page ? Number(page) : 1, limit ? Number(limit) : 6, search ? String(search) : undefined, agencyId, price ? String(price) : undefined, duration ? String(duration) : undefined, sortBy ? String(sortBy) : undefined);
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.ALL_DATA_FOUND, allPackage);
     }
     async addPackage(req, res) {

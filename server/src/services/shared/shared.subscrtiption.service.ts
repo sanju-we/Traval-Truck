@@ -7,6 +7,8 @@ import { IPaymentUtils } from "../../core/interface/PaymentInterface/Ipayment.ut
 import { ISubscriptionHistoryRepository } from "../../core/interface/repositorie/shared/ISubscription.hisroty.repository";
 import { subscriptionHistoryDTO, toSubsctiptionHistoryDTO } from "../../core/DTO/shared/subscriptionHistory";
 import { logger } from "../../utils/logger";
+import { ISubscriptionHistory } from "../../core/interface/modelInterface/ISubscriptionHistory";
+import Stripe from "stripe";
 
 @injectable()
 export class SharedSubscriptionService implements ISharedSubscriptionService {
@@ -45,10 +47,11 @@ export class SharedSubscriptionService implements ISharedSubscriptionService {
 
     const plan = await this._subscriptionRepo.findById(subscription.subscriptionId);
     if (plan) {
-      (subscription as any).name = plan.Name;
-      (subscription as any).features = plan.Features;
-      (subscription as any).valid = plan.Valid;
-      (subscription as any).amount = plan.Amount;
+      const sub = subscription as unknown as ISubscriptionHistory & { name?: string; features?: string[]; valid?: number; amount?: number };
+      sub.name = plan.Name;
+      sub.features = plan.Features;
+      sub.valid = plan.Valid;
+      sub.amount = plan.Amount;
     }
 
     return toSubsctiptionHistoryDTO(subscription);
@@ -142,7 +145,7 @@ export class SharedSubscriptionService implements ISharedSubscriptionService {
 
     const paymentIntentId = typeof session.payment_intent === 'string'
       ? session.payment_intent
-      : (session.payment_intent as any)?.id;
+      : (session.payment_intent as Stripe.PaymentIntent | null)?.id;
 
     if (!paymentIntentId) {
       logger.error(`Activation failed: Could not extract payment intent ID from session.`);
@@ -159,9 +162,10 @@ export class SharedSubscriptionService implements ISharedSubscriptionService {
       // Fetch plan details for consistent object
       const plan = await this._subscriptionRepo.findById(existingHistory.subscriptionId);
       if (plan) {
-        (existingHistory as any).name = plan.Name;
-        (existingHistory as any).features = plan.Features;
-        (existingHistory as any).valid = plan.Valid;
+        const hist = existingHistory as unknown as ISubscriptionHistory & { name?: string; features?: string[]; valid?: number };
+        hist.name = plan.Name;
+        hist.features = plan.Features;
+        hist.valid = plan.Valid;
       }
       return toSubsctiptionHistoryDTO(existingHistory);
     }
@@ -173,9 +177,9 @@ export class SharedSubscriptionService implements ISharedSubscriptionService {
     // Fetch plan details for consistent object
     const plan = await this._subscriptionRepo.findById(planId);
     if (plan) {
-      (history as any).name = plan.Name;
-      (history as any).features = plan.Features;
-      (history as any).valid = plan.Valid;
+      history.name = plan.Name;
+      history.features = plan.Features;
+      history.valid = plan.Valid;
     }
 
     return history;

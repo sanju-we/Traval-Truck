@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ROOM_VACATING_EARLY = exports.ROOM_ALREADY_OCCUPAID = exports.INVALID_STATUS_UPDATION = exports.TRIP_UPDATION_ERROR = exports.TRIP_ALREADY_STARTED = exports.START_DATE_ERROR = exports.PAYMENT_VALIDATION_FAILED = exports.PAYMENT_VERIFICATOIN_FAILED = exports.Transfer_Error = exports.Files_Missing = exports.Data_Creation_Error = exports.RESTRICTED_USER = exports.InvalidAction = exports.BADREQUEST = exports.DataUpdatingError = exports.UNAUTHORIZEDUserFounf = exports.InvalidResetTokenError = exports.ImageDeleteInCloudinary = exports.InvalidCredentialsError = exports.NoAccessToken = exports.DataNotFoundError = exports.UserNotFoundError = exports.InvalidOtpError = exports.EmailAlreadyRegisteredError = exports.OtpExpiredError = exports.HttpError = void 0;
+exports.ROOM_VACATING_EARLY = exports.ROOM_ALREADY_OCCUPAID = exports.INVALID_STATUS_UPDATION = exports.TRIP_UPDATION_ERROR = exports.TRIP_ALREADY_STARTED = exports.START_DATE_ERROR = exports.PAYMENT_VALIDATION_FAILED = exports.PAYMENT_VERIFICATOIN_FAILED = exports.Transfer_Error = exports.Files_Missing = exports.Data_Creation_Error = exports.RESTRICTED_USER = exports.InvalidAction = exports.BADREQUEST = exports.DataUpdatingError = exports.UNAUTHORIZEDUserFounf = exports.InvalidResetTokenError = exports.ImageDeleteInCloudinary = exports.InvalidCredentialsError = exports.NoAccessToken = exports.PasswordMismatchError = exports.DataNotFoundError = exports.UserNotFoundError = exports.InvalidOtpError = exports.EmailAlreadyRegisteredError = exports.OtpExpiredError = exports.EmailNotExists = exports.HttpError = void 0;
 exports.sendResponse = sendResponse;
 exports.throwError = throwError;
 const HTTPStatusCode_1 = require("./HTTPStatusCode");
@@ -22,6 +22,12 @@ class HttpError extends Error {
     }
 }
 exports.HttpError = HttpError;
+class EmailNotExists extends HttpError {
+    constructor() {
+        super(400, 'Email not exists');
+    }
+}
+exports.EmailNotExists = EmailNotExists;
 class OtpExpiredError extends HttpError {
     constructor() {
         super(400, 'OTP expired or not found');
@@ -52,6 +58,12 @@ class DataNotFoundError extends HttpError {
     }
 }
 exports.DataNotFoundError = DataNotFoundError;
+class PasswordMismatchError extends HttpError {
+    constructor() {
+        super(400, 'Current password is incorrect');
+    }
+}
+exports.PasswordMismatchError = PasswordMismatchError;
 class NoAccessToken extends HttpError {
     constructor() {
         super(403, 'Invalid Token');

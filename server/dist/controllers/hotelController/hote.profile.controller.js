@@ -31,13 +31,20 @@ let HotelProfileCotroller = class HotelProfileCotroller {
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.SUCCESS, (0, vendor_response_dto_1.toVendorRequestDTO)(hotel));
     }
     async updateProfile(req, res) {
-        const { ownerName, phone, companyName, bankDetails } = req.body;
+        const { ownerName, phone, companyName, address } = req.body;
+        const bankDetails = req.body.bankDetails || {
+            accountHolder: req.body['bankDetails.accountHolder'],
+            accountNumber: req.body['bankDetails.accountNumber'],
+            bankName: req.body['bankDetails.bankName'],
+            ifscCode: req.body['bankDetails.ifscCode'],
+        };
         const user = req.user;
         const updatedHotel = await this._hoteService.updateProfile(user.id, {
             ownerName,
             companyName,
+            address,
             phone: Number(phone),
-            bankDetails,
+            bankDetails: bankDetails,
         });
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.UPDATED, updatedHotel);
     }

@@ -25,9 +25,10 @@ export class BaseRepository<T extends Document> implements IBaserepository<T> {
       const savedItem = await newItem.save();
       logger.info(`Created document in ${this.#model.modelName} with ID ${savedItem._id}`);
       return savedItem;
-    } catch (err: any) {
-      logger.error(`Failed to create document in ${this.#model.modelName}: ${err.message}`);
-      throw new RepositoryError(`Failed to create document: ${err.message}`);
+    } catch (err) {
+      const error = err as Error;
+      logger.error(`Failed to create document in ${this.#model.modelName}: ${error.message}`);
+      throw new RepositoryError(`Failed to create document: ${error.message}`);
     }
   }
 
@@ -35,11 +36,12 @@ export class BaseRepository<T extends Document> implements IBaserepository<T> {
     try {
       const item = await this.#model.findById(id).exec();
       return item;
-    } catch (err: any) {
+    } catch (err) {
+      const error = err as Error;
       logger.error(
-        `Failed to find document in ${this.#model.modelName} by ID ${id}: ${err.message}`,
+        `Failed to find document in ${this.#model.modelName} by ID ${id}: ${error.message}`,
       );
-      throw new RepositoryError(`Failed to find document: ${err.message}`);
+      throw new RepositoryError(`Failed to find document: ${error.message}`);
     }
   }
 
@@ -54,9 +56,10 @@ export class BaseRepository<T extends Document> implements IBaserepository<T> {
         `Queried ${this.#model.modelName} with filter ${JSON.stringify(filter)}: ${item ? 'found' : 'not found'}`,
       );
       return item;
-    } catch (err: any) {
-      logger.error(`Failed to find document in ${this.#model.modelName}: ${err.message}`);
-      throw new RepositoryError(`Failed to find document: ${err.message}`);
+    } catch (err) {
+      const error = err as Error;
+      logger.error(`Failed to find document in ${this.#model.modelName}: ${error.message}`);
+      throw new RepositoryError(`Failed to find document: ${error.message}`);
     }
   }
 
@@ -64,9 +67,10 @@ export class BaseRepository<T extends Document> implements IBaserepository<T> {
     try {
       const item = await this.#model.findOne({ email }).exec();
       return item;
-    } catch (err: any) {
-      logger.error(`Failed to find document in ${this.#model.modelName}: ${err.message}`);
-      throw new RepositoryError(`Failed to find document: ${err.message}`);
+    } catch (err) {
+      const error = err as Error;
+      logger.error(`Failed to find document in ${this.#model.modelName}: ${error.message}`);
+      throw new RepositoryError(`Failed to find document: ${error.message}`);
     }
   }
 
@@ -77,9 +81,10 @@ export class BaseRepository<T extends Document> implements IBaserepository<T> {
         `Found ${items.length} documents in ${this.#model.modelName} with filter ${JSON.stringify(filter)}`,
       );
       return items;
-    } catch (err: any) {
-      logger.error(`Failed to find documents in ${this.#model.modelName}: ${err.message}`);
-      throw new RepositoryError(`Failed to find documents: ${err.message}`);
+    } catch (err) {
+      const error = err as Error;
+      logger.error(`Failed to find documents in ${this.#model.modelName}: ${error.message}`);
+      throw new RepositoryError(`Failed to find documents: ${error.message}`);
     }
   }
 
@@ -90,34 +95,37 @@ export class BaseRepository<T extends Document> implements IBaserepository<T> {
         `Updated document in ${this.#model.modelName} with ID ${id}: ${item ? 'success' : 'not found'}`,
       );
       return item;
-    } catch (err: any) {
+    } catch (err) {
+      const error = err as Error;
       logger.error(
-        `Failed to update document in ${this.#model.modelName} with ID ${id}: ${err.message}`,
+        `Failed to update document in ${this.#model.modelName} with ID ${id}: ${error.message}`,
       );
-      throw new RepositoryError(`Failed to update document: ${err.message}`);
+      throw new RepositoryError(`Failed to update document: ${error.message}`);
     }
   }
 
-  async updateMany(filter: FilterQuery<T>, data: UpdateQuery<T>): Promise<any> {
+  async updateMany(filter: FilterQuery<T>, data: UpdateQuery<T>): Promise<unknown> {
     try {
       const result = await this.#model.updateMany(filter, data).exec();
       logger.info(`Updated multiple documents in ${this.#model.modelName} match filter ${JSON.stringify(filter)}: ${JSON.stringify(result)}`);
       return result;
-    } catch (err: any) {
-      logger.error(`Failed to update multiple documents in ${this.#model.modelName}: ${err.message}`);
-      throw new RepositoryError(`Failed to update multiple documents: ${err.message}`);
+    } catch (err) {
+      const error = err as Error;
+      logger.error(`Failed to update multiple documents in ${this.#model.modelName}: ${error.message}`);
+      throw new RepositoryError(`Failed to update multiple documents: ${error.message}`);
     }
   }
 
-  async countDocuments(): Promise<number> {
+  async countDocuments(filter:FilterQuery<T>): Promise<number> {
     try {
-      const count = await this.#model.countDocuments()
+      const count = await this.#model.countDocuments(filter)
       return count
-    } catch (error: any) {
+    } catch (error) {
+      const err = error as Error;
       logger.error(
-        `count the documents: ${error.message}`,
+        `count the documents: ${err.message}`,
       );
-      throw new RepositoryError(`Failed to count document: ${error.message}`);
+      throw new RepositoryError(`Failed to count document: ${err.message}`);
     }
   }
 }

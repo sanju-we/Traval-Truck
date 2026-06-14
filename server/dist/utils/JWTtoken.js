@@ -51,7 +51,8 @@ let JWT = class JWT {
             return { accessToken, refreshToken };
         }
         catch (err) {
-            logger_1.logger.error(`From JWT->generateToken:- Failed to generate JWT: ${err.message}`);
+            const error = err;
+            logger_1.logger.error(`From JWT->generateToken:- Failed to generate JWT: ${error.message}`);
             throw new Error('Failed to generate tokens');
         }
     }
@@ -60,11 +61,21 @@ let JWT = class JWT {
             const resetToken = jsonwebtoken_1.default.sign({ id: user.id, email: user.email }, this.JWT_SECRET, {
                 expiresIn: this.RESET_TOKEN_EXPIRY,
             });
-            const resetLink = `${process.env.FRONTEND_URL}/user/resetPassword?token=${resetToken}`;
+            let resetLink;
+            if (user.role == 'user')
+                resetLink = `${process.env.FRONTEND_URL}/resetPassword?token=${resetToken}`;
+            else if (user.role == 'restaurant')
+                resetLink = `${process.env.FRONTEND_URL}/restaurant/resetPassword?token=${resetToken}`;
+            else if (user.role == 'agency')
+                resetLink = `${process.env.FRONTEND_URL}/agency/resetPassword?token=${resetToken}`;
+            else
+                resetLink = `${process.env.FRONTEND_URL}/hotel/resetPassword?token=${resetToken}`;
+            logger_1.logger.info(`resetLink:- ${resetLink}`);
             return { resetToken, resetLink };
         }
         catch (err) {
-            logger_1.logger.error(`From JWT->generateResetToken:- Failed to generate reset token: ${err.message}`);
+            const error = err;
+            logger_1.logger.error(`From JWT->generateResetToken:- Failed to generate reset token: ${error.message}`);
             throw new Error('Failed to generate reset token');
         }
     }
@@ -74,7 +85,8 @@ let JWT = class JWT {
             return payload;
         }
         catch (err) {
-            logger_1.logger.error(`From JWT->verifyResetToken:- Failed to verify reset token: ${err.message}`);
+            const error = err;
+            logger_1.logger.error(`From JWT->verifyResetToken:- Failed to verify reset token: ${error.message}`);
             throw new resAndErrors_1.InvalidResetTokenError();
         }
     }

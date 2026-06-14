@@ -9,6 +9,21 @@ import { X } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { subscriptionData } from "@/types/subscription.type";
 import { ADMIN_API_METHODS } from "@/services/APIs/admin.api.service";
+import { ApiResponse } from "@/services/api.service";
+
+interface SubscriptionForm {
+  Name: string;
+  Category: string;
+  Duration: {
+    startingDate: string;
+    endingDate: string;
+  };
+  Valid: string;
+  Description: string;
+  Amount: string;
+  Features: string;
+  IsActive: boolean;
+}
 
 export default function SubscriptionPage() {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -54,8 +69,8 @@ export default function SubscriptionPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await ADMIN_API_METHODS.fetchAllSubscriptions();
-        if (data.success) {
+        const data = (await ADMIN_API_METHODS.fetchAllSubscriptions()) as ApiResponse<subscriptionData[]> | null;
+        if (data && data.success) {
           console.log(data.data)
           setSubscriptions(data.data);
         } else {
@@ -70,7 +85,7 @@ export default function SubscriptionPage() {
     fetchData();
   }, []);
 
-  const validateSubscriptionForm = (formData: any) => {
+  const validateSubscriptionForm = (formData: SubscriptionForm) => {
     const errors: Record<string, string> = {};
     const today = new Date();
     const start = new Date(formData.Duration.startingDate);
@@ -169,9 +184,9 @@ export default function SubscriptionPage() {
     };
 
     try {
-      const data = await ADMIN_API_METHODS.createSubscription(payload);
+      const data = (await ADMIN_API_METHODS.createSubscription(payload)) as ApiResponse | null;
 
-      if (data.success) {
+      if (data && data.success) {
         toast.success("Subscription added successfully!");
         setShowAddModal(false);
         setAddFormData({
@@ -185,10 +200,12 @@ export default function SubscriptionPage() {
           IsActive: true,
         });
         // Refresh subscriptions
-        const data = await ADMIN_API_METHODS.fetchAllSubscriptions();
-        setSubscriptions(data.data);
+        const subRes = (await ADMIN_API_METHODS.fetchAllSubscriptions()) as ApiResponse<subscriptionData[]> | null;
+        if (subRes && subRes.data) {
+          setSubscriptions(subRes.data);
+        }
       } else {
-        toast.error(data.message || "Failed to add subscription.");
+        toast.error(data?.message || "Failed to add subscription.");
       }
     } catch (error) {
       console.error(error);
@@ -225,9 +242,9 @@ export default function SubscriptionPage() {
     };
 
     try {
-      const data = await ADMIN_API_METHODS.editSubscription(payload, selectedSubscription.id);
+      const data = (await ADMIN_API_METHODS.editSubscription(payload, selectedSubscription.id)) as ApiResponse | null;
 
-      if (data.success) {
+      if (data && data.success) {
         toast.success("Subscription updated successfully!");
         setShowEditModal(false);
         setSelectedSubscription(null);
@@ -241,10 +258,12 @@ export default function SubscriptionPage() {
           Features: "",
           IsActive: true,
         });
-        const data = await ADMIN_API_METHODS.fetchAllSubscriptions();
-        setSubscriptions(data.data);
+        const subRes2 = (await ADMIN_API_METHODS.fetchAllSubscriptions()) as ApiResponse<subscriptionData[]> | null;
+        if (subRes2 && subRes2.data) {
+          setSubscriptions(subRes2.data);
+        }
       } else {
-        toast.error(data.message || "Failed to update subscription.");
+        toast.error(data?.message || "Failed to update subscription.");
       }
     } catch (error) {
       console.error(error);
@@ -265,8 +284,8 @@ export default function SubscriptionPage() {
     setShowConfirmModal(false);
 
     try {
-      const data = await ADMIN_API_METHODS.editSubscriptionStatus(toggleTarget.id);
-      if (data.success) {
+      const data = (await ADMIN_API_METHODS.editSubscriptionStatus(toggleTarget.id)) as ApiResponse | null;
+      if (data && data.success) {
         toast.success("Subscription status updated!");
         setSubscriptions((prev) =>
           prev.map((s) =>
@@ -274,7 +293,7 @@ export default function SubscriptionPage() {
           )
         );
       } else {
-        toast.error(data.message || "Failed to update status.");
+        toast.error(data?.message || "Failed to update status.");
       }
     } catch (error) {
       console.error(error);

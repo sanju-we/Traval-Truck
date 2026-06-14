@@ -8,9 +8,10 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Camera, Edit, Mail, Phone, X, Check, MapPin } from 'lucide-react';
 import api from '@/services/api';
-import Cropper from 'react-easy-crop';
+import Cropper, { Area } from 'react-easy-crop';
 import getCroppedImg from '@/components/utils/UserCropImage';
 import VendorProfile from '@/types/vendor/profile';
+import { ApiResponse } from '@/services/api.service';
 import DocumentUploadWithPreview from '@/components/utils/DocumentUploadWithPreview';
 import RestrictionBanner from '@/components/vendor/RestrictionBanner';
 import { HOTEL_API_METHODS } from '@/services/APIs/hotel.api.service';
@@ -31,7 +32,7 @@ export default function VendorProfilePage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [isCropping, setIsCropping] = useState(false);
   const [profileLoad, setProfileLoad] = useState(false);
   const [isResubmitting, setIsResubmitting] = useState(false);
@@ -39,8 +40,8 @@ export default function VendorProfilePage() {
   useEffect(() => {
     async function fetchVendor() {
       try {
-        const data = await HOTEL_API_METHODS.getProfile();
-        if (!data.success) {
+        const data = await HOTEL_API_METHODS.getProfile() as ApiResponse<VendorProfile>;
+        if (data && !data.success) {
           toast.error(data.message);
           if (data.message === 'This user is Restricted by the admin') {
             router.push('/hotel');
@@ -133,7 +134,7 @@ export default function VendorProfilePage() {
       setFormData((prev) => ({
         ...prev,
         [parent]: {
-          ...(prev[parent as keyof typeof prev] as any),
+          ...(prev[parent as keyof typeof prev] as Record<string, unknown>),
           [child]: value,
         },
       }));
@@ -252,6 +253,7 @@ export default function VendorProfilePage() {
   async function handleCropComplete() {
     try {
       setProfileLoad(true);
+      if (!croppedAreaPixels) return;
       const croppedImage = await getCroppedImg(imagePreview!, croppedAreaPixels);
       const ress = await fetch(croppedImage);
       const blob = await ress.blob();

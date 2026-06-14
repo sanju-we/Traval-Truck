@@ -33,8 +33,9 @@ let AuthRepository = class AuthRepository extends baseRepository_1.BaseRepositor
             logger_1.logger.info(`Password updated for user ID ${id}`);
         }
         catch (err) {
-            logger_1.logger.error(`Failed to update password for user ID ${id}: ${err.message}`);
-            throw new baseRepository_1.RepositoryError(`Failed to update password: ${err.message}`);
+            const error = err;
+            logger_1.logger.error(`Failed to update password for user ID ${id}: ${error.message}`);
+            throw new baseRepository_1.RepositoryError(`Failed to update password: ${error.message}`);
         }
     }
     async findByIdAndUpdateAction(id, action, field) {
@@ -49,8 +50,9 @@ let AuthRepository = class AuthRepository extends baseRepository_1.BaseRepositor
             logger_1.logger.info(`Updated ${field} for user ID ${id}`);
         }
         catch (err) {
-            logger_1.logger.error(`Failed to update ${field} for user ID ${id}: ${err.message}`);
-            throw new baseRepository_1.RepositoryError(`Failed to update ${field}: ${err.message}`);
+            const error = err;
+            logger_1.logger.error(`Failed to update ${field} for user ID ${id}: ${error.message}`);
+            throw new baseRepository_1.RepositoryError(`Failed to update ${field}: ${error.message}`);
         }
     }
     async findByIdAndUpdateProfile(id, data) {
@@ -64,8 +66,9 @@ let AuthRepository = class AuthRepository extends baseRepository_1.BaseRepositor
             return user;
         }
         catch (err) {
-            logger_1.logger.error(`Failed to update profile for user ID ${id}: ${err.message}`);
-            throw new baseRepository_1.RepositoryError(`Failed to update profile: ${err.message}`);
+            const error = err;
+            logger_1.logger.error(`Failed to update profile for user ID ${id}: ${error.message}`);
+            throw new baseRepository_1.RepositoryError(`Failed to update profile: ${error.message}`);
         }
     }
 };

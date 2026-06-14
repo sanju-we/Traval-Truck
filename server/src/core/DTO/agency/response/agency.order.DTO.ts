@@ -10,7 +10,7 @@ export interface orderDTO {
   product: string | PackageDTO,
   amount: number,
   status: string,
-  paymentId: any,
+  paymentId: unknown,
   people?: number,
   startDate?: string,
   endDate?: string,

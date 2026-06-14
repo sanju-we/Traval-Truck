@@ -12,22 +12,22 @@ export class ChatController implements IChatController {
     async getOrCreateChat(req: Request, res: Response): Promise<void> {
         try {
             const { participant2Id, participant2Model } = req.body;
-            const { userId, role } = (req as any).user; // Assuming user is attached by auth middleware
+            const { id: userId, role } = req.user as { id: string; role: 'User' | 'Agency' };
 
             const chat = await this._chatService.getOrCreateChat(userId, role, participant2Id, participant2Model);
             res.status(200).json({ success: true, data: chat });
-        } catch (error: any) {
-            res.status(500).json({ success: false, message: error.message });
+        } catch (error) {
+            res.status(500).json({ success: false, message: (error as Error).message });
         }
     }
 
     async getUserChats(req: Request, res: Response): Promise<void> {
         try {
-            const { userId, role } = (req as any).user;
+            const { id: userId, role } = req.user as { id: string; role: 'User' | 'Agency' };
             const chats = await this._chatService.getUserChats(userId, role);
             res.status(200).json({ success: true, data: chats });
-        } catch (error: any) {
-            res.status(500).json({ success: false, message: error.message });
+        } catch (error) {
+            res.status(500).json({ success: false, message: (error as Error).message });
         }
     }
 
@@ -36,19 +36,19 @@ export class ChatController implements IChatController {
             const { chatId } = req.params;
             const messages = await this._chatService.getChatMessages(chatId);
             res.status(200).json({ success: true, data: messages });
-        } catch (error: any) {
-            res.status(500).json({ success: false, message: error.message });
+        } catch (error) {
+            res.status(500).json({ success: false, message: (error as Error).message });
         }
     }
 
     async sendMessage(req: Request, res: Response): Promise<void> {
         try {
             const { chatId, content } = req.body;
-            const { userId, role } = (req as any).user;
+            const { id: userId, role } = req.user as { id: string; role: 'User' | 'Agency' };
             const message = await this._chatService.sendMessage(chatId, userId, role, content);
             res.status(201).json({ success: true, data: message });
-        } catch (error: any) {
-            res.status(500).json({ success: false, message: error.message });
+        } catch (error) {
+            res.status(500).json({ success: false, message: (error as Error).message });
         }
     }
 }

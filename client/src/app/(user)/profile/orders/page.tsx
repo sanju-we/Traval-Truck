@@ -5,6 +5,7 @@ import { Calendar, MapPin, Clock, CheckCircle, MessageCircle, Eye, ArrowLeft, Pa
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
+import { ApiResponse } from '@/services/api.service';
 import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
 import { Trip } from '@/types/user/profile';
@@ -27,8 +28,8 @@ export default function OrdersPage() {
 
   async function fetchAllTripsForStats() {
     try {
-      const response = await USER_API_METHODS.orderHistory();
-      if (response.success) {
+      const response = await USER_API_METHODS.orderHistory() as ApiResponse<Trip[]>;
+      if (response && response.success) {
         setAllTrips(response.data);
       }
     } catch (error) {
@@ -39,10 +40,10 @@ export default function OrdersPage() {
   async function fetchCurrentPage() {
     try {
       setLoading(true);
-      const response = await USER_API_METHODS.orderHistory();
-      const data = await response.data;
+      const response = await USER_API_METHODS.orderHistory() as ApiResponse<Trip[]>;
+      const data = response ? response.data : null;
 
-      if (response.success) {
+      if (response && response.success && data) {
         console.log('data:', data);
 
         const filtered = data.filter((trip: Trip) => {
@@ -56,7 +57,7 @@ export default function OrdersPage() {
         const endIndex = startIndex + itemsPerPage;
         setDisplayTrips(filtered.slice(startIndex, endIndex));
       } else {
-        toast.error(response.message || 'Failed to fetch trips');
+        toast.error(response?.message || 'Failed to fetch trips');
       }
     } catch (error) {
       console.error('Error fetching trips:', error);

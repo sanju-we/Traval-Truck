@@ -16,17 +16,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HotelRoomsService = void 0;
-const zod_1 = __importDefault(require("zod"));
 const roomsDTO_1 = require("../../core/DTO/hotel/roomsDTO");
 const logger_1 = require("../../utils/logger");
 const upload_cloudinary_1 = require("../../utils/upload.cloudinary");
 const inversify_1 = require("inversify");
 const resAndErrors_1 = require("../../utils/resAndErrors");
+const mongoose_1 = __importDefault(require("mongoose"));
 let HotelRoomsService = class HotelRoomsService {
-    constructor(_roomsRepo, _authValidator, _roomValidator) {
+    constructor(_roomsRepo, _authValidator, _roomValidator, _baseValidator) {
         this._roomsRepo = _roomsRepo;
         this._authValidator = _authValidator;
         this._roomValidator = _roomValidator;
+        this._baseValidator = _baseValidator;
     }
     async getAllRooms(hotelID, page, search, Description) {
         const allData = await this._roomsRepo.findAllPackageWithPartners(page, Description, 5, search, hotelID);
@@ -39,12 +40,21 @@ let HotelRoomsService = class HotelRoomsService {
             const url = await (0, upload_cloudinary_1.singleUpload)(img, 'Travel-Travel-Document');
             Image.push(url);
         }
-        const createdData = await this._roomsRepo.create({ ...data, Images: Image, Status: 'Available' });
+        console.log('datasssssss', data);
+        const { images: _images, id: _id, AvailableCount, CreatedAt, HotelId, ...rest } = data;
+        const createData = {
+            ...rest,
+            HotelId: new mongoose_1.default.Types.ObjectId(HotelId),
+            Images: Image,
+            Status: 'Available',
+            AvailableCount,
+            createdAt: CreatedAt
+        };
+        const createdData = await this._roomsRepo.create(createData);
         return (0, roomsDTO_1.toRoomsDTO)(createdData);
     }
     async getRoom(id) {
-        const schema = zod_1.default.string().min(10);
-        schema.parse(id);
+        this._baseValidator.idValidator(id);
         const room = await this._roomsRepo.findById(id);
         if (room)
             return (0, roomsDTO_1.toRoomsDTO)(room);
@@ -58,19 +68,14 @@ let HotelRoomsService = class HotelRoomsService {
         throw new resAndErrors_1.DataNotFoundError();
     }
     async updateBlock(data) {
-        const schema = zod_1.default.object({
-            id: zod_1.default.string().min(10),
-            status: zod_1.default.boolean()
-        });
-        schema.parse(data);
+        this._authValidator.blockValidator(data.id, data.status);
         const update = await this._roomsRepo.update(data.id, { isBlocked: data.status });
         if (update)
             return (0, roomsDTO_1.toRoomsDTO)(update);
         throw new resAndErrors_1.DataNotFoundError();
     }
     async getEditRoom(id) {
-        const schema = zod_1.default.string().min(10);
-        schema.parse(id);
+        this._baseValidator.idValidator(id);
         const room = await this._roomsRepo.findById(id);
         if (room)
             return (0, roomsDTO_1.toRoomsDTO)(room);
@@ -82,12 +87,25 @@ let HotelRoomsService = class HotelRoomsService {
         const room = await this._roomsRepo.findById(id);
         if (!room)
             throw new resAndErrors_1.DataNotFoundError();
+        if (!room.Images)
+            throw new resAndErrors_1.DataNotFoundError();
         const Image = room.Images;
         for (const img of files) {
             const url = await (0, upload_cloudinary_1.singleUpload)(img, 'Travel-Travel-Document');
             Image.push(url);
         }
-        const updatedRoom = await this._roomsRepo.update(id, { ...data, Images: Image });
+        const { images: _images, id: _id, AvailableCount, CreatedAt, HotelId, ...rest } = data;
+        const updateData = { ...rest, Images: Image };
+        if (HotelId) {
+            updateData.HotelId = new mongoose_1.default.Types.ObjectId(HotelId);
+        }
+        if (AvailableCount !== undefined) {
+            updateData.AvailableCount = AvailableCount;
+        }
+        if (CreatedAt) {
+            updateData.createdAt = CreatedAt;
+        }
+        const updatedRoom = await this._roomsRepo.update(id, updateData);
         if (updatedRoom)
             return (0, roomsDTO_1.toRoomsDTO)(updatedRoom);
         throw new resAndErrors_1.DataNotFoundError();
@@ -95,6 +113,8 @@ let HotelRoomsService = class HotelRoomsService {
     async deleteSingleImage(id, index) {
         const room = await this._roomsRepo.findById(id);
         if (!room)
+            throw new resAndErrors_1.DataNotFoundError();
+        if (!room.Images)
             throw new resAndErrors_1.DataNotFoundError();
         const publicId = await (0, upload_cloudinary_1.extractPublicId)(room.Images[index]);
         logger_1.logger.info(`publidId ${publicId}`);
@@ -112,5 +132,6 @@ exports.HotelRoomsService = HotelRoomsService = __decorate([
     __param(0, (0, inversify_1.inject)('IHotelRoomsRepository')),
     __param(1, (0, inversify_1.inject)('IAuthValidator')),
     __param(2, (0, inversify_1.inject)('IRoomValidator')),
-    __metadata("design:paramtypes", [Object, Object, Object])
+    __param(3, (0, inversify_1.inject)('IBaseValidator')),
+    __metadata("design:paramtypes", [Object, Object, Object, Object])
 ], HotelRoomsService);

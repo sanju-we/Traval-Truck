@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { CouponDTO } from "@/types/coupon.type";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import { ApiResponse } from "@/services/api.service";
 
 export default function CouponsPage() {
   const [coupons, setCoupons] = useState<CouponDTO[]>([]);
@@ -23,7 +24,7 @@ export default function CouponsPage() {
   const fetchCoupons = async () => {
     try {
       setLoading(true);
-      const data = await ADMIN_API_METHODS.fetchAllCoupons();
+      const data = (await ADMIN_API_METHODS.fetchAllCoupons()) as ApiResponse<{ data: CouponDTO[] }> | null;
       setCoupons(data?.data?.data || []);
     } catch {
       toast.error("Failed to load coupons");
@@ -47,8 +48,8 @@ export default function CouponsPage() {
     setShowConfirmModal(false);
 
     try {
-      const res = await ADMIN_API_METHODS.editStatus(toggleTarget.id);
-      if (res.data.success) {
+      const res = (await ADMIN_API_METHODS.editStatus(toggleTarget.id)) as ApiResponse | null;
+      if (res && res.success) {
         toast.success(
           `Coupon ${toggleTarget.isActive ? "deactivated" : "activated"} successfully!`
         );
@@ -60,7 +61,7 @@ export default function CouponsPage() {
           )
         );
       } else {
-        toast.error(res.data.message || "Failed to update coupon status.");
+        toast.error(res?.message || "Failed to update coupon status.");
       }
     } catch (error) {
       console.error(error);
@@ -200,7 +201,14 @@ export default function CouponsPage() {
           />
           {editData && (
             <EditCouponModal
-              coupon={editData}
+              coupon={{
+                id: editData.id,
+                couponCode: editData.couponCode,
+                discountType: editData.discountType,
+                discountValue: editData.discountValue,
+                minPurchase: editData.minPurchase,
+                expiryDate: new Date(editData.expiryDate).toISOString()
+              }}
               onClose={() => setEditData(null)}
               onSaved={fetchCoupons}
             />

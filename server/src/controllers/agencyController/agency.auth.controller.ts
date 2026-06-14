@@ -36,7 +36,7 @@ export class AgencyAuthController implements IAgencyAuthController {
 
   async verifyAgencySignup(req: Request, res: Response): Promise<void> {
     const { email, otp, restaurantData } = req.body;
-    const { agencyData, accessToken, refreshToken } = await this._agencyAuthService.verifyAgencySignup(email, otp, restaurantData);
+    const { accessToken, refreshToken } = await this._agencyAuthService.verifyAgencySignup(email, otp, restaurantData);
     await this._IJWT.setTokenInCookies(res, accessToken, refreshToken);
     sendResponse(res, STATUS_CODE.CREATED, true, MESSAGES.CREATED);
   }

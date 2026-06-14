@@ -11,6 +11,7 @@ import User from '@/types/user/profile';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/shared/ui/button';
 import { ADMIN_API_METHODS } from '@/services/APIs/admin.api.service';
+import { ApiResponse } from '@/services/api.service';
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -29,12 +30,13 @@ export default function UsersPage() {
   const fetchUsers = async (currentPage = 1, searchTerm = '', roleFilter = '', statusFilter = '') => {
     setLoading(true);
     try {
-      const res = await ADMIN_API_METHODS.getAllAgencies();
+      const res = (await ADMIN_API_METHODS.getAllAgencies()) as ApiResponse<{ data: User[]; totalPages: number; total: number }> | null;
       console.log('sdfasdfszd')
-      const data = res.data;
-      setUsers(data);
-      const totalPages = res.totalPages
-      setTotalPages(totalPages);
+      if (res && res.data) {
+        const { data, totalPages: total } = res.data;
+        setUsers(data);
+        setTotalPages(total);
+      }
       setPage(currentPage);
     } catch (err) {
       console.error('Error fetching users:', err);

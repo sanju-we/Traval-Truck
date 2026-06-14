@@ -52,9 +52,9 @@ let SharedSubscriptionController = class SharedSubscriptionController {
             (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.BAD_REQUEST, false, "Session ID is required");
             return;
         }
-        const success = await this._subscriptionService.activateSubscription(subscriptionId, userId, role);
-        if (success) {
-            (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, "Subscription activated successfully");
+        const subscriptionData = await this._subscriptionService.activateSubscription(subscriptionId, userId, role);
+        if (subscriptionData) {
+            (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, "Subscription activated successfully", subscriptionData);
         }
         else {
             (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.BAD_REQUEST, false, "Activation failed");

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import MapSection from '@/components/Map/Map';
 import toast from 'react-hot-toast';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
+import { ApiResponse } from '@/services/api.service';
 import { useParams, useRouter } from 'next/navigation';
 import MindMapDraftReview from '@/components/user/draft';
 import { MindMapData } from '@/types/mind-map';
@@ -138,8 +139,8 @@ export default function CreateMindMapPage() {
   )
   
   const fetchMindMap = async () => {
-    const map = await USER_API_METHODS.MindMapDetails(ID);
-    if (map.success) {
+    const map = (await USER_API_METHODS.MindMapDetails(ID)) as ApiResponse<MindMapData> | null;
+    if (map && map.success) {
       setMindMap(map.data)
     } else {
       router.back()
@@ -244,7 +245,7 @@ export default function CreateMindMapPage() {
     try {
       setIsGenerating(true);
 
-      const data = await USER_API_METHODS.generateMap({
+      const data = (await USER_API_METHODS.generateMap({
         id,
         title,
         startDate,
@@ -257,9 +258,9 @@ export default function CreateMindMapPage() {
         foodAmount,
         room,
         member,
-      });
+      })) as ApiResponse<MindMapData> | null;
 
-      if (data.success) {
+      if (data && data.success) {
         toast.success('Mind-Map created!');
         setDraft(data.data);
         setCreated(true);
@@ -284,8 +285,9 @@ export default function CreateMindMapPage() {
   )
 
   const handleOnSubmit = async () => {
-    const data = await USER_API_METHODS.submitTheMindmap(mindMap.id)
-    if (data.success) {
+    if (!mindMap) return;
+    const data = (await USER_API_METHODS.submitTheMindmap(mindMap.id)) as ApiResponse | null;
+    if (data && data.success) {
       toast.success('Mind Map confirmed')
       router.push('/mind-map')
     }

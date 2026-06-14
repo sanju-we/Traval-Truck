@@ -4,14 +4,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HotelRoomsRepository = void 0;
-const Rooms_1 = __importDefault(require("../../models/Rooms"));
 const baseRepository_1 = require("../../repositories/baseRepository");
 const resAndErrors_1 = require("../../utils/resAndErrors");
 const roomsDTO_1 = require("../../core/DTO/hotel/roomsDTO");
 const logger_1 = require("../../utils/logger");
+const mongoose_1 = __importDefault(require("mongoose"));
+const RoomType_1 = __importDefault(require("../../models/RoomType"));
 class HotelRoomsRepository extends baseRepository_1.BaseRepository {
     constructor() {
-        super(Rooms_1.default);
+        super(RoomType_1.default);
     }
     async findAllPackageWithPartners(page = 1, status, lim = 10, search, hotelID) {
         page = Math.max(page, 1);
@@ -28,8 +29,8 @@ class HotelRoomsRepository extends baseRepository_1.BaseRepository {
         }
         logger_1.logger.info({ filter });
         const [rooms, total] = await Promise.all([
-            Rooms_1.default.find(filter).skip(skip).limit(lim).lean(),
-            Rooms_1.default.countDocuments(),
+            RoomType_1.default.find(filter).skip(skip).limit(lim).lean(),
+            RoomType_1.default.countDocuments(),
         ]);
         return {
             data: rooms.map(roomsDTO_1.toRoomsDTO),
@@ -37,8 +38,14 @@ class HotelRoomsRepository extends baseRepository_1.BaseRepository {
             totalPage: Math.ceil(total / lim),
         };
     }
+    async findByHotelId(hotelId) {
+        const Id = new mongoose_1.default.Types.ObjectId(hotelId);
+        const rooms = await RoomType_1.default.find({ HotelId: Id, isBlocked: false });
+        console.log(`Rooms for hotel ${hotelId}:`, rooms);
+        return rooms;
+    }
     async findPackageWithPartner(id) {
-        const data = await Rooms_1.default.findById(id)
+        const data = await RoomType_1.default.findById(id)
             .populate('HotelId')
             .lean();
         if (data)

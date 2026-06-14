@@ -38,7 +38,7 @@ let AgencyAuthController = class AgencyAuthController {
     }
     async verifyAgencySignup(req, res) {
         const { email, otp, restaurantData } = req.body;
-        const { agencyData, accessToken, refreshToken } = await this._agencyAuthService.verifyAgencySignup(email, otp, restaurantData);
+        const { accessToken, refreshToken } = await this._agencyAuthService.verifyAgencySignup(email, otp, restaurantData);
         await this._IJWT.setTokenInCookies(res, accessToken, refreshToken);
         (0, resAndErrors_2.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.CREATED, true, responseMessaages_1.MESSAGES.CREATED);
     }

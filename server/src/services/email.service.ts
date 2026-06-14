@@ -23,8 +23,9 @@ export class EmailService implements IEmailService {
         text,
       });
       logger.info(`Email sent to ${to}`);
-    } catch (err: any) {
-      logger.error(`Failed to send email: ${err.message}`);
+    } catch (err) {
+      const error = err as Error;
+      logger.error(`Failed to send email: ${error.message}`);
       throw new Error('Failed to send email');
     }
   }
@@ -34,8 +35,9 @@ export class EmailService implements IEmailService {
       logger.info(`Your OTP is ${otp}`);
       await this.sendEmail(email, 'Your OTP', `Your OTP is ${otp}`);
       logger.info(`OTP email sent to ${email}`);
-    } catch (err: any) {
-      logger.error(`Failed to send OTP: ${err.message}`);
+    } catch (err) {
+      const error = err as Error;
+      logger.error(`Failed to send OTP: ${error.message}`);
       throw new Error('Failed to send OTP');
     }
   }

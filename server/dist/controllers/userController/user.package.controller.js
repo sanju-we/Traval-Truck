@@ -41,16 +41,22 @@ let UserPackageController = class UserPackageController {
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.DATA_FOUND, data);
     }
     async puchasePackage(req, res) {
-        const { packageId, amount, couponId } = req.body;
+        const { packageId, amount, couponId, maxPeople } = req.body;
         const userId = req.user.id;
         const role = req.user.role;
-        const session = await this._userPackageService.initiativePurchase(packageId, userId, role, amount, couponId);
+        const session = await this._userPackageService.initiativePurchase(packageId, userId, role, amount, couponId, maxPeople);
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.ACTIVATED, session);
     }
     async getCoupons(req, res) {
         const userId = req.user.id;
         const coupons = await this._userPackageService.getAllCoupons(userId);
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.ALL_DATA_FOUND, coupons);
+    }
+    async walletPurchase(req, res) {
+        const { productId, amount, people, couponId, productType } = req.body;
+        const userId = req.user.id;
+        const result = await this._userPackageService.walletPurchase(userId, productId, people, amount, productType, couponId);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.SUCCESS, result);
     }
 };
 exports.UserPackageController = UserPackageController;

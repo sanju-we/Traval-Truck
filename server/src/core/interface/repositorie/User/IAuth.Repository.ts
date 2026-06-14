@@ -1,4 +1,3 @@
-import { UserData, userProfileDTO } from '../../../../types/index';
 import { IUser } from '../../modelInterface/IUser';
 import { userEdit } from '../../../../types/index';
 import { IBaserepository } from '../IBaseRepositories';

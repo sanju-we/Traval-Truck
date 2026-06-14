@@ -49,7 +49,7 @@ export default function RoomDetails() {
     } else toast.error(data.message)
   }
 
-  const handleSave = (updatedRoom: any) => {
+  const handleSave = (updatedRoom: IRoom) => {
     console.log(updatedRoom)
     setRoom(updatedRoom);
   };

@@ -3,6 +3,7 @@
 import type React from 'react';
 import { useState, useRef, useLayoutEffect } from 'react';
 import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
+import { ApiResponse } from '@/services/api.service';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
@@ -106,14 +107,14 @@ export default function SignUpPage() {
     try {
       const data = await AGENCY_API_METHODS.sendOtp({
         email: formData.email,
-      });
+      }) as ApiResponse;
 
-      if (data.success) {
+      if (data && data.success) {
         toast.success('OTP resent to your email');
         setTimer(60);
         handleTimer();
       } else {
-        toast.error(data.error);
+        toast.error(data?.message || 'Failed to resend OTP');
       }
     } catch (err) {
       toast.error('Failed to resend OTP');
@@ -129,16 +130,16 @@ export default function SignUpPage() {
     try {
       const data = await AGENCY_API_METHODS.sendOtp({
         email: formData.email,
-      });
+      }) as ApiResponse;
 
-      if (data.success) {
+      if (data && data.success) {
         setShowOtpInput(true);
         toast.success('OTP sent to your email');
         setTimer(60);
         handleTimer();
         setErrors({});
       } else {
-        toast.error(`${data.error}`);
+        toast.error(`${data?.message || 'Failed to send OTP'}`);
       }
     } catch (err) {
       toast.error('Failed to send OTP');
@@ -167,14 +168,14 @@ export default function SignUpPage() {
           password: formData.password,
           phone: Number(formData.phone),
         },
-      });
+      }) as ApiResponse;
       console.log('Error verifying OTP: ');
 
-      if (data.success) {
+      if (data && data.success) {
         toast.success('Email Registered successfully, Approval Request sended');
         route.push('/agency/profile');
       } else {
-        toast.error(`❌ ${data.message}`);
+        toast.error(`❌ ${data?.message || 'Verification failed'}`);
         setOtp(['', '', '', '', '', '']);
       }
     } catch (err) {

@@ -6,11 +6,12 @@ import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
 import BookNowButton from '@/components/user/booking/BookNowButtonRoom';
 import TermsModal from '@/components/shared/TermsModal';
-import { Loader2, Users, CalendarDays, CheckCircle, Hotel as HotelIcon, Wifi, ArrowLeft, MapPin, Star, Hotel } from 'lucide-react';
+import { Loader2, Users, CalendarDays, CheckCircle, Hotel as HotelIcon, Wifi, ArrowLeft, MapPin, Star } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { IRoom } from '@/types/hotel';
+import { IRoom, Hotel } from '@/types/hotel';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import { SHARED_API_METHODS } from '@/services/APIs/shared.api.service';
+import { ApiResponse } from '@/services/api.service';
 
 const getCapacity = (capacity: number | string): number => {
   if (typeof capacity === 'number') return capacity;
@@ -23,7 +24,7 @@ export default function HotelDetailsPage() {
   const { id } = useParams();
   const router = useRouter();
 
-  const [hotel, setHotel] = useState<any | null>(null);
+  const [hotel, setHotel] = useState<Hotel | null>(null);
   const [rooms, setRooms] = useState<IRoom[]>([]);
   const [loading, setLoading] = useState(true);
   const [roomLoading, setRoomLoading] = useState(false);
@@ -50,8 +51,8 @@ export default function HotelDetailsPage() {
   async function fetchWalletBalance() {
     try {
       setWalletLoading(true);
-      const data = await SHARED_API_METHODS.getWalletBalance('user');
-      if (data.success) {
+      const data = (await SHARED_API_METHODS.getWalletBalance('user')) as ApiResponse<{ balance: number }> | null;
+      if (data && data.success) {
         setWalletBalance(data.data.balance);
       } else {
         setWalletBalance(0);
@@ -72,20 +73,20 @@ export default function HotelDetailsPage() {
 
     try {
       setWalletLoading(true);
-      const res = await USER_API_METHODS.purchaseRoomWithWallet({
+      const res = (await USER_API_METHODS.purchaseRoomWithWallet({
         roomId,
         role: 'user',
         amount,
         startDate: checkInDate,
         people: numPeople,
         couponId: 'none'
-      });
+      })) as ApiResponse<{ success: boolean }> | null;
 
-      if (res.data && res.data.success) {
+      if (res && res.data && res.data.success) {
         toast.success('Booking successful! Your wallet has been debited.');
         router.push('/profile/orders');
       } else {
-        toast.error(res.message || 'Failed to complete booking');
+        toast.error(res?.message || 'Failed to complete booking');
       }
     } catch (err: any) {
       console.error('Wallet payment error:', err);
@@ -105,8 +106,10 @@ export default function HotelDetailsPage() {
 
   async function fetchHotelDetails(hotelId: string) {
     try {
-      const res = await USER_API_METHODS.getHotelDetails(hotelId);
-      setHotel(res.data);
+      const res = (await USER_API_METHODS.getHotelDetails(hotelId)) as ApiResponse<Hotel> | null;
+      if (res && res.data) {
+        setHotel(res.data);
+      }
     } catch (err) {
       toast.error('Failed to load hotel details');
     } finally {
@@ -117,8 +120,10 @@ export default function HotelDetailsPage() {
   async function fetchRooms(hotelId: string, filters?: { startDate?: string; endDate?: string; people?: number }) {
     try {
       setRoomLoading(true);
-      const res = await USER_API_METHODS.getRoomsByHotel(hotelId, filters);
-      setRooms(res.data);
+      const res = (await USER_API_METHODS.getRoomsByHotel(hotelId, filters)) as ApiResponse<IRoom[]> | null;
+      if (res && res.data) {
+        setRooms(res.data);
+      }
     } catch (err) {
       toast.error('Failed to load room types');
     } finally {
@@ -348,7 +353,7 @@ export default function HotelDetailsPage() {
 
         {/* Room Selection */}
         <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-          <Hotel className="text-emerald-600" /> Available Room Types
+          <HotelIcon className="text-emerald-600" /> Available Room Types
         </h2>
 
         <div className="relative min-h-[400px]">

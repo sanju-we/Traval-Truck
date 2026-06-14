@@ -13,6 +13,7 @@ import {
 import toast from 'react-hot-toast';
 import { RESTAURANT_API_METHODS } from '@/services/APIs/restaurant.api.service';
 import { BillItem } from '@/types/restaurant';
+import { ApiResponse } from '@/services/api.service';
 
 export default function OfflineBillingPage() {
   const [items, setItems] = useState<BillItem[]>([]);
@@ -84,9 +85,9 @@ export default function OfflineBillingPage() {
         discount,
         total,
         paymentMethod,
-      });
+      }) as ApiResponse;
 
-      if (res.success) {
+      if (res && res.success) {
         toast.success('Bill generated successfully');
         setItems([]);
         setTax(0);

@@ -1,3 +1,4 @@
+import { FilterQuery } from 'mongoose';
 import { IHotelAuthRepository } from '../../core/interface/repositorie/Hotel/Ihotel.auth.repository';
 import { BaseRepository } from '../../repositories/baseRepository';
 import { Hotel } from '../../models/Hotel';
@@ -30,7 +31,7 @@ export class HotelAuthRepository extends BaseRepository<IHotel> implements IHote
     page: number,
   ): Promise<{ data: IHotel[]; total: number; totalPages: number }> {
     const skip = (page - 1) * limit;
-    const filter: any = {};
+    const filter: FilterQuery<IHotel> = {};
 
     if (query.search) {
       filter['$or'] = [

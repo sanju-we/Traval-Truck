@@ -60,6 +60,7 @@ let HotelAuthController = class HotelAuthController {
     async resetPasword(req, res) {
         const { newPassword, token } = req.body;
         await this._hotelService.resetHotelPassword(newPassword, token);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.PASSWORD_CHANGED);
     }
     async getDashboard(req, res) {
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.SUCCESS);

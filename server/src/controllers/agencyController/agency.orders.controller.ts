@@ -14,8 +14,17 @@ export class AgencyOrdersController implements IAgencyOrdersController {
 
   async getAll(req: Request, res: Response): Promise<void> {
     const userId = req.user.id;
-    const orders = await this._orderService.getAllOrder(userId)
-    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, orders)
+    const { page, limit, search, status, price, sortBy } = req.query;
+    const orders = await this._orderService.getAllOrder(
+      userId,
+      page ? Number(page) : 1,
+      limit ? Number(limit) : 5,
+      search ? String(search) : undefined,
+      status ? String(status) : undefined,
+      price ? String(price) : undefined,
+      sortBy ? String(sortBy) : undefined
+    );
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, orders);
   }
 
   async setDate(req: Request, res: Response): Promise<void> {

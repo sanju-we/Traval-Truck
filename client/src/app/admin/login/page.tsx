@@ -6,6 +6,7 @@ import { setTokens } from '@/redux/authSlice';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { ADMIN_API_METHODS } from '@/services/APIs/admin.api.service';
+import { ApiResponse } from '@/services/api.service';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -28,16 +29,16 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const data = await ADMIN_API_METHODS.login(formData);
+      const data = (await ADMIN_API_METHODS.login(formData)) as ApiResponse<{ accessToken: string; refreshToken: string }> | null;
       console.log(data)
 
-      if (data.success) {
+      if (data && data.success) {
         toast.success('Login successful!');
         dispatch(
           setTokens({ accessToken: data.data.accessToken, refreshToken: data.data.refreshToken }),
         );
         router.push('/admin');
-        return 
+        return
       } else {
         setIsLoading(false);
       }

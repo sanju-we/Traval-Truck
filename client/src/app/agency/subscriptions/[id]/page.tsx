@@ -21,9 +21,11 @@ import { motion } from "framer-motion";
 import { Subscription } from "@/types/agency";
 import TravelTruckLoading from "@/components/shared/TravelTruckLoading";
 
+import { ApiResponse } from "@/services/api.service";
+
 async function getSubscriptionById(id: string) {
-  const res = await SHARED_API_METHODS.subscriptionDetails("agency", id);
-  return res.success ? res.data : null;
+  const res = await SHARED_API_METHODS.subscriptionDetails("agency", id) as ApiResponse<Subscription>;
+  return res && res.success ? res.data : null;
 }
 
 export default function SubscriptionDetailsPage({
@@ -202,7 +204,6 @@ export default function SubscriptionDetailsPage({
 
                     <BuyNowButton
                       subscriptionId={id}
-                      amount={subscription.amount}
                       role="agency"
                     />
                     

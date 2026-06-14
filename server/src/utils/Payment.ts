@@ -2,6 +2,7 @@ import Stripe from 'stripe';
 import { IPaymentUtils } from '../core/interface/PaymentInterface/Ipayment.utils';
 import { IPaymentRepository } from '../core/interface/repositorie/shared/Ishared.payment.repository';
 import { inject, injectable } from 'inversify';
+import { Types } from 'mongoose';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2025-10-29.clover',
@@ -18,7 +19,7 @@ export class PaymentUtils implements IPaymentUtils {
     description: string;
     successUrl: string;
     cancelUrl: string;
-    metadata: Record<string, any>;
+    metadata: Record<string, string>;
     mode?: "payment" | "subscription";
     priceId?: string;
   }): Promise<{ url: string; sessionId: string; paymentRecordId: string }> {
@@ -66,7 +67,7 @@ export class PaymentUtils implements IPaymentUtils {
     const paymentRecord = await this._paymentRepo.create({
       sessionId: session.id,
       type: metadata.type,
-      userId: metadata.userId,
+      userId: new Types.ObjectId(metadata.userId),
       role: metadata.role,
       amount,
       currency,

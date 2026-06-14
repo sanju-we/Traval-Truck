@@ -8,7 +8,7 @@ const zod_1 = require("zod");
 const mongoose_1 = __importDefault(require("mongoose"));
 const resAndErrors_1 = require("../utils/resAndErrors");
 const logger_1 = require("../utils/logger");
-function errorHandler(err, req, res, next) {
+function errorHandler(err, req, res, _next) {
     let status = err.statusCode || 500;
     let message = 'Something went wrong. Please try again later.';
     if (err instanceof resAndErrors_1.HttpError) {
@@ -31,7 +31,7 @@ function errorHandler(err, req, res, next) {
         const errors = Object.values(err.errors).map((e) => e.message);
         message = errors.join(', ') || 'Validation failed.';
     }
-    else if (err.code === 11000) {
+    else if (err.code === 11000 && err.keyValue) {
         status = 409;
         const field = Object.keys(err.keyValue)[0];
         message = `${field.charAt(0).toUpperCase() + field.slice(1)} is already in use.`;

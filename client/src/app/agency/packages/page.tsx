@@ -9,6 +9,7 @@ import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
 import toast from "react-hot-toast";
 import EditPackageModal from "@/components/agency/editPackageModal";
 import { Packages } from "@/types/agency";
+import { ApiResponse } from "@/services/api.service";
 import VendorFooter from "@/components/shared/Footer";
 import TravelTruckLoading from "@/components/shared/TravelTruckLoading";
 
@@ -25,22 +26,32 @@ export default function PackageListingPage() {
   const [durationFilter, setDurationFilter] = useState('All');
   const [sortBy, setSortBy] = useState('title_asc');
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
   const itemsPerPage = 6;
 
-  const fetchPackages = async () => {
+  const fetchPackages = async (
+    page = 1,
+    search = searchTerm,
+    price = priceFilter,
+    duration = durationFilter,
+    sort = sortBy
+  ) => {
     try {
       setLoading(true);
-      const data = await AGENCY_API_METHODS.getAll({ page: 1 });
-      if (data.success && data.data) {
-        let allPkgs = data.data.data || [];
-        const totalPagesCount = data.data.totalPages || 1;
-        for (let p = 2; p <= totalPagesCount; p++) {
-          const res = await AGENCY_API_METHODS.getAll({ page: p });
-          if (res.success && res.data && res.data.data) {
-            allPkgs = [...allPkgs, ...res.data.data];
-          }
-        }
-        setPackages(allPkgs);
+      const res = await AGENCY_API_METHODS.getAll({
+        page,
+        limit: itemsPerPage,
+        search: search || undefined,
+        price: price !== 'All' ? price : undefined,
+        duration: duration !== 'All' ? duration : undefined,
+        sortBy: sort
+      }) as ApiResponse<{ data: Packages[]; totalPages?: number; total?: number }>;
+      if (res && res.success && res.data) {
+        setPackages(res.data.data || []);
+        setTotalPages(res.data.totalPages || 1);
+        setTotalItems(res.data.total || 0);
+        setCurrentPage(page);
       } else {
         toast.error('Failed to load packages');
       }
@@ -52,63 +63,26 @@ export default function PackageListingPage() {
     }
   };
 
-  useEffect(() => {
-    fetchPackages();
-  }, []);
-
   // Reset page to 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, priceFilter, durationFilter, sortBy]);
 
+  // Debounced/Reactive fetch when filters or page change
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      fetchPackages(currentPage, searchTerm, priceFilter, durationFilter, sortBy);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [currentPage, searchTerm, priceFilter, durationFilter, sortBy]);
+
   const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
   };
 
-  // Filter & Search Logic
-  const filteredPackages = packages.filter((pkg) => {
-    const searchString = searchTerm.toLowerCase();
-    const matchesSearch =
-      pkg.title?.toLowerCase().includes(searchString) ||
-      pkg.description?.toLowerCase().includes(searchString) ||
-      pkg.discoveries?.some((d: string) => d.toLowerCase().includes(searchString));
-
-    let matchesPrice = true;
-    if (priceFilter === 'under_5k') {
-      matchesPrice = pkg.price < 5000;
-    } else if (priceFilter === '5k_15k') {
-      matchesPrice = pkg.price >= 5000 && pkg.price <= 15000;
-    } else if (priceFilter === 'over_15k') {
-      matchesPrice = pkg.price > 15000;
-    }
-
-    let matchesDuration = true;
-    if (durationFilter !== 'All') {
-      const days = parseInt(pkg.duration) || 0;
-      if (durationFilter === 'short') {
-        matchesDuration = days >= 1 && days <= 3;
-      } else if (durationFilter === 'medium') {
-        matchesDuration = days >= 4 && days <= 7;
-      } else if (durationFilter === 'long') {
-        matchesDuration = days > 7;
-      }
-    }
-
-    return matchesSearch && matchesPrice && matchesDuration;
-  });
-
-  const sortedPackages = [...filteredPackages].sort((a, b) => {
-    if (sortBy === 'price_asc') return a.price - b.price;
-    if (sortBy === 'price_desc') return b.price - a.price;
-    if (sortBy === 'title_desc') return b.title.localeCompare(a.title);
-    return a.title.localeCompare(b.title); // Default: title_asc
-  });
-
-  // Pagination computations
-  const totalPages = Math.ceil(sortedPackages.length / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentPackages = sortedPackages.slice(indexOfFirstItem, indexOfLastItem);
+  const currentPackages = packages;
 
   if (loading) {
     return (
@@ -325,36 +299,37 @@ export default function PackageListingPage() {
 
       {/* ✅ Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center items-center mt-10 gap-4">
-          <Button
-            variant="outline"
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="flex items-center gap-1 hover:bg-gray-50"
-          >
-            <ChevronLeft size={16} /> Prev
-          </Button>
-
-          <span className="text-sm text-gray-600 font-medium">
-            Page {currentPage} of {totalPages}
-          </span>
-
-          <Button
-            variant="outline"
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="flex items-center gap-1 hover:bg-gray-50"
-          >
-            Next <ChevronRight size={16} />
-          </Button>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl p-4 shadow-sm border border-gray-100 mt-10">
+          <p className="text-sm text-gray-600 font-medium">
+            Showing {packages.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} packages
+          </p>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="flex items-center gap-1 hover:bg-gray-50 text-gray-700 font-medium px-4 py-2 border rounded-lg text-sm transition-colors"
+            >
+              <ChevronLeft size={16} /> Prev
+            </Button>
+            <span className="px-4 py-2 bg-blue-50 text-blue-700 rounded-lg font-semibold text-sm border border-blue-100 flex items-center justify-center">
+              Page {currentPage} of {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="flex items-center gap-1 hover:bg-gray-50 text-gray-700 font-medium px-4 py-2 border rounded-lg text-sm transition-colors"
+            >
+              Next <ChevronRight size={16} />
+            </Button>
+          </div>
         </div>
       )}
       <VendorFooter />
 
-      {/* ✅ Add Package Modal */}
       {showModal && (
         <AddPackageModal
-          isOpen={showModal}
           onClose={() => setShowModal(false)}
           onAdd={fetchPackages}
           setPackages={setPackages}

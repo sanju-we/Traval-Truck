@@ -11,22 +11,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProfileController = void 0;
 const inversify_1 = require("inversify");
 const resAndErrors_1 = require("../../utils/resAndErrors");
 const HTTPStatusCode_1 = require("../../utils/HTTPStatusCode");
-const zod_1 = __importDefault(require("zod"));
 const user_profile_1 = require("../../core/DTO/user/Response/user.profile");
 const responseMessaages_1 = require("../../utils/responseMessaages");
 let ProfileController = class ProfileController {
-    constructor(_jwt, _authRepository, _profileService) {
+    constructor(_jwt, _authRepository, _profileService, _baseValidator, _authValidator) {
         this._jwt = _jwt;
         this._authRepository = _authRepository;
         this._profileService = _profileService;
+        this._baseValidator = _baseValidator;
+        this._authValidator = _authValidator;
     }
     async profile(req, res) {
         if (!req.cookies?.accessToken) {
@@ -41,10 +39,8 @@ let ProfileController = class ProfileController {
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, 'User profile found', user);
     }
     async intrest(req, res) {
-        const schema = zod_1.default.object({
-            interests: zod_1.default.array(zod_1.default.string().min(1)).nonempty(),
-        });
-        const { interests } = schema.parse(req.body);
+        const { interests } = req.body;
+        await this._baseValidator.InterestValidator(interests);
         if (!req.user?.id) {
             return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.UNAUTHORIZED, false, 'User not authenticated');
         }
@@ -52,11 +48,6 @@ let ProfileController = class ProfileController {
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.UPDATED);
     }
     async updateUser(req, res) {
-        const schema = zod_1.default.object({
-            name: zod_1.default.string(),
-            userName: zod_1.default.string(),
-            phoneNumber: zod_1.default.preprocess((val) => Number(val), zod_1.default.number()),
-        });
         const formData = req.body;
         const user = req.user;
         const userData = await this._profileService.updateProfile(formData, user);
@@ -77,5 +68,7 @@ exports.ProfileController = ProfileController = __decorate([
     __param(0, (0, inversify_1.inject)('IJWT')),
     __param(1, (0, inversify_1.inject)('IAuthRepository')),
     __param(2, (0, inversify_1.inject)('IUserProfileService')),
-    __metadata("design:paramtypes", [Object, Object, Object])
+    __param(3, (0, inversify_1.inject)('IBaseValidator')),
+    __param(4, (0, inversify_1.inject)('IAuthValidator')),
+    __metadata("design:paramtypes", [Object, Object, Object, Object, Object])
 ], ProfileController);

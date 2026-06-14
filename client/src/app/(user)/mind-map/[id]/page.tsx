@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
+import { ApiResponse } from '@/services/api.service';
 import RouteMap from '@/components/user/MindMapRoutes';
 import { MindMapData } from '@/types/mind-map';
 
@@ -58,13 +59,13 @@ export default function MindMapDetailsPage() {
   const fetchMindMapDetails = async (mindMapId: string) => {
     try {
 
-      const data = await USER_API_METHODS.MindMapDetails(id)
+      const data = (await USER_API_METHODS.MindMapDetails(id)) as ApiResponse<MindMapData> | null;
 
-      if (data.success) {
+      if (data && data.success) {
         setMindMap(data.data);
         console.log(data.data)
       } else {
-        toast.error('Failed to load mind map details');
+        toast.error(data?.message || 'Failed to load mind map details');
       }
     } catch (error) {
       console.error('Error fetching mind map:', error);
@@ -104,8 +105,8 @@ export default function MindMapDetailsPage() {
     );
   }
   const handleSubmit = async () => {
-    const data = await USER_API_METHODS.submitTheMindmap(mindMap.id)
-    if (data.success) {
+    const data = (await USER_API_METHODS.submitTheMindmap(mindMap.id)) as ApiResponse<MindMapData> | null;
+    if (data && data.success) {
       toast.success('Mind Map confirmed')
       setMindMap(data.data)
     }

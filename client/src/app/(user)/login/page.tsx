@@ -7,6 +7,7 @@ import { useRouter,redirect } from 'next/navigation';
 import { ShowerHeadIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
+import { ApiResponse } from '@/services/api.service';
 import { FcGoogle } from 'react-icons/fc'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
 
@@ -38,9 +39,9 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const data = await USER_API_METHODS.login(formData);
+      const data = (await USER_API_METHODS.login(formData)) as ApiResponse<{ accessToken: string; refreshToken: string }> | null;
       console.log('sunny :', data)
-      if (data.success) {
+      if (data && data.success) {
         toast.success('Login successful!');
         dispatch(
           setTokens({
@@ -50,7 +51,7 @@ export default function LoginPage() {
         );
         router.replace('/');
       } else {
-        toast.error(data.message)
+        toast.error(data?.message || 'Login failed')
         setIsLoading(false)
       }
     } catch (err) {

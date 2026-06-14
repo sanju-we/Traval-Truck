@@ -26,7 +26,7 @@ let UserHotelsController = class UserHotelsController {
         const search = req.query.search;
         if (!page || !limit)
             throw new resAndErrors_1.BADREQUEST();
-        const data = await this._userHotelService.getAllHotels(Number(page), Number(limit), isNaN(Number(search)) ? 0 : Number(search));
+        const data = await this._userHotelService.getAllHotels(Number(page), Number(limit), search != undefined ? String(search) : '');
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.ALL_DATA_FOUND, data);
     }
     async getRoom(req, res) {
@@ -36,11 +36,41 @@ let UserHotelsController = class UserHotelsController {
         const data = await this._userHotelService.getRoom(String(id));
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.DATA_FOUND, data);
     }
+    async getRoomsByHotel(req, res) {
+        const id = req.params.id;
+        const { startDate, endDate, people } = req.query;
+        if (!id)
+            throw new resAndErrors_1.BADREQUEST();
+        const data = await this._userHotelService.getRoomsByHotel(id, {
+            startDate: startDate,
+            endDate: endDate,
+            people: people ? Number(people) : undefined
+        });
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.DATA_FOUND, data);
+    }
+    async getHotelDetails(req, res) {
+        const id = req.params.id;
+        if (!id)
+            throw new resAndErrors_1.BADREQUEST();
+        const data = await this._userHotelService.getHotelDetails(id);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.DATA_FOUND, data);
+    }
     async purchaseRoom(req, res) {
-        const { roomId, amount, couponId, role, startDate } = req.body;
+        const { roomId, amount, couponId, role, startDate, people } = req.body;
         const userId = req.user.id;
-        const session = await this._userHotelService.initializeSession(roomId, role, userId, amount, couponId, startDate);
+        const session = await this._userHotelService.initializeSession(roomId, role, userId, amount, couponId, startDate, Number(people));
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.CREATED, session);
+    }
+    async walletPurchase(req, res) {
+        const { roomId, amount, couponId, role, startDate, people } = req.body;
+        const userId = req.user.id;
+        const result = await this._userHotelService.walletPurchase(roomId, role, userId, amount, couponId, startDate, Number(people));
+        if (result.success) {
+            (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, result.message, result);
+        }
+        else {
+            (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.BAD_REQUEST, false, result.message, null);
+        }
     }
 };
 exports.UserHotelsController = UserHotelsController;

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from "react";
+import { useEffect, useState, Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/shared/ui/button";
 import { Input } from "@/components/shared/ui/input";
 import { Textarea } from "@/components/shared/ui/textarea";
@@ -8,8 +8,16 @@ import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
 import toast from "react-hot-toast";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "@/components/utils/UserCropImage";
+import { Area } from "react-easy-crop";
+import { Packages } from "@/types/agency";
 
-export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
+interface AddPackageModalProps {
+  onClose: () => void;
+  onAdd?: () => void;
+  setPackages: Dispatch<SetStateAction<Packages[]>>;
+}
+
+export default function AddPackageModal({ onClose, onAdd, setPackages }: AddPackageModalProps) {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [images, setImages] = useState<string[]>([]);
@@ -33,7 +41,7 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
   const [isCropping, setIsCropping] = useState(false);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
   const [profileLoad, setProfileLoad] = useState(false);
 
@@ -61,6 +69,7 @@ export default function AddPackageModal({ onClose, onAdd, setPackages }: any) {
   const handleCropComplete = async () => {
     try {
       setProfileLoad(true);
+      if (!croppedAreaPixels) return;
       const croppedImage = await getCroppedImg(currentImage!, croppedAreaPixels);
       setImages((prev) => [...prev, croppedImage]);
       toast.success("Image cropped successfully!");

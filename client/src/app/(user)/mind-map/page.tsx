@@ -26,6 +26,7 @@ import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
 import toast from 'react-hot-toast';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
+import { ApiResponse } from '@/services/api.service';
 import { MindMapTrip } from '@/types/mind-map';
 
 export default function MindMapsPage() {
@@ -36,7 +37,7 @@ export default function MindMapsPage() {
   const [totalPages, setTotalPages] = useState(1);
 
   const fetchMindmap = async (page: number) => {
-    const map = await USER_API_METHODS.getMindMap(page);
+    const map = (await USER_API_METHODS.getMindMap(page)) as ApiResponse<{ data: MindMapTrip[]; totalPages: number }> | null;
     if (map && map.data) return map.data;
     return { data: [], totalPages: 1 };
   };

@@ -1,6 +1,5 @@
 import { IAdminVendorController } from '../../core/interface/controllerInterface/admin/Iadmin.vendor.controller';
 import { sendResponse } from '../../utils/resAndErrors';
-import { HttpError } from '../../utils/resAndErrors';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode';
 import { IJWT } from '../../core/interface/JWT/JWTInterface';
 import { IAdminVendorRepository } from '../../core/interface/repositorie/admin/Iadmin.vendor.repository';
@@ -30,7 +29,6 @@ export class AdminVendorController implements IAdminVendorController {
 
       const search = (req.query.search as string) || '';
       const status = (req.query.status as string) || '';
-      // Force role 'user' for this endpoint as per requirement
       const role = 'user';
 
       const { data, total, totalPages } = await this._adminVenderRepo.findAllUsers(page, limit, status, role, search);
@@ -124,8 +122,7 @@ export class AdminVendorController implements IAdminVendorController {
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED);
   }
 
-  async sortUsers(req: Request, res: Response): Promise<void> {
-    const { sort, status } = req.query;
-    const data = await this._adminVenderService;
+  async sortUsers(_req: Request, _res: Response): Promise<void> {
+    // Unimplemented
   }
 }

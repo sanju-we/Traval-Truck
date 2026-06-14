@@ -7,7 +7,7 @@ export interface IPaymentUtils{
     description: string;
     successUrl: string;
     cancelUrl: string;
-    metadata: Record<string, any>;
+    metadata: Record<string, string>;
     mode?: "payment" | "subscription";
     priceId?: string;
   }):Promise<{ url: string; sessionId: string; paymentRecordId: string }>;

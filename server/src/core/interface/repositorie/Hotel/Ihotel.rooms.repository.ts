@@ -1,4 +1,4 @@
-import { IRoomType, IRoomsDocument } from "../../modelInterface/IRoomType";
+import { IRoomsDocument } from "../../modelInterface/IRoomType";
 import { IBaserepository } from "../IBaseRepositories";
 import { RoomsDTO } from "../../../../core/DTO/hotel/roomsDTO";
 import { PaginationResponse } from "../../../../core/DTO/pagination.DTO";

@@ -53,7 +53,9 @@ export class HotelProfileService implements IHotelProfileService {
     }
 
     if (update) {
-      update.isRestricted && await this._hotelAuthRepo.update(hotelId, { isRestricted: false });
+      if (update.isRestricted) {
+        await this._hotelAuthRepo.update(hotelId, { isRestricted: false });
+      }
       return toVendorRequestDTO(update);
     }
     return null;

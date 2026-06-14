@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { HOTEL_API_METHODS } from '@/services/APIs/hotel.api.service';
 import TravelTruckLoading from '@/components/shared/TravelTruckLoading';
+import { ApiResponse } from '@/services/api.service';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,14 +26,14 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const data = await HOTEL_API_METHODS.login(formData);
+      const data = await HOTEL_API_METHODS.login(formData) as ApiResponse;
       console.log('data:', data);
 
-      if (data.success) {
+      if (data && data.success) {
         toast.success('Login successful!');
         router.push('/hotel/profile');
       } else {
-        toast.error(`${data.message}`);
+        toast.error(`${data?.message || 'Failed'}`);
         setIsLoading(false);
       }
     } catch (err) {

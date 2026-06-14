@@ -17,27 +17,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserProfileService = void 0;
 const inversify_1 = require("inversify");
-const zod_1 = __importDefault(require("zod"));
 const resAndErrors_1 = require("../../utils/resAndErrors");
 const upload_cloudinary_1 = require("../../utils/upload.cloudinary");
 const user_profile_1 = require("../../core/DTO/user/Response/user.profile");
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 let UserProfileService = class UserProfileService {
-    constructor(_authRespository) {
+    constructor(_authRespository, _baseValidator, _authValidator) {
         this._authRespository = _authRespository;
+        this._baseValidator = _baseValidator;
+        this._authValidator = _authValidator;
     }
     async setInterest(interests, id) {
-        const schema = zod_1.default.object({
-            interests: zod_1.default.array(zod_1.default.string()),
-            id: zod_1.default.string(),
-        });
-        schema.parse({ interests, id });
+        await this._baseValidator.InterestValidator(interests, id);
         await this._authRespository.findByIdAndUpdateAction(id, interests, 'interest');
     }
     async updateProfile(formData, user) {
         const userData = await this._authRespository.findById(user.id);
         if (!userData)
             throw new resAndErrors_1.UserNotFoundError();
-        const updateUser = await this._authRespository.findByIdAndUpdateProfile(userData.id, formData);
+        let updateUser;
+        if (formData.oldPassword && formData.newPassword) {
+            const isMatch = await bcryptjs_1.default.compare(formData.oldPassword, userData.password);
+            if (!isMatch)
+                throw new resAndErrors_1.PasswordMismatchError();
+            await this._authValidator.passwordValidator(formData.newPassword);
+            const hashedPassword = await bcryptjs_1.default.hash(formData.newPassword, 10);
+            formData.newPassword = hashedPassword;
+            updateUser = await this._authRespository.findByIdAndUpdateProfile(userData.id, { ...formData, password: formData.newPassword });
+        }
+        else {
+            updateUser = await this._authRespository.findByIdAndUpdateProfile(userData.id, formData);
+        }
         if (!updateUser)
             throw new resAndErrors_1.UserNotFoundError();
         return updateUser;
@@ -54,5 +64,7 @@ exports.UserProfileService = UserProfileService;
 exports.UserProfileService = UserProfileService = __decorate([
     (0, inversify_1.injectable)(),
     __param(0, (0, inversify_1.inject)('IAuthRepository')),
-    __metadata("design:paramtypes", [Object])
+    __param(1, (0, inversify_1.inject)('IBaseValidator')),
+    __param(2, (0, inversify_1.inject)('IAuthValidator')),
+    __metadata("design:paramtypes", [Object, Object, Object])
 ], UserProfileService);

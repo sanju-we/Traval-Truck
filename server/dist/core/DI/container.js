@@ -18,6 +18,7 @@ const payment_validator_1 = require("../../validators/payment.validator");
 const base_validator_1 = require("../../validators/base.validator");
 const genarateTrip_1 = require("../../utils/genarateTrip");
 const room_validator_1 = require("../../validators/room.validator");
+const food_validator_1 = require("../../validators/food.validator");
 const wallet_service_1 = require("../../services/shared/wallet.service");
 const shared_wallet_controller_1 = require("../../controllers/sharedController/shared.wallet.controller");
 const wallet_repository_1 = require("../../repositories/shared/wallet.repository");
@@ -32,6 +33,11 @@ const shared_review_controller_1 = require("../../controllers/sharedController/s
 const shared_review_service_1 = require("../../services/shared/shared.review.service");
 const share_review_repository_1 = require("../../repositories/shared/share.review.repository");
 const shared_replay_repository_1 = require("../../repositories/shared/shared.replay.repository");
+const subscriptionCleanup_service_1 = require("../../services/shared/subscriptionCleanup.service");
+const scheduler_service_1 = require("../../services/shared/scheduler.service");
+const socket_service_1 = require("../../services/shared/socket.service");
+const chat_service_1 = require("../../services/shared/chat.service");
+const chat_controller_1 = require("../../controllers/sharedController/chat.controller");
 const auth_service_1 = require("../../services/user/auth.service");
 const auth_repository_1 = require("../../repositories/user/auth.repository");
 const user_auth_controller_1 = require("../../controllers/userController/user.auth.controller");
@@ -106,6 +112,7 @@ container.bind('IPaymentValidator').to(payment_validator_1.PaymentValidator);
 container.bind('IBaseValidator').to(base_validator_1.BaseValidator);
 container.bind('IGenerateTrip').to(genarateTrip_1.TripGenerator);
 container.bind('IRoomValidator').to(room_validator_1.RoomValidator);
+container.bind('IFoodValidator').to(food_validator_1.FoodValidator);
 // -------------------------------------------------------Shared container-----------------------------------------------------------
 container.bind('IWalletService').to(wallet_service_1.WalletService);
 container.bind('ISharedWalletController').to(shared_wallet_controller_1.SharedWalletController);
@@ -121,6 +128,11 @@ container.bind('IReviewController').to(shared_review_controller_1.ReviewControll
 container.bind('IReviewService').to(shared_review_service_1.ReviewService);
 container.bind('IReviewRepository').to(share_review_repository_1.ReviewRepository);
 container.bind('IReplayRepository').to(shared_replay_repository_1.ReplayRepository);
+container.bind('ISubscriptionCleanupService').to(subscriptionCleanup_service_1.SubscriptionCleanupService).inSingletonScope();
+container.bind('SchedulerService').to(scheduler_service_1.SchedulerService).inSingletonScope();
+container.bind('SocketService').to(socket_service_1.SocketService).inSingletonScope();
+container.bind('IChatService').to(chat_service_1.ChatService).inSingletonScope();
+container.bind('IChatController').to(chat_controller_1.ChatController).inSingletonScope();
 // ---------------------------------------------------user container-------------------------------------------------------------------------
 container.bind('IAuthRepository').to(auth_repository_1.AuthRepository);
 container.bind('IAuthService').to(auth_service_1.AuthService);

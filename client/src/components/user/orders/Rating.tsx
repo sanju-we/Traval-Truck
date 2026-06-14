@@ -2,6 +2,7 @@ import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { SHARED_API_METHODS } from "@/services/APIs/shared.api.service";
 import toast from "react-hot-toast";
+import { ApiResponse } from "@/services/api.service";
 
 interface props {
   orderId: string,
@@ -9,7 +10,7 @@ interface props {
     _id: string
   },
   productId: {
-    _id: any
+    _id: string
   },
 }
 
@@ -27,16 +28,16 @@ export default function RatingCard({ orderId, vendor, productId }: props) {
   }, [])
 
   async function fetchReview() {
-    const review = await SHARED_API_METHODS.getRating('user', orderId);
-    if (review.success) {
+    const review = await SHARED_API_METHODS.getRating('user', orderId) as ApiResponse<{ rate: number, comment: string }>;
+    if (review && review.success) {
       setReview(review.data)
       setRating(review.data.rate)
     }
   }
 
   async function handleSubmit() {
-    const data = await SHARED_API_METHODS.rating({ rating, comment, vendor: vendor._id.toString(), productId: productId._id.toString() }, 'user', orderId)
-    if (data.success) {
+    const data = await SHARED_API_METHODS.rating({ rating, comment, vendor: vendor._id.toString(), productId: productId._id.toString() }, 'user', orderId) as ApiResponse<{ rate: number, comment: string }>;
+    if (data && data.success) {
       toast.success('Rating submited successfully');
       setReview(data.data)
     }
@@ -64,8 +65,8 @@ export default function RatingCard({ orderId, vendor, productId }: props) {
               <Star
                 size={30}
                 className={`transition-colors ${value <= (hovered || rating)
-                    ? "fill-purple-600 text-purple-600"
-                    : "text-gray-300"
+                  ? "fill-purple-600 text-purple-600"
+                  : "text-gray-300"
                   }`}
               />
             </button>
@@ -114,8 +115,8 @@ export default function RatingCard({ orderId, vendor, productId }: props) {
               <Star
                 size={30}
                 className={`transition-colors ${value <= (hovered || rating)
-                    ? "fill-purple-600 text-purple-600"
-                    : "text-gray-300"
+                  ? "fill-purple-600 text-purple-600"
+                  : "text-gray-300"
                   }`}
               />
             </button>

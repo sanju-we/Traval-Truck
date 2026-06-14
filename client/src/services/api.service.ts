@@ -1,6 +1,12 @@
 import api from "./api"
 import toast from "react-hot-toast"
 
+export interface ApiResponse<T = unknown> {
+  success: boolean;
+  message: string;
+  data: T;
+}
+
 type ApiOption = {
   showToast?: boolean;
   headers?: Record<string, string>;
@@ -10,15 +16,20 @@ const defaultOptions: ApiOption = {
   showToast: true
 }
 
-const handleAPIerror = (error: any, options: ApiOption) => {
+const handleAPIerror = (error: unknown, options: ApiOption) => {
   console.error('Api error', error)
   if (!options.showToast) return
 
-  const message = error.data?.message || error.response?.data?.message || error.message || 'Request failed';
+  const errObj = error as Record<string, unknown> & {
+    data?: { message?: string };
+    response?: { data?: { message?: string } };
+    message?: string;
+  };
+  const message = errObj.data?.message || errObj.response?.data?.message || errObj.message || 'Request failed';
   console.log('Api request error', message)
 }
 
-export const postRequest = async <T = any>(url: string, body: object | FormData, options: ApiOption = defaultOptions): Promise<T | null> => {
+export const postRequest = async <T = unknown>(url: string, body: object | FormData, options: ApiOption = defaultOptions): Promise<T | null> => {
   try {
     const headers: Record<string, string> = { ...options.headers }
     if (!(body instanceof FormData) && !headers["Content-Type"]) {
@@ -37,7 +48,7 @@ export const postRequest = async <T = any>(url: string, body: object | FormData,
   }
 }
 
-export const getRequest = async <T = any>(
+export const getRequest = async <T = unknown>(
   url: string,
   params?: object,
   options: ApiOption = defaultOptions
@@ -50,13 +61,13 @@ export const getRequest = async <T = any>(
       handleAPIerror(res, options)
     }
     return res.data;
-  } catch (error: any) {
+  } catch (error) {
     handleAPIerror(error, options);
     return null;
   }
 };
 
-export const patchRequest = async <T = any>(
+export const patchRequest = async <T = unknown>(
   url: string,
   body: object,
   options: ApiOption = defaultOptions
@@ -71,13 +82,13 @@ export const patchRequest = async <T = any>(
       handleAPIerror(res, options)
     }
     return res.data;
-  } catch (error: any) {
+  } catch (error) {
     handleAPIerror(error, options);
     return null;
   }
 }
 
-export const putRequest = async <T = any>(
+export const putRequest = async <T = unknown>(
   url: string,
   body: object,
   options: ApiOption = defaultOptions
@@ -92,13 +103,13 @@ export const putRequest = async <T = any>(
       handleAPIerror(res, options)
     }
     return res.data;
-  } catch (error: any) {
+  } catch (error) {
     handleAPIerror(error, options);
     return null;
   }
 }
 
-export const deleteRequest = async <T = any>(
+export const deleteRequest = async <T = unknown>(
   url: string,
   params?: object,
   options: ApiOption = defaultOptions
@@ -109,7 +120,7 @@ export const deleteRequest = async <T = any>(
       handleAPIerror(res, options)
     }
     return res.data;
-  } catch (error: any) {
+  } catch (error) {
     handleAPIerror(error, options);
     return null;
   }

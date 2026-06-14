@@ -11,21 +11,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RestaurantProfileController = void 0;
 const inversify_1 = require("inversify");
 const resAndErrors_1 = require("../../utils/resAndErrors");
 const HTTPStatusCode_1 = require("../../utils/HTTPStatusCode");
 const responseMessaages_1 = require("../../utils/responseMessaages");
-const zod_1 = __importDefault(require("zod"));
 const vendor_response_dto_1 = require("../../core/DTO/admin/vendor.response.dto/vendor.response.dto");
 let RestaurantProfileController = class RestaurantProfileController {
-    constructor(_restaurantAuthRepository, _restaurantProfileService) {
+    constructor(_restaurantAuthRepository, _restaurantProfileService, _authValidator) {
         this._restaurantAuthRepository = _restaurantAuthRepository;
         this._restaurantProfileService = _restaurantProfileService;
+        this._authValidator = _authValidator;
     }
     async getRestaurant(req, res) {
         const user = req.user;
@@ -38,30 +35,26 @@ let RestaurantProfileController = class RestaurantProfileController {
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.SUCCESS);
     }
     async updateProfile(req, res) {
-        const schema = zod_1.default.object({
-            ownerName: zod_1.default.string(),
-            companyName: zod_1.default.string(),
-            phone: zod_1.default.string(),
-            bankDetails: zod_1.default.object({
-                accountHolder: zod_1.default.string(),
-                accountNumber: zod_1.default.string(),
-                bankName: zod_1.default.string(),
-                ifscCode: zod_1.default.string(),
-            }),
-        });
-        const { ownerName, phone, companyName, bankDetails } = schema.parse(req.body);
+        const { ownerName, phone, companyName, address } = req.body;
+        const bankDetails = req.body.bankDetails || {
+            accountHolder: req.body['bankDetails.accountHolder'],
+            accountNumber: req.body['bankDetails.accountNumber'],
+            bankName: req.body['bankDetails.bankName'],
+            ifscCode: req.body['bankDetails.ifscCode'],
+        };
+        await this._authValidator.profileUpdateValidator(ownerName, companyName, phone, bankDetails);
         const restaunratId = req.user.id;
         const updateRestaurant = await this._restaurantProfileService.updateProfile(restaunratId, {
             ownerName,
             companyName,
+            address,
             phone: Number(phone),
-            bankDetails,
+            bankDetails: bankDetails,
         });
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.UPDATED, updateRestaurant);
     }
     async updateDocuments(req, res) {
         const restaurantId = req.user.id;
-        const restricted = req.user.isRestricted;
         const files = req.files;
         const update = this._restaurantProfileService.updateDocuments(restaurantId, files);
         if (!update)
@@ -88,5 +81,6 @@ exports.RestaurantProfileController = RestaurantProfileController = __decorate([
     (0, inversify_1.injectable)(),
     __param(0, (0, inversify_1.inject)('IRestaurantAuthRepository')),
     __param(1, (0, inversify_1.inject)('IRestaurantProfileService')),
-    __metadata("design:paramtypes", [Object, Object])
+    __param(2, (0, inversify_1.inject)('IAuthValidator')),
+    __metadata("design:paramtypes", [Object, Object, Object])
 ], RestaurantProfileController);

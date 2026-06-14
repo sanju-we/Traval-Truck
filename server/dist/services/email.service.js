@@ -35,7 +35,8 @@ let EmailService = class EmailService {
             logger_1.logger.info(`Email sent to ${to}`);
         }
         catch (err) {
-            logger_1.logger.error(`Failed to send email: ${err.message}`);
+            const error = err;
+            logger_1.logger.error(`Failed to send email: ${error.message}`);
             throw new Error('Failed to send email');
         }
     }
@@ -46,7 +47,8 @@ let EmailService = class EmailService {
             logger_1.logger.info(`OTP email sent to ${email}`);
         }
         catch (err) {
-            logger_1.logger.error(`Failed to send OTP: ${err.message}`);
+            const error = err;
+            logger_1.logger.error(`Failed to send OTP: ${error.message}`);
             throw new Error('Failed to send OTP');
         }
     }

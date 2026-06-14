@@ -11,6 +11,10 @@ import {
 } from '../../core/DTO/admin/vendor.response.dto/vendor.response.dto';
 import { userProfileDTO } from 'types';
 import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile';
+import { User } from '../../models/SUser';
+import { Agency } from '../../models/Agency';
+import { Hotel } from '../../models/Hotel';
+import { Restaurant } from '../../models/Restaurant';
 
 @injectable()
 export class AdminVendorRepository implements IAdminVendorRepository {
@@ -55,83 +59,142 @@ export class AdminVendorRepository implements IAdminVendorRepository {
     return completeData.map(toVendorRequestDTO);
   }
 
-  async findAllUsers(
-    page: number,
-    limit: number,
-    status: string,
-    role: string,
-    search: string
-  ): Promise<{
-    data: (vendorRequestDTO | userProfileDTO)[];
-    total: number;
-    page: number;
-    totalPages: number;
-  }> {
-    const userData = await this._userRepository.findAll({}, {});
-    const agencyData = await this._agencyRepository.findAll({ isApproved: true }, {});
-    const hotelData = await this._hotelRepository.findAll({ isApproved: true }, {});
-    const restaurantData = await this._restaurantRepository.findAll({ isApproved: true }, {});
-
-    const vendorDTO: vendorRequestDTO[] = [
-      ...agencyData.map(toVendorRequestDTO),
-      ...hotelData.map(toVendorRequestDTO),
-      ...restaurantData.map(toVendorRequestDTO),
-    ];
-
-    const allUserDTO = [...userData.map(toUserProfileDTO)];
-    let allUsers = [...allUserDTO, ...vendorDTO];
+  async findAllUsers(page: number, limit: number, status: string, role: string, search: string): Promise<{ data: (vendorRequestDTO | userProfileDTO)[]; total: number; page: number; totalPages: number; }> {
+    const userFilter: Record<string, unknown> = { role: { $ne: 'admin' } };
+    const agencyFilter: Record<string, unknown> = { isApproved: true };
+    const hotelFilter: Record<string, unknown> = { isApproved: true };
+    const restaurantFilter: Record<string, unknown> = { isApproved: true };
 
     if (search && search.trim() !== '') {
-      const query = search.toLowerCase();
-      allUsers = allUsers.filter(
-        (user) =>
-          (user as userProfileDTO).name?.toLowerCase().includes(query) ||
-          user.email?.toLowerCase().includes(query) ||
-          (user as vendorRequestDTO).companyName?.toLowerCase().includes(query)
-      );
-    }
-
-    if (role && role !== '') {
-      const queryRole = role.toLowerCase();
-
-      allUsers = allUsers.filter((user) => {
-        const userRole =
-          (user as userProfileDTO).role?.toLowerCase() ||
-          (user as vendorRequestDTO).role.toLowerCase()
-
-        return userRole === queryRole;
-      });
+      const searchRegex = { $regex: search, $options: 'i' };
+      userFilter.$or = [
+        { name: searchRegex },
+        { email: searchRegex }
+      ];
+      agencyFilter.$or = [
+        { companyName: searchRegex },
+        { email: searchRegex },
+        { ownerName: searchRegex }
+      ];
+      hotelFilter.$or = [
+        { companyName: searchRegex },
+        { email: searchRegex },
+        { ownerName: searchRegex }
+      ];
+      restaurantFilter.$or = [
+        { companyName: searchRegex },
+        { email: searchRegex },
+        { ownerName: searchRegex }
+      ];
     }
 
     if (status && status !== '') {
       if (status === 'Active') {
-        allUsers = allUsers.filter(
-          (user) =>
-            (!('isBlocked' in user) || !user.isBlocked) &&
-            (!('isApproved' in user) || user.isApproved)
-        );
+        userFilter.isBlocked = false;
+        agencyFilter.isRestricted = false;
+        hotelFilter.isRestricted = false;
+        restaurantFilter.isRestricted = false;
       } else if (status === 'Blocked') {
-        allUsers = allUsers.filter(
-          (user) =>
-            (('isBlocked' in user) && user.isBlocked) ||
-            (('isApproved' in user) && !user.isApproved)
-        );
+        userFilter.isBlocked = true;
+        agencyFilter.isRestricted = true;
+        hotelFilter.isRestricted = true;
+        restaurantFilter.isRestricted = true;
       }
     }
 
+    let countUser = 0;
+    let countAgency = 0;
+    let countHotel = 0;
+    let countRestaurant = 0;
 
-    const total = allUsers.length;
+    const lowerRole = role ? role.toLowerCase() : '';
+
+    if (lowerRole === '') {
+      [countUser, countAgency, countHotel, countRestaurant] = await Promise.all([
+        User.countDocuments(userFilter),
+        Agency.countDocuments(agencyFilter),
+        Hotel.countDocuments(hotelFilter),
+        Restaurant.countDocuments(restaurantFilter),
+      ]);
+    } else {
+      if (lowerRole === 'user') {
+        countUser = await User.countDocuments(userFilter);
+      } else if (lowerRole === 'agency') {
+        countAgency = await Agency.countDocuments(agencyFilter);
+      } else if (lowerRole === 'hotel') {
+        countHotel = await Hotel.countDocuments(hotelFilter);
+      } else if (lowerRole === 'restaurant') {
+        countRestaurant = await Restaurant.countDocuments(restaurantFilter);
+      }
+    }
+
+    const total = countUser + countAgency + countHotel + countRestaurant;
     const totalPages = Math.ceil(total / limit);
-    const start = (page - 1) * limit;
-    const end = start + limit;
-    const paginated = allUsers.slice(start, end);
+    const skip = (page - 1) * limit;
+
+    const results: (vendorRequestDTO | userProfileDTO)[] = [];
+    let remainingSkip = skip;
+    let remainingLimit = limit;
+
+    const collections = [
+      { name: 'user', count: countUser, model: User, filter: userFilter, map: toUserProfileDTO },
+      { name: 'agency', count: countAgency, model: Agency, filter: agencyFilter, map: toVendorRequestDTO },
+      { name: 'hotel', count: countHotel, model: Hotel, filter: hotelFilter, map: toVendorRequestDTO },
+      { name: 'restaurant', count: countRestaurant, model: Restaurant, filter: restaurantFilter, map: toVendorRequestDTO },
+    ];
+
+    for (const col of collections) {
+      if (remainingLimit <= 0) break;
+      if (col.count === 0) continue;
+
+      if (remainingSkip >= col.count) {
+        remainingSkip -= col.count;
+        continue;
+      }
+
+      const fetchSkip = remainingSkip;
+      const fetchLimit = Math.min(remainingLimit, col.count - fetchSkip);
+
+      type MongooseModel = {
+        find: (filter: Record<string, unknown>) => {
+          skip: (n: number) => {
+            limit: (l: number) => {
+              lean: () => {
+                exec: () => Promise<Record<string, unknown>[]>;
+              };
+            };
+          };
+        };
+      };
+
+      const docs = await (col.model as unknown as MongooseModel).find(col.filter)
+        .skip(fetchSkip)
+        .limit(fetchLimit)
+        .lean()
+        .exec();
+
+      const mapped = docs.map((doc) => {
+        if (col.name !== 'user' && !doc.role) {
+          doc.role = col.name;
+        }
+        const dto = col.map(doc as never);
+        if ('isApproved' in dto) {
+          (dto as unknown as { isBlocked: boolean; isApproved: boolean; isRestricted: boolean }).isBlocked = !dto.isApproved || dto.isRestricted;
+        }
+        return dto;
+      });
+
+      results.push(...mapped);
+
+      remainingSkip = 0;
+      remainingLimit -= fetchLimit;
+    }
 
     return {
-      data: paginated,
+      data: results,
       total,
       page,
       totalPages,
     };
   }
-
 }

@@ -24,7 +24,6 @@ export default function UsersPage() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  // ✅ Fetch users from backend
   const fetchUsers = async (currentPage = 1, searchTerm = '', statusFilter = '') => {
     setLoading(true);
     try {

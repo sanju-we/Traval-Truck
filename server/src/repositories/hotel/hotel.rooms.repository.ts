@@ -1,11 +1,11 @@
-import { IRoomType, IRoomsDocument } from "../../core/interface/modelInterface/IRoomType";
+import { IRoomsDocument } from "../../core/interface/modelInterface/IRoomType";
 import { IHotelRoomsRepository } from "../../core/interface/repositorie/Hotel/Ihotel.rooms.repository";
 import { BaseRepository } from "../../repositories/baseRepository";
-import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors";
+import { DataNotFoundError } from "../../utils/resAndErrors";
 import { toRoomsDTO, RoomsDTO } from "../../core/DTO/hotel/roomsDTO";
 import { logger } from "../../utils/logger";
 import { PaginationResponse } from "../../core/DTO/pagination.DTO";
-import mongoose from "mongoose";
+import mongoose, { FilterQuery } from "mongoose";
 import RoomType from "../../models/RoomType";
 
 export class HotelRoomsRepository extends BaseRepository<IRoomsDocument> implements IHotelRoomsRepository {
@@ -25,7 +25,7 @@ export class HotelRoomsRepository extends BaseRepository<IRoomsDocument> impleme
     lim = Math.max(lim, 1);
     const skip = (page - 1) * lim;
 
-    const filter: any = hotelID ? {
+    const filter: FilterQuery<IRoomsDocument> = hotelID ? {
       HotelId: hotelID,
     } : {};
 
@@ -53,7 +53,7 @@ export class HotelRoomsRepository extends BaseRepository<IRoomsDocument> impleme
 
   async findByHotelId(hotelId: string): Promise<IRoomsDocument[]> {
     const Id = new mongoose.Types.ObjectId(hotelId);
-    const rooms = await RoomType.find({isBlocked: false});
+    const rooms = await RoomType.find({ HotelId: Id, isBlocked: false });
     console.log(`Rooms for hotel ${hotelId}:`, rooms);
     return rooms;
   }

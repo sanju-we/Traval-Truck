@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 
-export async function validateTripPlan(tripData: any) {
+export async function validateTripPlan(tripData: unknown) {
   const model = genAI.getGenerativeModel({
     model: "gemini-2.5-flash"
   });

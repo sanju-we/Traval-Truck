@@ -1,5 +1,5 @@
 import { RoomsDTO, toRoomsDTO } from "../../core/DTO/hotel/roomsDTO";
-import { IRoomType, IRoomsDocument } from "../../core/interface/modelInterface/IRoomType";
+import { IRoomType } from "../../core/interface/modelInterface/IRoomType";
 import { IHotelRoomsService } from "../../core/interface/serivice/hotel/Ihotel.rooms.service";
 import { logger } from "../../utils/logger";
 import { deleteImage, extractPublicId, singleUpload } from "../../utils/upload.cloudinary";
@@ -34,7 +34,7 @@ export class HotelRoomsService implements IHotelRoomsService {
       Image.push(url)
     }
     console.log('datasssssss', data)
-    const { images, id: _id, AvailableCount, CreatedAt, HotelId, ...rest } = data;
+    const { images: _images, id: _id, AvailableCount, CreatedAt, HotelId, ...rest } = data;
     const createData = {
       ...rest,
       HotelId: new mongoose.Types.ObjectId(HotelId),
@@ -88,7 +88,7 @@ export class HotelRoomsService implements IHotelRoomsService {
       const url = await singleUpload(img, 'Travel-Travel-Document')
       Image.push(url)
     }
-    const { images, id: _id, AvailableCount, CreatedAt, HotelId, ...rest } = data;
+    const { images: _images, id: _id, AvailableCount, CreatedAt, HotelId, ...rest } = data;
     const updateData: Record<string, unknown> = { ...rest, Images: Image };
 
     if (HotelId) {

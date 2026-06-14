@@ -16,8 +16,8 @@ const userRouter = (0, express_1.Router)();
 userRouter.use('/auth', user_auth_1.default)
     .use('/refresh', user_auth_1.default)
     .use('/profile', authMiddleware_1.verifyToken, user_profile_1.default)
-    .use('/packages', authMiddleware_1.verifyToken, user_package_routes_1.default)
-    .use('/hotels', authMiddleware_1.verifyToken, user_hotels_routes_1.default)
+    .use('/packages', user_package_routes_1.default) // Token verification moved inside or handled differently
+    .use('/hotels', user_hotels_routes_1.default) // Token verification moved inside or handled differently
     .use('/foods', authMiddleware_1.verifyToken, user_foods_routes_1.default)
     .use('/trip', authMiddleware_1.verifyToken, user_trip_routes_1.default)
     .use('/mind-map', authMiddleware_1.verifyToken, user_mindMap_routes_1.default);

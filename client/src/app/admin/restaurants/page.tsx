@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { ADMIN_API_METHODS } from '@/services/APIs/admin.api.service';
+import { ApiResponse } from '@/services/api.service';
 import { Card, CardContent } from '@/components/shared/ui/card';
 
 import { useDispatch } from 'react-redux';
@@ -27,20 +28,22 @@ export default function RestaurantsPage() {
     const fetchRestaurants = async (currentPage = 1, searchTerm = '', statusFilter = '') => {
         setLoading(true);
         try {
-            const res = await ADMIN_API_METHODS.getAllRestaurants({
+            const res = (await ADMIN_API_METHODS.getAllRestaurants({
                 page: currentPage,
                 limit: limit,
                 search: searchTerm,
                 status: statusFilter
-            });
+            })) as ApiResponse<{ data: User[]; totalPages: number; total: number }> | null;
 
-            console.log("Admin Restaurants Response:", res.data); // Debugging
+            console.log("Admin Restaurants Response:", res?.data); // Debugging
 
-            const { data, totalPages: total, total: totalCount } = res.data;
-            setRestaurants(data);
-            setTotalPages(total);
-            setTotalItems(totalCount || 0);
-            setPage(currentPage);
+            if (res && res.data) {
+                const { data, totalPages: total, total: totalCount } = res.data;
+                setRestaurants(data);
+                setTotalPages(total);
+                setTotalItems(totalCount || 0);
+                setPage(currentPage);
+            }
         } catch (err) {
             console.error('Error fetching restaurants:', err);
         } finally {
@@ -140,7 +143,7 @@ export default function RestaurantsPage() {
                                             </td>
                                         </tr>
                                     ) : (
-                                        restaurants.map((restaurant: any) => (
+                                        restaurants.map((restaurant: User) => (
                                             <tr
                                                 key={restaurant._id || restaurant.id}
                                                 className="border-t hover:bg-gray-50 transition"

@@ -3,6 +3,14 @@ import { IPackage } from "../../../../core/interface/modelInterface/Ipackage";
 import { IBaserepository } from "../IBaseRepositories";
 
 export interface IAgencyPackageRepository extends IBaserepository<IPackage>{
-  findAllPackageWithPartners(page:number,lim?:number,search?:string):Promise<{ data: PackageResDTO[], total: number, page: number, totalPages: number }>;
+  findAllPackageWithPartners(
+    page: number,
+    lim?: number,
+    search?: string,
+    ownedBy?: string,
+    price?: string,
+    duration?: string,
+    sortBy?: string
+  ): Promise<{ data: PackageResDTO[], total: number, page: number, totalPages: number }>;
   findPackageWithPartner(id:string):Promise<PackageResDTO>;
 }

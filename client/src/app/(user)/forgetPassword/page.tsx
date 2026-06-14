@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
+import { ApiResponse } from '@/services/api.service';
 import toast from 'react-hot-toast';
 
 export default function ForgotPasswordPage() {
@@ -19,13 +20,13 @@ export default function ForgotPasswordPage() {
 
     setIsLoading(true);
     try {
-      const data = await USER_API_METHODS.forgetPasswordRequest({ email });
+      const data = (await USER_API_METHODS.forgetPasswordRequest({ email })) as ApiResponse | null;
 
-      if (data.success) {
+      if (data && data.success) {
         toast.success(`success`);
         router.push('/forgetPassword/sent');
       } else {
-        toast.error(`${data.message}`);
+        toast.error(`${data?.message || 'Failed to send reset link'}`);
       }
     } catch (err) {
       console.error('Forgot password error:', err);

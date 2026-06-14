@@ -3,7 +3,6 @@ import { inject, injectable } from 'inversify';
 import { HttpError } from '../../utils/resAndErrors';
 import { IAdminAuthService } from '../../core/interface/serivice/admin/IAdmin.auth.service';
 import { sendResponse } from '../../utils/resAndErrors';
-import { logger } from '../../utils/logger';
 import { STATUS_CODE } from '../../utils/HTTPStatusCode';
 import { IJWT } from '../../core/interface/JWT/JWTInterface';
 import { IAdminAuthController } from '../../core/interface/controllerInterface/admin/IAuth.controller';

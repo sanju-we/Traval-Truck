@@ -5,7 +5,14 @@ import ReplyModal from "@/components/shared/ReplayModal";
 import { SHARED_API_METHODS } from "@/services/APIs/shared.api.service";
 import toast from "react-hot-toast";
 import { ReviewType } from "@/types/agency";
+import { ApiResponse } from "@/services/api.service";
 import VendorFooter from "@/components/shared/Footer";
+
+interface ReplyData {
+  reviewId: string;
+  comment: string;
+  replayer: string;
+}
 
 export default function Reviews() {
   const [reviews, setReviews] = useState<ReviewType[]>([])
@@ -19,7 +26,6 @@ export default function Reviews() {
   // Reply Modal State
   const [showReplyModal, setShowReplyModal] = useState(false)
   const [selectedReview, setSelectedReview] = useState<ReviewType | null>(null)
-  const [replays, setReplays] = useState([])
 
   useEffect(() => {
     fetchReviews(currentPage, filterRating)
@@ -28,10 +34,16 @@ export default function Reviews() {
   async function fetchReviews(page: number, rating: number | null) {
     try {
       setLoading(true)
-      const data = await SHARED_API_METHODS.getAllReviews('agency', page, 5, rating)
+      const data = await SHARED_API_METHODS.getAllReviews('agency', page, 5, rating) as ApiResponse<{
+        data: ReviewType[];
+        totalPages: number;
+        totalReviews: number;
+        averageRating: number;
+        vendor: string;
+      }>;
       console.log('review:', data)
 
-      if (data.success) {
+      if (data && data.success) {
         setReviews(data.data.data)
         setTotalPages(data.data.totalPages)
         setTotalReviews(data.data.totalReviews)
@@ -39,11 +51,11 @@ export default function Reviews() {
         const replies = await SHARED_API_METHODS.getReplays(
           'agency',
           data.data.vendor
-        );
+        ) as ApiResponse<ReplyData[]>;
 
         const mergedReviews = data.data.data.map((review: ReviewType) => {
           const reply = replies.data.find(
-            (r: any) => r.reviewId === review._id
+            (r: ReplyData) => r.reviewId === review._id
           );
 
           if (reply) {
@@ -71,7 +83,6 @@ export default function Reviews() {
       setLoading(false)
     }
   }
-  console.log(replays)
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
   }
@@ -88,9 +99,9 @@ export default function Reviews() {
 
   const handleReplySubmit = async (reviewId: string, replyMessage: string) => {
     try {
-      const response = await SHARED_API_METHODS.replyToReview('agency', reviewId, replyMessage)
+      const response = await SHARED_API_METHODS.replyToReview('agency', reviewId, replyMessage) as ApiResponse;
 
-      if (response.success) {
+      if (response && response.success) {
         toast.success('Reply sent successfully!')
 
         setReviews(prev =>

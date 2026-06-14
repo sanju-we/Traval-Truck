@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserTripService = void 0;
 const inversify_1 = require("inversify");
 const resAndErrors_1 = require("../../utils/resAndErrors");
+const user_trip_DTO_1 = require("../../core/DTO/user/Response/user.trip.DTO");
 const logger_1 = require("../../utils/logger");
 const agency_order_DTO_1 = require("../../core/DTO/agency/response/agency.order.DTO");
 let UserTripService = class UserTripService {
@@ -24,9 +25,9 @@ let UserTripService = class UserTripService {
         this._paymentRepo = _paymentRepo;
         this._walletRepo = _walletRepo;
     }
-    async history(userId) {
+    async history(userId, page, limit) {
         await this._validator.idValidator(userId);
-        const history = await this._ordersRepo.findAllByProduct(userId);
+        const history = await this._ordersRepo.findAllByProduct(userId, page, limit);
         logger_1.logger.info(`charle ${history}`);
         if (!history)
             throw new resAndErrors_1.DataNotFoundError();
@@ -37,7 +38,7 @@ let UserTripService = class UserTripService {
         const order = await this._ordersRepo.findOrderWithProduct(orderId);
         if (!order)
             throw new resAndErrors_1.DataNotFoundError();
-        return (0, agency_order_DTO_1.toOrderDTO)(order);
+        return (0, user_trip_DTO_1.toUserOrderDetailsDTO)(order);
     }
     async orderCancellation(orderId, reason) {
         logger_1.logger.info(`orderId ${orderId}`);
@@ -45,70 +46,126 @@ let UserTripService = class UserTripService {
         const order = await this._ordersRepo.findById(orderId);
         if (!order)
             throw new resAndErrors_1.DataNotFoundError();
-        const Transaction = await this._paymentRepo.findById(order.paymentId.toString());
-        if (!Transaction)
-            throw new resAndErrors_1.DataNotFoundError();
-        const today = new Date();
-        logger_1.logger.info(`date difference : ${today.getDate() - order.createdAt.getDate()}`);
-        const diff = (order.createdAt.getDate()) - (today.getDate());
         const userWallet = await this._walletRepo.findOne({ UserId: order.userId });
         if (!userWallet)
             throw new resAndErrors_1.DataNotFoundError();
         const adminWallet = await this._walletRepo.findOne({ role: 'admin' });
         if (!adminWallet)
             throw new resAndErrors_1.DataNotFoundError();
-        if (order.status == 'Upcoming' && !order.startDate && diff < 7) {
-            userWallet.Balance += Transaction.amount;
-            const userTransaction = {
-                UserId: userWallet.UserId,
-                Amount: Transaction.amount,
-                Type: 'credit',
-                Description: `Refund for order cancellation of orderId ${order.orderId}`,
-                Date: new Date()
-            };
-            userWallet.Transaction.push(userTransaction);
-            await this._walletRepo.update(userWallet._id.toString(), userWallet);
-            order.status = 'Cancelled';
-            order.reason = reason;
-            await this._ordersRepo.update(order._id.toString(), order);
-            adminWallet.Balance -= Transaction.amount;
-            const transaction = {
-                UserId: adminWallet.UserId,
-                Amount: -Transaction.amount,
-                Type: 'debit',
-                Description: `Refund for order cancellation of orderId ${order.orderId}`,
-                Date: new Date()
-            };
-            adminWallet.Transaction.push(transaction);
-            await this._walletRepo.update(adminWallet._id.toString(), adminWallet);
+        const today = new Date();
+        logger_1.logger.info(`date difference : ${today.getDate() - order.createdAt.getDate()}`);
+        const diff = (order.createdAt.getDate()) - (today.getDate());
+        if (order.paymentType == 'wallet') {
+            if (order.status == 'Upcoming' && !order.startDate && diff < 7) {
+                userWallet.Balance += order.amount;
+                const userTransaction = {
+                    UserId: userWallet.UserId,
+                    Amount: order.amount,
+                    Type: 'credit',
+                    Description: `Refund for order cancellation of orderId ${order.orderId}`,
+                    Date: new Date()
+                };
+                userWallet.Transaction.push(userTransaction);
+                await this._walletRepo.update(userWallet._id.toString(), userWallet);
+                order.status = 'Cancelled';
+                order.reason = reason;
+                await this._ordersRepo.update(order._id.toString(), order);
+                adminWallet.Balance -= order.amount;
+                const transaction = {
+                    UserId: adminWallet.UserId,
+                    Amount: -order.amount,
+                    Type: 'debit',
+                    Description: `Refund for order cancellation of orderId ${order.orderId}`,
+                    Date: new Date()
+                };
+                adminWallet.Transaction.push(transaction);
+                await this._walletRepo.update(adminWallet._id.toString(), adminWallet);
+            }
+            else {
+                const returnAmount = order.amount * 0.20;
+                userWallet.Balance += returnAmount;
+                const transaction = {
+                    UserId: userWallet.UserId,
+                    Amount: returnAmount,
+                    Type: 'credit',
+                    Description: `Partial Refund for order cancellation of orderId ${order.orderId}`,
+                    Date: new Date()
+                };
+                userWallet.Transaction.push(transaction);
+                await this._walletRepo.update(userWallet._id.toString(), userWallet);
+                order.status = 'Cancelled';
+                order.reason = reason;
+                await this._ordersRepo.update(order._id.toString(), order);
+                adminWallet.Balance -= returnAmount;
+                const adminTransaction = {
+                    UserId: adminWallet.UserId,
+                    Amount: -returnAmount,
+                    Type: 'debit',
+                    Description: `Partial Refund for order cancellation of orderId ${order.orderId}`,
+                    Date: new Date()
+                };
+                adminWallet.Transaction.push(adminTransaction);
+                await this._walletRepo.update(adminWallet._id.toString(), adminWallet);
+            }
+            return (0, agency_order_DTO_1.toOrderDTO)(order);
         }
         else {
-            const returnAmount = Transaction.amount * 0.20;
-            userWallet.Balance += returnAmount;
-            const transaction = {
-                UserId: userWallet.UserId,
-                Amount: returnAmount,
-                Type: 'credit',
-                Description: `Partial Refund for order cancellation of orderId ${order.orderId}`,
-                Date: new Date()
-            };
-            userWallet.Transaction.push(transaction);
-            await this._walletRepo.update(userWallet._id.toString(), userWallet);
-            order.status = 'Cancelled';
-            order.reason = reason;
-            await this._ordersRepo.update(order._id.toString(), order);
-            adminWallet.Balance -= returnAmount;
-            const adminTransaction = {
-                UserId: adminWallet.UserId,
-                Amount: -returnAmount,
-                Type: 'debit',
-                Description: `Partial Refund for order cancellation of orderId ${order.orderId}`,
-                Date: new Date()
-            };
-            adminWallet.Transaction.push(adminTransaction);
-            await this._walletRepo.update(adminWallet._id.toString(), adminWallet);
+            const Transaction = await this._paymentRepo.findById(order.paymentId.toString());
+            if (!Transaction)
+                throw new resAndErrors_1.DataNotFoundError();
+            if (order.status == 'Upcoming' && !order.startDate && diff < 7) {
+                userWallet.Balance += Transaction.amount;
+                const userTransaction = {
+                    UserId: userWallet.UserId,
+                    Amount: Transaction.amount,
+                    Type: 'credit',
+                    Description: `Refund for order cancellation of orderId ${order.orderId}`,
+                    Date: new Date()
+                };
+                userWallet.Transaction.push(userTransaction);
+                await this._walletRepo.update(userWallet._id.toString(), userWallet);
+                order.status = 'Cancelled';
+                order.reason = reason;
+                await this._ordersRepo.update(order._id.toString(), order);
+                adminWallet.Balance -= Transaction.amount;
+                const transaction = {
+                    UserId: adminWallet.UserId,
+                    Amount: -Transaction.amount,
+                    Type: 'debit',
+                    Description: `Refund for order cancellation of orderId ${order.orderId}`,
+                    Date: new Date()
+                };
+                adminWallet.Transaction.push(transaction);
+                await this._walletRepo.update(adminWallet._id.toString(), adminWallet);
+            }
+            else {
+                const returnAmount = Transaction.amount * 0.20;
+                userWallet.Balance += returnAmount;
+                const transaction = {
+                    UserId: userWallet.UserId,
+                    Amount: returnAmount,
+                    Type: 'credit',
+                    Description: `Partial Refund for order cancellation of orderId ${order.orderId}`,
+                    Date: new Date()
+                };
+                userWallet.Transaction.push(transaction);
+                await this._walletRepo.update(userWallet._id.toString(), userWallet);
+                order.status = 'Cancelled';
+                order.reason = reason;
+                await this._ordersRepo.update(order._id.toString(), order);
+                adminWallet.Balance -= returnAmount;
+                const adminTransaction = {
+                    UserId: adminWallet.UserId,
+                    Amount: -returnAmount,
+                    Type: 'debit',
+                    Description: `Partial Refund for order cancellation of orderId ${order.orderId}`,
+                    Date: new Date()
+                };
+                adminWallet.Transaction.push(adminTransaction);
+                await this._walletRepo.update(adminWallet._id.toString(), adminWallet);
+            }
+            return (0, agency_order_DTO_1.toOrderDTO)(order);
         }
-        return (0, agency_order_DTO_1.toOrderDTO)(order);
     }
 };
 exports.UserTripService = UserTripService;

@@ -2,7 +2,7 @@ import { IUserTripService } from "../../core/interface/serivice/user/IUser.trips
 import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository";
 import { inject, injectable } from "inversify";
 import { DataNotFoundError } from "../../utils/resAndErrors";
-import { TripDTO, toTripDTO, UserOrderDetailsDTO, toUserOrderDetailsDTO } from "../../core/DTO/user/Response/user.trip.DTO";
+import { TripDTO, UserOrderDetailsDTO, toUserOrderDetailsDTO } from "../../core/DTO/user/Response/user.trip.DTO";
 import { logger } from "../../utils/logger";
 import { orderDTO, toOrderDTO } from "../../core/DTO/agency/response/agency.order.DTO";
 import { IBaseValidator } from "../../core/interface/validator/IBasic.validator";
@@ -38,8 +38,6 @@ export class UserTripService implements IUserTripService {
     await this._validator.idValidator(orderId)
     const order = await this._ordersRepo.findById(orderId)
     if (!order) throw new DataNotFoundError()
-    console.log(order.paymentId)
-    console.log('order data', order)
 
     const userWallet = await this._walletRepo.findOne({ UserId: order.userId })
     if (!userWallet) throw new DataNotFoundError();

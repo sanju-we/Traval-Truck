@@ -25,13 +25,14 @@ export class SubscriptionCleanupService implements ISubscriptionCleanupService {
                 }
             );
 
-            if (result.modifiedCount > 0) {
-                logger.info(`Successfully expired ${result.modifiedCount} subscriptions.`);
+            const updateResult = result as { modifiedCount: number } | null;
+            if (updateResult && updateResult.modifiedCount > 0) {
+                logger.info(`Successfully expired ${updateResult.modifiedCount} subscriptions.`);
             } else {
                 logger.debug("No subscriptions to expire.");
             }
-        } catch (error: any) {
-            logger.error(`Error in subscription expiration check: ${error.message}`);
+        } catch (error) {
+            logger.error(`Error in subscription expiration check: ${(error as Error).message}`);
         }
     }
 }

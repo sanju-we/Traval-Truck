@@ -1,3 +1,4 @@
+import { FilterQuery } from 'mongoose';
 import { Agency } from '../../models/Agency';
 import { IAgencyRespository } from '../../core/interface/repositorie/agency/Iagency.auth.repository';
 import { IAgency } from '../../core/interface/modelInterface/IAgency';
@@ -30,7 +31,7 @@ export class agencyRepository extends BaseRepository<IAgency> implements IAgency
     page: number,
   ): Promise<{ data: IAgency[]; total: number; totalPages: number }> {
     const skip = (page - 1) * limit;
-    const filter: any = {};
+    const filter: FilterQuery<IAgency> = {};
 
     if (query.search) {
       filter['$or'] = [

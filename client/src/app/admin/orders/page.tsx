@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { ADMIN_API_METHODS } from "@/services/APIs/admin.api.service";
+import { ApiResponse } from "@/services/api.service";
 
 interface Order {
   id: string;
@@ -45,8 +46,8 @@ export default function AdminOrdersPage() {
 
   async function fetchOrders() {
     try {
-      const data = await ADMIN_API_METHODS.getAllOrders()
-      if (data.success) {
+      const data = (await ADMIN_API_METHODS.getAllOrders()) as ApiResponse<Order[]> | null;
+      if (data && data.success) {
         console.log(data.data)
         setOrders(data.data);
       } else {

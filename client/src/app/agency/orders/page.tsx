@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Calendar, MessageCircle, User, Package, Clock, CheckCircle, AlertCircle, Search, SlidersHorizontal, ArrowUpDown, Tag } from 'lucide-react';
 import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
+import { ApiResponse } from '@/services/api.service';
+import { OrderDetails } from '@/types/agency';
 import SetStartDateModal from '@/components/agency/SetStartDateModal';
 import { useRouter } from 'next/navigation';
 import VendorFooter from '@/components/shared/Footer';
@@ -11,11 +13,14 @@ import TravelTruckLoading from '@/components/shared/TravelTruckLoading';
 import toast from 'react-hot-toast';
 
 export default function PackageOrdersPage() {
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<OrderDetails[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [selectedOrder, setSelectedOrder] = useState<OrderDetails | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [stats, setStats] = useState({ total: 0, ongoing: 0, completed: 0, upcoming: 0 });
   const ordersPerPage = 5;
   const router = useRouter();
 
@@ -25,21 +30,45 @@ export default function PackageOrdersPage() {
   const [priceFilter, setPriceFilter] = useState('All');
   const [sortBy, setSortBy] = useState('date_desc');
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
+  async function fetchStats() {
+    try {
+      const res = await AGENCY_API_METHODS.getAllOrders({ limit: 1000 }) as ApiResponse<{ data: OrderDetails[] }>;
+      if (res && res.success && res.data && res.data.data) {
+        const all = res.data.data;
+        setStats({
+          total: all.length,
+          ongoing: all.filter((o: OrderDetails) => o.status === 'Ongoing').length,
+          completed: all.filter((o: OrderDetails) => o.status === 'Completed').length,
+          upcoming: all.filter((o: OrderDetails) => o.status === 'Upcoming').length,
+        });
+      }
+    } catch (e) {
+      console.error('Error loading stats:', e);
+    }
+  }
 
-  // Reset page when filters change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm, statusFilter, priceFilter, sortBy]);
-
-  async function fetchOrders() {
+  async function fetchOrders(
+    page = currentPage,
+    search = searchTerm,
+    status = statusFilter,
+    price = priceFilter,
+    sort = sortBy
+  ) {
     try {
       setLoading(true);
-      const data = await AGENCY_API_METHODS.getAllOrders();
-      if (data.success) {
-        setOrders(data.data || []);
+      const res = await AGENCY_API_METHODS.getAllOrders({
+        page,
+        limit: ordersPerPage,
+        search: search || undefined,
+        status: status !== 'All' ? status : undefined,
+        price: price !== 'All' ? price : undefined,
+        sortBy: sort
+      }) as ApiResponse<{ data: OrderDetails[]; totalPages?: number; total?: number }>;
+      if (res && res.success && res.data) {
+        setOrders(res.data.data || []);
+        setTotalPages(res.data.totalPages || 1);
+        setTotalItems(res.data.total || 0);
+        setCurrentPage(page);
       } else {
         toast.error('Failed to load orders');
       }
@@ -51,7 +80,24 @@ export default function PackageOrdersPage() {
     }
   }
 
-  function handleOpenModal(order: any) {
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter, priceFilter, sortBy]);
+
+  // Debounced/Reactive fetch when filters or page change
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      fetchOrders(currentPage, searchTerm, statusFilter, priceFilter, sortBy);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [currentPage, searchTerm, statusFilter, priceFilter, sortBy]);
+
+  function handleOpenModal(order: OrderDetails) {
     setSelectedOrder(order);
     setIsModalOpen(true);
   }
@@ -61,66 +107,24 @@ export default function PackageOrdersPage() {
     setSelectedOrder(null);
   }
 
-  function handleSuccess(updatedOrder: any) {
+  function handleSuccess(updatedOrder: OrderDetails) {
     setOrders((prevOrders) =>
       prevOrders.map((order) =>
         order.id === updatedOrder.id ? updatedOrder : order
       )
     );
+    fetchStats();
   }
 
-  // Statistics (Global/Persistent count)
-  const stats = {
-    total: orders.length,
-    ongoing: orders.filter((o: any) => o.status === 'Ongoing').length,
-    completed: orders.filter((o: any) => o.status === 'Completed').length,
-    upcoming: orders.filter((o: any) => o.status === 'Upcoming').length,
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
   };
 
-  // Filter & Search Logic
-  const filteredOrders = orders.filter((order: any) => {
-    const searchString = searchTerm.toLowerCase();
-    const matchesSearch =
-      order.orderId?.toLowerCase().includes(searchString) ||
-      order.userId?.name?.toLowerCase().includes(searchString) ||
-      order.product?.title?.toLowerCase().includes(searchString);
-
-    const matchesStatus = statusFilter === 'All' || order.status === statusFilter;
-
-    let matchesPrice = true;
-    if (priceFilter === 'under_10k') {
-      matchesPrice = order.amount < 10000;
-    } else if (priceFilter === '10k_50k') {
-      matchesPrice = order.amount >= 10000 && order.amount <= 50000;
-    } else if (priceFilter === 'over_50k') {
-      matchesPrice = order.amount > 50000;
-    }
-
-    return matchesSearch && matchesStatus && matchesPrice;
-  });
-
-  // Sorting Logic
-  const sortedOrders = [...filteredOrders].sort((a: any, b: any) => {
-    if (sortBy === 'date_desc') {
-      return new Date(b.createdAt || b.startDate || 0).getTime() - new Date(a.createdAt || a.startDate || 0).getTime();
-    }
-    if (sortBy === 'date_asc') {
-      return new Date(a.createdAt || a.startDate || 0).getTime() - new Date(b.createdAt || b.startDate || 0).getTime();
-    }
-    if (sortBy === 'price_asc') {
-      return a.amount - b.amount;
-    }
-    if (sortBy === 'price_desc') {
-      return b.amount - a.amount;
-    }
-    return 0;
-  });
-
-  // Pagination calculations
+  const currentOrders = orders;
+  const indexOfFirstOrder = (currentPage - 1) * ordersPerPage;
   const indexOfLastOrder = currentPage * ordersPerPage;
-  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = sortedOrders.slice(indexOfFirstOrder, indexOfLastOrder);
-  const totalPages = Math.ceil(sortedOrders.length / ordersPerPage);
 
   if (loading) {
     return (
@@ -263,7 +267,7 @@ export default function PackageOrdersPage() {
           </div>
         ) : currentOrders.length > 0 ? (
           <div className="space-y-4">
-            {currentOrders.map((order: any) => (
+            {currentOrders.map((order: OrderDetails) => (
               <div
                 key={order.id}
                 className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200"
@@ -389,7 +393,7 @@ export default function PackageOrdersPage() {
         {totalPages > 1 && (
           <div className="flex items-center justify-between bg-white rounded-xl p-4 shadow-sm border border-gray-100 mt-6">
             <p className="text-sm text-gray-600 font-medium">
-              Showing {indexOfFirstOrder + 1} to {Math.min(indexOfLastOrder, sortedOrders.length)} of {sortedOrders.length} matching orders
+              Showing {currentOrders.length > 0 ? indexOfFirstOrder + 1 : 0} to {Math.min(indexOfLastOrder, totalItems)} of {totalItems} matching orders
             </p>
             <div className="flex gap-2">
               <button

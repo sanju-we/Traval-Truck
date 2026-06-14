@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
+import { ApiResponse } from '@/services/api.service';
 import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
 import { useRouter } from 'next/navigation';
@@ -30,9 +31,11 @@ export default function HotelsPage() {
     setLoading(true);
     try {
       const limit = 6
-      const data = await USER_API_METHODS.getAllHotel(searchQuery, page, limit);
-      setHotels(data.data.data || []);
-      setTotalPages(data.totalPages || 1);
+      const res = (await USER_API_METHODS.getAllHotel(searchQuery, page, limit)) as ApiResponse<{ data: Hotel[]; totalPages: number }> | null;
+      if (res && res.data) {
+        setHotels(res.data.data || []);
+        setTotalPages(res.data.totalPages || 1);
+      }
     } catch (error) {
       console.error('Error fetching hotels:', error);
     } finally {

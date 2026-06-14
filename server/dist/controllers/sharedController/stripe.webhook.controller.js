@@ -48,7 +48,7 @@ let WebhookController = class WebhookController {
                 case "checkout.session.async_payment_failed":
                 case "invoice.payment_failed": {
                     const obj = event.data.object;
-                    const sessionId = obj.id || obj.session;
+                    const sessionId = obj.id || obj.session || '';
                     await this._webhookService.handlePaymentFailed(sessionId);
                     break;
                 }

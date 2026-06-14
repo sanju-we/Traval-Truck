@@ -31,8 +31,9 @@ let RestaurantAuthRepository = class RestaurantAuthRepository extends baseReposi
             return restaurant;
         }
         catch (err) {
-            logger_1.logger.error(`Failed to update password for restaurant ID ${id}: ${err.message}`);
-            throw new baseRepository_1.RepositoryError(`Failed to update password: ${err.message}`);
+            const error = err;
+            logger_1.logger.error(`Failed to update password for restaurant ID ${id}: ${error.message}`);
+            throw new baseRepository_1.RepositoryError(`Failed to update password: ${error.message}`);
         }
     }
     async findByIdAndUpdateAction(id, action, field, reason) {
@@ -48,8 +49,9 @@ let RestaurantAuthRepository = class RestaurantAuthRepository extends baseReposi
             return restaurants.map(vendor_response_dto_1.toVendorRequestDTO);
         }
         catch (err) {
-            logger_1.logger.error(`Failed to find restaurants by status ${status}: ${err.message}`);
-            throw new baseRepository_1.RepositoryError(`Failed to find restaurants by status: ${err.message}`);
+            const error = err;
+            logger_1.logger.error(`Failed to find restaurants by status ${status}: ${error.message}`);
+            throw new baseRepository_1.RepositoryError(`Failed to find restaurants by status: ${error.message}`);
         }
     }
     async findAllWithpagination(query, limit, page) {

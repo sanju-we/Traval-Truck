@@ -13,7 +13,7 @@ const delet = deleteRequest;
 export const AGENCY_API_METHODS = {
     // authentication api requests
     sendOtp: (data: { email: string }) => post(AGENCY_ROUTES.auth.sendOtp, data),
-    verifyOtp: (data: any) => post(AGENCY_ROUTES.auth.verifyOtp, data),
+    verifyOtp: (data: object) => post(AGENCY_ROUTES.auth.verifyOtp, data),
     login: (data: { email: string, password: string }) => post(AGENCY_ROUTES.auth.login, data),
     logout: () => post(AGENCY_ROUTES.auth.logout, {}),
     forgotPassword: (email: string) => post(AGENCY_ROUTES.auth.forgotPassword, { email }),
@@ -22,39 +22,35 @@ export const AGENCY_API_METHODS = {
     // profile api requests
     getProfile: () => get(AGENCY_ROUTES.profile.getProfile),
     getDashboard: () => get(AGENCY_ROUTES.profile.getDashboard),
-    edit: (data: any) => patch(AGENCY_ROUTES.profile.edit, data, {
+    edit: (data: FormData) => patch(AGENCY_ROUTES.profile.edit, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
     }),
-    updateDocument: (data: any) => put(AGENCY_ROUTES.profile.updateDocument, data, {
+    updateDocument: (data: FormData) => put(AGENCY_ROUTES.profile.updateDocument, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
     }),
-    deleteImage: (data: any) => delet(AGENCY_ROUTES.profile.deleteImage, { data }),
-    uploadProfile: (data: any) => post(AGENCY_ROUTES.profile.uploadProfile, data, {
+    deleteImage: (data: object) => delet(AGENCY_ROUTES.profile.deleteImage, { data }),
+    uploadProfile: (data: FormData) => post(AGENCY_ROUTES.profile.uploadProfile, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
     }),
 
     // package api requests
-    getAll: (params?: any) => get(AGENCY_ROUTES.package.getAll, params),
-    create: (data: any) => api.post(AGENCY_ROUTES.package.create, data, {
+    getAll: (params?: object) => get(AGENCY_ROUTES.package.getAll, params),
+    create: (data: FormData) => api.post(AGENCY_ROUTES.package.create, data, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
     }),
-    editPackage: (id: string, data: any) => api.patch(AGENCY_ROUTES.package.edit(id), data, {
+    editPackage: (id: string, data: FormData) => api.patch(AGENCY_ROUTES.package.edit(id), data, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
     }),
-    deletePackageImage: (id: string, data: any) => patch(AGENCY_ROUTES.package.deleteImage(id), data),
+    deletePackageImage: (id: string, data: object) => patch(AGENCY_ROUTES.package.deleteImage(id), data),
 
     // payment api requests
-    createPayment: (data: any) => post(AGENCY_ROUTES.payment.create, data),
-
-    // subscription api requests
-    purchaseSubscription: (data: any) => post(AGENCY_ROUTES.subscription.purchase, data),
-
-    // orders api
-    getAllOrders: () => get(AGENCY_ROUTES.orders.getAll),
+    createPayment: (data: object) => post(AGENCY_ROUTES.payment.create, data),
+    purchaseSubscription: (data: object) => post(AGENCY_ROUTES.subscription.purchase, data),
+    getAllOrders: (params?: object) => get(AGENCY_ROUTES.orders.getAll, params),
     setOrderStartDate: (orderId: string, date: string) => post(AGENCY_ROUTES.orders.setStartDate, { orderId, date }),
     getOrder: (orderId: string) => get(AGENCY_ROUTES.orders.getOrder(orderId)),
     startTrip: (orderId: string) => post(AGENCY_ROUTES.orders.startTrip(orderId), {}),

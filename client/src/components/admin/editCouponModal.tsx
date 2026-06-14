@@ -6,19 +6,61 @@ import { Button } from "@/components/shared/ui/button";
 import toast from "react-hot-toast";
 import api from "@/services/api";
 
-export default function EditCouponModal({ coupon, onClose, onSaved }: any) {
-  const [form, setForm] = useState(coupon);
+interface Coupon {
+  id: string;
+  couponCode: string;
+  discountType: string;
+  discountValue: number;
+  minPurchase: number;
+  expiryDate: string;
+}
+
+interface EditCouponModalProps {
+  coupon: Coupon;
+  onClose: () => void;
+  onSaved: () => void;
+}
+
+export default function EditCouponModal({ coupon, onClose, onSaved }: EditCouponModalProps) {
+  const [form, setForm] = useState<Coupon>(coupon);
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setForm((prev: any) => ({ ...prev, [name]: value }));
+    if (name == 'minPurchase' || name == 'discountValue') setForm((prev: Coupon) => ({ ...prev, [name]: Number(value) }))
+    else setForm((prev: Coupon) => ({ ...prev, [name]: value }));
   };
 
   const updateCoupon = async () => {
-    if (!form.couponCode || !form.discountValue) {
+    if (!form.couponCode || !form.discountValue || !form.expiryDate) {
       toast.error("Please fill in all required fields");
       return;
+    }
+
+    const dValue = Number(form.discountValue);
+    const mPurchase = Number(form.minPurchase) || 0;
+
+    if (dValue <= 0) {
+      toast.error("Discount value must be greater than 0");
+      return;
+    }
+
+    if (form.discountType === "flat") {
+      if (mPurchase <= dValue) {
+        toast.error("Minimum purchase must be greater than the discount price");
+        return;
+      }
+    }
+
+    if (form.discountType === "percentage") {
+      if (mPurchase < 1000) {
+        toast.error("Minimum purchase must be at least 1000 rupees for percentage discounts");
+        return;
+      }
+      if (dValue > 100) {
+        toast.error("Percentage discount cannot exceed 100%");
+        return;
+      }
     }
 
     try {
@@ -28,7 +70,7 @@ export default function EditCouponModal({ coupon, onClose, onSaved }: any) {
         toast.success("Coupon updated successfully");
         onSaved();
         onClose();
-      }else{
+      } else {
         toast.error(data.message)
       }
     } catch (err) {

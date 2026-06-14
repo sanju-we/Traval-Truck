@@ -1,5 +1,5 @@
 'use client';
-import { useState } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/shared/ui/button";
 import { Input } from "@/components/shared/ui/input";
 import { Textarea } from "@/components/shared/ui/textarea";
@@ -8,8 +8,16 @@ import Cropper from "react-easy-crop";
 import { getCroppedImg } from "@/components/utils/cropImage";
 import api from "@/services/api";
 import toast from "react-hot-toast";
+import { Area } from "react-easy-crop";
+import { Room } from "@/types/hotel";
 
-export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
+interface AddRoomModalProps {
+  onClose: () => void;
+  onAdd?: (newRoom?: Room) => void;
+  rooms?: Dispatch<SetStateAction<Room[]>>;
+}
+
+export default function AddRoomModal({ onClose, onAdd, rooms }: AddRoomModalProps) {
   const [formData, setFormData] = useState({
     roomNumber: "",
     roomType: "",
@@ -28,7 +36,7 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -61,7 +69,7 @@ export default function AddRoomModal({ onClose, onAdd, rooms }: any) {
     setCropSrc(firstImage);
   };
 
-  const onCropComplete = (_: any, area: any) => setCroppedAreaPixels(area);
+  const onCropComplete = (_: unknown, area: Area) => setCroppedAreaPixels(area);
 
   const blobToBase64 = (blob: Blob): Promise<string> => {
     return new Promise((resolve) => {

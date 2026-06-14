@@ -22,9 +22,10 @@ export class AuthRepository extends BaseRepository<IUser> implements IAuthReposi
         throw new RepositoryError('User not found');
       }
       logger.info(`Password updated for user ID ${id}`);
-    } catch (err: any) {
-      logger.error(`Failed to update password for user ID ${id}: ${err.message}`);
-      throw new RepositoryError(`Failed to update password: ${err.message}`);
+    } catch (err) {
+      const error = err as Error;
+      logger.error(`Failed to update password for user ID ${id}: ${error.message}`);
+      throw new RepositoryError(`Failed to update password: ${error.message}`);
     }
   }
 
@@ -42,9 +43,10 @@ export class AuthRepository extends BaseRepository<IUser> implements IAuthReposi
         throw new RepositoryError('User not found');
       }
       logger.info(`Updated ${field} for user ID ${id}`);
-    } catch (err: any) {
-      logger.error(`Failed to update ${field} for user ID ${id}: ${err.message}`);
-      throw new RepositoryError(`Failed to update ${field}: ${err.message}`);
+    } catch (err) {
+      const error = err as Error;
+      logger.error(`Failed to update ${field} for user ID ${id}: ${error.message}`);
+      throw new RepositoryError(`Failed to update ${field}: ${error.message}`);
     }
   }
 
@@ -57,9 +59,10 @@ export class AuthRepository extends BaseRepository<IUser> implements IAuthReposi
       }
       logger.info(`Profile updated for user ID ${id}`);
       return user;
-    } catch (err: any) {
-      logger.error(`Failed to update profile for user ID ${id}: ${err.message}`);
-      throw new RepositoryError(`Failed to update profile: ${err.message}`);
+    } catch (err) {
+      const error = err as Error;
+      logger.error(`Failed to update profile for user ID ${id}: ${error.message}`);
+      throw new RepositoryError(`Failed to update profile: ${error.message}`);
     }
   }
 }

@@ -22,14 +22,14 @@ export const ADMIN_API_METHODS = {
 
   // coupon api requests
   fetchAllCoupons: () => get(ADMIN_ROUTES.coupons.getAllCoupons),
-  createCoupon: (data: any) => post(ADMIN_ROUTES.coupons.create, data),
-  edit: (data: any, id: string) => patch(ADMIN_ROUTES.coupons.editCoupons(id), data),
+  createCoupon: (data: object) => post(ADMIN_ROUTES.coupons.create, data),
+  edit: (data: object, id: string) => patch(ADMIN_ROUTES.coupons.editCoupons(id), data),
   editStatus: (id: string) => put(ADMIN_ROUTES.coupons.updateStatus(id), {}),
 
   // subscription api requests
   fetchAllSubscriptions: () => get(ADMIN_ROUTES.subscription.getAllSubcription),
-  createSubscription: (data: any) => post(ADMIN_ROUTES.subscription.create, data),
-  editSubscription: (data: any, id: string) => put(ADMIN_ROUTES.subscription.editSubscription(id), data),
+  createSubscription: (data: object) => post(ADMIN_ROUTES.subscription.create, data),
+  editSubscription: (data: object, id: string) => put(ADMIN_ROUTES.subscription.editSubscription(id), data),
   editSubscriptionStatus: (id: string) => put(ADMIN_ROUTES.subscription.updateStatus(id), {}),
 
   // users 

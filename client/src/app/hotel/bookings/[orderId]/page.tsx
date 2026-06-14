@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { HotelOrderDetails } from '../../../../types/hotel';
+import { ApiResponse } from '@/services/api.service';
 import VendorFooter from '@/components/shared/Footer';
 import TravelTruckLoading from '@/components/shared/TravelTruckLoading';
 
@@ -43,8 +44,8 @@ export default function HotelOrderDetailsPage() {
   async function fetchOrder() {
     try {
       setLoading(true);
-      const res = await HOTEL_API_METHODS.getOrderDetails(orderId!);
-      if (res.success) {
+      const res = await HOTEL_API_METHODS.getOrderDetails(orderId!) as ApiResponse<HotelOrderDetails>;
+      if (res && res.success) {
         setOrder(res.data);
       } else {
         toast.error(res.message || 'Failed to load order');
@@ -89,13 +90,13 @@ export default function HotelOrderDetailsPage() {
   async function handleCheckIn() {
     try {
       setActionLoading(true);
-      const res = await HOTEL_API_METHODS.checkInOrder(order!.id);
+      const res = await HOTEL_API_METHODS.checkInOrder(order!.id) as ApiResponse;
 
-      if (res.success) {
+      if (res && res.success) {
         toast.success('Guest checked in successfully');
         setOrder({ ...order!, status: 'Ongoing' });
       } else {
-        toast.error(res.message || 'Check-in failed');
+        toast.error(res?.message || 'Check-in failed');
       }
     } catch {
       toast.error('Something went wrong');
@@ -107,13 +108,13 @@ export default function HotelOrderDetailsPage() {
   async function handleCheckOut() {
     try {
       setActionLoading(true);
-      const res = await HOTEL_API_METHODS.checkOutOrder(order!.id);
+      const res = await HOTEL_API_METHODS.checkOutOrder(order!.id) as ApiResponse;
 
-      if (res.success) {
+      if (res && res.success) {
         toast.success('Guest checked out successfully');
         setOrder({ ...order!, status: 'Completed' });
       } else {
-        toast.error(res.message || 'Check-out failed');
+        toast.error(res?.message || 'Check-out failed');
       }
     } catch {
       toast.error('Something went wrong');

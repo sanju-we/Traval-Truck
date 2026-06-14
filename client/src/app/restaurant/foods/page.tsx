@@ -10,9 +10,10 @@ import { RESTAURANT_API_METHODS } from "@/services/APIs/restaurant.api.service";
 import toast from "react-hot-toast";
 import { FoodData } from "@/components/restaurant/addFoodModal";
 import VendorFooter from "@/components/shared/Footer";
+import { ApiResponse } from "@/services/api.service";
 
 export default function FoodList() {
-  const [foods, setFoods] = useState<any[]>([]);
+  const [foods, setFoods] = useState<FoodData[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingFood, setEditingFood] = useState<FoodData | null>(null)
   const [formData, setFormData] = useState({
@@ -36,12 +37,11 @@ export default function FoodList() {
 
   useEffect(() => {
     async function fetchData() {
-      const data  = await RESTAURANT_API_METHODS.getFood()
-      if (data.success) {
-        console.log(data.data.image)
-        setFoods(data.data)
+      const data  = await RESTAURANT_API_METHODS.getFood() as ApiResponse<FoodData[]>;
+      if (data && data.success) {
+        setFoods(data.data || []);
       } else {
-        toast.error(data.message)
+        toast.error(data?.message || 'Failed to fetch foods');
       }
     }
     fetchData()

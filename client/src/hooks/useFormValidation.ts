@@ -12,7 +12,7 @@ export function useFormValidation<T>(validate: (form: Partial<T>) => Record<stri
       setFormData((prev) => ({
         ...prev,
         [parent]: {
-          ...(prev[parent as keyof typeof prev] as any),
+          ...(prev[parent as keyof typeof prev] as Record<string, unknown>),
           [child]: value,
         },
       }));

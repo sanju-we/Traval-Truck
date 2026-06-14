@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { AGENCY_API_METHODS } from "@/services/APIs/agency.api.service";
 import { HOTEL_API_METHODS } from "@/services/APIs/hotel.api.service";
 import { RESTAURANT_API_METHODS } from "@/services/APIs/restaurant.api.service";
+import { ApiResponse } from "@/services/api.service";
 
 export default function SubscriptionPurchaseForm({
   amount,
@@ -34,9 +35,12 @@ export default function SubscriptionPurchaseForm({
     }
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!stripe || !elements) return;
+
+    if (!stripe || !elements) {
+      return;
+    }
 
     const service = getService(role);
     if (!service) {
@@ -48,9 +52,14 @@ export default function SubscriptionPurchaseForm({
 
     try {
       // Create payment intent
-      const { data } = await service.createPayment({ amount });
+      const responsePay = await service.createPayment({ amount }) as ApiResponse<string[]>;
+      if (!responsePay || !responsePay.success) {
+        toast.error("Failed to initiate payment");
+        setLoading(false);
+        return;
+      }
 
-      const result = await stripe.confirmCardPayment(data.data[0], {
+      const result = await stripe.confirmCardPayment(responsePay.data[0], {
         payment_method: { card: elements.getElement(CardElement)! },
       });
 
@@ -62,19 +71,19 @@ export default function SubscriptionPurchaseForm({
 
       if (result.paymentIntent?.status === "succeeded") {
         const body = {
-          paymentIntentId: data.data[1],
+          paymentIntentId: responsePay.data[1],
           amount,
           id,
         };
         console.log(body)
-        const response = await service.purchaseSubscription(body);
+        const response = await service.purchaseSubscription(body) as ApiResponse;
 
-        if (response.data.success) {
+        if (response && response.success) {
           toast.success("Subscription activated!");
           if (onClose) onClose();
           router.push(`/${role}/subscriptions`);
         } else {
-          toast.error(response.data.message);
+          toast.error(response?.message || "Activation failed");
         }
       }
     } catch (err) {

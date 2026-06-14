@@ -56,7 +56,9 @@ export class RestaurantFoodService implements IRestaurantFoodService {
 
     const publicId = extractPublicId(data.Image[index]);
     const deleted = await deleteImage(publicId)
-    deleted && data.Image.splice(index,1) 
+    if (deleted) {
+      data.Image.splice(index, 1);
+    }
     await this._foodRepo.update(productId,data);
     return toFoodDTO(data)
   }

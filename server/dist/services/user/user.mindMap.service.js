@@ -38,8 +38,8 @@ let UserMindMapService = class UserMindMapService {
         const startLoca = await loca.json();
         if (startLoca.status == 'OK') {
             const location = startLoca.results[0].geometry.location;
-            startLat = location.lat,
-                startLng = location.lng;
+            startLat = location.lat;
+            startLng = location.lng;
         }
         else
             throw new resAndErrors_1.DataNotFoundError();
@@ -117,12 +117,15 @@ let UserMindMapService = class UserMindMapService {
         return (0, mindMap_res_1.toMindMapRes)(mindMap);
     }
     async getMaps(page, userId) {
-        const maps = await this._mindMapRepo.findMapsWithPagination(userId, page);
+        const limit = 6;
+        const maps = await this._mindMapRepo.findMapsWithPagination(userId, page, limit);
         if (!maps)
             throw new resAndErrors_1.DataNotFoundError();
         const data = {
-            data: maps,
-            page: page
+            data: maps.data,
+            page: page,
+            total: maps.total,
+            totalPages: maps.totalPages
         };
         return data;
     }

@@ -24,7 +24,9 @@ let UserTripController = class UserTripController {
     }
     async getHistory(req, res) {
         const userId = req.user.id;
-        const history = await this._tripService.history(userId);
+        const page = req.query.page ? parseInt(req.query.page) : undefined;
+        const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
+        const history = await this._tripService.history(userId, page, limit);
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.DATA_FOUND, history);
     }
     async getOrder(req, res) {

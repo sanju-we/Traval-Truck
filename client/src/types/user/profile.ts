@@ -1,5 +1,6 @@
 export default interface User {
   id: string;
+  _id?: string;
   name?: string;
   userName?: string;
   profilePicture?: string;
@@ -7,6 +8,7 @@ export default interface User {
   companyName?: string;
   isApproved?: boolean;
   isBlocked?: boolean;
+  isRestricted?: boolean;
   phone?: number;
   email: string;
   role: string;
@@ -35,17 +37,20 @@ export interface UserProfile {
 export interface ProductData {
   availableFoods?: string[];
   description?: string;
-  itinerary?: any[];
+  itinerary?: { day: number; title: string; activities: string[] }[];
   price?: number;
   title?: string;
+  name?: string;
   images?: string[];
   duration?: string;
   // Room specific
   RoomNumber?: number;
+  roomType?: string;
   Description?: string;
   PricePerNight?: number;
   Capacity?: number;
   Facilities?: string[];
+  Status?: string;
   id?: string;
   _id?: string;
   ownedBy?: string;

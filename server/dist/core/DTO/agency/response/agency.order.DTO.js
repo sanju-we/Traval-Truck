@@ -8,6 +8,7 @@ const toOrderDTO = (order) => ({
     product: order.product && typeof order.product === 'object' ? JSON.parse(JSON.stringify(order.product)) : order.product,
     amount: order.amount,
     status: order.status,
+    people: order.people,
     startDate: order.startDate,
     endDate: order.endDate,
     paymentId: order.paymentId && typeof order.paymentId === 'object' ? JSON.parse(JSON.stringify(order.paymentId)) : order.paymentId,

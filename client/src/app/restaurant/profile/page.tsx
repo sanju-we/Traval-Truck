@@ -9,7 +9,8 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/shared/ui/tabs';
-import Cropper from 'react-easy-crop';
+import Cropper, { Area } from 'react-easy-crop';
+import { ApiResponse } from '@/services/api.service';
 import getCroppedImg from '@/components/utils/UserCropImage';
 import VendorProfile from '@/types/vendor/profile';
 import DocumentUploadWithPreview from '@/components/utils/DocumentUploadWithPreview';
@@ -31,7 +32,7 @@ export default function VendorProfilePage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [isCropping, setIsCropping] = useState(false);
   const [profileLoad, setProfileLoad] = useState(false);
   const [isResubmitting, setIsResubmitting] = useState(false);
@@ -39,7 +40,7 @@ export default function VendorProfilePage() {
   useEffect(() => {
     async function fetchVendor() {
       try {
-        const data = await RESTAURANT_API_METHODS.getProfile();
+        const data = await RESTAURANT_API_METHODS.getProfile() as ApiResponse<VendorProfile>;
         if (!data.success) {
           toast.error(data.message);
           if (data.message === 'This user is Restricted by the admin') {
@@ -109,7 +110,7 @@ export default function VendorProfilePage() {
         headers: {
           'Content-Type': 'application/json',
         },
-      });
+      }) as ApiResponse<VendorProfile>;
 
       if (data.success) {
         setFormData(data.data);
@@ -133,7 +134,7 @@ export default function VendorProfilePage() {
       setFormData((prev) => ({
         ...prev,
         [parent]: {
-          ...(prev[parent as keyof typeof prev] as any),
+          ...(prev[parent as keyof typeof prev] as Record<string, unknown>),
           [child]: value,
         },
       }));
@@ -171,7 +172,7 @@ export default function VendorProfilePage() {
         });
       }
 
-      const data = await RESTAURANT_API_METHODS.edit(formPayload);
+      const data = await RESTAURANT_API_METHODS.edit(formPayload) as ApiResponse<VendorProfile>;
 
       if (!data.success) {
         toast.error(data.message || 'Update failed');
@@ -217,7 +218,7 @@ export default function VendorProfilePage() {
         console.log(key, value);
       }
 
-      const data = await RESTAURANT_API_METHODS.updateDocument(formPayload);
+      const data = await RESTAURANT_API_METHODS.updateDocument(formPayload) as ApiResponse<VendorProfile>;
 
       if (!data.success) {
         toast.error(data.message || 'Upload failed');
@@ -250,6 +251,7 @@ export default function VendorProfilePage() {
   async function handleCropComplete() {
     try {
       setProfileLoad(true);
+      if (!croppedAreaPixels) return;
       const croppedImage = await getCroppedImg(imagePreview!, croppedAreaPixels);
       const ress = await fetch(croppedImage);
       const blob = await ress.blob();
@@ -258,7 +260,7 @@ export default function VendorProfilePage() {
 
       const formDataImg = new FormData();
       formDataImg.append('profile', file);
-      const data = await RESTAURANT_API_METHODS.uploadProfile(formDataImg);
+      const data = await RESTAURANT_API_METHODS.uploadProfile(formDataImg) as ApiResponse<VendorProfile>;
       if (data.success) {
         if (data.data != null) {
           setFormData(data.data);

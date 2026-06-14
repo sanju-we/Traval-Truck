@@ -3,7 +3,7 @@ import { useState } from "react";
 import getCroppedImg from "./UserCropImage";
 import toast from "react-hot-toast";
 import { Camera, Check, X } from "lucide-react";
-import Cropper from "react-easy-crop";
+import Cropper, { Area } from "react-easy-crop";
 
 export default function DocumentUploadModal({
   label,
@@ -19,7 +19,7 @@ export default function DocumentUploadModal({
   const [imagePreview, setImagePreview] = useState<string | null>(existingUrl || null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [isCropping, setIsCropping] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasNewFile, setHasNewFile] = useState(false);
@@ -35,6 +35,7 @@ export default function DocumentUploadModal({
   };
 
   const handleCropComplete = async () => {
+    if (!croppedAreaPixels) return;
     try {
       setIsLoading(true);
       const croppedImage = await getCroppedImg(imagePreview!, croppedAreaPixels);
@@ -60,14 +61,13 @@ export default function DocumentUploadModal({
       <label className="block text-sm font-semibold text-gray-700 mb-3 capitalize">
         {label} <span className="text-red-500">*</span>
       </label>
-      
-      <div className={`relative p-4 border-2 rounded-xl transition-all duration-200 ${
-        isUploaded 
-          ? 'border-emerald-200 bg-emerald-50' 
-          : hasNewFile 
-          ? 'border-blue-200 bg-blue-50' 
-          : 'border-red-200 bg-red-50 hover:border-red-300'
-      }`}>
+
+      <div className={`relative p-4 border-2 rounded-xl transition-all duration-200 ${isUploaded
+          ? 'border-emerald-200 bg-emerald-50'
+          : hasNewFile
+            ? 'border-blue-200 bg-blue-50'
+            : 'border-red-200 bg-red-50 hover:border-red-300'
+        }`}>
         {/* Preview Image */}
         {imagePreview ? (
           <div className="relative w-full h-40">
@@ -94,11 +94,10 @@ export default function DocumentUploadModal({
         {/* Upload Overlay */}
         <label
           htmlFor={`${label}-upload`}
-          className={`absolute inset-0 flex flex-col items-center justify-center rounded-xl transition-all duration-200 ${
-            isUploaded 
-              ? 'bg-emerald-500/10 hover:bg-emerald-500/20' 
+          className={`absolute inset-0 flex flex-col items-center justify-center rounded-xl transition-all duration-200 ${isUploaded
+              ? 'bg-emerald-500/10 hover:bg-emerald-500/20'
               : 'bg-black/40 hover:bg-black/60 opacity-0 group-hover:opacity-100'
-          }`}
+            }`}
         >
           {isUploaded ? (
             <Check className="w-6 h-6 text-emerald-500" />
@@ -129,7 +128,7 @@ export default function DocumentUploadModal({
       {/* Crop Modal */}
       {isCropping && (
         <div className="fixed inset-0 bg-black/80 flex flex-col items-center justify-center z-[60] p-4">
-          <motion.div 
+          <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
@@ -141,7 +140,7 @@ export default function DocumentUploadModal({
                 <X size={20} />
               </button>
             </div>
-            
+
             <div className="relative flex-1 min-h-[400px]">
               <Cropper
                 image={imagePreview || ''}

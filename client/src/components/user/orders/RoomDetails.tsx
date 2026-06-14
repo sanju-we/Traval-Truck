@@ -9,12 +9,14 @@ import {
   MapPin,
 } from 'lucide-react';
 
+import { ProductData } from '@/types/user/profile';
+
 interface RoomDetailsProps {
-  product: any;
+  product: ProductData;
   startDate?: string;
   endDate?: string;
   people?: number;
-  hotel?: any;
+  hotel?: Record<string, unknown> & { name?: string; companyName?: string; logo?: string; address?: string; images?: string[] };
 }
 
 export default function RoomDetails({ product, startDate, endDate, people, hotel }: RoomDetailsProps) {

@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebhookService = void 0;
 const inversify_1 = require("inversify");
+const mongoose_1 = require("mongoose");
 const logger_1 = require("../../utils/logger");
 const resAndErrors_1 = require("../../utils/resAndErrors");
 let WebhookService = class WebhookService {
@@ -34,23 +35,23 @@ let WebhookService = class WebhookService {
         const paymentDoc = await this._paymentRepo.findOne({ sessionId: sessionId });
         if (paymentDoc) {
             paymentDoc.status = "paid";
-            paymentDoc.paymentIntentId = typeof paymentIntentId === 'string' ? paymentIntentId : paymentIntentId?.id;
+            paymentDoc.paymentIntentId = paymentIntentId;
             await this._paymentRepo.update(paymentDoc.id, paymentDoc);
         }
         const type = metadata.type;
         logger_1.logger.info(`dasappan ${type}`);
         switch (type) {
             case 'wallet':
-                await this._handleWalletTopup(session, metadata, paymentIntentId);
+                await this._handleWalletTopup(session, metadata, paymentIntentId || '');
                 break;
             case 'subscription':
-                await this._handleSubscriptionPurchase(session, metadata, paymentIntentId);
+                await this._handleSubscriptionPurchase(session, metadata, paymentIntentId || '');
                 break;
             case 'package':
-                await this._handlePackagePurchase(metadata, paymentIntentId);
+                await this._handlePackagePurchase(metadata, paymentIntentId || '');
                 break;
             case 'booking':
-                await this._handleBookingPurchase(metadata, paymentIntentId);
+                await this._handleBookingPurchase(metadata, paymentIntentId || '');
                 break;
             default:
                 logger_1.logger.warn("Unknown payment metadata.type: " + metadata.type);
@@ -115,6 +116,11 @@ let WebhookService = class WebhookService {
         }
         const durationMs = plan.Valid * 24 * 60 * 60 * 1000;
         const endDate = new Date(Date.now() + durationMs);
+        const existing = await this._subscriptionHistoryRepo.findOne({ paymentId: paymentIntentId });
+        if (existing) {
+            logger_1.logger.info(`Subscription already activated for payment: ${paymentIntentId}`);
+            return;
+        }
         await this._subscriptionHistoryRepo.create({
             userId,
             role,
@@ -130,21 +136,22 @@ let WebhookService = class WebhookService {
         const packageId = metadata.packageId;
         const userId = metadata.userId;
         const couponId = metadata.couponId;
-        const role = metadata.role;
+        const people = Number(metadata.people);
+        const amount = Number(metadata.amount);
         const pack = await this._packageRepo.findById(packageId);
         if (!pack)
             throw new resAndErrors_1.DataNotFoundError();
         let discountAmount = 0;
         let coupon = 'none';
-        let totalAmount = pack.price;
-        if (couponId != '') {
+        if (couponId && couponId !== '') {
             const couponData = await this._couponRepo.findById(couponId);
             if (couponData && !couponData.usedBy.includes(userId)) {
-                if (couponData.discountType === 'percentage')
+                if (couponData.discountType === 'percentage') {
                     discountAmount = pack.price * (couponData.discountValue / 100);
-                else
+                }
+                else {
                     discountAmount = couponData.discountValue;
-                totalAmount = pack.price - discountAmount;
+                }
                 coupon = couponData.couponCode;
                 couponData.usedBy.push(userId);
                 await couponData.save();
@@ -158,13 +165,14 @@ let WebhookService = class WebhookService {
         const date = new Date();
         const orderId = `ORD-${pad(date.getDate())}${pad(date.getMonth() + 1)}${date.getFullYear()}-${count}`;
         const orderData = await this._orderRepo.create({
-            userId: userId,
+            userId: new mongoose_1.Types.ObjectId(userId),
             orderId: orderId,
             productType: 'Package',
             role: 'Agency',
-            product: packageId,
+            product: new mongoose_1.Types.ObjectId(packageId),
+            people: people,
             ownedBy: pack.ownedBy,
-            amount: totalAmount,
+            amount: amount,
             couponApplied: coupon,
             offer: discountAmount,
             paymentId: transaction.id
@@ -188,23 +196,25 @@ let WebhookService = class WebhookService {
     }
     async _handleBookingPurchase(metadata, paymentIntentId) {
         const roomId = metadata.roomId;
-        const amount = metadata.amount;
+        const amount = Number(metadata.amount);
         const start = metadata.startDate;
+        const end = metadata.endDate;
         const userId = metadata.userId;
-        const couponId = metadata.couponId;
+        const people = parseInt(metadata.people || '1');
         const room = await this._roomRepo.findById(roomId);
         if (!room)
             throw new resAndErrors_1.DataNotFoundError();
         const transaction = await this._paymentRepo.findOne({ paymentIntentId: paymentIntentId });
         if (!transaction)
             throw new resAndErrors_1.PAYMENT_VERIFICATOIN_FAILED();
-        const discountAmount = 0;
         const coupon = 'none';
         const totalAmount = amount;
-        const days = (amount / room.PricePerNight);
         const startDate = new Date(start);
-        const endDate = new Date(startDate);
-        endDate.setDate(endDate.getDate() + days);
+        const endDate = end ? new Date(end) : new Date(startDate);
+        if (!end) {
+            const days = amount / room.PricePerNight;
+            endDate.setDate(endDate.getDate() + days);
+        }
         const pad = (n) => n.toString().padStart(2, '0');
         const count = (await this._orderRepo.countDocuments() + 1).toString().padStart(6, '0');
         const date = new Date();
@@ -212,15 +222,16 @@ let WebhookService = class WebhookService {
         const orderData = await this._orderRepo.create({
             orderId: orderId,
             amount: totalAmount,
-            userId: userId,
+            userId: new mongoose_1.Types.ObjectId(userId),
             productType: 'Rooms',
             role: 'Hotel',
-            product: roomId,
-            ownedBy: room.HotelId,
+            product: new mongoose_1.Types.ObjectId(roomId),
+            people: people,
+            ownedBy: room.HotelId.toString(),
             paymentId: transaction.id,
             couponApplied: coupon,
-            startDate: startDate.toString(),
-            endDate: endDate.toString()
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString()
         });
         const adminWallet = await this._walletRepo.findOne({ role: 'admin' });
         if (!adminWallet)
@@ -236,8 +247,7 @@ let WebhookService = class WebhookService {
         adminWallet.Transaction.push(adminTransaction);
         adminWallet.Balance += orderData.amount;
         await this._walletRepo.update(adminWallet._id.toString(), adminWallet);
-        room.Status = 'Occupid';
-        await this._roomRepo.update(room._id.toString(), room);
+        // We no longer set room.Status to 'Occupid' because availability is now dynamic per date.
     }
 };
 exports.WebhookService = WebhookService;

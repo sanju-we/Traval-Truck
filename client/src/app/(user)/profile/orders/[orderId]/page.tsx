@@ -23,6 +23,7 @@ import {
   Mail,
 } from 'lucide-react';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
+import { ApiResponse } from '@/services/api.service';
 import toast from 'react-hot-toast';
 import RatingCard from '@/components/user/orders/Rating';
 import { PlanDay } from '@/types/user/orders';
@@ -60,9 +61,9 @@ export default function UserOrderDetailsPage() {
   async function fetchOrderDetails() {
     try {
       setLoading(true);
-      const response = await USER_API_METHODS.getOrderDetails(orderId);
+      const response = await USER_API_METHODS.getOrderDetails(orderId) as ApiResponse<OrderDetails>;
 
-      if (response.success) {
+      if (response && response.success) {
         console.log('Order data:', response.data);
         setOrder(response.data);
       } else {
@@ -144,9 +145,9 @@ export default function UserOrderDetailsPage() {
       const finalReason =
         selectedReason === 'Other (specify below)' ? customReason : selectedReason;
 
-      const response = await USER_API_METHODS.cancelOrder(orderId, finalReason);
+      const response = await USER_API_METHODS.cancelOrder(orderId, finalReason) as ApiResponse;
 
-      if (response.success) {
+      if (response && response.success) {
         toast.success('Order cancelled successfully');
         order.status = 'Cancelled'
         // setOrder(response.data);
@@ -519,7 +520,7 @@ export default function UserOrderDetailsPage() {
                   )}
                 </div>
 
-                {typeof order.paymentId === 'object' &&
+                {order.paymentId && typeof order.paymentId === 'object' &&
                   order.paymentId.transactionId && (
                     <div className="pt-4 border-t">
                       <div className="flex items-start gap-3">
@@ -534,7 +535,7 @@ export default function UserOrderDetailsPage() {
                     </div>
                   )}
 
-                {typeof order.paymentId === 'object' &&
+                {order.paymentId && typeof order.paymentId === 'object' &&
                   order.paymentId.paymentMethod && (
                     <div className="flex items-start gap-3">
                       <CreditCard className="text-gray-400 flex-shrink-0 mt-0.5" size={18} />
@@ -547,7 +548,7 @@ export default function UserOrderDetailsPage() {
                     </div>
                   )}
 
-                {typeof order.paymentId === 'object' &&
+                {order.paymentId && typeof order.paymentId === 'object' &&
                   order.paymentId.paymentStatus && (
                     <div className="flex items-start gap-3">
                       <CheckCircle className="text-blue-500 flex-shrink-0 mt-0.5" size={18} />
@@ -690,7 +691,19 @@ export default function UserOrderDetailsPage() {
                 </div>
               </div>
             )}
-            {order.status === 'Completed' && order.ownedBy && (order.product?.data?.id || order.product?.data?._id) && <RatingCard orderId={order.id} productId={{ _id: order.product?.data?.id || order.product?.data?._id }} vendor={order.ownedBy} />}
+            {(() => {
+              const prodId = order.product?.data?.id || order.product?.data?._id;
+              if (order.status === 'Completed' && order.ownedBy && prodId) {
+                return (
+                  <RatingCard
+                    orderId={order.id}
+                    productId={{ _id: prodId }}
+                    vendor={order.ownedBy}
+                  />
+                );
+              }
+              return null;
+            })()}
           </div>
         </div>
       </div>

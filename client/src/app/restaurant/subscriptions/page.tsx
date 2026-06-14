@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { SHARED_API_METHODS } from "@/services/APIs/shared.api.service";
 import { Subscription } from "@/types/agency";
+import { ApiResponse } from "@/services/api.service";
 import VendorFooter from "@/components/shared/Footer";
 import TravelTruckLoading from "@/components/shared/TravelTruckLoading";
 
@@ -23,7 +24,7 @@ export default function SubscriptionsPage() {
       const [allRes, currentRes] = await Promise.all([
         SHARED_API_METHODS.getAllSubscriptions('restaurant'),
         SHARED_API_METHODS.currentSubscription('restaurant'),
-      ]);
+      ]) as [ApiResponse<Subscription[]>, ApiResponse<Subscription>];
 
       if (allRes.success) {
         setSubscriptions(allRes.data || []);
@@ -159,7 +160,7 @@ export default function SubscriptionsPage() {
                         </div>
 
                         <div className="flex flex-wrap gap-3 pt-4">
-                          {activeSubscription.features?.map((f: any, i: number) => (
+                          {activeSubscription.features?.map((f: string, i: number) => (
                             <span key={i} className="px-4 py-1.5 bg-orange-50/30 text-orange-800 border border-orange-100 rounded-full text-sm font-bold flex items-center gap-2 transition-colors hover:bg-white hover:shadow-sm">
                               <CheckCircle size={14} className="text-orange-500" /> {f}
                             </span>
@@ -237,7 +238,7 @@ export default function SubscriptionsPage() {
                 </div>
               ) : (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
-                  {subscriptions.map((sub: any, index: number) => {
+                  {subscriptions.map((sub: Subscription, index: number) => {
                     const isPremium = index > 1 || sub.name.toLowerCase().includes('gold') || sub.name.toLowerCase().includes('platinum');
 
                     return (

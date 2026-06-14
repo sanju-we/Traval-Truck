@@ -52,8 +52,9 @@ export const googleCallback = async (req: Request, res: Response) => {
     await jwtService.setTokenInCookies(res, accessToken, refreshToken);
     res.cookie('allowDrive', 'true', { path: '/' });
     res.redirect('http://localhost:3000');
-  } catch (err: any) {
-    logger.error(`Google Auth Failed: ${err.message}`);
+  } catch (err) {
+    const error = err as Error;
+    logger.error(`Google Auth Failed: ${error.message}`);
     res.status(500).json({ success: false, message: 'Google Authentication failed' });
   }
 };

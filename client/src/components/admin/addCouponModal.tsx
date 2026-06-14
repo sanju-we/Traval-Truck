@@ -6,7 +6,12 @@ import { Button } from "@/components/shared/ui/button";
 import toast from "react-hot-toast";
 import api from "@/services/api";
 
-export default function AddCouponModal({ onClose, onSaved }: any) {
+interface AddCouponModalProps {
+  onClose: () => void;
+  onSaved: () => void;
+}
+
+export default function AddCouponModal({ onClose, onSaved }: AddCouponModalProps) {
   const [form, setForm] = useState({
     couponCode: "",
     discountType: "percentage",
@@ -16,11 +21,44 @@ export default function AddCouponModal({ onClose, onSaved }: any) {
     maxUsage: "",
   });
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const saveCoupon = async () => {
+    const { couponCode, discountType, discountValue, minPurchase, expiryDate, maxUsage } = form;
+
+    if (!couponCode || !discountValue || !expiryDate || !maxUsage) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    const dValue = Number(discountValue);
+    const mPurchase = Number(minPurchase) || 0;
+
+    if (dValue <= 0) {
+      toast.error("Discount value must be greater than 0");
+      return;
+    }
+
+    if (discountType === "flat") {
+      if (mPurchase <= dValue) {
+        toast.error("Minimum purchase must be greater than the discount price");
+        return;
+      }
+    }
+
+    if (discountType === "percentage") {
+      if (mPurchase < 1000) {
+        toast.error("Minimum purchase must be at least 1000 rupees for percentage discounts");
+        return;
+      }
+      if (dValue > 100) {
+        toast.error("Percentage discount cannot exceed 100%");
+        return;
+      }
+    }
+
     try {
       const { data } = await api.post("/admin/coupons/add", form);
       if (data.success) {

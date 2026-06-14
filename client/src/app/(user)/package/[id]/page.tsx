@@ -12,6 +12,8 @@ import toast from 'react-hot-toast';
 import PackageReviews from '@/components/shared/Reviews';
 import { PackageData } from '@/types/agency';
 import { SHARED_API_METHODS } from '@/services/APIs/shared.api.service';
+import { ApiResponse } from '@/services/api.service';
+import { CouponDTO } from '@/types/coupon.type';
 
 export default function PackageDetailsPage() {
   const params = useParams();
@@ -24,9 +26,9 @@ export default function PackageDetailsPage() {
   const [price, setPrice] = useState(0)
   const [showCoupons, setShowCoupons] = useState(false);
   const [couponCode, setCouponCode] = useState('');
-  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [appliedCoupon, setAppliedCoupon] = useState<CouponDTO | null>(null);
   const [discountedPrice, setDiscountedPrice] = useState(pack?.price || 0);
-  const [availableCoupons, setAvailableCoupons] = useState<any[]>([]);
+  const [availableCoupons, setAvailableCoupons] = useState<CouponDTO[]>([]);
   const [couponId, setCouponId] = useState('')
   const [couponLoading, setCouponLoading] = useState(true);
   const [maxPeople, setMaxPeople] = useState(1);
@@ -56,8 +58,8 @@ export default function PackageDetailsPage() {
 
   async function fetchCoupon() {
     try {
-      const coupons = await USER_API_METHODS.GetAllCoupon();
-      if (coupons?.success) {
+      const coupons = (await USER_API_METHODS.GetAllCoupon()) as ApiResponse<CouponDTO[]> | null;
+      if (coupons && coupons.success) {
         setAvailableCoupons(coupons.data);
       } else {
         setAvailableCoupons([]);
@@ -73,9 +75,9 @@ export default function PackageDetailsPage() {
   async function fetchWalletBalance() {
     try {
       setWalletLoading(true);
-      const data = await SHARED_API_METHODS.getWalletBalance('user');
+      const data = (await SHARED_API_METHODS.getWalletBalance('user')) as ApiResponse<{ balance: number }> | null;
       console.log(data)
-      if (data.success) {
+      if (data && data.success) {
         setWalletBalance(data.data.balance);
       } else setWalletBalance(0);
     } catch (err) {
@@ -92,15 +94,15 @@ export default function PackageDetailsPage() {
       return;
     }
 
-    const data = await USER_API_METHODS.walletPurchase({
+    const data = (await USER_API_METHODS.walletPurchase({
       productId: id!,
       amount: discountedPrice,
       people: maxPeople,
       couponId: couponId,
       productType: 'package'
-    })
+    })) as ApiResponse | null;
 
-    if (data.success) {
+    if (data && data.success) {
       toast.success('Booking successful! Your wallet has been debited.');
       router.push('/profile/orders');
     }
@@ -164,8 +166,8 @@ export default function PackageDetailsPage() {
 
   const fetchPackageDetails = async (packageId: string) => {
     try {
-      const res = await USER_API_METHODS.packageDetails(packageId);
-      if (res.success) {
+      const res = (await USER_API_METHODS.packageDetails(packageId)) as ApiResponse<PackageData> | null;
+      if (res && res.success) {
         setPack(res.data);  
       } else {
         toast.error('Failed to load package details');
@@ -576,7 +578,7 @@ export default function PackageDetailsPage() {
                           {coupon.discountType === 'percentage' ? `${coupon.discountValue}% OFF` : `₹${coupon.discountValue} OFF`}
                         </span>
                       </div>
-                      <p className="text-sm text-gray-600">{coupon.description}</p>
+                      <p className="text-sm text-gray-600">{coupon.description || `Minimum purchase of ₹${coupon.minPurchase}`}</p>
                     </div>
                     <button
                       onClick={() => {

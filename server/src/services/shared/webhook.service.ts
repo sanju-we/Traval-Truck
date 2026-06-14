@@ -1,5 +1,6 @@
 import { inject, injectable } from "inversify";
 import Stripe from "stripe";
+import { Types } from "mongoose";
 import { IWebhookService } from "../../core/interface/serivice/shared/IWebhook.service";
 import { IPaymentRepository } from "../../core/interface/repositorie/shared/Ishared.payment.repository";
 import { IWalletRespository } from "../../core/interface/repositorie/shared/IWallet.repository";
@@ -27,13 +28,13 @@ export class WebhookService implements IWebhookService {
 
     async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session): Promise<void> {
         const sessionId = session.id;
-        const paymentIntentId = (session.payment_intent as string) || (session.payment_intent as any)?.id;
+        const paymentIntentId = (session.payment_intent as string) || (session.payment_intent as { id?: string })?.id;
         const metadata = session.metadata || {};
 
         const paymentDoc = await this._paymentRepo.findOne({ sessionId: sessionId });
         if (paymentDoc) {
             paymentDoc.status = "paid";
-            paymentDoc.paymentIntentId = typeof paymentIntentId === 'string' ? paymentIntentId : (paymentIntentId as any)?.id;
+            paymentDoc.paymentIntentId = paymentIntentId;
             await this._paymentRepo.update(paymentDoc.id, paymentDoc);
         }
 
@@ -42,19 +43,19 @@ export class WebhookService implements IWebhookService {
 
         switch (type) {
             case 'wallet':
-                await this._handleWalletTopup(session, metadata, paymentIntentId);
+                await this._handleWalletTopup(session, metadata, paymentIntentId || '');
                 break;
 
             case 'subscription':
-                await this._handleSubscriptionPurchase(session, metadata, paymentIntentId);
+                await this._handleSubscriptionPurchase(session, metadata, paymentIntentId || '');
                 break;
 
             case 'package':
-                await this._handlePackagePurchase(metadata, paymentIntentId);
+                await this._handlePackagePurchase(metadata, paymentIntentId || '');
                 break;
 
             case 'booking':
-                await this._handleBookingPurchase(metadata, paymentIntentId);
+                await this._handleBookingPurchase(metadata, paymentIntentId || '');
                 break;
 
             default:
@@ -71,8 +72,8 @@ export class WebhookService implements IWebhookService {
         logger.error("Payment failed for session: " + sessionId);
     }
 
-    async handleInvoicePaymentSucceeded(invoice: any): Promise<void> {
-        const subscriptionId = invoice.subscription;
+    async handleInvoicePaymentSucceeded(invoice: Stripe.Invoice): Promise<void> {
+        const subscriptionId = (invoice as { subscription?: string }).subscription as string;
         const plan = await this._subscriptionRepo.findById(subscriptionId);
 
         if (!plan) {
@@ -90,7 +91,7 @@ export class WebhookService implements IWebhookService {
     // Private helper methods
     private async _handleWalletTopup(
         session: Stripe.Checkout.Session,
-        metadata: Record<string, any>,
+        metadata: Record<string, string>,
         paymentIntentId: string
     ): Promise<void> {
         const userId = metadata.userId;
@@ -124,7 +125,7 @@ export class WebhookService implements IWebhookService {
 
     private async _handleSubscriptionPurchase(
         session: Stripe.Checkout.Session,
-        metadata: Record<string, any>,
+        metadata: Record<string, string>,
         paymentIntentId: string
     ): Promise<void> {
         const userId = metadata.userId;
@@ -159,47 +160,45 @@ export class WebhookService implements IWebhookService {
         logger.info(`Subscription purchase recorded for ${userId}, plan ${planId}`);
     }
 
-    private async _handlePackagePurchase(metadata: Record<string, any>, paymentIntentId: string): Promise<void> {
+    private async _handlePackagePurchase(metadata: Record<string, string>, paymentIntentId: string): Promise<void> {
         const packageId = metadata.packageId;
-        const userId = metadata.userId
-        const couponId = metadata.couponId
-        const role: string = metadata.role
-        const people: number = metadata.people
-        const amount: number = metadata.amount
+        const userId = metadata.userId;
+        const couponId = metadata.couponId;
+        const people = Number(metadata.people);
+        const amount = Number(metadata.amount);
 
-        const pack = await this._packageRepo.findById(packageId)
-        if (!pack) throw new DataNotFoundError()
+        const pack = await this._packageRepo.findById(packageId);
+        if (!pack) throw new DataNotFoundError();
 
-        let discountAmount: number = 0;
-        let coupon: string = 'none';
-        let totalAmount: number = pack.price;
-        if (couponId != '') {
-            const couponData = await this._couponRepo.findById(couponId)
+        let discountAmount = 0;
+        let coupon = 'none';
+        if (couponId && couponId !== '') {
+            const couponData = await this._couponRepo.findById(couponId);
             if (couponData && !couponData.usedBy.includes(userId)) {
-
-                if (couponData.discountType === 'percentage') discountAmount = pack.price * (couponData.discountValue / 100)
-                else discountAmount = couponData.discountValue
-
-                totalAmount = pack.price - discountAmount
-                coupon = couponData.couponCode
-                couponData.usedBy.push(userId)
-                await couponData.save()
+                if (couponData.discountType === 'percentage') {
+                    discountAmount = pack.price * (couponData.discountValue / 100);
+                } else {
+                    discountAmount = couponData.discountValue;
+                }
+                coupon = couponData.couponCode;
+                couponData.usedBy.push(userId);
+                await couponData.save();
             }
         }
 
         const transaction = await this._paymentRepo.findOne({ paymentIntentId: paymentIntentId })
         if (!transaction) throw new PAYMENT_VERIFICATOIN_FAILED()
         const pad = (n: number) => n.toString().padStart(2, '0');
-        const count = (await this._orderRepo.countDocuments() + 1).toString().padStart(6, '0')
+        const count = (await this._orderRepo.countDocuments({}) + 1).toString().padStart(6, '0')
         const date = new Date()
         const orderId = `ORD-${pad(date.getDate())}${pad(date.getMonth() + 1)}${date.getFullYear()}-${count}`
 
         const orderData = await this._orderRepo.create({
-            userId: userId,
+            userId: new Types.ObjectId(userId),
             orderId: orderId,
             productType: 'Package',
             role: 'Agency',
-            product: packageId,
+            product: new Types.ObjectId(packageId),
             people: people,
             ownedBy: pack.ownedBy,
             amount: amount,
@@ -226,44 +225,42 @@ export class WebhookService implements IWebhookService {
         logger.info(`metadata da kunja ${JSON.stringify(metadata)}`)
     }
 
-    private async _handleBookingPurchase(metadata: Record<string, any>, paymentIntentId: string): Promise<void> {
+    private async _handleBookingPurchase(metadata: Record<string, string>, paymentIntentId: string): Promise<void> {
         const roomId = metadata.roomId;
-        const amount = metadata.amount;
+        const amount = Number(metadata.amount);
         const start = metadata.startDate;
         const end = metadata.endDate;
         const userId = metadata.userId;
-        const couponId = metadata.couponId;
         const people = parseInt(metadata.people || '1');
 
         const room = await this._roomRepo.findById(roomId);
         if (!room) throw new DataNotFoundError();
 
-        const transaction = await this._paymentRepo.findOne({ paymentIntentId: paymentIntentId })
+        const transaction = await this._paymentRepo.findOne({ paymentIntentId: paymentIntentId });
         if (!transaction) throw new PAYMENT_VERIFICATOIN_FAILED();
 
-        const discountAmount: number = 0;
-        const coupon: string = 'none';
-        const totalAmount: number = amount;
+        const coupon = 'none';
+        const totalAmount = amount;
 
         const startDate = new Date(start);
         const endDate = end ? new Date(end) : new Date(startDate);
         if (!end) {
-            const days = (amount / room.PricePerNight);
+            const days = amount / room.PricePerNight;
             endDate.setDate(endDate.getDate() + days);
         }
 
         const pad = (n: number) => n.toString().padStart(2, '0');
-        const count = (await this._orderRepo.countDocuments() + 1).toString().padStart(6, '0')
+        const count = (await this._orderRepo.countDocuments({}) + 1).toString().padStart(6, '0')
         const date = new Date()
         const orderId = `ORD-${pad(date.getDate())}${pad(date.getMonth() + 1)}${date.getFullYear()}-${count}`
 
         const orderData = await this._orderRepo.create({
             orderId: orderId,
             amount: totalAmount,
-            userId: userId,
+            userId: new Types.ObjectId(userId),
             productType: 'Rooms',
             role: 'Hotel',
-            product: roomId,
+            product: new Types.ObjectId(roomId),
             people: people,
             ownedBy: room.HotelId.toString(),
             paymentId: transaction.id,

@@ -29,6 +29,7 @@ let RestaurantFoodController = class RestaurantFoodController {
         if (!files)
             throw new resAndErrors_1.Files_Missing();
         logger_1.logger.info(req.files);
+        console.log(data);
         const created = await this._foodService.addFood({ ...data, Price: Number(data.Price), AvailableQuantity: Number(data.AvailableQuantity) }, files, id);
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.CREATED, true, responseMessaages_1.MESSAGES.CREATED, created);
     }
@@ -47,7 +48,6 @@ let RestaurantFoodController = class RestaurantFoodController {
     }
     async deleteImage(req, res) {
         const index = req.body.index;
-        const restaurantId = req.user.id;
         const foodId = req.body.foodId;
         const data = await this._foodService.delete(foodId, index);
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.DELETED, data);

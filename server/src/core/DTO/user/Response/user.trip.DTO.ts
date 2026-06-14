@@ -5,6 +5,7 @@ import { IPackage } from "../../../../core/interface/modelInterface/Ipackage"
 import { TripPlan } from "../../../../types/index"
 import { RoomsDTO, toRoomsDTO } from "../../../../core/DTO/hotel/roomsDTO"
 import { IRoomType } from "../../../interface/modelInterface/IRoomType"
+import { IPayment } from "../../../../core/interface/modelInterface/IPayment"
 // import FoodsDTO later
 
 export type TripProductDTO =
@@ -16,13 +17,13 @@ export interface UserOrderDetailsDTO {
   orderId: string;
   userId: string;
   productType: string;
-  product: TripProductDTO;
+  product: TripProductDTO | null;
   amount: number;
   startDate?: string;
   endDate?: string;
   status: string;
   plan?: TripPlan[];
-  tripProgress?: any;
+  tripProgress?: unknown;
   paymentId: {
     _id: string;
     transactionId?: string;
@@ -30,7 +31,7 @@ export interface UserOrderDetailsDTO {
     paymentStatus?: string;
   };
   createdAt: Date;
-  ownedBy?: any;
+  ownedBy?: unknown;
   people?: number;
   reason?: string;
 }
@@ -44,10 +45,17 @@ export const mapTripProduct = (
   order: IOrderWithProduct
 ): TripProductDTO => {
   if (!order.product) {
-    return {
-      type: order.productType as any,
-      data: {} as any
-    };
+    if (order.productType === "Package") {
+      return {
+        type: "Package",
+        data: {} as PackageDTO
+      };
+    } else {
+      return {
+        type: "Rooms",
+        data: {} as RoomsDTO
+      };
+    }
   }
   switch (order.productType) {
     case "Package":
@@ -114,7 +122,7 @@ export const toTripDTO = (
 export const toUserOrderDetailsDTO = (
   order: IOrders
 ): UserOrderDetailsDTO => {
-  const payment = order.paymentId as any;
+  const payment = order.paymentId as unknown as IPayment | null;
   const productData = (order as unknown as IOrderWithProduct).product;
 
   return {
@@ -122,7 +130,7 @@ export const toUserOrderDetailsDTO = (
     orderId: order.orderId,
     userId: order.userId.toString(),
     productType: order.productType,
-    product: productData ? mapTripProduct(order as unknown as IOrderWithProduct) : null as any,
+    product: productData ? mapTripProduct(order as unknown as IOrderWithProduct) : null,
     amount: order.amount,
     startDate: order.startDate,
     endDate: order.endDate,

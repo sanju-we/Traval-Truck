@@ -18,6 +18,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaymentUtils = void 0;
 const stripe_1 = __importDefault(require("stripe"));
 const inversify_1 = require("inversify");
+const mongoose_1 = require("mongoose");
 const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY, {
     apiVersion: '2025-10-29.clover',
 });
@@ -56,7 +57,7 @@ let PaymentUtils = class PaymentUtils {
         const paymentRecord = await this._paymentRepo.create({
             sessionId: session.id,
             type: metadata.type,
-            userId: metadata.userId,
+            userId: new mongoose_1.Types.ObjectId(metadata.userId),
             role: metadata.role,
             amount,
             currency,

@@ -14,23 +14,23 @@ export const USER_API_METHODS = {
     login: (data: { email: string, password: string }) => post(USER_ROUTES.auth.login, data),
     logout: () => post(USER_ROUTES.auth.logout, {}),
     sendOtp: (data: { email: string }) => post(USER_ROUTES.auth.sendOtp, data),
-    verifySignup: (data: any) => post(USER_ROUTES.auth.verifySignup, data),
+    verifySignup: (data: object) => post(USER_ROUTES.auth.verifySignup, data),
     forgetPasswordRequest: (data: { email: string }) => post(USER_ROUTES.auth.forgetPasswordRequest, data),
     resetPassword: (data: { token: string, newPassword: string }) => post(USER_ROUTES.auth.resetPassword, data),
-    googleAuth: (data: any) => post(USER_ROUTES.auth.googleAuth, data),
+    googleAuth: (data: object) => post(USER_ROUTES.auth.googleAuth, data),
 
     // profile api requests
     getProfile: () => get(USER_ROUTES.profile.getProfile),
-    intrest: (data: any) => post(USER_ROUTES.profile.intrest, data),
-    editProfile: (data: any) => patch(USER_ROUTES.profile.editProfile, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
-    uploadImage: (data: any) => post(USER_ROUTES.profile.uploadImage, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+    intrest: (data: object) => post(USER_ROUTES.profile.intrest, data),
+    editProfile: (data: FormData) => patch(USER_ROUTES.profile.editProfile, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+    uploadImage: (data: FormData) => post(USER_ROUTES.profile.uploadImage, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
     changePassword:(data:{oldPassword:string,newPassword:string}) => post(USER_ROUTES.profile.changePassword, data),
 
     // packages api requests
     getLatestPackages: () => get(USER_ROUTES.packages.getLatestPackages),
-    getAllPackages: (params?: any) => get(USER_ROUTES.packages.getAllPackages, params),
+    getAllPackages: (params?: object) => get(USER_ROUTES.packages.getAllPackages, params),
     packageDetails: (id: string) => get(USER_ROUTES.packages.packageDetails(id)),
-    PurchasePackage: (data: any) => post(USER_ROUTES.packages.Purchasepackage, data),
+    PurchasePackage: (data: object) => post(USER_ROUTES.packages.Purchasepackage, data),
     GetAllCoupon: () => get(USER_ROUTES.packages.GetAllCoupon),
 
     // hotel api requests
@@ -42,7 +42,7 @@ export const USER_API_METHODS = {
     purchaseRoomWithWallet: (data: { roomId: string, role: string, amount: number, couponId?: string, startDate: string, people: number }) => post(USER_ROUTES.hotel.purchaseRoom.replace('/purchase', '/wallet-purchase'), data),
 
     // foods api requests
-    showAllFoods: (params?: any) => get(USER_ROUTES.foods.showAllFoods, params),
+    showAllFoods: (params?: object) => get(USER_ROUTES.foods.showAllFoods, params),
 
     // booking api request
     orderHistory: (page?: number, limit?: number) => get(USER_ROUTES.Trip.History, { page, limit }),
@@ -51,8 +51,8 @@ export const USER_API_METHODS = {
     walletPurchase :(data: {productId:string, amount:number, people:number, couponId?:string, productType:string}) => post(USER_ROUTES.purchase.walletPurchase, data),
 
     // Mind Map
-    generateMap: (data: any) => post(USER_ROUTES.Mind_Map.GenerateTrip, data),
-    updateMindMap: (data: { id: string, data: any }) => post(USER_ROUTES.Mind_Map.UpdatedateTrip, data),
+    generateMap: (data: object) => post(USER_ROUTES.Mind_Map.GenerateTrip, data),
+    updateMindMap: (data: { id: string, data: object }) => post(USER_ROUTES.Mind_Map.UpdatedateTrip, data),
     getMindMap: (page: number) => get(USER_ROUTES.Mind_Map.getMindMap, { page }),
     MindMapDetails: (id: string) => get(USER_ROUTES.Mind_Map.MindMapDetails, { id }),
     submitTheMindmap: (id: string) => post(USER_ROUTES.Mind_Map.confitmMindMap, { id })

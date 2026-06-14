@@ -7,13 +7,21 @@ import { Eye, Search, Loader2, Inbox } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ViewVendorDocumentsModal from '@/components/admin/viewDocumentModal';
 import VendorRequest from '@/types/vendor/profile';
+import { ApiResponse } from '@/services/api.service';
+
+interface VendorDocuments {
+  registrationCertificate?: string;
+  panCard?: string;
+  bankProof?: string;
+  ownerIdProof?: string;
+}
 
 export default function VendorRequestsPage() {
   const [requests, setRequests] = useState<VendorRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const [selectedDocs, setSelectedDocs] = useState<any>({});
+  const [selectedDocs, setSelectedDocs] = useState<VendorDocuments>({});
   const [selectedVendorId, setSelectedVendorId] = useState<string | null>(null);
   const [selectedVendorRole, setSelectedVendorRole] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,10 +40,14 @@ export default function VendorRequestsPage() {
   const fetchRequests = async (query?: string) => {
     try {
       setLoading(true);
-      const data = await ADMIN_API_METHODS.fetchAllRequest(
+      const data = (await ADMIN_API_METHODS.fetchAllRequest(
         query ? { search: query } : {}
-      );
-      setRequests(data.data || []);
+      )) as ApiResponse<VendorRequest[]> | null;
+      if (data && data.data) {
+        setRequests(data.data);
+      } else {
+        setRequests([]);
+      }
     } catch {
       toast.error('Failed to fetch vendor requests');
     } finally {
@@ -52,7 +64,7 @@ export default function VendorRequestsPage() {
     return () => clearTimeout(delay);
   }, [searchTerm]);
 
-  function handleViewDocuments(docs: any, id: string, role: string) {
+  function handleViewDocuments(docs: VendorDocuments, id: string, role: string) {
     setSelectedDocs(docs);
     setSelectedVendorId(id);
     setSelectedVendorRole(role);
@@ -68,8 +80,8 @@ export default function VendorRequestsPage() {
     reason?: string,
   ) {
     try {
-      const data = await ADMIN_API_METHODS.updateStatus(id, action, role, reason);
-      if (data.success) {
+      const data = (await ADMIN_API_METHODS.updateStatus(id, action, role, reason)) as ApiResponse | null;
+      if (data && data.success) {
         toast.success(`Vendor ${action}ed successfully`);
         fetchRequests(searchTerm);
         setIsModalOpen(false);
@@ -157,7 +169,7 @@ export default function VendorRequestsPage() {
                         {req.isApproved === false && !req.isRestricted ? (
                           <button
                             onClick={() =>
-                              handleViewDocuments(req.documents, req.id, req.role)
+                              handleViewDocuments((req.documents || {}) as unknown as VendorDocuments, req.id, req.role)
                             }
                             className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-700"
                           >

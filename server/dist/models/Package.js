@@ -26,6 +26,10 @@ const packageSchema = new mongoose_1.Schema({
         type: Number,
         required: true,
     },
+    maxPeople: {
+        type: Number,
+        required: true,
+    },
     description: {
         type: String,
     },

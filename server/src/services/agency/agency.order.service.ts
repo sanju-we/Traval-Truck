@@ -1,7 +1,7 @@
 import { IAgencyOrderService } from "../../core/interface/serivice/agency/Iagency.orders.service";
 import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository";
 import { inject, injectable } from "inversify";
-import { logger } from "../../utils/logger";
+import { IPackage } from "../../core/interface/modelInterface/Ipackage";
 import { orderDTO, toOrderDTO } from "../../core/DTO/agency/response/agency.order.DTO";
 import { DataNotFoundError, DataUpdatingError, INVALID_STATUS_UPDATION, START_DATE_ERROR, TRIP_ALREADY_STARTED, TRIP_UPDATION_ERROR } from "../../utils/resAndErrors";
 import { IGenerateTrip } from "../../core/interface/utils/Igenerate.trip";
@@ -21,16 +21,36 @@ export class AgencyOrderService implements IAgencyOrderService {
     @inject('IAgencyRespository') private readonly _agencyRepo: IAgencyRespository,
   ) { }
 
-  async getAllOrder(userId: string): Promise<orderDTO[]> {
-    const orders = await this._orderRepo.findAll({ ownedBy: userId }, {})
-    logger.info(`saj${orders}`)
-    return orders.map(toOrderDTO)
+  async getAllOrder(
+    userId: string,
+    page = 1,
+    limit = 5,
+    search?: string,
+    status?: string,
+    price?: string,
+    sortBy?: string
+  ): Promise<{ data: orderDTO[]; total: number; page: number; totalPages: number; }> {
+    const paginatedOrders = await this._orderRepo.findAllOrdersWithPagination(
+      userId,
+      page,
+      limit,
+      search,
+      status,
+      price,
+      sortBy
+    );
+    return {
+      data: paginatedOrders.data.map(toOrderDTO),
+      total: paginatedOrders.total,
+      page: paginatedOrders.page,
+      totalPages: paginatedOrders.totalPages
+    };
   }
 
   async setStartDate(orderId: string, date: string): Promise<orderDTO> {
     const order = await this._orderRepo.findOrderWithProduct(orderId);
     if (!order) throw new DataNotFoundError()
-    const plan = await this._tripGenerator.generatePlanFromItinerary((order.product as any).itinerary, new Date(date))
+    const plan = await this._tripGenerator.generatePlanFromItinerary((order.product as unknown as IPackage).itinerary, new Date(date))
     const updated = await this._orderRepo.update(order.id, { startDate: date, plan: plan, endDate: plan[plan.length - 1].date.toString() })
     if (!updated) throw new DataUpdatingError()
     return toOrderDTO(updated)

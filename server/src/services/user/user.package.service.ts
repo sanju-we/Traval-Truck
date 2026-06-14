@@ -71,11 +71,11 @@ export class UserPackageSerivce implements IUserPackageService {
       metadata: {
         type: 'package',
         userId,
-        amount,
+        amount: amount.toString(),
         role,
         packageId,
         couponId,
-        people: maxPeople
+        people: maxPeople ? maxPeople.toString() : '1'
       }
     })
   }
@@ -109,7 +109,7 @@ export class UserPackageSerivce implements IUserPackageService {
     if (!wallet) throw new DataNotFoundError();
 
     const pad = (n: number) => n.toString().padStart(2, '0');
-    const count = (await this._orderRepo.countDocuments() + 1).toString().padStart(6, '0')
+    const count = (await this._orderRepo.countDocuments({}) + 1).toString().padStart(6, '0')
     const date = new Date()
     const orderId = `ORD-${pad(date.getDate())}${pad(date.getMonth() + 1)}${date.getFullYear()}-${count}`
 

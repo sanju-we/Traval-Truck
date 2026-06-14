@@ -80,6 +80,7 @@ let HotelAuthService = class HotelAuthService {
         const { resetLink } = await this._ijwt.generateResetToken({
             id: hotelData.id,
             email: hotelData.email,
+            role: hotelData.role,
         });
         logger_1.logger.info(`resetLink :- ${resetLink}`);
         await this._emailService.sendEmail(email, `Password Rest Link`, `Reset your password in here : ${resetLink}`);

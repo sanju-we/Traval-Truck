@@ -13,9 +13,18 @@ export class agencyPackageController implements IAgencyPackageController {
   ) { }
 
   async getAllPackages(req: Request, res: Response): Promise<void> {
-    const { page } = req.query
-    const allPackage = await this._packageService.getAllPackage(Number(page))
-    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, allPackage)
+    const { page, limit, search, price, duration, sortBy } = req.query;
+    const agencyId = req.user.id;
+    const allPackage = await this._packageService.getAllPackage(
+      page ? Number(page) : 1,
+      limit ? Number(limit) : 6,
+      search ? String(search) : undefined,
+      agencyId,
+      price ? String(price) : undefined,
+      duration ? String(duration) : undefined,
+      sortBy ? String(sortBy) : undefined
+    );
+    sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, allPackage);
   }
 
   async addPackage(req: Request, res: Response): Promise<void> {

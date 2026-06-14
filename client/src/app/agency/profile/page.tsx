@@ -8,9 +8,10 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/shared/ui/tabs';
-import Cropper from 'react-easy-crop';
+import Cropper, { Area } from 'react-easy-crop';
 import getCroppedImg from '@/components/utils/UserCropImage';
 import VendorProfile from '@/types/vendor/profile';
+import { ApiResponse } from '@/services/api.service';
 import DocumentUploadWithPreview from '@/components/utils/DocumentUploadWithPreview';
 import RestrictionBanner from '@/components/vendor/RestrictionBanner';
 import VendorFooter from '@/components/shared/Footer';
@@ -30,7 +31,7 @@ export default function VendorProfilePage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [isCropping, setIsCropping] = useState(false);
   const [profileLoad, setProfileLoad] = useState(false);
   const [isResubmitting, setIsResubmitting] = useState(false);
@@ -38,8 +39,8 @@ export default function VendorProfilePage() {
   useEffect(() => {
     async function fetchVendor() {
       try {
-        const data = await AGENCY_API_METHODS.getProfile();
-        if (!data.success) {
+        const data = await AGENCY_API_METHODS.getProfile() as ApiResponse<VendorProfile>;
+        if (data && !data.success) {
           toast.error(data.message);
           if (data.message === 'This user is Restricted by the admin') {
             router.push('/agency');
@@ -103,9 +104,9 @@ export default function VendorProfilePage() {
     }
     setDeleteLoad(key);
     try {
-      const data = await AGENCY_API_METHODS.deleteImage({ documentUrl, key });
+      const data = await AGENCY_API_METHODS.deleteImage({ documentUrl, key }) as ApiResponse<VendorProfile>;
 
-      if (data.success) {
+      if (data && data.success) {
         setFormData(data.data);
         setVendor(data.data);
         toast.success(`${key} removed successfully!`);
@@ -127,7 +128,7 @@ export default function VendorProfilePage() {
       setFormData((prev) => ({
         ...prev,
         [parent]: {
-          ...(prev[parent as keyof typeof prev] as any),
+          ...(prev[parent as keyof typeof prev] as Record<string, unknown>),
           [child]: value,
         },
       }));
@@ -165,18 +166,15 @@ export default function VendorProfilePage() {
         });
       }
 
-      const data = await AGENCY_API_METHODS.edit(formPayload);
+      const data = await AGENCY_API_METHODS.edit(formPayload) as ApiResponse<VendorProfile>;
 
-      if (data.success) {
-        toast.success(data.message || 'Update failed');
-        setIsEditing(false)
+      if (data && data.success) {
+        toast.success(data.message || 'Update succeeded');
+        setIsEditing(false);
+        setVendor(data.data);
+        setFormData(data.data);
         return;
       }
-
-      toast.success('Profile updated successfully');
-      setVendor(data.data);
-      setFormData(data.data);
-      setIsEditing(false);
     } catch (err) {
       console.error(err);
       toast.error('Failed to update profile');
@@ -207,9 +205,9 @@ export default function VendorProfilePage() {
         });
       }
 
-      const data = await AGENCY_API_METHODS.updateDocument(formPayload);
+      const data = await AGENCY_API_METHODS.updateDocument(formPayload) as ApiResponse<VendorProfile>;
 
-      if (!data.success) {
+      if (data && !data.success) {
         toast.error(data.message || 'Upload failed');
         setIsSaving(false);
         return;
@@ -242,15 +240,16 @@ export default function VendorProfilePage() {
   async function handleCropComplete() {
     try {
       setProfileLoad(true);
+      if (!croppedAreaPixels) return;
       const croppedImage = await getCroppedImg(imagePreview!, croppedAreaPixels);
       const res = await fetch(croppedImage);
       const blob = await res.blob();
 
       const formPayload = new FormData();
       formPayload.append('logo', blob, 'profile.jpg');
-      const data = await AGENCY_API_METHODS.uploadProfile(formPayload);
+      const data = await AGENCY_API_METHODS.uploadProfile(formPayload) as ApiResponse<VendorProfile>;
 
-      if (data.success) {
+      if (data && data.success) {
         toast.success('Profile picture updated successfully');
         setVendor(data.data);
         setFormData(data.data);

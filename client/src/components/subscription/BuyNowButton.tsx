@@ -7,7 +7,14 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-export default function BuyNowButton({ subscriptionId, role }: any) {
+import { ApiResponse } from "@/services/api.service";
+
+interface BuyNowButtonProps {
+  subscriptionId: string;
+  role: string;
+}
+
+export default function BuyNowButton({ subscriptionId, role }: BuyNowButtonProps) {
   const [loading, setLoading] = useState(false);
 
   const getService = (role: string) => {
@@ -32,7 +39,7 @@ export default function BuyNowButton({ subscriptionId, role }: any) {
       const data = await service.purchaseSubscription({
         subscriptionId,
         role
-      });
+      }) as ApiResponse<{ url: string }>;
 
       console.log('data:', data)
 

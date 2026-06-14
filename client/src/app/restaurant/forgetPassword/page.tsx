@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { RESTAURANT_API_METHODS } from '@/services/APIs/restaurant.api.service';
 import toast from 'react-hot-toast';
+import { ApiResponse } from '@/services/api.service';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -19,12 +20,12 @@ export default function ForgotPasswordPage() {
     setIsLoading(true);
     try {
       console.log('sanju')
-      const data = await RESTAURANT_API_METHODS.forgotPassword(email);
-      if (data.success) {
+      const data = await RESTAURANT_API_METHODS.forgotPassword(email) as ApiResponse;
+      if (data && data.success) {
         toast.success(`Reset link send to the email successfully.`);
         router.push('/restaurant/forgetPassword/sent');
       } else {
-        toast.error(`${data.message}`);
+        toast.error(`${data?.message || 'Failed'}`);
       }
     } catch (err) {
       console.error('Forgot password error:', err);

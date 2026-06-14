@@ -51,8 +51,9 @@ export class JWT implements IJWT {
       });
       logger.info(`accessToken from JWT->generateToken : ${accessToken}`);
       return { accessToken, refreshToken };
-    } catch (err: any) {
-      logger.error(`From JWT->generateToken:- Failed to generate JWT: ${err.message}`);
+    } catch (err) {
+      const error = err as Error;
+      logger.error(`From JWT->generateToken:- Failed to generate JWT: ${error.message}`);
       throw new Error('Failed to generate tokens');
     }
   }
@@ -69,8 +70,9 @@ export class JWT implements IJWT {
       else resetLink = `${process.env.FRONTEND_URL}/hotel/resetPassword?token=${resetToken}`
       logger.info(`resetLink:- ${resetLink}`)
       return { resetToken, resetLink };
-    } catch (err: any) {
-      logger.error(`From JWT->generateResetToken:- Failed to generate reset token: ${err.message}`);
+    } catch (err) {
+      const error = err as Error;
+      logger.error(`From JWT->generateResetToken:- Failed to generate reset token: ${error.message}`);
       throw new Error('Failed to generate reset token');
     }
   }
@@ -79,8 +81,9 @@ export class JWT implements IJWT {
     try {
       const payload = jwt.verify(token, this.JWT_SECRET) as { id: string; email: string };
       return payload;
-    } catch (err: any) {
-      logger.error(`From JWT->verifyResetToken:- Failed to verify reset token: ${err.message}`);
+    } catch (err) {
+      const error = err as Error;
+      logger.error(`From JWT->verifyResetToken:- Failed to verify reset token: ${error.message}`);
       throw new InvalidResetTokenError();
     }
   }

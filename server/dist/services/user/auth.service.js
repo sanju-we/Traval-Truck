@@ -20,28 +20,18 @@ const inversify_1 = require("inversify");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const resAndErrors_1 = require("../../utils/resAndErrors");
 const user_profile_1 = require("../../core/DTO/user/Response/user.profile");
-const zod_1 = require("zod");
 const logger_1 = require("../../utils/logger");
 let AuthService = class AuthService {
-    constructor(_authRepository, _redisClient, _jwtUtil, _emailService) {
+    constructor(_authRepository, _redisClient, _jwtUtil, _emailService, _authValidator) {
         this._authRepository = _authRepository;
         this._redisClient = _redisClient;
         this._jwtUtil = _jwtUtil;
         this._emailService = _emailService;
+        this._authValidator = _authValidator;
         this.OTP_TTL_SECONDS = 300;
     }
     async verify(enteredEmail, enteredOtp, userData) {
-        const schema = zod_1.z.object({
-            email: zod_1.z.email(),
-            otp: zod_1.z.string().length(6),
-            userData: zod_1.z.object({
-                name: zod_1.z.string().min(1),
-                email: zod_1.z.email(),
-                password: zod_1.z.string().min(8),
-                phoneNumber: zod_1.z.number(),
-            }),
-        });
-        schema.parse({ email: enteredEmail, otp: enteredOtp, userData });
+        await this._authValidator.userSignupValidator(enteredEmail, enteredOtp, userData);
         const pending = await this._redisClient.get(`pending:${enteredEmail}`);
         if (!pending)
             throw new resAndErrors_1.OtpExpiredError();
@@ -69,11 +59,7 @@ let AuthService = class AuthService {
         return { user: (0, user_profile_1.toUserProfileDTO)(userDoc), accessToken, refreshToken };
     }
     async verifyLogin(email, password) {
-        const schema = zod_1.z.object({
-            email: zod_1.z.email(),
-            password: zod_1.z.string().min(8),
-        });
-        schema.parse({ email, password });
+        await this._authValidator.loginValidator(email, password);
         const user = await this._authRepository.findByEmail(email);
         if (!user)
             throw new resAndErrors_1.UserNotFoundError();
@@ -90,24 +76,17 @@ let AuthService = class AuthService {
         return { user: (0, user_profile_1.toUserProfileDTO)(user), accessToken, refreshToken };
     }
     async sendLink(email) {
-        const schema = zod_1.z.object({
-            email: zod_1.z.email(),
-        });
-        schema.parse({ email });
+        await this._authValidator.emailValidator(email);
         const userData = await this._authRepository.findByEmail(email);
         if (!userData)
-            throw new resAndErrors_1.UserNotFoundError();
-        const user = { id: userData.id, email: userData.email };
+            throw new resAndErrors_1.EmailNotExists();
+        const user = { id: userData.id, email: userData.email, role: userData.role };
         const { resetLink } = await this._jwtUtil.generateResetToken(user);
         await this._emailService.sendEmail(email, 'Password Reset', `Reset your password: ${resetLink}`);
         logger_1.logger.info(`From UserAuth->sendLink:- Password reset link sent to ${email}`);
     }
     async resetPassword(token, newPassword) {
-        const schema = zod_1.z.object({
-            token: zod_1.z.string().min(1),
-            newPassword: zod_1.z.string().min(8),
-        });
-        schema.parse({ token, newPassword });
+        await this._authValidator.resetPasswordValidator(token, newPassword);
         const payload = await this._jwtUtil.verifyResetToken(token);
         const user = await this._authRepository.findById(payload.id);
         if (!user)
@@ -124,5 +103,6 @@ exports.AuthService = AuthService = __decorate([
     __param(1, (0, inversify_1.inject)('IRedisClient')),
     __param(2, (0, inversify_1.inject)('IJWT')),
     __param(3, (0, inversify_1.inject)('IEmailService')),
-    __metadata("design:paramtypes", [Object, Object, Object, Object])
+    __param(4, (0, inversify_1.inject)('IAuthValidator')),
+    __metadata("design:paramtypes", [Object, Object, Object, Object, Object])
 ], AuthService);

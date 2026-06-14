@@ -8,9 +8,17 @@ class MindMapRepository extends baseRepository_1.BaseRepository {
     constructor() {
         super(MindMap_1.MindMap);
     }
-    async findMapsWithPagination(userId, page) {
-        const maps = await MindMap_1.MindMap.find({ userId: userId }).skip(page - 1).limit(5);
-        return maps.map(mindMap_res_1.toMindMapRes);
+    async findMapsWithPagination(userId, page, limit) {
+        const skip = (page - 1) * limit;
+        const filter = { userId: userId };
+        const maps = await MindMap_1.MindMap.find(filter).skip(skip).limit(limit);
+        const total = await MindMap_1.MindMap.countDocuments(filter);
+        const totalPages = Math.ceil(total / limit);
+        return {
+            data: maps.map(mindMap_res_1.toMindMapRes),
+            total,
+            totalPages
+        };
     }
 }
 exports.MindMapRepository = MindMapRepository;

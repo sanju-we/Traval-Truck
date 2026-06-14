@@ -17,8 +17,24 @@ export class AgencyPackageService implements IAgencyPackageService {
     @inject('IAgencyRespository') private readonly _agencyRepo: IAgencyRespository
   ) { }
 
-  async getAllPackage(page: number): Promise<{ data: PackageResDTO[]; total: number; page: number; totalPages: number; }> {
-    const allPackage = await this._agencyPackeageRepository.findAllPackageWithPartners(page)
+  async getAllPackage(
+    page: number,
+    limit?: number,
+    search?: string,
+    ownedBy?: string,
+    price?: string,
+    duration?: string,
+    sortBy?: string
+  ): Promise<{ data: PackageResDTO[]; total: number; page: number; totalPages: number; }> {
+    const allPackage = await this._agencyPackeageRepository.findAllPackageWithPartners(
+      page,
+      limit,
+      search,
+      ownedBy,
+      price,
+      duration,
+      sortBy
+    )
     return allPackage
   }
 
@@ -43,7 +59,7 @@ export class AgencyPackageService implements IAgencyPackageService {
     if (packageData) {
       agency?.packages.push(packageData._id.toString())
       await agency?.save()
-      return await this.getAllPackage(1)
+      return await this.getAllPackage(1, 6, undefined, id)
     }
     throw new Data_Creation_Error()
   }

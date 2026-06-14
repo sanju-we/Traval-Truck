@@ -11,12 +11,13 @@ import { X, Crop } from 'lucide-react';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
 import ConfirmModal from '../common/ConfirmModal';
+import { Area } from 'react-easy-crop';
 
 interface EditRoomModalProps {
   room: IRoom;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (updatedRoom: any) => void;
+  onSave: (updatedRoom: IRoom) => void;
 }
 
 export default function EditRoomModal({ room, isOpen, onClose, onSave }: EditRoomModalProps) {
@@ -39,7 +40,7 @@ export default function EditRoomModal({ room, isOpen, onClose, onSave }: EditRoo
 
   const [images, setImages] = useState<string[]>(room.images || []);
   const [croppingImage, setCroppingImage] = useState<string | null>(null);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
 
@@ -81,8 +82,9 @@ export default function EditRoomModal({ room, isOpen, onClose, onSave }: EditRoo
       } else {
         toast.error(data.message || "Failed to delete image");
       }
-    } catch (error: any) {
-      console.error("🔥 Delete image error:", error.response || error);
+    } catch (error) {
+      const err = error as Record<string, unknown> & { response?: { data?: { message?: string } } };
+      console.error("❌ Delete image error:", err.response || err);
       toast.error("Something went wrong while deleting image");
     }
   };

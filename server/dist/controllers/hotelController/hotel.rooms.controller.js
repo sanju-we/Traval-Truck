@@ -39,6 +39,7 @@ let HotelRoomsController = class HotelRoomsController {
         const data = req.body;
         const files = req.files;
         const hotelId = req.user.id;
+        console.log('sexy');
         if (!files || Object.keys(files).length === 0)
             throw new resAndErrors_1.Files_Missing();
         const allFiles = Object.values(files).flat();

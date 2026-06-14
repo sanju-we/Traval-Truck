@@ -6,6 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authValidator = void 0;
 const zod_1 = __importDefault(require("zod"));
 class authValidator {
+    async passwordValidator(password) {
+        const schema = zod_1.default.string().min(8, "Password must be at least 8 characters long.").max(64, "Password cannot exceed 64 characters.").regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d_]{8,}$/, "Password must be at least 8 characters, include letters, numbers, and only '_' is allowed as special character");
+        schema.parse(password);
+    }
     async signUpValidator(enteredEmail, enteredOtp, agencyData) {
         const schema = zod_1.default.object({
             enteredEmail: zod_1.default.email("Please enter a valid email address.").trim().toLowerCase().max(100, "Email is too long."),
@@ -19,6 +23,48 @@ class authValidator {
             }),
         });
         schema.parse({ enteredEmail, enteredOtp, agencyData });
+    }
+    async userProfileUpdateValidator(name, userName, phone) {
+        const schema = zod_1.default.object({
+            name: zod_1.default.string(),
+            userName: zod_1.default.string(),
+            phoneNumber: zod_1.default.preprocess((val) => Number(val), zod_1.default.number()),
+        });
+        schema.parse({ name, userName, phone });
+    }
+    async tokenValidator(accessToken, refreshToken) {
+        const schema = zod_1.default.object({
+            refreshToken: zod_1.default.string().optional(),
+            accessToken: zod_1.default.string().optional(),
+        });
+        schema.parse({ accessToken, refreshToken });
+    }
+    async otpStoreValidator(email, otp) {
+        const schema = zod_1.default.object({
+            email: zod_1.default.email("Please enter a valid email address.").trim().toLowerCase().max(100, "Email is too long."),
+            otp: zod_1.default.string().length(6),
+        });
+        schema.parse({ email, otp });
+    }
+    async userSignupValidator(email, otp, userData) {
+        const schema = zod_1.default.object({
+            email: zod_1.default.email(),
+            otp: zod_1.default.string().length(6),
+            userData: zod_1.default.object({
+                name: zod_1.default.string().min(1),
+                email: zod_1.default.email(),
+                password: zod_1.default.string().min(8),
+                phoneNumber: zod_1.default.number(),
+            }),
+        });
+        schema.parse({ email, otp, userData });
+    }
+    async blockValidator(id, status) {
+        const schema = zod_1.default.object({
+            id: zod_1.default.string().min(10),
+            status: zod_1.default.boolean()
+        });
+        schema.parse({ id, status });
     }
     async loginValidator(email, password) {
         const schema = zod_1.default.object({
@@ -46,6 +92,10 @@ class authValidator {
             price: zod_1.default
                 .string()
                 .regex(/^\d+$/, "Price must be a number string")
+                .transform((val) => parseInt(val, 10)),
+            maxPeople: zod_1.default
+                .string()
+                .regex(/^\d+$/, "maxPrice must be a number string")
                 .transform((val) => parseInt(val, 10)),
             availableFoods: zod_1.default
                 .array(zod_1.default.string().min(1))
@@ -81,6 +131,7 @@ class authValidator {
         schema.parse({ ownerName, companyName, phone, bankDetails });
     }
     async RoomValidator(data) {
+        console.log('sunny');
         const roomSchema = zod_1.default.object({
             Facilities: zod_1.default
                 .string(),
@@ -109,7 +160,6 @@ class authValidator {
                 .string()
                 .min(2, { message: "Room type must be at least 2 characters long" }),
         });
-        console.log(data);
         roomSchema.parse(data);
     }
     async updateStatusValidator(id, status) {

@@ -10,7 +10,7 @@ export interface IPayment extends Document {
   sessionId?: string;           // stripe checkout session id
   paymentIntentId?: string;     // stripe payment_intent id (if available)
   stripeCustomerId?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   createdAt: Date;
   updatedAt: Date;
 }

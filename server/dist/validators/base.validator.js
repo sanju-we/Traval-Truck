@@ -10,6 +10,13 @@ class BaseValidator {
         const schema = zod_1.default.string().min(23);
         schema.parse(id);
     }
+    async InterestValidator(interest, id) {
+        const schema = zod_1.default.object({
+            interests: zod_1.default.array(zod_1.default.string()),
+            id: zod_1.default.string().optional(),
+        });
+        schema.parse({ interest, id });
+    }
     async reviewValidator(data) {
         const schema = zod_1.default.object({
             rating: zod_1.default.number().min(1, 'Atleast 1 start is required').max(5, 'Maximum 5 star is valid'),

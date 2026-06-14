@@ -1,4 +1,3 @@
-import { PackageDTO } from "@core/DTO/agency/request/packageDTO";
 import { IUserPackageController } from "../../core/interface/controllerInterface/user/Iuser.package.controller";
 import { IUserPackageService } from "../../core/interface/serivice/user/IUser.package.service";
 import { inject, injectable } from "inversify";

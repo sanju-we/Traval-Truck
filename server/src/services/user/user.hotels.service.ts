@@ -22,7 +22,7 @@ export class UserHotelsService implements IUserHotelsService {
     @inject('IWalletRespository') private readonly _walletRepo: IWalletRespository,
   ) { }
 
-  async getAllHotels(page: number, limit: number, search?: string): Promise<PaginationResponse<any>> {
+  async getAllHotels(page: number, limit: number, search?: string): Promise<PaginationResponse<unknown>> {
     const query = { search: search || '', status: 'Activity' };
     const hotelsData = await this._hotelAuthRepo.findAllWithpagination(query, limit, page);
 
@@ -81,7 +81,7 @@ export class UserHotelsService implements IUserHotelsService {
         }, {});
 
         const dateRange = [];
-        let curr = new Date(start);
+        const curr = new Date(start);
         while (curr < end) {
           dateRange.push(new Date(curr));
           curr.setDate(curr.getDate() + 1);
@@ -118,7 +118,7 @@ export class UserHotelsService implements IUserHotelsService {
     return roomsDTOs;
   }
 
-  async getHotelDetails(hotelId: string): Promise<any> {
+  async getHotelDetails(hotelId: string): Promise<unknown> {
     const hotel = await this._hotelAuthRepo.findById(hotelId);
     if (!hotel) throw new DataNotFoundError();
     return hotel;
@@ -151,7 +151,7 @@ export class UserHotelsService implements IUserHotelsService {
     }, {});
 
     if (orders.length > 0) {
-      let curr = new Date(date);
+      const curr = new Date(date);
       while (curr < endDate) {
         let bookedOnThisDay = 0;
         orders.forEach(order => {
@@ -182,7 +182,7 @@ export class UserHotelsService implements IUserHotelsService {
         type: 'booking',
         userId,
         role,
-        amount,
+        amount: amount.toString(),
         roomId,
         couponId,
         startDate,
@@ -195,6 +195,20 @@ export class UserHotelsService implements IUserHotelsService {
   async walletPurchase(roomId: string, role: string, userId: string, amount: number, couponId: string, startDate: string, people: number): Promise<{ success: boolean; message: string }> {
     const room = await this._hotelRoomRepo.findById(roomId);
     if (!room) throw new DataNotFoundError();
+
+    const orders = await this._orderRepo.findAll({ userId: userId }, {})
+
+    const day = new Date()
+
+    const today = orders.filter((order) => order.createdAt > day)
+
+    let cancelCount = 0;
+
+    for (let i = 0; i < today.length; i++) {
+      if (today[i].status === 'cancelled') cancelCount++
+    }
+
+    if (cancelCount >= 2) throw new DataNotFoundError()
 
     const requiredRooms = Math.ceil(people / (room.Capacity || 1));
     if (requiredRooms > (room.AvailableCount || 1)) {
@@ -213,9 +227,8 @@ export class UserHotelsService implements IUserHotelsService {
     const endDate = new Date(checkIn);
     endDate.setDate(endDate.getDate() + days);
 
-    // Generate Order ID
     const pad = (n: number) => n.toString().padStart(2, '0');
-    const count = (await this._orderRepo.countDocuments() + 1).toString().padStart(6, '0')
+    const count = (await this._orderRepo.countDocuments({}) + 1).toString().padStart(6, '0')
     const date = new Date()
     const orderId = `ORD-${pad(date.getDate())}${pad(date.getMonth() + 1)}${date.getFullYear()}-${count}`
 
@@ -238,7 +251,6 @@ export class UserHotelsService implements IUserHotelsService {
       return { success: false, message: 'Failed to create booking order' };
     }
 
-    // Deduct from user's wallet
     wallet.Balance -= amount;
     const transaction = {
       Type: 'debit',
@@ -249,7 +261,6 @@ export class UserHotelsService implements IUserHotelsService {
     wallet.Transaction.push(transaction);
     await this._walletRepo.update(wallet.id, wallet);
 
-    // Credit to admin wallet
     const adminWallet = await this._walletRepo.findOne({ role: 'admin' });
     if (adminWallet) {
       const adminTransaction = {

@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { IRooms, IRoomsDocument } from "../core/interface/modelInterface/IRoomType";
+import { IRoomsDocument } from "../core/interface/modelInterface/IRoomType";
 
 const RoomTypeSchema: Schema = new Schema({
   HotelId: {

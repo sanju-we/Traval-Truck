@@ -54,7 +54,13 @@ export interface OrderDetails {
   };
   productType: 'Package' | 'Rooms' | 'Foods';
   role: 'Agency' | 'Restaurant' | 'Hotel';
-  product: any;
+  product: {
+    title?: string;
+    name?: string;
+    description?: string;
+    duration?: string;
+    images?: string[];
+  };
   amount: number;
   ownedBy: {
     _id: string;
@@ -96,18 +102,8 @@ export interface Review {
   UserName?: string;
 }
 
-export interface Packages {
+export interface Packages extends PackageData {
   id: string;
-  title: string;
-  duration: string;
-  price: number;
-  description: string;
-  discoveries: string[];
-  availableFoods: string[];
-  itinerary: Itinerary[];
-  reviews: Review[];
-  CreatedBy: string;
-  images: string[];
 }
 
 export interface ReviewType {

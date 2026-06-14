@@ -11,6 +11,8 @@ import {
   AlertCircle,
 } from 'lucide-react';
 
+import { ProductData } from '@/types/user/profile';
+
 interface PlanDay {
   date: string;
   day: number;
@@ -21,7 +23,7 @@ interface PlanDay {
 }
 
 interface PackageDetailsProps {
-  product: any;
+  product: ProductData;
   status: 'Upcoming' | 'Ongoing' | 'Completed' | 'Cancelled';
   plan?: PlanDay[];
   tripProgress?: {

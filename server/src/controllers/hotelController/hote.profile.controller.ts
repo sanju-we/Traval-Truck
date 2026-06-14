@@ -36,7 +36,12 @@ export class HotelProfileCotroller implements IHotelProfileController {
       companyName,
       address,
       phone: Number(phone),
-      bankDetails: bankDetails as any,
+      bankDetails: bankDetails as {
+        accountHolder: string;
+        accountNumber: string;
+        bankName: string;
+        ifscCode: string;
+      },
     });
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updatedHotel);
   }

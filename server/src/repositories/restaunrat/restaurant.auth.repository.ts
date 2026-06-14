@@ -1,5 +1,6 @@
 // src/repositories/restaurant/restaurant.auth.repository.ts
 import { injectable } from 'inversify';
+import { FilterQuery } from 'mongoose';
 import { BaseRepository, RepositoryError } from '../../repositories/baseRepository';
 import { IRestaurant } from '../../core/interface/modelInterface/IRestaurant';
 import { IRestaurantAuthRepository } from '../../core/interface/repositorie/restaurant/Irestaurant.auth.repository';
@@ -27,9 +28,10 @@ export class RestaurantAuthRepository
       }
       logger.info(`Password updated for restaurant ID ${id}`);
       return restaurant;
-    } catch (err: any) {
-      logger.error(`Failed to update password for restaurant ID ${id}: ${err.message}`);
-      throw new RepositoryError(`Failed to update password: ${err.message}`);
+    } catch (err) {
+      const error = err as Error;
+      logger.error(`Failed to update password for restaurant ID ${id}: ${error.message}`);
+      throw new RepositoryError(`Failed to update password: ${error.message}`);
     }
   }
 
@@ -50,9 +52,10 @@ export class RestaurantAuthRepository
       const restaurants = await this.findAll({ isApproved: status });
       logger.debug(`Found ${restaurants.length} restaurants with isApproved=${status}`);
       return restaurants.map(toVendorRequestDTO);
-    } catch (err: any) {
-      logger.error(`Failed to find restaurants by status ${status}: ${err.message}`);
-      throw new RepositoryError(`Failed to find restaurants by status: ${err.message}`);
+    } catch (err) {
+      const error = err as Error;
+      logger.error(`Failed to find restaurants by status ${status}: ${error.message}`);
+      throw new RepositoryError(`Failed to find restaurants by status: ${error.message}`);
     }
   }
 
@@ -62,7 +65,7 @@ export class RestaurantAuthRepository
     page: number,
   ): Promise<{ data: IRestaurant[]; total: number; totalPages: number }> {
     const skip = (page - 1) * limit;
-    const filter: any = {};
+    const filter: FilterQuery<IRestaurant> = {};
 
     if (query.search) {
       filter['$or'] = [

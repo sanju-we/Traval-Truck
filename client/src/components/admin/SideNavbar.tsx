@@ -13,6 +13,7 @@ import {
   Building,
 } from 'lucide-react';
 import { ADMIN_API_METHODS } from '@/services/APIs/admin.api.service';
+import { ApiResponse } from '@/services/api.service';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -28,8 +29,8 @@ export function SideNavbar({ active }: SideNavbarProps) {
   const pathname = usePathname();
 
   const handleLogout = async () => {
-    const data = await ADMIN_API_METHODS.logout();
-    if (data.success) {
+    const data = await ADMIN_API_METHODS.logout() as ApiResponse;
+    if (data && data.success) {
       toast.success('Log-out successfully');
       router.push('/admin/login');
     }

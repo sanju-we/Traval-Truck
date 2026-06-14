@@ -5,6 +5,7 @@ import { useState, useRef, useLayoutEffect } from 'react';
 import { RESTAURANT_API_METHODS } from '@/services/APIs/restaurant.api.service';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { ApiResponse } from '@/services/api.service';
 
 export default function SignUpPage() {
   const [timer, setTimer] = useState(60);
@@ -104,14 +105,14 @@ export default function SignUpPage() {
     setIsResendingOtp(true);
 
     try {
-      const data = await RESTAURANT_API_METHODS.sendOtp({ email: formData.email });
+      const data = await RESTAURANT_API_METHODS.sendOtp({ email: formData.email }) as ApiResponse & { error?: string };
 
-      if (data.success) {
+      if (data && data.success) {
         toast.success('OTP resent to your email');
         setTimer(60); // restart timer
         handleTimer(); // restart countdown
       } else {
-        toast.error(data.error);
+        toast.error(data?.error || 'Failed to resend');
       }
     } catch (err) {
       toast.error('Failed to resend OTP');
@@ -125,16 +126,16 @@ export default function SignUpPage() {
 
     setIsOtpLoading(true);
     try {
-      const data = await RESTAURANT_API_METHODS.sendOtp({ email: formData.email });
+      const data = await RESTAURANT_API_METHODS.sendOtp({ email: formData.email }) as ApiResponse & { error?: string };
 
-      if (data.success) {
+      if (data && data.success) {
         setShowOtpInput(true);
         toast.success('OTP sent to your email');
         setTimer(60);
         handleTimer();
         setErrors({});
       } else {
-        toast.error(`${data.error}`);
+        toast.error(`${data?.error || 'Failed to send'}`);
       }
     } catch (err) {
       toast.error('Failed to send OTP');
@@ -163,13 +164,13 @@ export default function SignUpPage() {
           password: formData.password,
           phone: Number(formData.phone),
         },
-      });
+      }) as ApiResponse;
 
-      if (data.success) {
+      if (data && data.success) {
         toast.success('Email Registered successfully, Approval Request sended');
         route.push('/restaurant/profile');
       } else {
-        toast.error(`${data.message}`);
+        toast.error(`${data?.message || 'Verification failed'}`);
         setOtp(['', '', '', '', '', '']);
       }
     } catch (err) {

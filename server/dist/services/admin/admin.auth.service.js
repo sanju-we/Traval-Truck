@@ -19,20 +19,16 @@ exports.AdminAuthService = void 0;
 const inversify_1 = require("inversify");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const resAndErrors_1 = require("../../utils/resAndErrors");
-const zod_1 = __importDefault(require("zod"));
 const logger_1 = require("../../utils/logger");
 const user_profile_1 = require("../../core/DTO/user/Response/user.profile");
 let AdminAuthService = class AdminAuthService {
-    constructor(_authRepository, _ijwt) {
+    constructor(_authRepository, _ijwt, _authValidator) {
         this._authRepository = _authRepository;
         this._ijwt = _ijwt;
+        this._authValidator = _authValidator;
     }
     async verifyAdminEmail(email, password) {
-        const schema = zod_1.default.object({
-            email: zod_1.default.email(),
-            password: zod_1.default.string(),
-        });
-        schema.parse({ email, password });
+        this._authValidator.loginValidator(email, password);
         const admin = await this._authRepository.findByEmail(email);
         if (!admin)
             throw new resAndErrors_1.UserNotFoundError();
@@ -54,5 +50,6 @@ exports.AdminAuthService = AdminAuthService = __decorate([
     (0, inversify_1.injectable)(),
     __param(0, (0, inversify_1.inject)('IAuthRepository')),
     __param(1, (0, inversify_1.inject)('IJWT')),
-    __metadata("design:paramtypes", [Object, Object])
+    __param(2, (0, inversify_1.inject)('IAuthValidator')),
+    __metadata("design:paramtypes", [Object, Object, Object])
 ], AdminAuthService);

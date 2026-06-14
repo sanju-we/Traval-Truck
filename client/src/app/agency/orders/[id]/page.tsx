@@ -25,6 +25,7 @@ import {
   X
 } from 'lucide-react';
 import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
+import { ApiResponse } from '@/services/api.service';
 import toast from 'react-hot-toast';
 import SetStartDateModal from '@/components/agency/SetStartDateModal';
 import { OrderDetails } from '@/types/agency';
@@ -51,9 +52,9 @@ export default function OrderDetailsPage() {
   async function fetchOrderDetails() {
     try {
       setLoading(true);
-      const response = await AGENCY_API_METHODS.getOrder(orderId);
+      const response = await AGENCY_API_METHODS.getOrder(orderId) as ApiResponse<OrderDetails>;
 
-      if (response.success) {
+      if (response && response.success) {
         setOrder(response.data);
       } else {
         toast.error(response.message || 'Failed to load order details');
@@ -83,9 +84,9 @@ export default function OrderDetailsPage() {
       setActionLoading(true);
       if (!order?.startDate) return toast.error('Start date is not set');
 
-      const response = await AGENCY_API_METHODS.startTrip(orderId);
+      const response = await AGENCY_API_METHODS.startTrip(orderId) as ApiResponse<OrderDetails>;
 
-      if (response.success) {
+      if (response && response.success) {
         toast.success('Trip started successfully!');
         setOrder(response.data);
         setShowStartModal(false);
@@ -105,9 +106,9 @@ export default function OrderDetailsPage() {
       setCompletingActivity({ day, activity: activityIndex });
       setActionLoading(true);
 
-      const response = await AGENCY_API_METHODS.completeActivity(orderId, day, activityIndex);
+      const response = await AGENCY_API_METHODS.completeActivity(orderId, day, activityIndex) as ApiResponse<OrderDetails>;
 
-      if (response.success) {
+      if (response && response.success) {
         toast.success('Activity completed!');
         setOrder(response.data);
       } else {
@@ -125,9 +126,9 @@ export default function OrderDetailsPage() {
   const handleCompleteDay = async (day: number) => {
     try {
       setActionLoading(true);
-      const response = await AGENCY_API_METHODS.completeDayItinerary(orderId, day);
+      const response = await AGENCY_API_METHODS.completeDayItinerary(orderId, day) as ApiResponse<OrderDetails>;
 
-      if (response.success) {
+      if (response && response.success) {
         toast.success(`Day ${day} marked as completed!`);
         setOrder(response.data);
       } else {
@@ -144,9 +145,9 @@ export default function OrderDetailsPage() {
   const handleCompleteTrip = async () => {
     try {
       setActionLoading(true);
-      const response = await AGENCY_API_METHODS.completeTrip(orderId);
+      const response = await AGENCY_API_METHODS.completeTrip(orderId) as ApiResponse<OrderDetails>;
 
-      if (response.success) {
+      if (response && response.success) {
         toast.success('Trip completed successfully!');
         setOrder(response.data);
         setShowCompleteModal(false);

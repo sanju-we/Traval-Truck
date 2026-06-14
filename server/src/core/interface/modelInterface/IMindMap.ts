@@ -1,4 +1,4 @@
-import { Document,Schema,Types } from "mongoose";
+import { Document, Types } from "mongoose";
 import { places } from "../../../core/DTO/user/Request/mindMap";
 import { PlaceNode } from "../../../utils/tripPlanner";
 import { aiInsights, budget, routeMetrics, startingPosition, timeAllocation } from "../../../core/DTO/user/Response/mindMap.res";

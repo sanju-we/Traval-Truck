@@ -1,6 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
 import { ISubscriptions } from '../core/interface/modelInterface/Isubscription';
-import { IDuration } from '../core/interface/modelInterface/Isubscription';
 
 const SubscriptionsSchema: Schema = new Schema({
   Name: { type: String },

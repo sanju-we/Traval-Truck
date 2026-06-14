@@ -6,6 +6,7 @@ import { XCircle, ArrowLeft, Home, RefreshCcw, HelpCircle, Ticket, AlertTriangle
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import { SHARED_API_METHODS } from "@/services/APIs/shared.api.service";
+import { ApiResponse } from "@/services/api.service";
 import TravelTruckLoading from "@/components/shared/TravelTruckLoading";
 
 export default function PaymentCancelPage() {
@@ -18,8 +19,8 @@ export default function PaymentCancelPage() {
     useEffect(() => {
         if (planId) {
             (async () => {
-                const res = await SHARED_API_METHODS.subscriptionDetails("agency", planId);
-                if (res.success) {
+                const res = await SHARED_API_METHODS.subscriptionDetails("agency", planId) as ApiResponse<{ name: string }>;
+                if (res && res.success) {
                     setPlanName(res.data.name);
                 }
                 setLoading(false);

@@ -51,7 +51,9 @@ export class RestaurantProfileService implements IRestaurantProfileService {
     }
 
     if (update) {
-      update.isRestricted && await this._restaurantAuthRepo.update(id, { isRestricted: false });
+      if (update.isRestricted) {
+        await this._restaurantAuthRepo.update(id, { isRestricted: false });
+      }
       return toVendorRequestDTO(update);
     }
     return null;

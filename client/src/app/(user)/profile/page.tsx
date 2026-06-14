@@ -8,9 +8,10 @@ import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
-import Cropper from 'react-easy-crop';
+import Cropper, { Area } from 'react-easy-crop';
 import getCroppedImg from '@/components/utils/UserCropImage';
 import { UserProfile } from '@/types/user/profile';
+import { ApiResponse } from '@/services/api.service';
 import ProfileOverview from '@/components/user/profile/ProfileOverview';
 import TripHistory from '@/components/user/profile/TripHistory';
 
@@ -24,7 +25,7 @@ export default function UserProfilePage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [isCropping, setIsCropping] = useState(false);
   const [profileLoad, setProfileLoad] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
@@ -39,9 +40,9 @@ export default function UserProfilePage() {
   useEffect(() => {
     async function fetchUser() {
       try {
-        const res = await USER_API_METHODS.getProfile();
+        const res = await USER_API_METHODS.getProfile() as ApiResponse<UserProfile>;
         console.log(res);
-        if (!res.success) {
+        if (res && !res.success) {
           toast.error(res.message);
           if (res.message === 'This user is Restricted by the admin') {
             router.push('/');
@@ -61,8 +62,8 @@ export default function UserProfilePage() {
 
     async function fetchTripStats() {
       try {
-        const res = await USER_API_METHODS.orderHistory();
-        if (res.success && res.data) {
+        const res = await USER_API_METHODS.orderHistory() as ApiResponse<any>;
+        if (res && res.success && res.data) {
           const list = res.data;
           const total = list.length;
           const upcoming = list.filter((t: any) => t.status === 'Ongoing' || t.status === 'Upcoming').length;
@@ -94,14 +95,23 @@ export default function UserProfilePage() {
     e.preventDefault();
     setIsSaving(true);
     try {
-      const res = await USER_API_METHODS.editProfile(formData);
-      if (!res.success) {
+      const formPayload = new FormData();
+      if (formData.name) formPayload.append('name', formData.name);
+      if (formData.userName) formPayload.append('userName', formData.userName);
+      if (formData.phoneNumber) formPayload.append('phoneNumber', String(formData.phoneNumber));
+      if (formData.oldPassword) formPayload.append('oldPassword', formData.oldPassword);
+      if (formData.newPassword) formPayload.append('newPassword', formData.newPassword);
+
+      const res = await USER_API_METHODS.editProfile(formPayload) as ApiResponse<UserProfile>;
+      if (res && !res.success) {
         toast.error(res.message || 'Update failed');
         setIsSaving(false);
         return;
       }
       toast.success('Profile updated successfully');
-      setUser(res.data);
+      if (res && res.data) {
+        setUser(res.data);
+      }
       setIsEditing(false);
       setShowPasswordChange(false);
     } catch (err) {
@@ -124,6 +134,7 @@ export default function UserProfilePage() {
   async function handleCropComplete() {
     try {
       setProfileLoad(true);
+      if (!croppedAreaPixels) return;
       const croppedImage = await getCroppedImg(imagePreview!, croppedAreaPixels);
       const ress = await fetch(croppedImage);
       const blob = await ress.blob();
@@ -132,8 +143,8 @@ export default function UserProfilePage() {
 
       const formDataImg = new FormData();
       formDataImg.append('profile', file);
-      const res = await USER_API_METHODS.uploadImage(formDataImg);
-      if (res.success) {
+      const res = await USER_API_METHODS.uploadImage(formDataImg) as ApiResponse<UserProfile>;
+      if (res && res.success) {
         if (res.data != null) {
           setFormData(res.data);
           setUser(res.data);

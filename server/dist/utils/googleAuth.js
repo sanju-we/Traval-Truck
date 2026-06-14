@@ -44,7 +44,8 @@ const googleCallback = async (req, res) => {
         res.redirect('http://localhost:3000');
     }
     catch (err) {
-        logger_1.logger.error(`Google Auth Failed: ${err.message}`);
+        const error = err;
+        logger_1.logger.error(`Google Auth Failed: ${error.message}`);
         res.status(500).json({ success: false, message: 'Google Authentication failed' });
     }
 };

@@ -12,7 +12,7 @@ const delet = deleteRequest;
 export const RESTAURANT_API_METHODS = {
     // authentication api requests
     sendOtp: (data: { email: string }) => post(RESTAURANT_ROUTES.auth.sendOtp, data),
-    verifyOtp: (data: any) => post(RESTAURANT_ROUTES.auth.verifyOtp, data),
+    verifyOtp: (data: object) => post(RESTAURANT_ROUTES.auth.verifyOtp, data),
     login: (data: { email: string, password: string }) => post(RESTAURANT_ROUTES.auth.login, data),
     logout: () => post(RESTAURANT_ROUTES.auth.logout, {}),
     forgotPassword: (email: string) => post(RESTAURANT_ROUTES.auth.forgotPassword, { email }),
@@ -21,21 +21,21 @@ export const RESTAURANT_API_METHODS = {
     // profile api requests
     getProfile: () => get(RESTAURANT_ROUTES.profile.getProfile),
     getDashboard: () => get(RESTAURANT_ROUTES.profile.getDashboard),
-    edit: (data: any) => patch(RESTAURANT_ROUTES.profile.edit, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
-    updateDocument: (data: any) => put(RESTAURANT_ROUTES.profile.updateDocument, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
-    deleteImage: (data: any) => patch(RESTAURANT_ROUTES.profile.deleteImage, data),
-    uploadProfile: (data: any) => post(RESTAURANT_ROUTES.profile.uploadProfile, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+    edit: (data: FormData) => patch(RESTAURANT_ROUTES.profile.edit, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+    updateDocument: (data: FormData) => put(RESTAURANT_ROUTES.profile.updateDocument, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+    deleteImage: (data: object) => patch(RESTAURANT_ROUTES.profile.deleteImage, data),
+    uploadProfile: (data: FormData) => post(RESTAURANT_ROUTES.profile.uploadProfile, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
 
     // food api requests
     getFood: () => get(RESTAURANT_ROUTES.food.getFood),
-    create: (data: any) => post(RESTAURANT_ROUTES.food.create, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+    create: (data: FormData) => post(RESTAURANT_ROUTES.food.create, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
     DeleteImage: (index: number, foodId: string) => patch(RESTAURANT_ROUTES.food.delete, { index, foodId }),
-    editFood: (data: any) => patch(RESTAURANT_ROUTES.food.edit, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+    editFood: (data: FormData) => patch(RESTAURANT_ROUTES.food.edit, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
 
     // payment api requests
-    createPayment: (data: any) => post(RESTAURANT_ROUTES.payment.create, data),
-    createOfflineBill: (data: any) => post(RESTAURANT_ROUTES.bill.craeteBill, { data }),
+    createPayment: (data: object) => post(RESTAURANT_ROUTES.payment.create, data),
+    createOfflineBill: (data: object) => post(RESTAURANT_ROUTES.bill.craeteBill, { data }),
 
     // subscription api requests
-    purchaseSubscription: (data: any) => post(RESTAURANT_ROUTES.subscription.purchase, data),
+    purchaseSubscription: (data: object) => post(RESTAURANT_ROUTES.subscription.purchase, data),
 };

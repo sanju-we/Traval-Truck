@@ -24,7 +24,8 @@ let SharedWalletController = class SharedWalletController {
     }
     async getWallet(req, res) {
         const id = req.user.id;
-        const wallet = await this._walletService.getWallet(id);
+        const { page, limit } = req.query;
+        const wallet = await this._walletService.getWallet(id, page ? Number(page) : undefined, limit ? Number(limit) : undefined);
         logger_1.logger.info(wallet);
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.DATA_FOUND, wallet);
     }
@@ -34,6 +35,11 @@ let SharedWalletController = class SharedWalletController {
         const wallet = await this._walletService.addMoney(id, amount, paymentIntentId);
         logger_1.logger.info(wallet);
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.PAYMENT_SUCCESS, wallet);
+    }
+    async getBalance(req, res) {
+        const id = req.user.id;
+        const balance = await this._walletService.getBalance(id);
+        (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.DATA_FOUND, balance);
     }
 };
 exports.SharedWalletController = SharedWalletController;

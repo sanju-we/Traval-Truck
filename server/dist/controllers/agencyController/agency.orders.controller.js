@@ -23,7 +23,8 @@ let AgencyOrdersController = class AgencyOrdersController {
     }
     async getAll(req, res) {
         const userId = req.user.id;
-        const orders = await this._orderService.getAllOrder(userId);
+        const { page, limit, search, status, price, sortBy } = req.query;
+        const orders = await this._orderService.getAllOrder(userId, page ? Number(page) : 1, limit ? Number(limit) : 5, search ? String(search) : undefined, status ? String(status) : undefined, price ? String(price) : undefined, sortBy ? String(sortBy) : undefined);
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.DATA_FOUND, orders);
     }
     async setDate(req, res) {

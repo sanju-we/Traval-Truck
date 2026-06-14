@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { HOTEL_API_METHODS } from '@/services/APIs/hotel.api.service';
 import toast from 'react-hot-toast';
 import TravelTruckLoading from '@/components/shared/TravelTruckLoading';
+import { ApiResponse } from '@/services/api.service';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -19,15 +20,15 @@ export default function ForgotPasswordPage() {
 
     setIsLoading(true);
     try {
-      const data = await HOTEL_API_METHODS.forgotPassword(email);
+      const data = await HOTEL_API_METHODS.forgotPassword(email) as ApiResponse;
       console.log('suss')
 
-      if (data.success) {
+      if (data && data.success) {
         toast.success(`success`);
         router.push('/hotel/forgetPassword/sent');
       } else {
         console.log('dfjsdlfjsdlfjsdkfjsdflksdjf')
-        toast.error(`${data.message}`);
+        toast.error(`${data?.message || 'Failed'}`);
       }
     } catch (err) {
       console.error('Forgot password error:', err);

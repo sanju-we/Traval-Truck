@@ -1,4 +1,4 @@
-import mongoose, { Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { IPackage } from '../core/interface/modelInterface/Ipackage';
 
 

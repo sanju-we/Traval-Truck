@@ -5,6 +5,8 @@ import { Calendar, X, AlertCircle } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { AGENCY_API_METHODS } from '@/services/APIs/agency.api.service';
+import { ApiResponse } from '@/services/api.service';
+import { OrderDetails } from '@/types/agency';
 
 interface SetStartDateModalProps {
   isOpen: boolean;
@@ -16,11 +18,11 @@ interface SetStartDateModalProps {
       name: string;
     };
     product?: {
-      title: string;
+      title?: string;
     };
     startDate?: string;
   };
-  onSuccess: (updatedOrder: any) => void;
+  onSuccess: (updatedOrder: OrderDetails) => void;
 }
 
 export default function SetStartDateModal({
@@ -63,9 +65,9 @@ export default function SetStartDateModal({
 
     try {
       // Replace with your actual API method
-      const response = await AGENCY_API_METHODS.setOrderStartDate(order.id, startDate);
+      const response = await AGENCY_API_METHODS.setOrderStartDate(order.id, startDate) as ApiResponse<OrderDetails>;
 
-      if (response.success) {
+      if (response && response.success) {
         toast.success('Start date set successfully!');
         onSuccess(response.data);
         onClose();

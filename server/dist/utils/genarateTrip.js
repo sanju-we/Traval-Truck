@@ -4,7 +4,7 @@ exports.TripGenerator = void 0;
 class TripGenerator {
     async generatePlanFromItinerary(itineray, date) {
         const plan = [];
-        for (let item of itineray) {
+        for (const item of itineray) {
             const day = new Date(date);
             date.setDate(date.getDate() + item.day - 1);
             plan.push({

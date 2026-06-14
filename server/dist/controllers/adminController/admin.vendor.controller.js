@@ -117,9 +117,8 @@ let AdminVendorController = class AdminVendorController {
         await this._adminVenderService.updateBlock(id, role);
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.UPDATED);
     }
-    async sortUsers(req, res) {
-        const { sort, status } = req.query;
-        const data = await this._adminVenderService;
+    async sortUsers(_req, _res) {
+        // Unimplemented
     }
 };
 exports.AdminVendorController = AdminVendorController;

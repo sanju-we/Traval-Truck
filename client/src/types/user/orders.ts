@@ -34,7 +34,11 @@ export interface OrderDetails {
   };
   ownedBy?: {
     _id: string;
-    [key: string]: any;
+    name?: string;
+    companyName?: string;
+    logo?: string;
+    email?: string;
+    [key: string]: unknown;
   };
   startDate?: string;
   endDate?: string;
@@ -47,7 +51,12 @@ export interface OrderDetails {
     startedAt?: string;
     completedAt?: string;
   };
-  paymentId: any;
+  paymentId: {
+    _id: string;
+    transactionId?: string;
+    paymentMethod?: string;
+    paymentStatus?: string;
+  } | null;
   createdAt: string;
   updatedAt?: string;
 }

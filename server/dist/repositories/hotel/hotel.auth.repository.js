@@ -23,6 +23,7 @@ class HotelAuthRepository extends baseRepository_1.BaseRepository {
             filter['$or'] = [
                 { companyName: { $regex: query.search, $options: 'i' } },
                 { email: { $regex: query.search, $options: 'i' } },
+                { address: { $regex: query.search, $options: 'i' } },
             ];
         }
         if (query.status) {

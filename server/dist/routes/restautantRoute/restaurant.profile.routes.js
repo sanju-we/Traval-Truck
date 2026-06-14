@@ -13,7 +13,7 @@ const restaurantProfileController = container_1.container.get('IRestaurantProfil
 restaurantProfileRouter
     .get('/profile', authMiddleware_1.verifyRestaurantToken, (0, asyncHandler_1.asyncHandler)(restaurantProfileController.getRestaurant.bind(restaurantProfileController)))
     .get('/dashboard', authMiddleware_1.verifyRestaurantToken, (0, asyncHandler_1.asyncHandler)(restaurantProfileController.getdashboard.bind(restaurantProfileController)))
-    .patch('/update', authMiddleware_1.verifyRestaurantToken, restaurantProfileController.updateProfile.bind(restaurantProfileController))
+    .patch('/update', authMiddleware_1.verifyRestaurantToken, multer_1.default.none(), restaurantProfileController.updateProfile.bind(restaurantProfileController))
     .put('/update-documents', authMiddleware_1.verifyRestaurantToken, multer_1.default.fields([
     { name: 'registrationCertificate', maxCount: 1 },
     { name: 'panCard', maxCount: 1 },

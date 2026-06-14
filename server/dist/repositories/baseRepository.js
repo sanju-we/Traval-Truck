@@ -36,8 +36,9 @@ class BaseRepository {
             return savedItem;
         }
         catch (err) {
-            logger_1.logger.error(`Failed to create document in ${__classPrivateFieldGet(this, _BaseRepository_model, "f").modelName}: ${err.message}`);
-            throw new RepositoryError(`Failed to create document: ${err.message}`);
+            const error = err;
+            logger_1.logger.error(`Failed to create document in ${__classPrivateFieldGet(this, _BaseRepository_model, "f").modelName}: ${error.message}`);
+            throw new RepositoryError(`Failed to create document: ${error.message}`);
         }
     }
     async findById(id) {
@@ -46,19 +47,25 @@ class BaseRepository {
             return item;
         }
         catch (err) {
-            logger_1.logger.error(`Failed to find document in ${__classPrivateFieldGet(this, _BaseRepository_model, "f").modelName} by ID ${id}: ${err.message}`);
-            throw new RepositoryError(`Failed to find document: ${err.message}`);
+            const error = err;
+            logger_1.logger.error(`Failed to find document in ${__classPrivateFieldGet(this, _BaseRepository_model, "f").modelName} by ID ${id}: ${error.message}`);
+            throw new RepositoryError(`Failed to find document: ${error.message}`);
         }
     }
-    async findOne(filter) {
+    async findOne(filter, options) {
         try {
-            const item = await __classPrivateFieldGet(this, _BaseRepository_model, "f").findOne(filter).exec();
+            const query = __classPrivateFieldGet(this, _BaseRepository_model, "f").findOne(filter);
+            if (options) {
+                query.setOptions(options);
+            }
+            const item = await query.exec();
             logger_1.logger.debug(`Queried ${__classPrivateFieldGet(this, _BaseRepository_model, "f").modelName} with filter ${JSON.stringify(filter)}: ${item ? 'found' : 'not found'}`);
             return item;
         }
         catch (err) {
-            logger_1.logger.error(`Failed to find document in ${__classPrivateFieldGet(this, _BaseRepository_model, "f").modelName}: ${err.message}`);
-            throw new RepositoryError(`Failed to find document: ${err.message}`);
+            const error = err;
+            logger_1.logger.error(`Failed to find document in ${__classPrivateFieldGet(this, _BaseRepository_model, "f").modelName}: ${error.message}`);
+            throw new RepositoryError(`Failed to find document: ${error.message}`);
         }
     }
     async findByEmail(email) {
@@ -67,8 +74,9 @@ class BaseRepository {
             return item;
         }
         catch (err) {
-            logger_1.logger.error(`Failed to find document in ${__classPrivateFieldGet(this, _BaseRepository_model, "f").modelName}: ${err.message}`);
-            throw new RepositoryError(`Failed to find document: ${err.message}`);
+            const error = err;
+            logger_1.logger.error(`Failed to find document in ${__classPrivateFieldGet(this, _BaseRepository_model, "f").modelName}: ${error.message}`);
+            throw new RepositoryError(`Failed to find document: ${error.message}`);
         }
     }
     async findAll(filter = {}, options = {}) {
@@ -78,8 +86,9 @@ class BaseRepository {
             return items;
         }
         catch (err) {
-            logger_1.logger.error(`Failed to find documents in ${__classPrivateFieldGet(this, _BaseRepository_model, "f").modelName}: ${err.message}`);
-            throw new RepositoryError(`Failed to find documents: ${err.message}`);
+            const error = err;
+            logger_1.logger.error(`Failed to find documents in ${__classPrivateFieldGet(this, _BaseRepository_model, "f").modelName}: ${error.message}`);
+            throw new RepositoryError(`Failed to find documents: ${error.message}`);
         }
     }
     async update(id, data) {
@@ -89,18 +98,32 @@ class BaseRepository {
             return item;
         }
         catch (err) {
-            logger_1.logger.error(`Failed to update document in ${__classPrivateFieldGet(this, _BaseRepository_model, "f").modelName} with ID ${id}: ${err.message}`);
-            throw new RepositoryError(`Failed to update document: ${err.message}`);
+            const error = err;
+            logger_1.logger.error(`Failed to update document in ${__classPrivateFieldGet(this, _BaseRepository_model, "f").modelName} with ID ${id}: ${error.message}`);
+            throw new RepositoryError(`Failed to update document: ${error.message}`);
         }
     }
-    async countDocuments() {
+    async updateMany(filter, data) {
         try {
-            const count = await __classPrivateFieldGet(this, _BaseRepository_model, "f").countDocuments();
+            const result = await __classPrivateFieldGet(this, _BaseRepository_model, "f").updateMany(filter, data).exec();
+            logger_1.logger.info(`Updated multiple documents in ${__classPrivateFieldGet(this, _BaseRepository_model, "f").modelName} match filter ${JSON.stringify(filter)}: ${JSON.stringify(result)}`);
+            return result;
+        }
+        catch (err) {
+            const error = err;
+            logger_1.logger.error(`Failed to update multiple documents in ${__classPrivateFieldGet(this, _BaseRepository_model, "f").modelName}: ${error.message}`);
+            throw new RepositoryError(`Failed to update multiple documents: ${error.message}`);
+        }
+    }
+    async countDocuments(filter) {
+        try {
+            const count = await __classPrivateFieldGet(this, _BaseRepository_model, "f").countDocuments(filter);
             return count;
         }
         catch (error) {
-            logger_1.logger.error(`count the documents: ${error.message}`);
-            throw new RepositoryError(`Failed to count document: ${error.message}`);
+            const err = error;
+            logger_1.logger.error(`count the documents: ${err.message}`);
+            throw new RepositoryError(`Failed to count document: ${err.message}`);
         }
     }
 }

@@ -14,7 +14,12 @@ export class SharedWalletController implements ISharedWalletController {
   ) { }
   async getWallet(req: Request, res: Response): Promise<void> {
     const id = req.user.id
-    const wallet = await this._walletService.getWallet(id)
+    const { page, limit } = req.query;
+    const wallet = await this._walletService.getWallet(
+      id,
+      page ? Number(page) : undefined,
+      limit ? Number(limit) : undefined
+    );
     logger.info(wallet)
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.DATA_FOUND, wallet)
   }

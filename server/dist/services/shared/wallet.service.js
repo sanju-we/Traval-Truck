@@ -11,18 +11,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WalletService = void 0;
 const inversify_1 = require("inversify");
 const resAndErrors_1 = require("../../utils/resAndErrors");
+const mongoose_1 = __importDefault(require("mongoose"));
 let WalletService = class WalletService {
     constructor(_walletRepo, _paymentValidator, _paymentUtils) {
         this._walletRepo = _walletRepo;
         this._paymentValidator = _paymentValidator;
         this._paymentUtils = _paymentUtils;
     }
-    async getWallet(id) {
-        const wallet = await this._walletRepo.FindByUserId(id);
+    async getWallet(id, page, limit) {
+        const wallet = await this._walletRepo.FindByUserId(id, page, limit);
         if (!wallet)
             throw new resAndErrors_1.DataNotFoundError();
         return wallet;
@@ -42,7 +46,6 @@ let WalletService = class WalletService {
             },
         });
     }
-    // ⚠️ This function is called ONLY from the Stripe webhook
     async addMoney(userId, amount, paymentId) {
         const wallet = await this._walletRepo.FindByUserId(userId);
         const transaction = {
@@ -60,10 +63,17 @@ let WalletService = class WalletService {
                 return isSaved;
         }
         return await this._walletRepo.create({
-            UserId: userId,
+            UserId: new mongoose_1.default.Types.ObjectId(userId),
             Balance: amount,
             Transaction: [transaction],
         });
+    }
+    async getBalance(id) {
+        const wallet = await this._walletRepo.FindByUserId(id);
+        console.log(wallet);
+        if (!wallet)
+            return { balance: 0 };
+        return { balance: wallet.Balance };
     }
 };
 exports.WalletService = WalletService;

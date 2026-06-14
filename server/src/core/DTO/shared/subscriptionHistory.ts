@@ -14,16 +14,19 @@ export interface subscriptionHistoryDTO {
   valid?: number
 }
 
-export const toSubsctiptionHistoryDTO = (history: ISubscriptionHistory): subscriptionHistoryDTO => ({
-  userId: history.userId,
-  role: history.role,
-  amount: history.amount,
-  paymentId: history.paymentId,
-  subscriptionId: history.subscriptionId,
-  status: history.status,
-  startDate: history.startDate,
-  endDate: history.endDate,
-  name: (history as any).name,
-  features: (history as any).features,
-  valid: (history as any).valid,
-})
+export const toSubsctiptionHistoryDTO = (history: ISubscriptionHistory): subscriptionHistoryDTO => {
+  const hist = history as unknown as ISubscriptionHistory & { name?: string; features?: string[]; valid?: number };
+  return {
+    userId: hist.userId,
+    role: hist.role,
+    amount: hist.amount,
+    paymentId: hist.paymentId,
+    subscriptionId: hist.subscriptionId,
+    status: hist.status,
+    startDate: hist.startDate,
+    endDate: hist.endDate,
+    name: hist.name,
+    features: hist.features,
+    valid: hist.valid,
+  };
+}

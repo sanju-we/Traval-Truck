@@ -40,7 +40,9 @@ let HotelProfileService = class HotelProfileService {
             update = await this._hotelAuthRepo.update(hotelId, { [`documents.${fileName}`]: result });
         }
         if (update) {
-            update.isRestricted && await this._hotelAuthRepo.update(hotelId, { isRestricted: false });
+            if (update.isRestricted) {
+                await this._hotelAuthRepo.update(hotelId, { isRestricted: false });
+            }
             return (0, vendor_response_dto_1.toVendorRequestDTO)(update);
         }
         return null;

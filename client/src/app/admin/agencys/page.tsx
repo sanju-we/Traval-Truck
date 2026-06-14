@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { ADMIN_API_METHODS } from '@/services/APIs/admin.api.service';
+import { ApiResponse } from '@/services/api.service';
 import { Card, CardContent } from '@/components/shared/ui/card';
 import { useDispatch } from 'react-redux';
 import { setSelectedUser } from '@/redux/userDetailsSlice';
@@ -26,20 +27,22 @@ export default function AgenciesPage() {
     const fetchAgencies = async (currentPage = 1, searchTerm = '', statusFilter = '') => {
         setLoading(true);
         try {
-            const res = await ADMIN_API_METHODS.getAllAgencies({
+            const res = (await ADMIN_API_METHODS.getAllAgencies({
                 page: currentPage,
                 limit: limit,
                 search: searchTerm,
                 status: statusFilter
-            });
+            })) as ApiResponse<{ data: User[]; totalPages: number; total: number }> | null;
 
-            console.log("Admin Agencies Response:", res.data); // Debugging
+            console.log("Admin Agencies Response:", res?.data); // Debugging
 
-            const { data, totalPages: total, total: totalCount } = res.data;
-            setAgencies(data);
-            setTotalPages(total);
-            setTotalItems(totalCount || 0);
-            setPage(currentPage);
+            if (res && res.data) {
+                const { data, totalPages: total, total: totalCount } = res.data;
+                setAgencies(data);
+                setTotalPages(total);
+                setTotalItems(totalCount || 0);
+                setPage(currentPage);
+            }
         } catch (err) {
             console.error('Error fetching agencies:', err);
         } finally {
@@ -142,7 +145,7 @@ export default function AgenciesPage() {
                                             </td>
                                         </tr>
                                     ) : (
-                                        agencies.map((agency: any) => (
+                                        agencies.map((agency: User) => (
                                             <tr
                                                 key={agency._id || agency.id}
                                                 className="border-t hover:bg-gray-50 transition"

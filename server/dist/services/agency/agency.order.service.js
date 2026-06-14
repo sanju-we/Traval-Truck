@@ -14,7 +14,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AgencyOrderService = void 0;
 const inversify_1 = require("inversify");
-const logger_1 = require("../../utils/logger");
 const agency_order_DTO_1 = require("../../core/DTO/agency/response/agency.order.DTO");
 const resAndErrors_1 = require("../../utils/resAndErrors");
 let AgencyOrderService = class AgencyOrderService {
@@ -26,10 +25,14 @@ let AgencyOrderService = class AgencyOrderService {
         this._paymentRepo = _paymentRepo;
         this._agencyRepo = _agencyRepo;
     }
-    async getAllOrder(userId) {
-        const orders = await this._orderRepo.findAll({ ownedBy: userId }, {});
-        logger_1.logger.info(`saj${orders}`);
-        return orders.map(agency_order_DTO_1.toOrderDTO);
+    async getAllOrder(userId, page = 1, limit = 5, search, status, price, sortBy) {
+        const paginatedOrders = await this._orderRepo.findAllOrdersWithPagination(userId, page, limit, search, status, price, sortBy);
+        return {
+            data: paginatedOrders.data.map(agency_order_DTO_1.toOrderDTO),
+            total: paginatedOrders.total,
+            page: paginatedOrders.page,
+            totalPages: paginatedOrders.totalPages
+        };
     }
     async setStartDate(orderId, date) {
         const order = await this._orderRepo.findOrderWithProduct(orderId);
@@ -117,10 +120,10 @@ let AgencyOrderService = class AgencyOrderService {
         const adminWallet = await this._walletRepo.findOne({ role: 'admin' });
         if (!adminWallet)
             throw new resAndErrors_1.DataNotFoundError();
-        const agency = await this._agencyRepo.findById(order.ownedBy);
+        const agency = await this._agencyRepo.findById(order.ownedBy.toString());
         if (!agency)
             throw new resAndErrors_1.DataNotFoundError();
-        const agencyWallet = await this._walletRepo.findOne({ UserId: order.ownedBy });
+        const agencyWallet = await this._walletRepo.findOne({ UserId: order.ownedBy.toString() });
         if (!agencyWallet)
             throw new resAndErrors_1.DataNotFoundError();
         const paymentHistory = await this._paymentRepo.findById(order.paymentId.toString());

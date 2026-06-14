@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Star, User, ChevronLeft, ChevronRight, Filter, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { SHARED_API_METHODS } from '@/services/APIs/shared.api.service';
+import { ApiResponse } from '@/services/api.service';
 
 /* ---------------- Types ---------------- */
 
@@ -19,24 +20,24 @@ interface Review {
   };
 }
 
-interface PackageReviewsProps {
+interface ReviewsProps {
   packageId: string;
   reviewsPerPage?: number;
 }
 
 /* ---------------- Component ---------------- */
 
-export default function PackageReviews({
+export default function Reviews({
   packageId,
   reviewsPerPage = 5,
-}: PackageReviewsProps) {
+}: ReviewsProps) {
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [totalReviews, setTotalReviews] = useState(0);
-  const [filterRating, setFilterRating] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalReviews, setTotalReviews] = useState(0);
   const [averageRating, setAverageRating] = useState(0);
+  const [filterRating, setFilterRating] = useState<number | null>(null);
   const [ratingCounts, setRatingCounts] = useState({
     5: 0, 4: 0, 3: 0, 2: 0, 1: 0,
   });
@@ -59,17 +60,17 @@ export default function PackageReviews({
           filterRating: filterRating ?? 0,
         },
         'user'
-      );
+      ) as ApiResponse<{ data: Review[], totalPage: number, totalCount: number, averageRating: number }>;
 
-      if (!res.success) return;
+      if (!res || !res.success) return;
 
       const reviewsData = res.data.data;
 
-      const replyRes = await SHARED_API_METHODS.getReplayUser('user', packageId);
+      const replyRes = await SHARED_API_METHODS.getReplayUser('user', packageId) as ApiResponse<{ reviewId: string; comment: string; replayer: string }[]>;
       const replies = replyRes?.data || [];
 
       const merged = reviewsData.map((review: Review) => {
-        const reply = replies.find((r: any) => r.reviewId === review._id);
+        const reply = replies.find((r: { reviewId: string; comment: string; replayer: string }) => r.reviewId === review._id);
         return reply
           ? { ...review, reply: { comment: reply.comment, replayer: reply.replayer } }
           : review;
@@ -79,7 +80,13 @@ export default function PackageReviews({
       setTotalPages(res.data.totalPage);
       setTotalReviews(res.data.totalCount);
       setAverageRating(res.data.averageRating);
-      setRatingCounts(res.data.totalCount);
+
+      const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+      reviewsData.forEach((rev: Review) => {
+        const r = Math.round(rev.rating) as 5 | 4 | 3 | 2 | 1;
+        if (counts[r] !== undefined) counts[r]++;
+      });
+      setRatingCounts(counts);
     } catch (err) {
       console.error(err);
       toast.error('Failed to load reviews');

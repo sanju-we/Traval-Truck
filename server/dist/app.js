@@ -11,6 +11,7 @@ const agencyRouters_1 = __importDefault(require("./routes/agencyRouters"));
 const hotelRouters_1 = __importDefault(require("./routes/hotelRouters"));
 const restaurant_1 = __importDefault(require("./routes/restaurant"));
 const sharedRouter_1 = __importDefault(require("./routes/sharedRouter"));
+const chatRouter_1 = __importDefault(require("./routes/chatRouter"));
 const cors_1 = __importDefault(require("cors"));
 const morgan_1 = __importDefault(require("morgan"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
@@ -38,6 +39,7 @@ app.use('/api/agency', agencyRouters_1.default);
 app.use('/api/hotel', hotelRouters_1.default);
 app.use('/api/restaurant', restaurant_1.default);
 app.use('/api/shared', sharedRouter_1.default);
+app.use('/api/chat', chatRouter_1.default);
 // error handling middleware
 app.use(errorHandler_1.errorHandler);
 function createApp() {

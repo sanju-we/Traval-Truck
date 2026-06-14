@@ -27,12 +27,14 @@ const OrdersSchema = new mongoose_1.Schema({
     startDate: { type: String },
     endDate: { type: String },
     plan: { type: [planSchema] },
+    people: { type: Number, default: 1 },
     tripProgress: { type: progress },
     status: { type: String, enum: ['Upcoming', 'Ongoing', 'Completed'], default: 'Upcoming' },
-    paymentId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Payments', required: true },
     couponApplied: { type: String },
     offer: { type: Number },
     createdAt: { type: Date },
-    reason: { type: String }
+    reason: { type: String },
+    paymentType: { type: String, enum: ['wallet', 'onlinePayment'], default: 'onlinePayment' },
+    paymentId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Payments' },
 }, { timestamps: true });
 exports.Order = (0, mongoose_1.model)('Orders', OrdersSchema);

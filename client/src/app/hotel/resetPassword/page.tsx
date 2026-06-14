@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { HOTEL_API_METHODS } from '@/services/APIs/hotel.api.service';
 import toast from 'react-hot-toast';
+import { ApiResponse } from '@/services/api.service';
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('');
@@ -20,7 +21,7 @@ export default function ResetPasswordPage() {
       return;
     }
 
-    if(!token){
+    if (!token) {
       toast.error('Inavalid Router');
       return;
     }
@@ -35,13 +36,13 @@ export default function ResetPasswordPage() {
       const data = await HOTEL_API_METHODS.resetPassword({
         token,
         newPassword: password,
-      });
+      }) as ApiResponse & { error?: string };
 
-      if (data.success) {
+      if (data && data.success) {
         toast.success('Password reset successful! Redirecting...');
         setTimeout(() => router.push('/hotel/login'), 2000);
       } else {
-        toast.error(`${data.error}`);
+        toast.error(`${data?.error || 'Failed'}`);
       }
     } catch (err) {
       console.error('Reset password error:', err);

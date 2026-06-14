@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { setAnswer, nextStep, prevStep, resetDrive } from '@/redux/userDriveSlice';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
+import { ApiResponse } from '@/services/api.service';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -47,15 +48,15 @@ export default function UserDrivePage() {
       dispatch(nextStep());
     } else {
       try {
-        const  data  = await USER_API_METHODS.intrest({ interests: answers });
+        const data = (await USER_API_METHODS.intrest({ interests: answers })) as ApiResponse;
         console.log(data);
-        if (data.success) {
+        if (data && data.success) {
           dispatch(resetDrive());
           toast.success('submited successfully');
           router.push('/');
           return;
         }
-        toast.error(data.message);
+        toast.error(data?.message || 'Submission failed');
       } catch (err) {
         console.error('Error submitting interests:', err);
       }

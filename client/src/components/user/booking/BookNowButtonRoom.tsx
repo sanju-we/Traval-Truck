@@ -3,6 +3,7 @@
 import { USER_API_METHODS } from "@/services/APIs/user.api.service";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
+import { ApiResponse } from "@/services/api.service";
 
 interface props {
   roomId: string,
@@ -26,9 +27,9 @@ export default function BuyNowButton({ roomId, amount, role, couponCode, startDa
     try {
       setLoading(true);
 
-      const res = await service.purchaseRoom({ roomId, role, amount, couponId: couponCode, startDate, people });
+      const res = await service.purchaseRoom({ roomId, role, amount, couponId: couponCode, startDate, people }) as ApiResponse<{ url: string }>;
       console.log(res)
-      if (res.success && res.data.url) {
+      if (res && res.success && res.data && res.data.url) {
         window.location.href = res.data.url;
       }
     } catch (err) {

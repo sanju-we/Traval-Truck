@@ -1,5 +1,3 @@
-import { vendorData, allRequest } from 'types';
-import { RestaurantProfileDTO } from '../../../../core/DTO/restaurant/response.dto';
 import { IRestaurant } from '../../../../core/interface/modelInterface/IRestaurant';
 import { vendorRequestDTO } from '../../../../core/DTO/admin/vendor.response.dto/vendor.response.dto';
 import { IBaserepository } from '../IBaseRepositories';

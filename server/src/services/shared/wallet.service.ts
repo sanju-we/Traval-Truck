@@ -16,8 +16,8 @@ export class WalletService implements IWalletService {
     @inject('IPaymentUtils') private readonly _paymentUtils: IPaymentUtils
   ) { }
 
-  async getWallet(id: string): Promise<WallterDTO> {
-    const wallet = await this._walletRepo.FindByUserId(id);
+  async getWallet(id: string, page?: number, limit?: number): Promise<WallterDTO> {
+    const wallet = await this._walletRepo.FindByUserId(id, page, limit);
     if (!wallet) throw new DataNotFoundError();
     return wallet;
   }

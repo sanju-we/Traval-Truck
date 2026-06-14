@@ -52,7 +52,9 @@ export class AgencyProfileService implements IAgencyProfileService {
       update = await this._agencyAuthRepo.update(id, { [`documents.${fieldname}`]: result });
     }
     if (update) {
-      update.isRestricted && await this._agencyAuthRepo.update(id, { isRestricted: false });
+      if (update.isRestricted) {
+        await this._agencyAuthRepo.update(id, { isRestricted: false });
+      }
       return toVendorRequestDTO(update);
     }
 

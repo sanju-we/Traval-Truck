@@ -34,13 +34,21 @@ let AgencyProfileController = class AgencyProfileController {
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.SUCCESS);
     }
     async update(req, res) {
-        const { ownerName, companyName, phone, bankDetails } = req.body;
+        const { ownerName, companyName, phone, address } = req.body;
+        // Extract bankDetails from flat structure if sent via FormData
+        const bankDetails = req.body.bankDetails || {
+            accountHolder: req.body['bankDetails.accountHolder'],
+            accountNumber: req.body['bankDetails.accountNumber'],
+            bankName: req.body['bankDetails.bankName'],
+            ifscCode: req.body['bankDetails.ifscCode'],
+        };
         const agencyId = req.user.id;
         const updatedAgency = await this._agencyProfileService.updateProfile(agencyId, {
             ownerName,
             companyName,
+            address,
             phone: Number(phone),
-            bankDetails,
+            bankDetails: bankDetails,
         });
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.UPDATED, updatedAgency);
     }

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
+import { ApiResponse } from '@/services/api.service';
 import toast from 'react-hot-toast';
 
 export default function ResetPasswordPage() {
@@ -35,13 +36,13 @@ export default function ResetPasswordPage() {
       const data = await USER_API_METHODS.resetPassword({
         token,
         newPassword: password,
-      });
+      }) as ApiResponse;
 
-      if (data.success) {
+      if (data && data.success) {
         toast.success('Password reset successful! Redirecting...')
         setTimeout(() => router.push('/login'), 2000);
       } else {
-        toast.error(`${data.error}`);
+        toast.error(`${data?.message || 'Failed to reset password'}`);
       }
     } catch (err) {
       console.error('Reset password error:', err);

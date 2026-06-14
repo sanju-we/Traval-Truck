@@ -8,6 +8,7 @@ const toPackageDTO = (packages) => ({
     duration: packages.duration,
     itinerary: packages.itinerary,
     price: packages.price,
+    maxPeople: packages.maxPeople,
     title: packages.title,
     images: packages.images
 });

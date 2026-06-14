@@ -18,16 +18,37 @@ import toast from 'react-hot-toast';
 import { Header } from '@/components/user/header/page';
 import { Footer } from '@/components/user/footer/page';
 import TravelTruckLoading from '@/components/shared/TravelTruckLoading';
+import { ApiResponse } from '@/services/api.service';
+import { Package } from '@/types/agency';
 
 type Tab = 'packages' | 'rooms' | 'foods';
+
+interface Food {
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
+  category: string;
+  images?: string[];
+}
+
+interface ExploreRoom {
+  id: string;
+  RoomNumber: number;
+  Description?: string;
+  PricePerNight: number;
+  Capacity: number;
+  Images?: string[];
+  images?: string[];
+}
 
 export default function ExplorePage() {
   const [activeTab, setActiveTab] = useState<Tab>('packages');
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
-  const [packages, setPackages] = useState<any[]>([]);
-  const [rooms, setRooms] = useState<any[]>([]);
-  const [foods, setFoods] = useState<any[]>([]);
+  const [packages, setPackages] = useState<Package[]>([]);
+  const [rooms, setRooms] = useState<ExploreRoom[]>([]);
+  const [foods, setFoods] = useState<Food[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const limit = 6;
@@ -40,23 +61,36 @@ export default function ExplorePage() {
   const fetchData = async (type: Tab, currentPage: number, searchTerm = '') => {
     try {
       setLoading(true);
-      let datas;
+      const params = {
+        page: currentPage,
+        limit,
+        ...(searchTerm ? { search: searchTerm } : {}),
+      };
 
-      const query = `?page=${currentPage}&limit=${limit}${
-        searchTerm ? `&search=${encodeURIComponent(searchTerm)}` : ''
-      }`;
+      let datas: ApiResponse<{ data: (Package | ExploreRoom | Food)[]; totalPages: number }> | null = null;
 
-      if (type === 'packages') datas = await USER_API_METHODS.getAllPackages(query);
-      if (type === 'rooms') datas = await USER_API_METHODS.getAllHotel(query);
-      if (type === 'foods') datas = await USER_API_METHODS.showAllFoods(query);
+      if (type === 'packages') {
+        datas = (await USER_API_METHODS.getAllPackages(params)) as ApiResponse<{ data: Package[]; totalPages: number }> | null;
+      }
+      if (type === 'rooms') {
+        datas = (await USER_API_METHODS.getAllHotel(searchTerm, currentPage, limit)) as ApiResponse<{ data: ExploreRoom[]; totalPages: number }> | null;
+      }
+      if (type === 'foods') {
+        datas = (await USER_API_METHODS.showAllFoods(params)) as ApiResponse<{ data: Food[]; totalPages: number }> | null;
+      }
 
-      const { data, totalPages } = datas || [];
-
-      if (type === 'packages') setPackages(data ? data : []);
-      if (type === 'rooms') setRooms(data || []);
-      if (type === 'foods') setFoods(data || []);
-
-      setTotalPages(totalPages || 1);
+      if (datas && datas.data) {
+        const { data, totalPages: total } = datas.data;
+        if (type === 'packages') setPackages((data as Package[]) || []);
+        if (type === 'rooms') setRooms((data as ExploreRoom[]) || []);
+        if (type === 'foods') setFoods((data as Food[]) || []);
+        setTotalPages(total || 1);
+      } else {
+        if (type === 'packages') setPackages([]);
+        if (type === 'rooms') setRooms([]);
+        if (type === 'foods') setFoods([]);
+        setTotalPages(1);
+      }
     } catch (err) {
       console.error(err);
       toast.error('Something went wrong while fetching data.');

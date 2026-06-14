@@ -78,7 +78,8 @@ async function verifyHotelToken(req, res, next) {
             return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
         }
         if (hotel.isRestricted) {
-            if (req.url !== '/profile' && req.url == '/update-documents') {
+            const allowedUrls = ['/profile', '/update-documents', '/purchase', '/activate'];
+            if (!allowedUrls.some(url => req.url.endsWith(url))) {
                 if (!hotel.isApproved)
                     throw new resAndErrors_1.UNAUTHORIZEDUserFounf();
             }
@@ -113,7 +114,8 @@ async function verifyAgencyToken(req, res, next) {
             return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
         }
         if (agency.isRestricted || !agency.isApproved) {
-            if (req.url !== '/profile' && req.url !== '/update-documents' && req.url !== '/logout' && req.url !== '/update') {
+            const allowedUrls = ['/profile', '/update-documents', '/logout', '/update', '/purchase', '/activate'];
+            if (!allowedUrls.some(url => req.url.endsWith(url))) {
                 if (!agency.isApproved)
                     throw new resAndErrors_1.UNAUTHORIZEDUserFounf();
             }
@@ -148,9 +150,9 @@ async function verifyRestaurantToken(req, res, next) {
             return (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.UNAUTHORIZED, false, 'Invalid token role');
         }
         if (restaurant.isRestricted || !restaurant.isApproved) {
-            if (req.url !== '/profile' && req.url !== '/update-documents' && req.url !== '/update') {
+            const allowedUrls = ['/profile', '/update-documents', '/update', '/purchase', '/activate'];
+            if (!allowedUrls.some(url => req.url.endsWith(url))) {
                 if (!restaurant.isApproved) {
-                    console.log('in here', req.url);
                     throw new resAndErrors_1.UNAUTHORIZEDUserFounf();
                 }
                 ;

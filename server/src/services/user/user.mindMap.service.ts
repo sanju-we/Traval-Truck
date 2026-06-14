@@ -4,7 +4,7 @@ import { IBaseValidator } from "../../core/interface/validator/IBasic.validator"
 import { inject, injectable } from "inversify";
 import { IAuthRepository } from "../../core/interface/repositorie/User/IAuth.Repository";
 import { BADREQUEST, DataNotFoundError, DataUpdatingError } from "../../utils/resAndErrors";
-import { buildOptimizedRoute, splitIntoDays, PlaceNode, getDistanceInKm, } from "../../utils/tripPlanner/index";
+import { buildOptimizedRoute, splitIntoDays, PlaceNode, } from "../../utils/tripPlanner/index";
 import { IMindMapRepository } from "../../core/interface/repositorie/User/IMindMap.repository";
 import { MindMapResDTO, toMindMapRes } from "../../core/DTO/user/Response/mindMap.res";
 import { validateTripPlan } from "../../services/Ai.service";
@@ -33,8 +33,8 @@ export class UserMindMapService implements IUserMindMapService {
     const startLoca = await loca.json();
     if (startLoca.status == 'OK') {
       const location = startLoca.results[0].geometry.location;
-      startLat = location.lat,
-        startLng = location.lng
+      startLat = location.lat;
+      startLng = location.lng;
     } else throw new DataNotFoundError();
 
     const places: PlaceNode[] = data.places.map(p => ({
@@ -50,7 +50,7 @@ export class UserMindMapService implements IUserMindMapService {
     const fuelCost = ((totalDistance / Number(data.milage)) * 100)
 
     const pad = (n: number) => n.toString().padStart(2, '0');
-    const count = (await this._mindMapRepo.countDocuments() + 1).toString().padStart(6, '0')
+    const count = (await this._mindMapRepo.countDocuments({}) + 1).toString().padStart(6, '0')
     const date = new Date()
     const orderId = `ORD-${pad(date.getDate())}${pad(date.getMonth() + 1)}${date.getFullYear()}-${count}`
 

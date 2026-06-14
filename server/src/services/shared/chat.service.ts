@@ -1,4 +1,5 @@
 import { injectable, inject } from 'inversify';
+import { Types } from 'mongoose';
 import { IChatService } from '../../core/interface/serivice/shared/IChat.service';
 import { IChatDocument, IMessageDocument } from '../../core/interface/modelInterface/IChat';
 import { Chat } from '../../models/Chat';
@@ -54,7 +55,7 @@ export class ChatService implements IChatService {
             timestamp: new Date()
         });
 
-        chat.lastMessage = message._id as any;
+        chat.lastMessage = message._id as Types.ObjectId;
         await chat.save();
 
         // Real-time emit

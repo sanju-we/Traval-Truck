@@ -24,8 +24,8 @@ let AgencyPackageService = class AgencyPackageService {
         this._authValidator = _authValidator;
         this._agencyRepo = _agencyRepo;
     }
-    async getAllPackage(page) {
-        const allPackage = await this._agencyPackeageRepository.findAllPackageWithPartners(page);
+    async getAllPackage(page, limit, search, ownedBy, price, duration, sortBy) {
+        const allPackage = await this._agencyPackeageRepository.findAllPackageWithPartners(page, limit, search, ownedBy, price, duration, sortBy);
         return allPackage;
     }
     async addPackage(data, files, id) {
@@ -49,7 +49,7 @@ let AgencyPackageService = class AgencyPackageService {
         if (packageData) {
             agency?.packages.push(packageData._id.toString());
             await agency?.save();
-            return await this.getAllPackage(1);
+            return await this.getAllPackage(1, 6, undefined, id);
         }
         throw new resAndErrors_1.Data_Creation_Error();
     }

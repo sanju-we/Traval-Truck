@@ -1,4 +1,3 @@
-import { PackageDTO } from "../../../../core/DTO/agency/request/packageDTO";
 import { Request, Response } from "express";
 
 export interface IUserPackageController {

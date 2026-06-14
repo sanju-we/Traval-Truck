@@ -8,6 +8,7 @@ import { Label } from '@/components/shared/ui/label';
 import { ImageCropperModal } from './ImagesCroperModalForRestaurant';
 import { RESTAURANT_API_METHODS } from '@/services/APIs/restaurant.api.service';
 import toast from 'react-hot-toast';
+import { ApiResponse } from '@/services/api.service';
 
 export interface FoodData {
   id: string;
@@ -105,8 +106,8 @@ export default function FoodModal({ isOpen, onClose, onSave, editingFood }: Food
 
   const handleDeleteImage = async (index: number) => {
     if(!editingFood) return 
-    const data = await RESTAURANT_API_METHODS.DeleteImage(index,editingFood?.id);
-    if(data.success){
+    const data = await RESTAURANT_API_METHODS.DeleteImage(index,editingFood?.id) as ApiResponse;
+    if(data && data.success){
       setImages((prev) => prev.filter((_, i) => i !== index));
     }
   };
@@ -147,24 +148,25 @@ export default function FoodModal({ isOpen, onClose, onSave, editingFood }: Food
         }
       }
 
-      let data;
+      let data: ApiResponse | null = null;
       if (!editingFood) {
         console.log(form)
-        data = await RESTAURANT_API_METHODS.create(form)
+        data = await RESTAURANT_API_METHODS.create(form) as ApiResponse;
       } else {
-        data = await RESTAURANT_API_METHODS.editFood(form)
+        data = await RESTAURANT_API_METHODS.editFood(form) as ApiResponse;
       }
 
-      if (data.success) {
+      if (data && data.success) {
         toast.success(editingFood ? 'Food item updated!' : 'Food item added!');
-        onSave(data.data);
+        onSave(data.data as FoodData);
         onClose();
       } else {
-        toast.error(data.message || 'Failed to save food item.');
+        toast.error(data?.message || 'Failed to save food item.');
       }
-    } catch (error: any) {
-      console.error(error);
-      toast.error(error.response?.data?.message || 'Something went wrong!');
+    } catch (error) {
+      const err = error as Record<string, unknown> & { response?: { data?: { message?: string } } };
+      console.error(err);
+      toast.error(err.response?.data?.message || 'Something went wrong!');
     } finally {
       setLoading(false);
     }

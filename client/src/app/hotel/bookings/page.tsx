@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { HotelOrder } from '@/types/hotel';
+import { ApiResponse } from '@/services/api.service';
 import VendorFooter from '@/components/shared/Footer';
 import TravelTruckLoading from '@/components/shared/TravelTruckLoading';
 
@@ -29,12 +30,12 @@ export default function HotelOrdersPage() {
   async function fetchOrders() {
     try {
       setLoading(true);
-      const res = await HOTEL_API_METHODS.getAllOrders();
+      const res = await HOTEL_API_METHODS.getAllOrders() as ApiResponse<HotelOrder[]>;
 
-      if (res.success) {
+      if (res && res.success) {
         setOrders(res.data || []);
       } else {
-        toast.error(res.message || 'Failed to fetch orders');
+        toast.error(res?.message || 'Failed to fetch orders');
       }
     } catch (error) {
       console.error(error);

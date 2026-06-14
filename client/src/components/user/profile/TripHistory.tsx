@@ -3,6 +3,7 @@ import { Calendar, MapPin, Clock, CheckCircle, MessageCircle, Eye } from 'lucide
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
+import { ApiResponse } from '@/services/api.service';
 
 interface product {
   availableFoods: string[];
@@ -40,15 +41,13 @@ export default function TripHistory({ userId }: TripHistoryProps) {
   async function fetchTrips() {
     try {
       setLoading(true);
-      // Fetch only 3 latest orders for profile trip history
-      const response = await USER_API_METHODS.orderHistory(1, 3);
+      const response = await USER_API_METHODS.orderHistory(1, 3) as ApiResponse<Trip[]>;
       console.log(response);
-      const data = await response.data;
 
-      if (response.success) {
-        setTrips(data);
+      if (response && response.success) {
+        setTrips(response.data || []);
       } else {
-        toast.error(response.message || 'Failed to fetch trips');
+        toast.error(response?.message || 'Failed to fetch trips');
       }
     } catch (error) {
       console.error('Error fetching trips:', error);
@@ -109,8 +108,8 @@ export default function TripHistory({ userId }: TripHistoryProps) {
           <button
             onClick={() => setFilter('all')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition ${filter === 'all'
-                ? 'bg-emerald-500 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ? 'bg-emerald-500 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
           >
             All Trips ({trips.length})
@@ -118,8 +117,8 @@ export default function TripHistory({ userId }: TripHistoryProps) {
           <button
             onClick={() => setFilter('upcoming')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition ${filter === 'upcoming'
-                ? 'bg-emerald-500 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ? 'bg-emerald-500 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
           >
             Upcoming ({upcomingTrips.length})
@@ -127,8 +126,8 @@ export default function TripHistory({ userId }: TripHistoryProps) {
           <button
             onClick={() => setFilter('completed')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition ${filter === 'completed'
-                ? 'bg-emerald-500 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ? 'bg-emerald-500 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
           >
             Completed ({completedTrips.length})
@@ -189,10 +188,10 @@ export default function TripHistory({ userId }: TripHistoryProps) {
 
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${trip.status === 'Upcoming'
-                        ? 'bg-blue-100 text-blue-700'
-                        : trip.status === 'Ongoing'
-                          ? 'bg-orange-100 text-orange-700'
-                          : 'bg-green-100 text-green-700'
+                      ? 'bg-blue-100 text-blue-700'
+                      : trip.status === 'Ongoing'
+                        ? 'bg-orange-100 text-orange-700'
+                        : 'bg-green-100 text-green-700'
                       }`}
                   >
                     {trip.status === 'Upcoming' && <Clock size={12} className="inline mr-1" />}

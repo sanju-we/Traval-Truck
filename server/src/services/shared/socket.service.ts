@@ -42,13 +42,13 @@ export class SocketService {
         return this.io;
     }
 
-    public emitToUser(userId: string, event: string, data: any) {
+    public emitToUser(userId: string, event: string, data: unknown) {
         if (this.io) {
             this.io.to(userId).emit(event, data);
         }
     }
 
-    public emitToChat(chatId: string, event: string, data: any) {
+    public emitToChat(chatId: string, event: string, data: unknown) {
         if (this.io) {
             this.io.to(chatId).emit(event, data);
         }

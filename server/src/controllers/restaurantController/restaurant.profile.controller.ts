@@ -43,14 +43,18 @@ export class RestaurantProfileController implements IRestaurantProfileController
       companyName,
       address,
       phone: Number(phone),
-      bankDetails: bankDetails as any,
+      bankDetails: bankDetails as {
+        accountHolder: string;
+        accountNumber: string;
+        bankName: string;
+        ifscCode: string;
+      },
     });
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.UPDATED, updateRestaurant);
   }
 
   async updateDocuments(req: Request, res: Response): Promise<void> {
     const restaurantId = req.user.id;
-    const restricted = req.user.isRestricted;
     const files = req.files as {
       [fieldname: string]: Express.Multer.File[];
     };

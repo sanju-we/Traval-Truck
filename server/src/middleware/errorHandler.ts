@@ -3,9 +3,21 @@ import { ZodError } from 'zod';
 import mongoose from 'mongoose';
 import { HttpError } from '../utils/resAndErrors';
 import { logger } from '../utils/logger';
-import { $ZodIssue } from 'zod/v4/core';
 
-export function errorHandler(err: { statusCode: number; message: string ; name: string; stack: any; issues: $ZodIssue[]; errors: { [s: string]: mongoose.Error.ValidatorError | mongoose.Error.CastError; } | ArrayLike<mongoose.Error.ValidatorError | mongoose.Error.CastError>; code: number; keyValue: {}; path: any; value: any; }, req: Request, res: Response, next: NextFunction) {
+interface AppError extends Error {
+  statusCode?: number;
+  code?: number;
+  keyValue?: Record<string, unknown>;
+  path?: string;
+  value?: unknown;
+}
+
+export function errorHandler(
+  err: AppError,
+  req: Request,
+  res: Response,
+  _next: NextFunction,
+) {
   let status = err.statusCode || 500;
   let message = 'Something went wrong. Please try again later.';
 
@@ -27,9 +39,9 @@ export function errorHandler(err: { statusCode: number; message: string ; name: 
     message = err.issues.map((issue) => issue.message).join(', ') || 'Invalid input data.';
   } else if (err instanceof mongoose.Error.ValidationError) {
     status = 400;
-    const errors = Object.values(err.errors).map((e: any) => e.message);
+    const errors = Object.values(err.errors).map((e) => (e as mongoose.Error.ValidatorError | mongoose.Error.CastError).message);
     message = errors.join(', ') || 'Validation failed.';
-  } else if (err.code === 11000) {
+  } else if (err.code === 11000 && err.keyValue) {
     status = 409;
     const field = Object.keys(err.keyValue)[0];
     message = `${field.charAt(0).toUpperCase() + field.slice(1)} is already in use.`;
