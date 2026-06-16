@@ -14,6 +14,13 @@ interface User {
   createdAt?: string;
   profilePicture?: string;
   logo?: string;
+  gender?: string;
+  phoneNumber?: string;
+  createdOn?: string;
+  bio?: string;
+  interest?: string[];
+  address?: any;
+  bankDetails?: any;
 }
 
 interface UserState {

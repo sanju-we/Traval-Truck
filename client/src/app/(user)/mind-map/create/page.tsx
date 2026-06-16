@@ -305,8 +305,6 @@ export default function CreateMindMapPage() {
 
   const totalDays = getTotalDays();
 
-  // Replace the return statement in the main component with this:
-
   return (
     <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!} libraries={libraries}>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50">
@@ -319,7 +317,7 @@ export default function CreateMindMapPage() {
               <span className="text-emerald-600"><SparklesIcon /></span>
               Create Your Trip Mind-Map
             </h1>
-             <div className="grid md:grid-cols-3 gap-4">
+            <div className="grid md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Trip Title</label>
                 <input placeholder="e.g., Kerala Adventure 2025" value={title} onChange={(e) => setTitle(e.target.value)} className={`w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none ${errors.title ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}`} />

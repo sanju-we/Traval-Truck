@@ -21,7 +21,7 @@ export const ADMIN_API_METHODS = {
   blockUser: (id: string, role: string) => patch(ADMIN_ROUTES.vendor.block(id, role), {}),
 
   // coupon api requests
-  fetchAllCoupons: () => get(ADMIN_ROUTES.coupons.getAllCoupons),
+  fetchAllCoupons: (params?: { page?: number; limit?: number }) => get(ADMIN_ROUTES.coupons.getAllCoupons, params),
   createCoupon: (data: object) => post(ADMIN_ROUTES.coupons.create, data),
   edit: (data: object, id: string) => patch(ADMIN_ROUTES.coupons.editCoupons(id), data),
   editStatus: (id: string) => put(ADMIN_ROUTES.coupons.updateStatus(id), {}),

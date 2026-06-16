@@ -18,6 +18,8 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter, usePathname } from 'next/navigation';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 type SideNavbarProps = {
   active?: string;
@@ -27,6 +29,22 @@ export function SideNavbar({ active }: SideNavbarProps) {
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const selectedUser = useSelector((state: RootState) => state.details?.selectedUser);
+
+  const isItemActive = (itemPath: string) => {
+    if (itemPath === '/admin') return pathname === '/admin';
+
+    if (pathname?.startsWith('/admin/users/') && pathname.length > '/admin/users/'.length) {
+      if (!selectedUser) return false;
+      if (selectedUser.role === 'user' && itemPath === '/admin/users') return true;
+      if (selectedUser.role === 'agency' && itemPath === '/admin/agencys') return true;
+      if (selectedUser.role === 'hotel' && itemPath === '/admin/hotels') return true;
+      if (selectedUser.role === 'restaurant' && itemPath === '/admin/restaurants') return true;
+      return false;
+    }
+
+    return pathname?.startsWith(itemPath) || false;
+  };
 
   const handleLogout = async () => {
     const data = await ADMIN_API_METHODS.logout() as ApiResponse;
@@ -71,9 +89,9 @@ export function SideNavbar({ active }: SideNavbarProps) {
           {menuItems.map((item) => (
             <li
               key={item.label}
-              className={`flex items-center p-3 rounded-md cursor-pointer transition-all duration-150 ${(item.path === '/admin' ? pathname === '/admin' : pathname?.startsWith(item.path))
-                  ? 'bg-purple-600 text-white font-semibold shadow-md'
-                  : 'hover:bg-gray-800 text-gray-300'
+              className={`flex items-center p-3 rounded-md cursor-pointer transition-all duration-150 ${isItemActive(item.path)
+                ? 'bg-purple-600 text-white font-semibold shadow-md'
+                : 'hover:bg-gray-800 text-gray-300'
                 }`}
               onClick={() => router.push(item.path)}
             >
