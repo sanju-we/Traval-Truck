@@ -33,7 +33,7 @@ export const ADMIN_ROUTES = {
     getAllCoupons: `${ADMIN_COUPONS}/all`,
     create: `${ADMIN_COUPONS}/add`,
     editCoupons: (id: string) => `${ADMIN_COUPONS}/edit/${id}`,
-    updateStatus: (id: string) => `${ADMIN_COUPONS}/tongle/${id}`
+    updateStatus: (id: string) => `${ADMIN_COUPONS}/toggle/${id}`
   },
 
   orders: {

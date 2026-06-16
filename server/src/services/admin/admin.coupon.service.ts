@@ -3,7 +3,7 @@ import { CouponDTO, toCouponDTO } from "../../core/DTO/admin/coupon/admin.coupon
 import { IAdminCouponService } from "../../core/interface/serivice/admin/IAdmin.coupon.service";
 import { ICouponValidator } from "../../core/interface/validator/Icoupon.validator";
 import { IAdminCouponRepository } from "../../core/interface/repositorie/admin/Iadmin.coupon.repository";
-import { Data_Creation_Error, DataNotFoundError, DataUpdatingError } from "../../utils/resAndErrors";
+import { CouponExpired, Data_Creation_Error, DataNotFoundError, DataUpdatingError } from "../../utils/resAndErrors";
 
 @injectable()
 export class AdminCouponService implements IAdminCouponService {
@@ -37,6 +37,8 @@ export class AdminCouponService implements IAdminCouponService {
     const data = await this._couponRepository.findById(id)
     if (!data) throw new DataNotFoundError()
     const update = await this._couponRepository.update(id, { isActive: !data.isActive })
+    if(!data?.isActive && data?.expiryDate < new Date()) throw new CouponExpired()
+    console.log('data',data?.expiryDate)
     if (update) return toCouponDTO(update)
     throw new DataUpdatingError()
   }

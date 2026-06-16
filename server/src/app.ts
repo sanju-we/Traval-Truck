@@ -25,7 +25,7 @@ app.use(
     credentials: true,
   }),
 );
-// app.options('*', cors());
+
 const webhook = container.get<IWebhookController>('IWebhookController')
 app.post(
   "/api/webhook/stripe",

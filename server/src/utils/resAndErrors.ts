@@ -65,6 +65,12 @@ export class DataNotFoundError extends HttpError {
   }
 }
 
+export class CouponExpired extends HttpError {
+  constructor() {
+    super(400, 'Coupon is already expired, please extend the expire date before updates.');
+  }
+}
+
 export class PasswordMismatchError extends HttpError {
   constructor() {
     super(400, 'Current password is incorrect');
