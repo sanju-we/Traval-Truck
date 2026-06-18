@@ -1,42 +1,42 @@
 "use client";
 
-import { createServerAxios } from "@/services/serverApi";
+import api from "@/services/api";
 import Link from "next/link";
-import { CheckCircle, Sparkles, ArrowRight, Home, CreditCard, Calendar, Shield, Ticket, Globe } from "lucide-react";
+import { CheckCircle, Home, Calendar, Shield, Ticket, Globe } from "lucide-react";
 import { motion } from "framer-motion";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
-async function activateSubscription(subscriptionId: string) {
-  const serverApi = await createServerAxios();
-  try {
-    console.log(`[CLIENT] Activating subscription for session: ${subscriptionId}`);
-    const res = await serverApi.post(
-      `/shared/subscriptions/agency/activate`,
-      { subscriptionId }
-    );
-    console.log(`[CLIENT] Activation response:`, res.data);
-    return res.data.success ? res.data.data : null;
-  } catch (err) {
-    const error = err as Error & { response?: { data?: unknown } };
-    console.error("[CLIENT] Activation failed:", error.message, error.response?.data);
-    return null;
-  }
-}
+function PaymentSuccessContent() {
+  const searchParams = useSearchParams();
+  const session_id = searchParams.get("session_id");
+  const amount = searchParams.get("amount");
 
-export default async function PaymentSuccessPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ session_id?: string; amount?: string }>;
-}) {
-  const { session_id, amount: rawAmount } = await searchParams;
-  const amount = rawAmount || null;
+  const [subscriptionData, setSubscriptionData] = useState<any>(null);
 
-  let subscriptionData = null;
-
-  if (session_id) {
-    subscriptionData = await activateSubscription(session_id);
-  }
+  useEffect(() => {
+    async function activateSubscription() {
+      if (session_id) {
+        try {
+          console.log(`[CLIENT] Activating subscription for session: ${session_id}`);
+          const res = await api.post(
+            `/shared/subscriptions/agency/activate`,
+            { subscriptionId: session_id }
+          );
+          console.log(`[CLIENT] Activation response:`, res.data);
+          if (res.data.success) {
+            setSubscriptionData(res.data.data);
+          }
+        } catch (err) {
+          const error = err as Error & { response?: { data?: unknown } };
+          console.error("[CLIENT] Activation failed:", error.message, error.response?.data);
+        }
+      }
+    }
+    activateSubscription();
+  }, [session_id]);
 
   const activated = !!subscriptionData;
   const transactionId = subscriptionData?.paymentId || "N/A";
@@ -89,7 +89,7 @@ export default async function PaymentSuccessPage({
                   </div>
                   <div className="text-right">
                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total Investment</p>
-                     <p className="text-3xl font-black text-emerald-600">₹{displayAmount?.toLocaleString('en-IN')}</p>
+                     <p className="text-3xl font-black text-emerald-600">₹{Number(displayAmount)?.toLocaleString('en-IN') || '0'}</p>
                   </div>
                </div>
             </div>
@@ -158,5 +158,13 @@ export default async function PaymentSuccessPage({
         </motion.div>
       </div>
     </div>
+  );
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+      <PaymentSuccessContent />
+    </Suspense>
   );
 }

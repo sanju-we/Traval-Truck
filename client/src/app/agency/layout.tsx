@@ -34,7 +34,7 @@ export default function AgencyLayout({
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:block w-72 sticky top-0 h-screen">
+      <aside className="hidden lg:block w-72 sticky top-0 h-screen z-50">
         <SideNavbar />
       </aside>
 
