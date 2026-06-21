@@ -15,6 +15,9 @@ export default function PackagesPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [price, setPrice] = useState('All');
+  const [duration, setDuration] = useState('All');
+  const [sortBy, setSortBy] = useState('title_asc');
 
   const router = useRouter()
 
@@ -23,13 +26,13 @@ export default function PackagesPage() {
   const debouncedSearch = useDebounce(search, 500);
 
   useEffect(() => {
-    fetchPackages(currentPage, debouncedSearch);
-  }, [currentPage, debouncedSearch]);
+    fetchPackages(currentPage, debouncedSearch, price, duration, sortBy);
+  }, [currentPage, debouncedSearch, price, duration, sortBy]);
 
-  const fetchPackages = async (page: number, searchQuery: string = '') => {
+  const fetchPackages = async (page: number, searchQuery: string = '', price?: string, duration?: string, sortBy?: string) => {
     setLoading(true);
     try {
-      const res = await api.get(`/user/packages/getAll?page=${page}&limit=${itemsPerPage}&search=${searchQuery}`);
+      const res = await api.get(`/user/packages/getAll?page=${page}&limit=${itemsPerPage}&search=${searchQuery}${price ? `&price=${price}` : ''}${duration ? `&duration=${duration}` : ''}${sortBy ? `&sortBy=${sortBy}` : ''}`);
       console.log(res.data.data)
       setPackages(res.data.data.data || []);
       setTotalPages(res.data.totalPages || 1);
@@ -67,6 +70,53 @@ export default function PackagesPage() {
               setCurrentPage(1);
             }}
           />
+        </div>
+
+        {/* Filters and Sorting */}
+        <div className="flex flex-col md:flex-row justify-between items-center bg-gray-50 p-4 rounded-xl shadow-sm border border-gray-100 mb-8 gap-4">
+          <div className="flex gap-4 w-full md:w-auto">
+            <select
+              value={price}
+              onChange={(e) => {
+                setPrice(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="w-full md:w-40 border-gray-300 rounded-lg text-sm focus:ring-emerald-500 focus:border-emerald-500 py-2 pl-3 bg-white"
+            >
+              <option value="All">All Prices</option>
+              <option value="under_5k">Under ₹5,000</option>
+              <option value="5k_15k">₹5,000 - ₹15,000</option>
+              <option value="over_15k">Over ₹15,000</option>
+            </select>
+
+            <select
+              value={duration}
+              onChange={(e) => {
+                setDuration(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="w-full md:w-40 border-gray-300 rounded-lg text-sm focus:ring-emerald-500 focus:border-emerald-500 py-2 pl-3 bg-white"
+            >
+              <option value="All">All Durations</option>
+              <option value="short">Short (1-3 Days)</option>
+              <option value="medium">Medium (4-7 Days)</option>
+              <option value="long">Long (8+ Days)</option>
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2 w-full md:w-auto justify-end">
+            <span className="text-sm font-medium text-gray-500">Sort by:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="w-full md:w-48 border-gray-300 rounded-lg text-sm focus:ring-emerald-500 focus:border-emerald-500 py-2 pl-3 bg-white"
+            >
+              <option value="title_asc">Name (A-Z)</option>
+              <option value="title_desc">Name (Z-A)</option>
+              <option value="price_asc">Price (Low to High)</option>
+              <option value="price_desc">Price (High to Low)</option>
+            </select>
+          </div>
         </div>
 
         {loading ? (

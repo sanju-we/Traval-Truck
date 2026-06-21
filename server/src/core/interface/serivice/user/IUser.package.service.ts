@@ -3,7 +3,7 @@ import { CouponDTO } from "../../../../core/DTO/admin/coupon/admin.coupon.respon
 
 export interface IUserPackageService {
   getLatestPackage(): Promise<PackageResDTO[]>;
-  getAllPackage(page: number, limit: number, search?: string): Promise<{data: PackageResDTO[];total: number;page: number;totalPages: number;}>
+  getAllPackage(page: number, limit: number, search?: string, price?: string, duration?: string, sortBy?: string): Promise<{data: PackageResDTO[];total: number;page: number;totalPages: number;}>
   getPackage(id: string): Promise<PackageResDTO>;
   initiativePurchase(packageId: string, userId: string, role: string, amount: number, couponId: string, maxPeople?: number): Promise<{ url: string; sessionId: string }>
   getAllCoupons(userId: string): Promise<CouponDTO[]>;

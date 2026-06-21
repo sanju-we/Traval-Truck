@@ -12,6 +12,7 @@ import { IRoom, Hotel } from '@/types/hotel';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import { SHARED_API_METHODS } from '@/services/APIs/shared.api.service';
 import { ApiResponse } from '@/services/api.service';
+import GuestDetailsModal from '@/components/user/booking/GuestDetailsModal';
 
 const getCapacity = (capacity: number | string): number => {
   if (typeof capacity === 'number') return capacity;
@@ -42,6 +43,11 @@ export default function HotelDetailsPage() {
   const [walletBalance, setWalletBalance] = useState<number | null>(null);
   const [walletLoading, setWalletLoading] = useState(false);
 
+  // Guest details modal states
+  const [showGuestModal, setShowGuestModal] = useState(false);
+  const [selectedRoomData, setSelectedRoomData] = useState<{ roomId: string; amount: number } | null>(null);
+  const [guestLoading, setGuestLoading] = useState(false);
+
   useEffect(() => {
     if (paymentMethod === 'wallet') {
       fetchWalletBalance();
@@ -65,21 +71,23 @@ export default function HotelDetailsPage() {
     }
   }
 
-  async function handleWalletPayment(roomId: string, amount: number) {
+  async function handleWalletPayment(roomId: string, amount: number, guestName: string, guestAge: number) {
     if (walletBalance === null || walletBalance < amount) {
       toast.error('Insufficient wallet balance to complete this booking');
       return;
     }
 
     try {
-      setWalletLoading(true);
+      setGuestLoading(true);
       const res = (await USER_API_METHODS.purchaseRoomWithWallet({
         roomId,
         role: 'user',
         amount,
         startDate: checkInDate,
         people: numPeople,
-        couponId: 'none'
+        couponId: 'none',
+        guestName,
+        guestAge
       })) as ApiResponse<{ success: boolean }> | null;
 
       if (res && res.data && res.data.success) {
@@ -92,9 +100,48 @@ export default function HotelDetailsPage() {
       console.error('Wallet payment error:', err);
       toast.error(err.response?.data?.message || 'Something went wrong during payment.');
     } finally {
-      setWalletLoading(false);
+      setGuestLoading(false);
+      setShowGuestModal(false);
     }
   }
+
+  async function handleOnlinePayment(roomId: string, amount: number, guestName: string, guestAge: number) {
+    try {
+      setGuestLoading(true);
+      const res = await USER_API_METHODS.purchaseRoom({ 
+        roomId, 
+        role: 'user', 
+        amount, 
+        couponId: 'none', 
+        startDate: checkInDate, 
+        people: numPeople,
+        guestName,
+        guestAge
+      }) as ApiResponse<{ url: string }>;
+      if (res && res.success && res.data && res.data.url) {
+        window.location.href = res.data.url;
+      }
+    } catch (err) {
+      console.error("Buy error:", err);
+      toast.error('Something went wrong initiating payment.');
+    } finally {
+      setGuestLoading(false);
+    }
+  }
+
+  const handleBookClick = (roomId: string, amount: number) => {
+    setSelectedRoomData({ roomId, amount });
+    setShowGuestModal(true);
+  };
+
+  const handleGuestSubmit = (name: string, age: number) => {
+    if (!selectedRoomData) return;
+    if (paymentMethod === 'online') {
+      handleOnlinePayment(selectedRoomData.roomId, selectedRoomData.amount, name, age);
+    } else {
+      handleWalletPayment(selectedRoomData.roomId, selectedRoomData.amount, name, age);
+    }
+  };
 
   useEffect(() => {
     if (id) {
@@ -429,20 +476,19 @@ export default function HotelDetailsPage() {
                         </div>
                         {acceptedTerms && checkInDate && room.Status === 'Available' && requiredRooms <= room.AvailableCount ? (
                           paymentMethod === 'online' ? (
-                            <BookNowButton
-                              roomId={room.id}
-                              amount={totalAmount}
-                              role="user"
-                              startDate={checkInDate}
-                              people={numPeople}
-                            />
+                            <button
+                              onClick={() => handleBookClick(room.id, totalAmount)}
+                              className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center gap-2"
+                            >
+                              Buy Now
+                            </button>
                           ) : (
                             <button
-                              onClick={() => handleWalletPayment(room.id, totalAmount)}
-                              disabled={walletBalance === null || walletBalance < totalAmount || walletLoading}
+                              onClick={() => handleBookClick(room.id, totalAmount)}
+                              disabled={walletBalance === null || walletBalance < totalAmount}
                               className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition text-sm font-medium flex items-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed"
                             >
-                              {walletLoading ? <Loader2 className="animate-spin w-4 h-4" /> : "Pay via Wallet"}
+                              Pay via Wallet
                             </button>
                           )
                         ) : (
@@ -467,6 +513,12 @@ export default function HotelDetailsPage() {
 
       <Footer />
       <TermsModal isOpen={showTerms} onClose={() => setShowTerms(false)} />
+      <GuestDetailsModal
+        isOpen={showGuestModal}
+        onClose={() => setShowGuestModal(false)}
+        onSubmit={handleGuestSubmit}
+        loading={guestLoading}
+      />
     </div>
   );
 }

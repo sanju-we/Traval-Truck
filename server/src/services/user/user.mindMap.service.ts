@@ -24,10 +24,10 @@ export class UserMindMapService implements IUserMindMapService {
 
     const user = await this._userAuth.findById(userId);
     if (!user) throw new DataNotFoundError();
-
+    
     const days = (new Date(data.endDate).getDate() - new Date(data.startDate).getDate()) + 1
     if (days <= 0) throw new BADREQUEST();
-
+    
     let startLat, startLng;
     const loca = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(data.startPlace)}&key=${process.env.GOOGLE_MAPS_API_KEY}`);
     const startLoca = await loca.json();
@@ -36,35 +36,35 @@ export class UserMindMapService implements IUserMindMapService {
       startLat = location.lat;
       startLng = location.lng;
     } else throw new DataNotFoundError();
-
+    
     const places: PlaceNode[] = data.places.map(p => ({
       id: p.id,
       name: p.name,
       lat: p.lat,
       lng: p.lng
     }))
-
+    
     const { route, totalDistance } = buildOptimizedRoute(startLat, startLng, places);
     const dayWaysSplit = splitIntoDays<PlaceNode>(route, days)
-
     const fuelCost = ((totalDistance / Number(data.milage)) * 100)
-
+    
     const pad = (n: number) => n.toString().padStart(2, '0');
     const count = (await this._mindMapRepo.countDocuments({}) + 1).toString().padStart(6, '0')
     const date = new Date()
     const orderId = `ORD-${pad(date.getDate())}${pad(date.getMonth() + 1)}${date.getFullYear()}-${count}`
-
+    
+    console.log('llss')
     const aiValidationPayload = {
       route,
       totalDistanceKm: totalDistance,
       daysAvailable: days,
       drivingHoursPerDay: 6,
-
+      
       vehicle: {
         type: data.vehicle,
         mileage: data.milage
       },
-
+      
       fuelCost,
       people: Number(data.member),
       hotelClass: data.hotelTyep,
@@ -72,7 +72,7 @@ export class UserMindMapService implements IUserMindMapService {
       estimatedFoodCost: Number(data.foodAmount)
     };
     const aiResult = await validateTripPlan(aiValidationPayload)
-
+    
     const MindMap = {
       orderId,
       title: data.title,
@@ -113,6 +113,7 @@ export class UserMindMapService implements IUserMindMapService {
     } else {
       mindMap = await this._mindMapRepo.update(data.id, { ...MindMap, orderId: data.orderId })
     }
+    console.log('kissiki')
     if (!mindMap) throw new DataNotFoundError();
     return toMindMapRes(mindMap)
   }

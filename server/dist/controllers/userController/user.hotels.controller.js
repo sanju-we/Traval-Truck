@@ -22,11 +22,10 @@ let UserHotelsController = class UserHotelsController {
         this._userHotelService = _userHotelService;
     }
     async getAllHotels(req, res) {
-        const { page, limit } = req.query;
-        const search = req.query.search;
+        const { page, limit, search, minRating, sortBy } = req.query;
         if (!page || !limit)
             throw new resAndErrors_1.BADREQUEST();
-        const data = await this._userHotelService.getAllHotels(Number(page), Number(limit), search != undefined ? String(search) : '');
+        const data = await this._userHotelService.getAllHotels(Number(page), Number(limit), search != undefined ? String(search) : '', minRating ? Number(minRating) : undefined, sortBy != undefined ? String(sortBy) : undefined);
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.ALL_DATA_FOUND, data);
     }
     async getRoom(req, res) {
@@ -56,15 +55,15 @@ let UserHotelsController = class UserHotelsController {
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.DATA_FOUND, data);
     }
     async purchaseRoom(req, res) {
-        const { roomId, amount, couponId, role, startDate, people } = req.body;
+        const { roomId, amount, couponId, role, startDate, people, guestName, guestAge } = req.body;
         const userId = req.user.id;
-        const session = await this._userHotelService.initializeSession(roomId, role, userId, amount, couponId, startDate, Number(people));
+        const session = await this._userHotelService.initializeSession(roomId, role, userId, amount, couponId, startDate, Number(people), guestName, guestAge ? Number(guestAge) : undefined);
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.CREATED, session);
     }
     async walletPurchase(req, res) {
-        const { roomId, amount, couponId, role, startDate, people } = req.body;
+        const { roomId, amount, couponId, role, startDate, people, guestName, guestAge } = req.body;
         const userId = req.user.id;
-        const result = await this._userHotelService.walletPurchase(roomId, role, userId, amount, couponId, startDate, Number(people));
+        const result = await this._userHotelService.walletPurchase(roomId, role, userId, amount, couponId, startDate, Number(people), guestName, guestAge ? Number(guestAge) : undefined);
         if (result.success) {
             (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, result.message, result);
         }

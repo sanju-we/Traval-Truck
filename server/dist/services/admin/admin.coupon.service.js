@@ -46,6 +46,9 @@ let AdminCouponService = class AdminCouponService {
         if (!data)
             throw new resAndErrors_1.DataNotFoundError();
         const update = await this._couponRepository.update(id, { isActive: !data.isActive });
+        if (!data?.isActive && data?.expiryDate < new Date())
+            throw new resAndErrors_1.CouponExpired();
+        console.log('data', data?.expiryDate);
         if (update)
             return (0, admin_coupon_response_1.toCouponDTO)(update);
         throw new resAndErrors_1.DataUpdatingError();

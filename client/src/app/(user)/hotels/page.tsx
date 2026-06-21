@@ -16,6 +16,8 @@ export default function HotelsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [minRating, setMinRating] = useState('0');
+  const [sortBy, setSortBy] = useState('createdAt_desc');
 
   const router = useRouter()
 
@@ -24,14 +26,14 @@ export default function HotelsPage() {
   const debouncedSearch = useDebounce(search, 500);
 
   useEffect(() => {
-    fetchHotels(currentPage, debouncedSearch);
-  }, [currentPage, debouncedSearch]);
+    fetchHotels(currentPage, debouncedSearch, minRating, sortBy);
+  }, [currentPage, debouncedSearch, minRating, sortBy]);
 
-  const fetchHotels = async (page: number, searchQuery: string = '') => {
+  const fetchHotels = async (page: number, searchQuery: string = '', ratingFilter?: string, sortOption?: string) => {
     setLoading(true);
     try {
       const limit = 6
-      const res = (await USER_API_METHODS.getAllHotel(searchQuery, page, limit)) as ApiResponse<{ data: Hotel[]; totalPages: number }> | null;
+      const res = (await USER_API_METHODS.getAllHotel(searchQuery, page, limit, Number(ratingFilter), sortOption !== 'createdAt_desc' ? sortOption : undefined)) as ApiResponse<{ data: Hotel[]; totalPages: number }> | null;
       if (res && res.data) {
         setHotels(res.data.data || []);
         setTotalPages(res.data.totalPages || 1);
@@ -80,6 +82,40 @@ export default function HotelsPage() {
               setCurrentPage(1);
             }}
           />
+        </div>
+
+        {/* Filters and Sorting */}
+        <div className="flex flex-col md:flex-row justify-between items-center bg-gray-50 p-4 rounded-xl shadow-sm border border-gray-100 mb-8 gap-4">
+          <div className="flex gap-4 w-full md:w-auto">
+            <select
+              value={minRating}
+              onChange={(e) => {
+                setMinRating(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="w-full md:w-48 border-gray-300 rounded-lg text-sm focus:ring-emerald-500 focus:border-emerald-500 py-2 pl-3 bg-white"
+            >
+              <option value="0">All Ratings</option>
+              <option value="3">3+ Stars</option>
+              <option value="4">4+ Stars</option>
+              <option value="5">5 Stars</option>
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2 w-full md:w-auto justify-end">
+            <span className="text-sm font-medium text-gray-500">Sort by:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="w-full md:w-48 border-gray-300 rounded-lg text-sm focus:ring-emerald-500 focus:border-emerald-500 py-2 pl-3 bg-white"
+            >
+              <option value="createdAt_desc">Newest Arrivals</option>
+              <option value="rating_desc">Highest Rated</option>
+              <option value="rating_asc">Lowest Rated</option>
+              <option value="name_asc">Name (A-Z)</option>
+              <option value="name_desc">Name (Z-A)</option>
+            </select>
+          </div>
         </div>
 
         {loading ? (

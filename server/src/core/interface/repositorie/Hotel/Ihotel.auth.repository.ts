@@ -10,8 +10,9 @@ export interface IHotelAuthRepository extends IBaserepository<IHotel> {
     reason?: string,
   ): Promise<void>;
   findAllWithpagination(
-    query: { search: string; status: string },
+    query: { search: string; status: string; minRating?: number },
     limit: number,
     page: number,
+    sortBy?: string
   ): Promise<{ data: IHotel[]; total: number; totalPages: number }>;
 }

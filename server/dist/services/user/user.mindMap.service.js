@@ -53,9 +53,10 @@ let UserMindMapService = class UserMindMapService {
         const dayWaysSplit = (0, index_1.splitIntoDays)(route, days);
         const fuelCost = ((totalDistance / Number(data.milage)) * 100);
         const pad = (n) => n.toString().padStart(2, '0');
-        const count = (await this._mindMapRepo.countDocuments() + 1).toString().padStart(6, '0');
+        const count = (await this._mindMapRepo.countDocuments({}) + 1).toString().padStart(6, '0');
         const date = new Date();
         const orderId = `ORD-${pad(date.getDate())}${pad(date.getMonth() + 1)}${date.getFullYear()}-${count}`;
+        console.log('llss');
         const aiValidationPayload = {
             route,
             totalDistanceKm: totalDistance,
@@ -112,6 +113,7 @@ let UserMindMapService = class UserMindMapService {
         else {
             mindMap = await this._mindMapRepo.update(data.id, { ...MindMap, orderId: data.orderId });
         }
+        console.log('kissiki');
         if (!mindMap)
             throw new resAndErrors_1.DataNotFoundError();
         return (0, mindMap_res_1.toMindMapRes)(mindMap);

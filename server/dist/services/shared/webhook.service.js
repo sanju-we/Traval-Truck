@@ -161,7 +161,7 @@ let WebhookService = class WebhookService {
         if (!transaction)
             throw new resAndErrors_1.PAYMENT_VERIFICATOIN_FAILED();
         const pad = (n) => n.toString().padStart(2, '0');
-        const count = (await this._orderRepo.countDocuments() + 1).toString().padStart(6, '0');
+        const count = (await this._orderRepo.countDocuments({}) + 1).toString().padStart(6, '0');
         const date = new Date();
         const orderId = `ORD-${pad(date.getDate())}${pad(date.getMonth() + 1)}${date.getFullYear()}-${count}`;
         const orderData = await this._orderRepo.create({
@@ -216,7 +216,7 @@ let WebhookService = class WebhookService {
             endDate.setDate(endDate.getDate() + days);
         }
         const pad = (n) => n.toString().padStart(2, '0');
-        const count = (await this._orderRepo.countDocuments() + 1).toString().padStart(6, '0');
+        const count = (await this._orderRepo.countDocuments({}) + 1).toString().padStart(6, '0');
         const date = new Date();
         const orderId = `ORD-${pad(date.getDate())}${pad(date.getMonth() + 1)}${date.getFullYear()}-${count}`;
         const orderData = await this._orderRepo.create({
@@ -227,6 +227,8 @@ let WebhookService = class WebhookService {
             role: 'Hotel',
             product: new mongoose_1.Types.ObjectId(roomId),
             people: people,
+            guestName: metadata.guestName,
+            guestAge: metadata.guestAge ? parseInt(metadata.guestAge) : undefined,
             ownedBy: room.HotelId.toString(),
             paymentId: transaction.id,
             couponApplied: coupon,

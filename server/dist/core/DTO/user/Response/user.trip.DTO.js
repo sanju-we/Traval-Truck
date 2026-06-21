@@ -73,7 +73,9 @@ const toUserOrderDetailsDTO = (order) => {
         createdAt: order.createdAt,
         ownedBy: order.ownedBy,
         people: order.people,
-        reason: order.reason
+        reason: order.reason,
+        guestName: order.guestName,
+        guestAge: order.guestAge
     };
 };
 exports.toUserOrderDetailsDTO = toUserOrderDetailsDTO;

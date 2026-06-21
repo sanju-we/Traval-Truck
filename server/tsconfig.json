@@ -1,21 +1,8 @@
-// {
-//   "compilerOptions": {
-    // "baseUrl": "src",
-    // "paths": {
-    //   "@core/*": ["core/*"],
-    //   "@interfaces/*": ["interfaces/*"],
-    //   "@services/*": ["services/*"],
-    //   "@repositories/*": ["repositories/*"],
-    //   "@controllers/*": ["controllers/*"],
-    //   "@utils/*": ["utils/*"]
-    // }
-//   }
-// }
 {
   "compilerOptions": {
     "target": "es2020",
-    "module": "commonjs",                
-    "moduleResolution": "node",     
+    "module": "commonjs",
+    "moduleResolution": "node",
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
@@ -24,17 +11,37 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["./node_modules/@types", "./src/@types"],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/@types"
+    ],
     "baseUrl": "./src",
     "paths": {
-      "@core/*": ["core/*"],
-      "@interfaces/*": ["interfaces/*"],
-      "@services/*": ["services/*"],
-      "@repositories/*": ["repositories/*"],
-      "@controllers/*": ["controllers/*"],
-      "@utils/*": ["utils/*"]
-    }
+      "@core/*": [
+        "core/*"
+      ],
+      "@interfaces/*": [
+        "interfaces/*"
+      ],
+      "@services/*": [
+        "services/*"
+      ],
+      "@repositories/*": [
+        "repositories/*"
+      ],
+      "@controllers/*": [
+        "controllers/*"
+      ],
+      "@utils/*": [
+        "utils/*"
+      ]
+    },
+    "ignoreDeprecations": "6.0"
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

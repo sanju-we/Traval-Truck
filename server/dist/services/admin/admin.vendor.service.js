@@ -89,13 +89,12 @@ let AdminVendorService = class AdminVendorService {
             search: search
         };
         const { data, total, totalPages } = await this._agencyrepository.findAllWithpagination(query, limit, page);
-        // Map to vendorRequestDTO
         const mappedData = data.map(agency => ({
             id: agency._id.toString(),
             companyName: agency.companyName,
             ownerName: agency.ownerName,
             email: agency.email,
-            role: 'agency', // Hardcode or derive
+            role: 'agency',
             logo: agency.logo,
             address: agency.address,
             bankDetails: agency.bankDetails,

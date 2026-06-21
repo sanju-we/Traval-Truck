@@ -16,10 +16,12 @@ interface RoomDetailsProps {
   startDate?: string;
   endDate?: string;
   people?: number;
+  guestName?: string;
+  guestAge?: number;
   hotel?: Record<string, unknown> & { name?: string; companyName?: string; logo?: string; address?: string; images?: string[] };
 }
 
-export default function RoomDetails({ product, startDate, endDate, people, hotel }: RoomDetailsProps) {
+export default function RoomDetails({ product, startDate, endDate, people, guestName, guestAge, hotel }: RoomDetailsProps) {
   const [selectedImage, setSelectedImage] = useState(0);
 
   const roomNumber = product?.RoomNumber;

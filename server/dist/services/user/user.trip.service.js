@@ -54,9 +54,14 @@ let UserTripService = class UserTripService {
             throw new resAndErrors_1.DataNotFoundError();
         const today = new Date();
         logger_1.logger.info(`date difference : ${today.getDate() - order.createdAt.getDate()}`);
-        const diff = (order.createdAt.getDate()) - (today.getDate());
+        const diff = Math.floor(today.getTime() - order.createdAt.getTime()) / (1000 * 60 * 60 * 24);
+        let isFullRefund = false;
+        if (order.productType == 'Package')
+            isFullRefund = order.startDate ? true : false;
+        else
+            isFullRefund = true;
         if (order.paymentType == 'wallet') {
-            if (order.status == 'Upcoming' && !order.startDate && diff < 7) {
+            if (order.status == 'Upcoming' && isFullRefund && diff < 7) {
                 userWallet.Balance += order.amount;
                 const userTransaction = {
                     UserId: userWallet.UserId,
@@ -113,7 +118,9 @@ let UserTripService = class UserTripService {
             const Transaction = await this._paymentRepo.findById(order.paymentId.toString());
             if (!Transaction)
                 throw new resAndErrors_1.DataNotFoundError();
-            if (order.status == 'Upcoming' && !order.startDate && diff < 7) {
+            console.log('sucking dick', Transaction.amount);
+            // if(Transaction.amount) throw new DataNotFoundError()
+            if (order.status == 'Upcoming' && isFullRefund && diff < 7) {
                 userWallet.Balance += Transaction.amount;
                 const userTransaction = {
                     UserId: userWallet.UserId,

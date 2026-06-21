@@ -22,9 +22,9 @@ export class UserHotelsService implements IUserHotelsService {
     @inject('IWalletRespository') private readonly _walletRepo: IWalletRespository,
   ) { }
 
-  async getAllHotels(page: number, limit: number, search?: string): Promise<PaginationResponse<unknown>> {
-    const query = { search: search || '', status: 'Activity' };
-    const hotelsData = await this._hotelAuthRepo.findAllWithpagination(query, limit, page);
+  async getAllHotels(page: number, limit: number, search?: string, minRating?: number, sortBy?: string): Promise<PaginationResponse<unknown>> {
+    const query = { search: search || '', status: 'Activity', minRating };
+    const hotelsData = await this._hotelAuthRepo.findAllWithpagination(query, limit, page, sortBy);
 
     const checks = await Promise.all(
       hotelsData.data.map(async (hotel) => {
@@ -133,7 +133,7 @@ export class UserHotelsService implements IUserHotelsService {
     throw new DataNotFoundError()
   }
 
-  async initializeSession(roomId: string, role: string, userId: string, amount: number, couponId: string, startDate: string, people: number): Promise<{ url: string; sessionId: string; }> {
+  async initializeSession(roomId: string, role: string, userId: string, amount: number, couponId: string, startDate: string, people: number, guestName?: string, guestAge?: number): Promise<{ url: string; sessionId: string; }> {
     const room = await this._hotelRoomRepo.findById(roomId);
     if (!room) throw new DataNotFoundError();
 
@@ -187,12 +187,14 @@ export class UserHotelsService implements IUserHotelsService {
         couponId,
         startDate,
         endDate: endDate.toISOString(),
-        people: people.toString()
+        people: people.toString(),
+        ...(guestName && { guestName }),
+        ...(guestAge && { guestAge: guestAge.toString() })
       }
     })
   }
 
-  async walletPurchase(roomId: string, role: string, userId: string, amount: number, couponId: string, startDate: string, people: number): Promise<{ success: boolean; message: string }> {
+  async walletPurchase(roomId: string, role: string, userId: string, amount: number, couponId: string, startDate: string, people: number, guestName?: string, guestAge?: number): Promise<{ success: boolean; message: string }> {
     const room = await this._hotelRoomRepo.findById(roomId);
     if (!room) throw new DataNotFoundError();
 
@@ -240,6 +242,8 @@ export class UserHotelsService implements IUserHotelsService {
       role: 'Hotel',
       product: new Types.ObjectId(roomId),
       people: people,
+      guestName: guestName,
+      guestAge: guestAge,
       ownedBy: room.HotelId.toString(),
       couponApplied: couponId || 'none',
       paymentType: 'wallet',

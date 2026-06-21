@@ -3,7 +3,6 @@ import { BaseRepository } from "../../repositories/baseRepository";
 import { Coupon } from "../../models/Coupons";
 import { ICoupons } from "../../core/interface/modelInterface/Icoupon";
 import { CouponDTO, toCouponDTO } from "../../core/DTO/admin/coupon/admin.coupon.response";
-import { DataNotFoundError } from "../../utils/resAndErrors";
 
 export class AdminCouponRepository extends BaseRepository<ICoupons> implements IAdminCouponRepository {
   constructor() {
@@ -18,7 +17,6 @@ export class AdminCouponRepository extends BaseRepository<ICoupons> implements I
       Coupon.find().skip(skip).limit(limit),
       Coupon.countDocuments()
     ]);
-    if (!coupons.length) throw new DataNotFoundError()
     return {
       data: coupons.map(toCouponDTO),
       total,

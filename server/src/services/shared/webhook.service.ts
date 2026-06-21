@@ -262,6 +262,8 @@ export class WebhookService implements IWebhookService {
             role: 'Hotel',
             product: new Types.ObjectId(roomId),
             people: people,
+            guestName: metadata.guestName,
+            guestAge: metadata.guestAge ? parseInt(metadata.guestAge) : undefined,
             ownedBy: room.HotelId.toString(),
             paymentId: transaction.id,
             couponApplied: coupon,
@@ -283,6 +285,5 @@ export class WebhookService implements IWebhookService {
         adminWallet.Balance += orderData.amount;
         await this._walletRepo.update(adminWallet._id.toString(), adminWallet);
 
-        // We no longer set room.Status to 'Occupid' because availability is now dynamic per date.
     }
 }

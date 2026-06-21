@@ -26,11 +26,10 @@ let UserPackageController = class UserPackageController {
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.ALL_DATA_FOUND, data);
     }
     async getAllPackage(req, res) {
-        const { page, limit } = req.query;
-        const search = req.query.search;
+        const { page, limit, search, price, duration, sortBy } = req.query;
         if (!page || !limit)
             throw new resAndErrors_1.BADREQUEST();
-        const data = await this._userPackageService.getAllPackage(Number(page), Number(limit), search != undefined ? String(search) : '');
+        const data = await this._userPackageService.getAllPackage(Number(page), Number(limit), search != undefined ? String(search) : '', price != undefined ? String(price) : undefined, duration != undefined ? String(duration) : undefined, sortBy != undefined ? String(sortBy) : undefined);
         (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.ALL_DATA_FOUND, data);
     }
     async getPackage(req, res) {

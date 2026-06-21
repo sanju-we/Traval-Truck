@@ -21,6 +21,7 @@ import {
   Star,
   X,
   Mail,
+  User,
 } from 'lucide-react';
 import { USER_API_METHODS } from '@/services/APIs/user.api.service';
 import { ApiResponse } from '@/services/api.service';
@@ -463,6 +464,8 @@ export default function UserOrderDetailsPage() {
                 startDate={order.startDate}
                 endDate={order.endDate}
                 people={order.people}
+                guestName={order.guestName}
+                guestAge={order.guestAge}
                 hotel={order.ownedBy}
               />
             ) : (
@@ -621,6 +624,45 @@ export default function UserOrderDetailsPage() {
                 )}
               </div>
             </div>
+
+            {/* Guest / User Information */}
+            {order.guestName && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="bg-gradient-to-r from-emerald-50 to-emerald-100 px-6 py-4 border-b border-emerald-200">
+                  <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                    <User className="text-emerald-600" size={22} />
+                    Guest Information
+                  </h2>
+                </div>
+                <div className="p-6 space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full overflow-hidden border border-emerald-100 flex-shrink-0 bg-emerald-50 flex items-center justify-center">
+                      <User size={24} className="text-emerald-500" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Primary Guest</p>
+                      <p className="font-semibold text-gray-800">{order.guestName}</p>
+                    </div>
+                  </div>
+                  {order.guestAge && (
+                    <div className="flex items-center gap-2 mt-2">
+                      <p className="text-sm text-gray-600">
+                        <span className="font-medium text-gray-500 mr-2">Age:</span>
+                        {order.guestAge} years old
+                      </p>
+                    </div>
+                  )}
+                  {order.people && (
+                    <div className="flex items-center gap-2 mt-1">
+                      <p className="text-sm text-gray-600">
+                        <span className="font-medium text-gray-500 mr-2">Total Guests:</span>
+                        {order.people} {order.people === 1 ? 'Person' : 'People'}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Schedule Information */}
             {order.status != 'Cancelled' && (

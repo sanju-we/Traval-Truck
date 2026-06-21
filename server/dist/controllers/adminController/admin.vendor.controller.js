@@ -34,7 +34,6 @@ let AdminVendorController = class AdminVendorController {
             const limit = parseInt(req.query.limit) || 5;
             const search = req.query.search || '';
             const status = req.query.status || '';
-            // Force role 'user' for this endpoint as per requirement
             const role = 'user';
             const { data, total, totalPages } = await this._adminVenderRepo.findAllUsers(page, limit, status, role, search);
             (0, resAndErrors_1.sendResponse)(res, HTTPStatusCode_1.STATUS_CODE.OK, true, responseMessaages_1.MESSAGES.ALL_DATA_FOUND, {

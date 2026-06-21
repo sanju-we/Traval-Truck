@@ -186,23 +186,56 @@ export default function CouponsPage() {
           )}
 
           {/* Pagination Controls */}
-          {!loading && coupons.length > 0 && totalPages > 1 && (
-            <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200">
-              <span className="text-sm text-gray-500">
-                Page {currentPage} of {totalPages}
+          {!loading && coupons.length > 0 && (
+            <div className="flex items-center justify-between px-6 py-4 bg-gray-50 border-t border-gray-200">
+              <span className="text-sm text-gray-500 font-medium">
+                Showing Page <span className="text-indigo-600 font-bold">{currentPage}</span> of {totalPages}
               </span>
+
               <div className="flex gap-2">
                 <Button
                   variant="outline"
                   onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1 || loading}
+                  className="bg-white hover:bg-gray-100 text-gray-700 border-gray-300 font-medium transition-all"
                 >
-                  <ChevronLeft size={16} className="mr-1" /> Previous
+                  <ChevronLeft size={16} className="mr-1" /> Prev
                 </Button>
+
+                {/* Page Number Pills */}
+                <div className="hidden sm:flex items-center gap-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    // Show pages around current page
+                    let pageNum = i + 1;
+                    if (totalPages > 5 && currentPage > 3) {
+                      pageNum = currentPage - 3 + i + (currentPage + 2 > totalPages ? totalPages - currentPage - 2 : 0);
+                    }
+
+                    if (pageNum > totalPages || pageNum < 1) return null;
+
+                    const isActive = pageNum === currentPage;
+
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => setCurrentPage(pageNum)}
+                        disabled={loading}
+                        className={`w-8 h-8 rounded-md flex items-center justify-center text-sm font-medium transition-all ${isActive
+                            ? "bg-indigo-600 text-white shadow-md transform scale-105"
+                            : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 hover:border-gray-300"
+                          }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+                </div>
+
                 <Button
                   variant="outline"
                   onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                  disabled={currentPage === totalPages || loading}
+                  disabled={currentPage === totalPages || loading || totalPages === 0}
+                  className="bg-white hover:bg-gray-100 text-gray-700 border-gray-300 font-medium transition-all"
                 >
                   Next <ChevronRight size={16} className="ml-1" />
                 </Button>

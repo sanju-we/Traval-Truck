@@ -34,6 +34,8 @@ export interface UserOrderDetailsDTO {
   ownedBy?: unknown;
   people?: number;
   reason?: string;
+  guestName?: string;
+  guestAge?: number;
 }
 
 export interface IOrderWithProduct
@@ -146,6 +148,8 @@ export const toUserOrderDetailsDTO = (
     createdAt: order.createdAt,
     ownedBy: order.ownedBy,
     people: order.people,
-    reason: order.reason
+    reason: order.reason,
+    guestName: order.guestName,
+    guestAge: order.guestAge
   };
 }

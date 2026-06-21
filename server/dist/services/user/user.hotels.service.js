@@ -26,9 +26,9 @@ let UserHotelsService = class UserHotelsService {
         this._orderRepo = _orderRepo;
         this._walletRepo = _walletRepo;
     }
-    async getAllHotels(page, limit, search) {
-        const query = { search: search || '', status: 'Activity' };
-        const hotelsData = await this._hotelAuthRepo.findAllWithpagination(query, limit, page);
+    async getAllHotels(page, limit, search, minRating, sortBy) {
+        const query = { search: search || '', status: 'Activity', minRating };
+        const hotelsData = await this._hotelAuthRepo.findAllWithpagination(query, limit, page, sortBy);
         const checks = await Promise.all(hotelsData.data.map(async (hotel) => {
             const hotelId = hotel._id.toString();
             const hasSubscription = await this._subscriptionHistoryRepo.findOne({
@@ -116,7 +116,7 @@ let UserHotelsService = class UserHotelsService {
             return data;
         throw new resAndErrors_1.DataNotFoundError();
     }
-    async initializeSession(roomId, role, userId, amount, couponId, startDate, people) {
+    async initializeSession(roomId, role, userId, amount, couponId, startDate, people, guestName, guestAge) {
         const room = await this._hotelRoomRepo.findById(roomId);
         if (!room)
             throw new resAndErrors_1.DataNotFoundError();
@@ -166,11 +166,13 @@ let UserHotelsService = class UserHotelsService {
                 couponId,
                 startDate,
                 endDate: endDate.toISOString(),
-                people: people.toString()
+                people: people.toString(),
+                ...(guestName && { guestName }),
+                ...(guestAge && { guestAge: guestAge.toString() })
             }
         });
     }
-    async walletPurchase(roomId, role, userId, amount, couponId, startDate, people) {
+    async walletPurchase(roomId, role, userId, amount, couponId, startDate, people, guestName, guestAge) {
         const room = await this._hotelRoomRepo.findById(roomId);
         if (!room)
             throw new resAndErrors_1.DataNotFoundError();
@@ -210,6 +212,8 @@ let UserHotelsService = class UserHotelsService {
             role: 'Hotel',
             product: new mongoose_1.Types.ObjectId(roomId),
             people: people,
+            guestName: guestName,
+            guestAge: guestAge,
             ownedBy: room.HotelId.toString(),
             couponApplied: couponId || 'none',
             paymentType: 'wallet',

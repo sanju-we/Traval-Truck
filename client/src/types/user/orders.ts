@@ -44,6 +44,8 @@ export interface OrderDetails {
   endDate?: string;
   status: 'Upcoming' | 'Ongoing' | 'Completed' | 'Cancelled';
   people?: number;
+  guestName?: string;
+  guestAge?: number;
   plan?: PlanDay[];
   tripProgress?: {
     currentDay: number;

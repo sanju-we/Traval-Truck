@@ -34,12 +34,12 @@ export const USER_API_METHODS = {
     GetAllCoupon: () => get(USER_ROUTES.packages.GetAllCoupon),
 
     // hotel api requests
-    getAllHotel: (search: string, page?: number, limit?: number) => get(USER_ROUTES.hotel.getAllHotel, { page, limit, search }),
+    getAllHotel: (search: string, page?: number, limit?: number, minRating?: number, sortBy?: string) => get(USER_ROUTES.hotel.getAllHotel, { page, limit, search, minRating, sortBy }),
     getHotelDetails: (id: string) => get(`${USER_ROUTES.hotel.getAllHotel.replace('/getAll', '/details')}/${id}`),
     getRoomsByHotel: (id: string, params?: { startDate?: string; endDate?: string; people?: number }) => get(`${USER_ROUTES.hotel.getAllHotel.replace('/getAll', '/getRoomsByHotel')}/${id}`, params),
     getRoomDetails: (id: string) => get(USER_ROUTES.hotel.getRoomDetails(id)),
-    purchaseRoom: (data: { roomId: string, role: string, amount: number, couponId?: string, startDate: string, people: number }) => post(USER_ROUTES.hotel.purchaseRoom, data),
-    purchaseRoomWithWallet: (data: { roomId: string, role: string, amount: number, couponId?: string, startDate: string, people: number }) => post(USER_ROUTES.hotel.purchaseRoom.replace('/purchase', '/wallet-purchase'), data),
+    purchaseRoom: (data: { roomId: string, role: string, amount: number, couponId?: string, startDate: string, people: number, guestName?: string, guestAge?: number }) => post(USER_ROUTES.hotel.purchaseRoom, data),
+    purchaseRoomWithWallet: (data: { roomId: string, role: string, amount: number, couponId?: string, startDate: string, people: number, guestName?: string, guestAge?: number }) => post(USER_ROUTES.hotel.purchaseRoom.replace('/purchase', '/wallet-purchase'), data),
 
     // foods api requests
     showAllFoods: (params?: object) => get(USER_ROUTES.foods.showAllFoods, params),

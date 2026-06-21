@@ -39,8 +39,8 @@ let UserPackageSerivce = class UserPackageSerivce {
             return result;
         throw new resAndErrors_1.DataNotFoundError();
     }
-    async getAllPackage(page, limit, search) {
-        const data = await this._packageRepo.findAllPackageWithPartners(page, limit, search);
+    async getAllPackage(page, limit, search, price, duration, sortBy) {
+        const data = await this._packageRepo.findAllPackageWithPartners(page, limit, search, undefined, price, duration, sortBy);
         const checks = await Promise.all(data.data.map(async (pkg) => {
             const agency = await this._subscriptionHistoryRepo.findOne({
                 userId: pkg.ownedBy,
@@ -111,7 +111,7 @@ let UserPackageSerivce = class UserPackageSerivce {
         if (!wallet)
             throw new resAndErrors_1.DataNotFoundError();
         const pad = (n) => n.toString().padStart(2, '0');
-        const count = (await this._orderRepo.countDocuments() + 1).toString().padStart(6, '0');
+        const count = (await this._orderRepo.countDocuments({}) + 1).toString().padStart(6, '0');
         const date = new Date();
         const orderId = `ORD-${pad(date.getDate())}${pad(date.getMonth() + 1)}${date.getFullYear()}-${count}`;
         const orderData = await this._orderRepo.create({

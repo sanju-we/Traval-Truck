@@ -56,7 +56,7 @@ let AdminVendorRepository = class AdminVendorRepository {
         return completeData.map(vendor_response_dto_1.toVendorRequestDTO);
     }
     async findAllUsers(page, limit, status, role, search) {
-        const userFilter = {};
+        const userFilter = { role: { $ne: 'admin' } };
         const agencyFilter = { isApproved: true };
         const hotelFilter = { isApproved: true };
         const restaurantFilter = { isApproved: true };

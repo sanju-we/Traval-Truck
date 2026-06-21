@@ -13,10 +13,15 @@ export class UserHotelsController implements IUserHotelsController {
   ) { }
 
   async getAllHotels(req: Request, res: Response): Promise<void> {
-    const { page, limit } = req.query
-    const search = req.query.search
+    const { page, limit, search, minRating, sortBy } = req.query
     if (!page || !limit) throw new BADREQUEST()
-    const data = await this._userHotelService.getAllHotels(Number(page), Number(limit), search != undefined ? String(search) : '')
+    const data = await this._userHotelService.getAllHotels(
+      Number(page), 
+      Number(limit), 
+      search != undefined ? String(search) : '',
+      minRating ? Number(minRating) : undefined,
+      sortBy != undefined ? String(sortBy) : undefined
+    )
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, data)
   }
 
@@ -47,16 +52,16 @@ export class UserHotelsController implements IUserHotelsController {
   }
 
   async purchaseRoom(req: Request, res: Response): Promise<void> {
-    const { roomId, amount, couponId, role, startDate, people } = req.body
+    const { roomId, amount, couponId, role, startDate, people, guestName, guestAge } = req.body
     const userId = req.user.id;
-    const session = await this._userHotelService.initializeSession(roomId, role, userId, amount, couponId, startDate, Number(people));
+    const session = await this._userHotelService.initializeSession(roomId, role, userId, amount, couponId, startDate, Number(people), guestName, guestAge ? Number(guestAge) : undefined);
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.CREATED, session)
   }
 
   async walletPurchase(req: Request, res: Response): Promise<void> {
-    const { roomId, amount, couponId, role, startDate, people } = req.body
+    const { roomId, amount, couponId, role, startDate, people, guestName, guestAge } = req.body
     const userId = req.user.id;
-    const result = await this._userHotelService.walletPurchase(roomId, role, userId, amount, couponId, startDate, Number(people));
+    const result = await this._userHotelService.walletPurchase(roomId, role, userId, amount, couponId, startDate, Number(people), guestName, guestAge ? Number(guestAge) : undefined);
     if (result.success) {
       sendResponse(res, STATUS_CODE.OK, true, result.message, result);
     } else {

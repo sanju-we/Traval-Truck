@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ROOM_VACATING_EARLY = exports.ROOM_ALREADY_OCCUPAID = exports.INVALID_STATUS_UPDATION = exports.TRIP_UPDATION_ERROR = exports.TRIP_ALREADY_STARTED = exports.START_DATE_ERROR = exports.PAYMENT_VALIDATION_FAILED = exports.PAYMENT_VERIFICATOIN_FAILED = exports.Transfer_Error = exports.Files_Missing = exports.Data_Creation_Error = exports.RESTRICTED_USER = exports.InvalidAction = exports.BADREQUEST = exports.DataUpdatingError = exports.UNAUTHORIZEDUserFounf = exports.InvalidResetTokenError = exports.ImageDeleteInCloudinary = exports.InvalidCredentialsError = exports.NoAccessToken = exports.PasswordMismatchError = exports.DataNotFoundError = exports.UserNotFoundError = exports.InvalidOtpError = exports.EmailAlreadyRegisteredError = exports.OtpExpiredError = exports.EmailNotExists = exports.HttpError = void 0;
+exports.ROOM_VACATING_EARLY = exports.ROOM_ALREADY_OCCUPAID = exports.INVALID_STATUS_UPDATION = exports.TRIP_UPDATION_ERROR = exports.TRIP_ALREADY_STARTED = exports.START_DATE_ERROR = exports.PAYMENT_VALIDATION_FAILED = exports.PAYMENT_VERIFICATOIN_FAILED = exports.Transfer_Error = exports.Files_Missing = exports.Data_Creation_Error = exports.RESTRICTED_USER = exports.InvalidAction = exports.BADREQUEST = exports.DataUpdatingError = exports.UNAUTHORIZEDUserFounf = exports.InvalidResetTokenError = exports.ImageDeleteInCloudinary = exports.InvalidCredentialsError = exports.NoAccessToken = exports.PasswordMismatchError = exports.CouponExpired = exports.DataNotFoundError = exports.UserNotFoundError = exports.InvalidOtpError = exports.EmailAlreadyRegisteredError = exports.OtpExpiredError = exports.EmailNotExists = exports.HttpError = void 0;
 exports.sendResponse = sendResponse;
 exports.throwError = throwError;
 const HTTPStatusCode_1 = require("./HTTPStatusCode");
@@ -58,6 +58,12 @@ class DataNotFoundError extends HttpError {
     }
 }
 exports.DataNotFoundError = DataNotFoundError;
+class CouponExpired extends HttpError {
+    constructor() {
+        super(400, 'Coupon is already expired, please extend the expire date before updates.');
+    }
+}
+exports.CouponExpired = CouponExpired;
 class PasswordMismatchError extends HttpError {
     constructor() {
         super(400, 'Current password is incorrect');

@@ -26,7 +26,6 @@ app.use((0, cors_1.default)({
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 }));
-// app.options('*', cors());
 const webhook = container_1.container.get('IWebhookController');
 app.post("/api/webhook/stripe", express_1.default.raw({ type: "application/json" }), webhook.webHookHandler.bind(webhook));
 app.use(express_1.default.json());

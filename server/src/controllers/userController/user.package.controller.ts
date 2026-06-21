@@ -17,10 +17,16 @@ export class UserPackageController implements IUserPackageController {
   }
 
   async getAllPackage(req: Request, res: Response): Promise<void> {
-    const { page, limit } = req.query
-    const search = req.query.search
+    const { page, limit, search, price, duration, sortBy } = req.query
     if (!page || !limit) throw new BADREQUEST()
-    const data = await this._userPackageService.getAllPackage(Number(page), Number(limit), search != undefined ? String(search) : '')
+    const data = await this._userPackageService.getAllPackage(
+      Number(page), 
+      Number(limit), 
+      search != undefined ? String(search) : '',
+      price != undefined ? String(price) : undefined,
+      duration != undefined ? String(duration) : undefined,
+      sortBy != undefined ? String(sortBy) : undefined
+    )
     sendResponse(res, STATUS_CODE.OK, true, MESSAGES.ALL_DATA_FOUND, data)
   }
 

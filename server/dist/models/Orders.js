@@ -28,6 +28,8 @@ const OrdersSchema = new mongoose_1.Schema({
     endDate: { type: String },
     plan: { type: [planSchema] },
     people: { type: Number, default: 1 },
+    guestName: { type: String },
+    guestAge: { type: Number },
     tripProgress: { type: progress },
     status: { type: String, enum: ['Upcoming', 'Ongoing', 'Completed'], default: 'Upcoming' },
     couponApplied: { type: String },
