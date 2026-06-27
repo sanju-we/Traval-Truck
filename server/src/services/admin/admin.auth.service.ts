@@ -10,8 +10,8 @@ import {
   InvalidCredentialsError,
 } from '../../utils/resAndErrors';
 import { logger } from '../../utils/logger';
-import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile';
 import { IAuthValidator } from '../../core/interface/validator/Iauth.validator';
+import { IUserMapper } from '../../core/interface/mapper/IUserMapper';
 
 @injectable()
 export class AdminAuthService implements IAdminAuthService {
@@ -19,6 +19,7 @@ export class AdminAuthService implements IAdminAuthService {
     @inject('IAuthRepository') private readonly _authRepository: IAuthRepository,
     @inject('IJWT') private readonly _ijwt: IJWT,
     @inject('IAuthValidator') private readonly _authValidator: IAuthValidator,
+    @inject('IUserMapper') private readonly _userMapper : IUserMapper,
   ) {}
 
   async verifyAdminEmail(
@@ -44,6 +45,6 @@ export class AdminAuthService implements IAdminAuthService {
     });
 
     logger.info(`admin logged in success fully`);
-    return { admin: toUserProfileDTO(admin), accessToken, refreshToken };
+    return { admin: await this._userMapper.toUserProfileDTO(admin), accessToken, refreshToken };
   }
 }

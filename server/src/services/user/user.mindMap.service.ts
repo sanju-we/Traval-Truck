@@ -6,8 +6,9 @@ import { IAuthRepository } from "../../core/interface/repositorie/User/IAuth.Rep
 import { BADREQUEST, DataNotFoundError, DataUpdatingError } from "../../utils/resAndErrors";
 import { buildOptimizedRoute, splitIntoDays, PlaceNode, } from "../../utils/tripPlanner/index";
 import { IMindMapRepository } from "../../core/interface/repositorie/User/IMindMap.repository";
-import { MindMapResDTO, toMindMapRes } from "../../core/DTO/user/Response/mindMap.res";
+import { MindMapResDTO } from "../../core/DTO/user/Response/mindMap.res";
 import { validateTripPlan } from "../../services/Ai.service";
+import { IUserMapper } from "../../core/interface/mapper/IUserMapper";
 
 @injectable()
 export class UserMindMapService implements IUserMindMapService {
@@ -16,6 +17,7 @@ export class UserMindMapService implements IUserMindMapService {
     @inject('IBaseValidator') private readonly _baseValidator: IBaseValidator,
     @inject('IAuthRepository') private readonly _userAuth: IAuthRepository,
     @inject('IMindMapRepository') private readonly _mindMapRepo: IMindMapRepository,
+    @inject('IUserMapper') private readonly _userMapper : IUserMapper,
   ) { }
 
   async createMap(data: MindMapRequest, userId: string): Promise<MindMapResDTO> {
@@ -115,7 +117,7 @@ export class UserMindMapService implements IUserMindMapService {
     }
     console.log('kissiki')
     if (!mindMap) throw new DataNotFoundError();
-    return toMindMapRes(mindMap)
+    return await this._userMapper.toMindMapRes(mindMap)
   }
 
   async getMaps(page: number, userId: string): Promise<{ data: MindMapResDTO[], page: number, total: number, totalPages: number }> {
@@ -123,7 +125,9 @@ export class UserMindMapService implements IUserMindMapService {
     const maps = await this._mindMapRepo.findMapsWithPagination(userId, page, limit);
     if (!maps) throw new DataNotFoundError()
     const data = {
-      data: maps.data,
+      data: await Promise.all(
+        maps.data.map(map => this._userMapper.toMindMapRes(map))
+      ),
       page: page,
       total: maps.total,
       totalPages: maps.totalPages
@@ -135,7 +139,7 @@ export class UserMindMapService implements IUserMindMapService {
     await this._baseValidator.idValidator(mapId);
     const map = await this._mindMapRepo.findById(mapId);
     if (!map) throw new DataNotFoundError();
-    return toMindMapRes(map)
+    return await this._userMapper.toMindMapRes(map)
   }
 
   async confirmMap(mapId: string): Promise<MindMapResDTO> {
@@ -150,6 +154,6 @@ export class UserMindMapService implements IUserMindMapService {
     if (!updated) throw new DataUpdatingError();
     console.log('updated:', updated)
 
-    return toMindMapRes(updated)
+    return await this._userMapper.toMindMapRes(updated)
   }
 }

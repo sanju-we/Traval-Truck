@@ -6,6 +6,7 @@ import { TripPlan } from "../../../../types/index"
 import { RoomsDTO, toRoomsDTO } from "../../../../core/DTO/hotel/roomsDTO"
 import { IRoomType } from "../../../interface/modelInterface/IRoomType"
 import { IPayment } from "../../../../core/interface/modelInterface/IPayment"
+import { OrderWithDetails } from "types/orderTypes"
 // import FoodsDTO later
 
 export type TripProductDTO =
@@ -44,7 +45,7 @@ export interface IOrderWithProduct
 }
 
 export const mapTripProduct = (
-  order: IOrderWithProduct
+  order: OrderWithDetails
 ): TripProductDTO => {
   if (!order.product) {
     if (order.productType === "Package") {
@@ -101,55 +102,4 @@ export interface Trip {
   status: string
   paymentId: Types.ObjectId
   createdAt: Date
-}
-
-// export const toTrip = (order)
-
-export const toTripDTO = (
-  order: IOrderWithProduct
-): TripDTO => ({
-  id: order._id.toString(),
-  orderId: order.orderId,
-  product: mapTripProduct(order),
-  amount: order.amount,
-  status: order.status,
-  plan: order.plan,
-  people: order.people,
-  startDate: order.startDate,
-  endDate: order.endDate,
-  productType: order.productType,
-  createdAt: order.createdAt
-})
-
-export const toUserOrderDetailsDTO = (
-  order: IOrders
-): UserOrderDetailsDTO => {
-  const payment = order.paymentId as unknown as IPayment | null;
-  const productData = (order as unknown as IOrderWithProduct).product;
-
-  return {
-    id: order._id.toString(),
-    orderId: order.orderId,
-    userId: order.userId.toString(),
-    productType: order.productType,
-    product: productData ? mapTripProduct(order as unknown as IOrderWithProduct) : null,
-    amount: order.amount,
-    startDate: order.startDate,
-    endDate: order.endDate,
-    status: order.status,
-    plan: order.plan,
-    tripProgress: order.tripProgress,
-    paymentId: {
-      _id: payment?._id?.toString() || payment?.toString() || "",
-      transactionId: payment?.paymentIntentId || payment?.sessionId || "N/A",
-      paymentMethod: payment?.type || "Stripe",
-      paymentStatus: payment?.status || "paid"
-    },
-    createdAt: order.createdAt,
-    ownedBy: order.ownedBy,
-    people: order.people,
-    reason: order.reason,
-    guestName: order.guestName,
-    guestAge: order.guestAge
-  };
 }

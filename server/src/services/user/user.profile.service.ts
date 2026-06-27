@@ -5,10 +5,11 @@ import { userEdit, Userauth } from 'types/index';
 import { PasswordMismatchError, UserNotFoundError } from '../../utils/resAndErrors';
 import { IUser } from 'types';
 import { singleUpload } from '../../utils/upload.cloudinary';
-import { toUserProfileDTO, userProfileDTO } from '../../core/DTO/user/Response/user.profile';
+import { userProfileDTO } from '../../core/DTO/user/Response/user.profile';
 import { IBaseValidator } from '../../core/interface/validator/IBasic.validator';
 import { IAuthValidator } from '@core/interface/validator/Iauth.validator';
 import bcrypt from 'bcryptjs';
+import { IUserMapper } from '../../core/interface/mapper/IUserMapper';
 
 @injectable()
 export class UserProfileService implements IUserProfileService {
@@ -16,6 +17,7 @@ export class UserProfileService implements IUserProfileService {
     @inject('IAuthRepository') private readonly _authRespository: IAuthRepository,
     @inject('IBaseValidator') private readonly _baseValidator: IBaseValidator,
     @inject('IAuthValidator') private readonly _authValidator: IAuthValidator,
+    @inject('IUserMapper') private readonly _userMapper : IUserMapper,
   ) { }
 
   async setInterest(interests: string[], id: string): Promise<void> {
@@ -49,7 +51,7 @@ export class UserProfileService implements IUserProfileService {
     const result = await singleUpload(image, 'Travel-Truck-Document');
 
     const update = await this._authRespository.update(id, { profilePicture: result });
-    if (update) return toUserProfileDTO(update);
+    if (update) return await this._userMapper.toUserProfileDTO(update);
     return null;
   }
 }

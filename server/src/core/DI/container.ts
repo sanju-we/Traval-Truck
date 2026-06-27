@@ -196,6 +196,12 @@ import { RestaurantSubscriptionController } from '../../controllers/restaurantCo
 import { IRestaurantSubscriptionService } from '../../core/interface/serivice/restaurant/Irestaurant.subscription.service';
 import { RestaurantSubscriptionService } from '../../services/restaurant/restaurant.subscription.service';
 
+// Mapper
+import { IUserMapper } from '../../core/interface/mapper/IUserMapper';
+import { UserMapper } from '../../mapper/userMapper';
+import { ISubscriptionMapper } from '../../core/interface/mapper/ISubscriptionMapper';
+import { SubscriptionMapper } from '../../mapper/subscriptionMapper';
+
 const container = new Container();
 
 // ------------------------------------------------general container-----------------------------------------------------------------
@@ -303,5 +309,9 @@ container.bind<IRestaurantFoodService>('IRestaurantFoodService').to(RestaurantFo
 container.bind<IRestaurantFoodRespository>('IRestaurantFoodRespository').to(RestaurantFoodRepository);
 container.bind<IRestaurantSubscriptionController>('IRestaurantSubscriptionController').to(RestaurantSubscriptionController);
 container.bind<IRestaurantSubscriptionService>('IRestaurantSubscriptionService').to(RestaurantSubscriptionService)
+
+// Mapper
+container.bind<IUserMapper>('IUserMapper').to(UserMapper);
+container.bind<ISubscriptionMapper>('ISubscriptionMapper').to(SubscriptionMapper);
 
 export { container };

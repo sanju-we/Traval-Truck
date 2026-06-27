@@ -6,10 +6,10 @@ import { STATUS_CODE } from '../../utils/HTTPStatusCode';
 import { IAuthRepository } from '../../core/interface/repositorie/User/IAuth.Repository';
 import { IUserProfileController } from '../../core/interface/controllerInterface/user/userProfile';
 import { IUserProfileService } from '../../core/interface/serivice/user/Iuser.profile.service';
-import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile';
 import { MESSAGES } from '../../utils/responseMessaages';
 import { IAuthValidator } from '../../core/interface/validator/Iauth.validator';
 import { IBaseValidator } from '../../core/interface/validator/IBasic.validator';
+import { IUserMapper } from '../../core/interface/mapper/IUserMapper';
 
 @injectable()
 export class ProfileController implements IUserProfileController {
@@ -19,6 +19,7 @@ export class ProfileController implements IUserProfileController {
     @inject('IUserProfileService') private readonly _profileService: IUserProfileService,
     @inject('IBaseValidator') private readonly _baseValidator : IBaseValidator,
     @inject('IAuthValidator') private readonly _authValidator : IAuthValidator,
+    @inject('IUserMapper') private readonly _userMapper : IUserMapper,
   ) {}
 
   async profile(req: Request, res: Response): Promise<void> {
@@ -32,7 +33,7 @@ export class ProfileController implements IUserProfileController {
       return sendResponse(res, STATUS_CODE.NOT_FOUND, false, 'User not found');
     }
 
-    const user = toUserProfileDTO(userData);
+    const user = await this._userMapper.toUserProfileDTO(userData);
     sendResponse(res, STATUS_CODE.OK, true, 'User profile found', user);
   }
 

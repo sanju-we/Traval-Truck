@@ -15,9 +15,9 @@ import {
   RESTRICTED_USER,
   EmailNotExists,
 } from '../../utils/resAndErrors';
-import { toUserProfileDTO } from '../../core/DTO/user/Response/user.profile';
 import { logger } from '../../utils/logger';
 import { IAuthValidator } from '../../core/interface/validator/Iauth.validator';
+import { IUserMapper } from '../../core/interface/mapper/IUserMapper';
 
 @injectable()
 export class AuthService implements IAuthService {
@@ -29,6 +29,7 @@ export class AuthService implements IAuthService {
     @inject('IJWT') private _jwtUtil: IJWT,
     @inject('IEmailService') private readonly _emailService: IEmailService,
     @inject('IAuthValidator') private readonly _authValidator : IAuthValidator,
+    @inject('IUserMapper') private readonly _userMapper : IUserMapper,
   ) {}
 
   async verify(
@@ -72,7 +73,7 @@ export class AuthService implements IAuthService {
     logger.info(
       `From UserAuth->verify:- User ${userData.email} verified and registered successfully`,
     );
-    return { user: toUserProfileDTO(userDoc), accessToken, refreshToken };
+    return { user: await this._userMapper.toUserProfileDTO(userDoc), accessToken, refreshToken };
   }
 
   async verifyLogin(
@@ -99,7 +100,7 @@ export class AuthService implements IAuthService {
     });
 
     logger.info(`From UserAuth->verifyLogin:- User ${email} logged in successfully`);
-    return { user: toUserProfileDTO(user), accessToken, refreshToken };
+    return { user: await this._userMapper.toUserProfileDTO(user), accessToken, refreshToken };
   }
 
   async sendLink(email: string): Promise<void> {

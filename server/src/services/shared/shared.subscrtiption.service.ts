@@ -1,7 +1,7 @@
 import { ISharedSubscriptionService } from "../../core/interface/serivice/shared/Ishared.subscription.service";
 import { ISubscriptionRepository } from "../../core/interface/repositorie/ISubscription.respository";
 import { inject, injectable } from "inversify";
-import { subscriptionDTO, toSubdcriptionDTO } from "../../core/DTO/subscription.dto";
+import { subscriptionDTO } from "../../core/DTO/subscription.dto";
 import { Data_Creation_Error, DataNotFoundError } from "../../utils/resAndErrors";
 import { IPaymentUtils } from "../../core/interface/PaymentInterface/Ipayment.utils";
 import { ISubscriptionHistoryRepository } from "../../core/interface/repositorie/shared/ISubscription.hisroty.repository";
@@ -9,11 +9,13 @@ import { subscriptionHistoryDTO, toSubsctiptionHistoryDTO } from "../../core/DTO
 import { logger } from "../../utils/logger";
 import { ISubscriptionHistory } from "../../core/interface/modelInterface/ISubscriptionHistory";
 import Stripe from "stripe";
+import { ISubscriptionMapper } from "../../core/interface/mapper/ISubscriptionMapper";
 
 @injectable()
 export class SharedSubscriptionService implements ISharedSubscriptionService {
 
   constructor(
+    @inject('ISubscriptionMapper') private readonly _subscriptionMapper : ISubscriptionMapper,
     @inject("ISubscriptionRepository") private readonly _subscriptionRepo: ISubscriptionRepository,
     @inject("IPaymentUtils") private readonly _paymentUtils: IPaymentUtils,
     @inject("ISubscriptionHistoryRepository") private readonly _subscriptionHistoryRepo: ISubscriptionHistoryRepository
@@ -23,14 +25,16 @@ export class SharedSubscriptionService implements ISharedSubscriptionService {
     const subscriptions = await this._subscriptionRepo.findAll({ IsActive: true }, {});
     if (!subscriptions) throw new DataNotFoundError();
 
-    return subscriptions.map(toSubdcriptionDTO);
+    return Promise.all(
+      subscriptions.map((subs) => this._subscriptionMapper.toSubdcriptionDTO(subs))
+    )
   }
 
   async getSubscription(id: string): Promise<subscriptionDTO> {
     const subscription = await this._subscriptionRepo.findById(id);
     if (!subscription) throw new DataNotFoundError();
 
-    return toSubdcriptionDTO(subscription);
+    return await this._subscriptionMapper.toSubdcriptionDTO(subscription);
   }
 
   async getCurrentSubscription(id: string): Promise<subscriptionHistoryDTO> {

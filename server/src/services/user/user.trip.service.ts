@@ -2,12 +2,13 @@ import { IUserTripService } from "../../core/interface/serivice/user/IUser.trips
 import { IOrdersRepository } from "../../core/interface/repositorie/User/Iorders.repository";
 import { inject, injectable } from "inversify";
 import { DataNotFoundError } from "../../utils/resAndErrors";
-import { TripDTO, UserOrderDetailsDTO, toUserOrderDetailsDTO } from "../../core/DTO/user/Response/user.trip.DTO";
+import { TripDTO, UserOrderDetailsDTO } from "../../core/DTO/user/Response/user.trip.DTO";
 import { logger } from "../../utils/logger";
 import { orderDTO, toOrderDTO } from "../../core/DTO/agency/response/agency.order.DTO";
 import { IBaseValidator } from "../../core/interface/validator/IBasic.validator";
 import { IPaymentRepository } from "../../core/interface/repositorie/shared/Ishared.payment.repository";
 import { IWalletRespository } from "../../core/interface/repositorie/shared/IWallet.repository";
+import { IUserMapper } from "../../core/interface/mapper/IUserMapper";
 
 @injectable()
 export class UserTripService implements IUserTripService {
@@ -15,22 +16,25 @@ export class UserTripService implements IUserTripService {
     @inject('IOrdersRepository') private readonly _ordersRepo: IOrdersRepository,
     @inject('IBaseValidator') private readonly _validator: IBaseValidator,
     @inject('IPaymentRepository') private readonly _paymentRepo: IPaymentRepository,
-    @inject('IWalletRespository') private readonly _walletRepo: IWalletRespository
+    @inject('IWalletRespository') private readonly _walletRepo: IWalletRespository,
+    @inject('IUserMapper') private readonly _userMapper: IUserMapper,
   ) { }
 
   async history(userId: string, page?: number, limit?: number): Promise<TripDTO[]> {
     await this._validator.idValidator(userId)
     const history = await this._ordersRepo.findAllByProduct(userId, page, limit)
     logger.info(`charle ${history}`)
-    if (!history) throw new DataNotFoundError()
-    return history
+    if (!history) throw new DataNotFoundError();
+    return await Promise.all(
+      history.map(order => this._userMapper.toTripDTO(order))
+    )
   }
 
   async getOrder(orderId: string): Promise<UserOrderDetailsDTO> {
     await this._validator.idValidator(orderId)
     const order = await this._ordersRepo.findOrderWithProduct(orderId);
     if (!order) throw new DataNotFoundError()
-    return toUserOrderDetailsDTO(order)
+    return await this._userMapper.toUserOrderDetailsDTO(order)
   }
 
   async orderCancellation(orderId: string, reason: string): Promise<orderDTO> {
